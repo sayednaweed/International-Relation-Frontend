@@ -173,5 +173,13 @@
   "pashto": "پشتو",
   "home": "کور پاڼه",
   "about_us": "زموږ په اړه",
-  "moph_address": "د عامې روغتیا څلور لارې، د وزیر محمد اکبر خان سړک، کابل، افغانستان"
+  "moph_address": "د عامې روغتیا څلور لارې، د وزیر محمد اکبر خان سړک، کابل، افغانستان",
+  "application": "application",
+  "ngo": "موسسه",
+  "donor": "دونر",
+  "management/about": "په اړه",
+  "management/news": "خبرونه",
+  "projects": "پروژې",
+  "ngo_today": "نن ورځ موسسات",
+  "un_registered": "ناراجستر شوی"
 }

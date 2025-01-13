@@ -171,8 +171,15 @@
   "full_name": "نام کامل",
   "debugger": "دیبگر",
   "pashto": "پشتو",
-  "application": "application",
   "home": "صفحه اصلی",
   "about_us": "درباره ما",
-  "moph_address": "چهار راهی صحت عامه، جاده وزیرمحمد اکبر خان، کابل، افغانستان"
+  "moph_address": "چهار راهی صحت عامه، جاده وزیرمحمد اکبر خان، کابل، افغانستان",
+  "application": "application",
+  "ngo": "موسسه",
+  "donor": "دونر",
+  "management/about": "درباره",
+  "management/news": "اخبار",
+  "projects": "پروژه ها",
+  "ngo_today": "موسسات امروز",
+  "un_registered": "ثبت نشده"
 }

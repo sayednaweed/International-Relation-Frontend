@@ -177,6 +177,8 @@
   "application": "application",
   "ngo": "NGO",
   "donor": "Donor",
+  "management/about": "About",
+  "management/news": "News",
   "projects": "Projects",
   "ngo_today": "NGO Today",
   "un_registered": "UnRegistered"

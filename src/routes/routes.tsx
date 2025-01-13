@@ -42,6 +42,8 @@ import AdminDashboardPage from "@/views/pages/auth/admin/dashboard/admin-dashboa
 import AdminSettingsPage from "@/views/pages/auth/admin/settings/admin-settings-page";
 import DonorProjectsPage from "@/views/pages/auth/donor/projects/donor-projects-page";
 import UserDonorPage from "@/views/pages/auth/user/donor/user-donor-page";
+import NewsManagementPage from "@/views/pages/auth/general/management/news/news-management-page";
+import AboutManagementPage from "@/views/pages/auth/general/management/about-management.tsx/about-management-page";
 
 export const getSuperRouter = (user: User) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -171,6 +173,26 @@ export const getSuperRouter = (user: User) => {
               />
             }
           />
+          <Route
+            path="management/news"
+            element={
+              <ProtectedRoute
+                element={<NewsManagementPage />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="management/about"
+            element={
+              <ProtectedRoute
+                element={<AboutManagementPage />}
+                routeName="management/about"
+                permissions={permissions}
+              />
+            }
+          />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -277,6 +299,26 @@ export const getAdminRouter = (user: User) => {
               />
             }
           />
+          <Route
+            path="management/news"
+            element={
+              <ProtectedRoute
+                element={<NewsManagementPage />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="management/about"
+            element={
+              <ProtectedRoute
+                element={<AboutManagementPage />}
+                routeName="management/about"
+                permissions={permissions}
+              />
+            }
+          />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -359,6 +401,26 @@ export const getUserRouter = (user: User) => {
               <ProtectedRoute
                 element={<ProjectsPage />}
                 routeName="projects"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="management/news"
+            element={
+              <ProtectedRoute
+                element={<NewsManagementPage />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="management/about"
+            element={
+              <ProtectedRoute
+                element={<AboutManagementPage />}
+                routeName="management/about"
                 permissions={permissions}
               />
             }
