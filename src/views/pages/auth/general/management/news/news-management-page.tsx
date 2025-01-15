@@ -26,7 +26,6 @@ import {
 } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import UserFilterDialog from "../../users/user-filter-dialog";
-import AddContent from "./addContent";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -37,6 +36,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
+import AddNews from "./add/add-news";
 
 interface Img {
   id: number;
@@ -256,7 +256,7 @@ export default function NewsManagementPage() {
               return false;
             }}
           >
-            <AddContent />
+            <AddNews />
           </NastranModel>
         )}
 

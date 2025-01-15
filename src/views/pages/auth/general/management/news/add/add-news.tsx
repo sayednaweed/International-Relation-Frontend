@@ -1,4 +1,4 @@
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent } from "react";
 
 import "quill/dist/quill.snow.css";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,8 +28,7 @@ import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker
 import { DateObject } from "react-multi-date-picker";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 
-function AddContent() {
-  const editorRef = useRef<HTMLDivElement>(null);
+function AddNews() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
@@ -138,4 +137,4 @@ function AddContent() {
   );
 }
 
-export default AddContent;
+export default AddNews;
