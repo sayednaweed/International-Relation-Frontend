@@ -121,9 +121,9 @@ export type NgoSort =
   | "id"
   | "name"
   | "type"
-  | "date_of_establishment"
+  | "establishment_date"
   | "contact"
-  | "expire_date"
+  | "agreement_expire_date"
   | "status";
 export type NgoSearch = "id" | "registration_no" | "name" | "type" | "contact";
 export interface NgoFilter {

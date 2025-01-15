@@ -44,6 +44,7 @@ import DonorProjectsPage from "@/views/pages/auth/donor/projects/donor-projects-
 import UserDonorPage from "@/views/pages/auth/user/donor/user-donor-page";
 import NewsManagementPage from "@/views/pages/auth/general/management/news/news-management-page";
 import AboutManagementPage from "@/views/pages/auth/general/management/about-management.tsx/about-management-page";
+import UserNgoEditPage from "@/views/pages/auth/user/ngo/edit/user-ngo-edit-page";
 
 export const getSuperRouter = (user: User) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -148,6 +149,16 @@ export const getSuperRouter = (user: User) => {
             element={
               <ProtectedRoute
                 element={<UserNgoPage />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/:id"
+            element={
+              <ProtectedRoute
+                element={<UserNgoEditPage />}
                 routeName="ngo"
                 permissions={permissions}
               />

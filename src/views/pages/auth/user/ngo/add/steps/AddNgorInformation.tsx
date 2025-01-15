@@ -1,6 +1,9 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
+import OptionalTabs from "@/components/custom-ui/input/mult-tab/parts/OptionalTab";
+import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
+import SingleTabTextarea from "@/components/custom-ui/input/mult-tab/SingleTabTextarea";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { UserRound } from "lucide-react";
 import { useContext } from "react";
@@ -37,10 +40,27 @@ export default function AddNgoInformation() {
       <BorderContainer
         title={t("name")}
         required={true}
-        parentClassName=" py-4"
+        parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
       >
-        <CustomInput
+        <SingleTabTextarea
+          name="name"
+          // title={t("name")}
+          highlightColor="bg-tertiary"
+          userData={userData}
+          setUserData={setUserData}
+          placeholder={t("content")}
+          rows={5}
+          className="rtl:text-xl-rt h-full border-x-0 border-b-0 rounded-none"
+          tabsClassName="gap-x-8 px-4"
+        >
+          <SingleTab>english</SingleTab>
+          <OptionalTabs>
+            <SingleTab>farsi</SingleTab>
+            <SingleTab>pashto</SingleTab>
+          </OptionalTabs>
+        </SingleTabTextarea>
+        {/* <CustomInput
           required={true}
           requiredHint={`* ${t("Required")}`}
           size_="sm"
@@ -50,8 +70,8 @@ export default function AddNgoInformation() {
           type="text"
           errorMessage={error.get("name_en")}
           onBlur={handleChange}
-        />
-        <CustomInput
+        /> */}
+        {/* <CustomInput
           required={true}
           requiredHint={`* ${t("Required")}`}
           size_="sm"
@@ -61,8 +81,8 @@ export default function AddNgoInformation() {
           type="text"
           errorMessage={error.get("name_fa")}
           onBlur={handleChange}
-        />
-        <CustomInput
+        /> */}
+        {/* <CustomInput
           required={true}
           requiredHint={`* ${t("Required")}`}
           size_="sm"
@@ -72,7 +92,7 @@ export default function AddNgoInformation() {
           type="text"
           errorMessage={error.get("name_ps")}
           onBlur={handleChange}
-        />
+        /> */}
       </BorderContainer>
 
       <CustomInput
@@ -134,7 +154,7 @@ export default function AddNgoInformation() {
           lable={t("area")}
           name="area"
           defaultValue={userData["area"]}
-          placeholder={t("abbreviation_desc")}
+          placeholder={t("area")}
           type="text"
           parentClassName="w-full"
           errorMessage={error.get("area")}

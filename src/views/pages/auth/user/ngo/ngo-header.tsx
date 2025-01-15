@@ -62,7 +62,7 @@ export default function NgoHeader() {
         title={t("total_registered_today")}
         total={recordCount.todayCount}
         description1={t("total")}
-        description2={t("ngo_today")}
+        description2={t("ngo")}
         icon={
           <UserRoundPlus className=" size-[22px] bg-orange-500 rounded-sm p-1 text-secondary" />
         }
@@ -72,7 +72,7 @@ export default function NgoHeader() {
         title={t("active")}
         total={recordCount.activeUserCount}
         description1={t("total")}
-        description2={t("user")}
+        description2={t("ngo")}
         icon={
           <UserRoundX className=" size-[22px] bg-red-500 rounded-sm p-1 text-secondary" />
         }
@@ -82,7 +82,7 @@ export default function NgoHeader() {
         title={t("un_registered")}
         total={recordCount.inActiveUserCount}
         description1={t("total")}
-        description2={t("user")}
+        description2={t("ngo")}
         icon={
           <UserRoundPen className=" size-[22px] bg-green-500 rounded-sm p-1 text-secondary" />
         }

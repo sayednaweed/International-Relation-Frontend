@@ -46,13 +46,13 @@ export default function NgoFilterDialog(props: NgoFilterDialogProps) {
     <Card className="w-fit self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-lg-ltr text-tertiary">
-          {t("Search filters")}
+          {t("search_filters")}
         </CardTitle>
       </CardHeader>
       <CardContent className="grid grid-cols-2 sm:flex sm:flex-row gap-x-4 pb-12">
         <FilterItem
           selected={filters.sort}
-          headerName={t("Sort by")}
+          headerName={t("sort_by")}
           items={[
             {
               name: "id",
@@ -66,14 +66,14 @@ export default function NgoFilterDialog(props: NgoFilterDialogProps) {
               onClick: handleSort,
             },
             {
-              name: "date_of_establishment",
-              translate: t("date_of_establishment"),
+              name: "establishment_date",
+              translate: t("establishment_date"),
               onClick: handleSort,
             },
             { name: "contact", translate: t("contact"), onClick: handleSort },
             {
-              name: "expire_date",
-              translate: t("expire_date"),
+              name: "agreement_expire_date",
+              translate: t("agreement_expire_date"),
               onClick: handleSort,
             },
             { name: "status", translate: t("status"), onClick: handleSort },
@@ -113,7 +113,7 @@ export default function NgoFilterDialog(props: NgoFilterDialogProps) {
         />
         <FilterItem
           selected={filters.order}
-          headerName={t("Order")}
+          headerName={t("order")}
           items={[
             {
               name: "asc",
@@ -134,7 +134,7 @@ export default function NgoFilterDialog(props: NgoFilterDialogProps) {
           className="rtl:text-2xl-rtl ltr:text-lg-ltr"
           onClick={modelOnRequestHide}
         >
-          {t("Cancel")}
+          {t("cancel")}
         </Button>
       </CardFooter>
     </Card>
