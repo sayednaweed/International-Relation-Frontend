@@ -18,7 +18,7 @@ export interface UserEditHeaderProps {
   setUserData: Dispatch<SetStateAction<UserInformation | undefined>>;
 }
 
-export default function UserEditHeader(props: UserEditHeaderProps) {
+export default function UserNgoEditHeader(props: UserEditHeaderProps) {
   const { id, userData, setUserData, failed } = props;
   const { user } = useAuthState();
   const { t } = useTranslation();
@@ -41,8 +41,8 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     if (!fileInput.files) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
-        description: t("No file was chosen"),
+        title: t("error"),
+        description: t("no_file_was_chosen"),
       });
       return;
     }
@@ -50,8 +50,8 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     if (!fileInput.files || fileInput.files.length === 0) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
-        description: t("Files list is empty"),
+        title: t("error"),
+        description: t("files_list_is_empty"),
       });
       return;
     }
@@ -60,8 +60,8 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     if (file.size >= maxFileSize) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
-        description: t("Image size should be less than 2MB"),
+        title: t("error"),
+        description: t("img_size_shou_less_2MB"),
       });
       return;
     }
@@ -70,8 +70,8 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     if (!validTypes.includes(file.type)) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
-        description: t("Please select a valid image file (jpg, png, jpeg)."),
+        title: t("error"),
+        description: t("ples_sel_vali_img_file"),
       });
       return;
     }
@@ -94,14 +94,14 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
         });
         toast({
           toastType: "SUCCESS",
-          title: t("Success"),
+          title: t("success"),
           description: response.data.message,
         });
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
       console.log(error);
@@ -118,8 +118,8 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     if (userData?.profile == "") {
       toast({
         toastType: "ERROR",
-        title: "Error!",
-        description: "No image is selected!",
+        title: t("error"),
+        description: t("no_img_selected"),
         duration: 3000,
       });
       return;
@@ -137,14 +137,14 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
         });
         toast({
           toastType: "SUCCESS",
-          title: t("Success"),
+          title: t("success"),
           description: response.data.message,
         });
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
       console.log(error);
@@ -162,7 +162,7 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
       />
       {loading && (
         <NastranSpinner
-          label={t("in progress")}
+          label={t("in_progress")}
           className="size-[14px] mt-2"
           labelclassname="text-primary/80 rtl:text-sm-rtl ltr:text-sm-ltr"
         />
@@ -176,7 +176,7 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
               >
                 <Pencil className={`size-[13px] pointer-events-none`} />
                 <h1 className={`rtl:text-lg-rtl ltr:text-md-ltr`}>
-                  {t("Choose")}
+                  {t("choose")}
                 </h1>
                 <input
                   type="file"
@@ -194,13 +194,13 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
               onClick={deleteProfilePicture}
             >
               <Trash2 className="size-[13px] pointer-events-none" />
-              <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("Delete")}</h1>
+              <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
             </IconButton>
           )}
         </div>
       )}
 
-      <h1 className="text-primary font-semibold rtl:text-4xl-rtl ltr:text-4xl-ltr">
+      <h1 className="text-primary font-semibold rtl:text-2xl-rtl ltr:text-4xl-ltr">
         {userData?.username}
       </h1>
       <h1 className="leading-6 rtl:text-sm-rtl ltr:text-2xl-ltr">

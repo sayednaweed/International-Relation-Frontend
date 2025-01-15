@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import SingleTab from "./SingleTab";
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
+import React from "react";
 interface OptionalTabsProps {
   children: ReactElement<typeof SingleTab> | ReactElement<typeof SingleTab>[];
   className?: string;
@@ -8,10 +9,26 @@ interface OptionalTabsProps {
 }
 
 export default function OptionalTabs(props: OptionalTabsProps) {
-  const { children, className } = props;
+  const { children, className, onClick } = props;
+
+  const processTabs = (children: ReactNode) => {
+    return React.Children.map(children, (child, index) => {
+      if (index % 2 == 0) {
+        return (
+          <>
+            <div>/</div>
+            {child}
+          </>
+        );
+      } else {
+        return child;
+      }
+    });
+  };
+  const elements = processTabs(children);
   return (
-    <div {...props} className={cn("", className)}>
-      {children}
+    <div onClick={onClick} className={cn("", className)}>
+      {elements}
     </div>
   );
 }

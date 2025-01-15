@@ -8,7 +8,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthState } from "@/context/AuthContextProvider";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { Ngo, UserPermission } from "@/database/tables";
 import { CACHE, SectionEnum } from "@/lib/constants";
@@ -37,6 +36,7 @@ import {
 } from "@/lib/types";
 import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
+import { useAuthState } from "@/context/AuthContextProvider";
 
 export function NgoTable() {
   const { user } = useAuthState();
@@ -106,26 +106,26 @@ export function NgoTable() {
       const totalItems = response.data.ngos.total;
       const perPage = response.data.ngos.per_page;
       const currentPage = response.data.ngos.current_page;
-      setNgos({
-        filterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-        unFilterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-      });
+      // setNgos({
+      //   filterList: {
+      //     data: fetch,
+      //     lastPage: lastPage,
+      //     totalItems: totalItems,
+      //     perPage: perPage,
+      //     currentPage: currentPage,
+      //   },
+      //   unFilterList: {
+      //     data: fetch,
+      //     lastPage: lastPage,
+      //     totalItems: totalItems,
+      //     perPage: perPage,
+      //     currentPage: currentPage,
+      //   },
+      // });
     } catch (error: any) {
       toast({
         toastType: t("ERROR"),
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
     } finally {
@@ -178,11 +178,11 @@ export function NgoTable() {
 
   const deleteOnClick = async (ngo: Ngo) => {
     try {
-      const userId = ngo.id;
-      const response = await axiosClient.delete("user/" + userId);
+      const ngoId = ngo.id;
+      const response = await axiosClient.delete("ngo/" + ngoId);
       if (response.status == 200) {
         const filtered = ngos.unFilterList.data.filter(
-          (item: Ngo) => userId != item?.id
+          (item: Ngo) => ngoId != item?.id
         );
         const item = {
           data: filtered,
@@ -195,13 +195,13 @@ export function NgoTable() {
       }
       toast({
         toastType: "SUCCESS",
-        title: t("Success"),
+        title: t("success"),
         description: response.data.message,
       });
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
     }
@@ -255,7 +255,7 @@ export function NgoTable() {
             isDismissable={false}
             button={
               <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("Add")}
+                {t("add")}
               </PrimaryButton>
             }
             showDialog={async () => true}
@@ -380,7 +380,7 @@ export function NgoTable() {
             await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT)
           }
           placeholder={`${t("select")}...`}
-          emptyPlaceholder={t("No options found")}
+          emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
           onChange={async (value: string) => {
             loadList(parseInt(value), filters);
@@ -391,7 +391,7 @@ export function NgoTable() {
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-center px-1 w-[60px]">
-              {t("Profile")}
+              {t("profile")}
             </TableHead>
             <TableHead className="text-start">{t("id")}</TableHead>
             <TableHead className="text-start">{t("registration_no")}</TableHead>
@@ -401,7 +401,9 @@ export function NgoTable() {
               {t("establishment_date")}
             </TableHead>
             <TableHead className="text-start w-[60px]">{t("status")}</TableHead>
-            <TableHead className="text-start">{t("expire_date")}</TableHead>
+            <TableHead className="text-start">
+              {t("agreement_expire_date")}
+            </TableHead>
             <TableHead className="text-start">{t("contact")}</TableHead>
           </TableRow>
         </TableHeader>
@@ -437,33 +439,33 @@ export function NgoTable() {
                   {item.id}
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.registrationNo}
+                  {item.registration_no}
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
                   {item.name}
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.type.name}
+                  {item.type}
                 </TableCell>
                 <TableCell>
-                  {toLocaleDate(new Date(item.dateOfEstablishment), state)}
+                  {toLocaleDate(new Date(item.establishment_date), state)}
                 </TableCell>
                 <TableCell>
                   {item?.status ? (
                     <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("Active")}
+                      {t("active")}
                     </h1>
                   ) : (
                     <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-red-400 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("Lock")}
+                      {t("lock")}
                     </h1>
                   )}
                 </TableCell>
                 <TableCell>
-                  {toLocaleDate(new Date(item.expireDate), state)}
+                  {toLocaleDate(new Date(item.agreement_expire_date), state)}
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.contact.value}
+                  {item.contact}
                 </TableCell>
               </TableRowIcon>
             ))
@@ -483,12 +485,12 @@ export function NgoTable() {
               const count = await getComponentCache(
                 CACHE.NGO_TABLE_PAGINATION_COUNT
               );
-              const response = await axiosClient.get(`users/${page}`, {
+              const response = await axiosClient.get(`ngos/${page}`, {
                 params: {
                   per_page: count ? count.value : 10,
                 },
               });
-              const fetch = response.data.users.data as Ngo[];
+              const fetch = response.data.ngos.data as Ngo[];
 
               const item = {
                 currentPage: page,
@@ -504,7 +506,7 @@ export function NgoTable() {
             } catch (error: any) {
               toast({
                 toastType: "ERROR",
-                title: t("Error"),
+                title: t("error"),
                 description: error.response.data.message,
               });
             }

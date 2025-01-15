@@ -39,9 +39,9 @@ export default function AddNgo(props: AddNgoProps) {
     formData.append("abbr", userData.abbreviation);
     formData.append("ngo_type_id", userData.type.id);
     formData.append("contact", userData.phone);
-    formData.append("name_en", userData.name_en);
-    formData.append("name_ps", userData.name_ps);
-    formData.append("name_fa", userData.name_fa);
+    formData.append("name_en", userData.name_english);
+    formData.append("name_ps", userData.name_pashto);
+    formData.append("name_fa", userData.name_farsi);
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
@@ -106,9 +106,9 @@ export default function AddNgo(props: AddNgoProps) {
           {
             component: <AddNgoInformation />,
             validationRules: [
-              { name: "name_en", rules: ["required", "max:128", "min:5"] },
-              { name: "name_fa", rules: ["required", "max:128", "min:5"] },
-              { name: "name_ps", rules: ["required", "max:128", "min:5"] },
+              { name: "name_english", rules: ["required", "max:128", "min:5"] },
+              { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
+              { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
               { name: "abbreviation", rules: ["required"] },
               { name: "type", rules: ["required"] },
               { name: "province", rules: ["required"] },

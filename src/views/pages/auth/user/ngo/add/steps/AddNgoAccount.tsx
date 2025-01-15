@@ -19,6 +19,8 @@ export default function AddNgoAccount() {
       <CustomInput
         size_="sm"
         dir="ltr"
+        required={true}
+        requiredHint={`* ${t("Required")}`}
         className="rtl:text-end"
         lable={t("contact")}
         placeholder={t("Enter your phone number")}
@@ -35,8 +37,8 @@ export default function AddNgoAccount() {
         size_="sm"
         name="email"
         required={true}
-        lable={t("email")}
         requiredHint={`* ${t("Required")}`}
+        lable={t("email")}
         defaultValue={userData["email"]}
         placeholder={t("Enter your email")}
         type="email"

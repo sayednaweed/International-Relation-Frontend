@@ -81,9 +81,14 @@ export type District = {
   id: string;
   name: string;
 };
+export type Province = {
+  id: string;
+  name: string;
+};
 export type Address = {
   id: string;
   country: Country;
+  province: Province;
   district: District;
   area: string;
 };
@@ -104,7 +109,13 @@ export type Audit = {
 };
 
 ///////////////////////////////App
-export type NgoStatus = "block" | "active" | "inactive" | "mou_not_reg";
+export type NgoStatus = {
+  id: string;
+  ngo_id: string;
+  status_type_id: string;
+  comment: string;
+  created_at: string;
+};
 export type NgoType = {
   id: string;
   name: string;
@@ -115,15 +126,12 @@ export type Ngo = {
   profile: string;
   name: string;
   abbr: string;
-  status: NgoStatus;
+  status: string;
   registration_no: string;
-  date_of_establishment: string;
-  expireDate: string;
-  type: NgoType;
-  moe_registration_no: string;
-  place_of_establishment: string;
-  email: Email;
-  contact: Contact;
+  establishment_date: string;
+  agreement_expire_date: string;
+  type: string;
+  email: string;
+  contact: string;
   created_at: string;
-  address: Address;
 };

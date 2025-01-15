@@ -1,4 +1,3 @@
-import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import OptionalTabs from "@/components/custom-ui/input/mult-tab/parts/OptionalTab";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { useEffect, useState } from "react";

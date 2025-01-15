@@ -8,19 +8,17 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
-import EditUserInformation from "./steps/edit-user-information";
-import { EditUserPassword } from "./steps/edit-user-password";
 import axiosClient from "@/lib/axois-client";
 import { useEffect, useState } from "react";
 import { UserInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { userWithPermissions } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, KeyRound, ShieldBan } from "lucide-react";
-import UserEditHeader from "./user-edit-header";
-import EditUserPermissions from "./steps/edit-user-permissions";
+import { Activity, Database, Grip, NotebookPen, UserRound } from "lucide-react";
+import EditNgoInformation from "./steps/edit-ngo-information";
+import UserNgoEditHeader from "./user-ngo-edit-header";
 
-export default function SuperUserEditPage() {
+export default function UserNgoEditPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   let { id } = useParams();
@@ -30,14 +28,14 @@ export default function SuperUserEditPage() {
   const loadInformation = async () => {
     try {
       setFailed(false);
-      const response = await axiosClient.get(`user/${id}`);
+      const response = await axiosClient.get(`ngo/header/info/${id}`);
       if (response.status == 200) {
         setUserData(userWithPermissions(response));
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
       console.log(error);
@@ -45,13 +43,13 @@ export default function SuperUserEditPage() {
     }
   };
   useEffect(() => {
-    loadInformation();
+    // loadInformation();
   }, []);
 
   const selectedTabStyle = `after:duration-500 data-[state=active]:after:opacity-100 after:opacity-0 data-[state=active]:after:translate-x-0
   ltr:after:translate-x-[-20px] rtl:after:translate-x-[20px] after:transition-[transform,opacity] data-[state=active]:after:content-[""] data-[state=active]:after:absolute ltr:after:rotate-180 data-[state=active]:after:top-0 data-[state=active]:after:w-0 data-[state=active]:after:h-full rtl:data-[state=active]:after:left-[-17px]  ltr:data-[state=active]:after:right-[-17px] 
-data-[state=active]:after:border-b-[19px] data-[state=active]:after:border-b-transparent 
-data-[state=active]:after:border-t-[18px] data-[state=active]:after:border-t-transparent 
+data-[state=active]:after:border-b-[18px] data-[state=active]:after:border-b-transparent 
+data-[state=active]:after:border-t-[17px] data-[state=active]:after:border-t-transparent 
 data-[state=active]:after:border-r-[19px] data-[state=active]:after:border-r-tertiary relative
 w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3 justify-start`;
   return (
@@ -65,11 +63,11 @@ w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertia
           </BreadcrumbItem>
           <BreadcrumbSeparator className="rtl:rotate-180" />
           <BreadcrumbItem
-            onClick={() => navigate("/users", { replace: true })}
+            onClick={() => navigate("/ngo", { replace: true })}
             className="cursor-pointer"
           >
             <BreadcrumbPage className="text-primary/75">
-              {t("users")}
+              {t("ngo")}
             </BreadcrumbPage>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="rtl:rotate-180" />
@@ -83,63 +81,54 @@ w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertia
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue="Account"
+        defaultValue="ngo_information"
         className="flex flex-col sm:flex-row gap-x-3 mt-2 gap-y-2 sm:gap-y-0"
       >
         <TabsList className="min-h-fit sm:min-h-[80vh] overflow-y-auto pb-8 sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
-          <UserEditHeader
+          <UserNgoEditHeader
             id={id}
             failed={failed}
             userData={userData}
             setUserData={setUserData}
           />
           <TabsTrigger
-            className={`mt-6 rtl:text-2xl-rtl ltr:text-2xl-ltr ${selectedTabStyle}`}
-            value="Account"
+            className={`mt-6 rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            value="ngo_information"
           >
             <Database className="size-[18px]" />
-            {t("Account information")}
+            {t("ngo_information")}
           </TabsTrigger>
           <TabsTrigger
-            className={`rtl:text-2xl-rtl ltr:text-2xl-ltr${selectedTabStyle}`}
-            value="password"
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            value="director_information"
           >
-            <KeyRound className="size-[18px]" />
-            {t("Update account password")}
+            <UserRound className="size-[18px]" />
+            {t("director_information")}
           </TabsTrigger>
           <TabsTrigger
-            className={`rtl:text-2xl-rtl ltr:text-2xl-ltr${selectedTabStyle}`}
-            value="permissions"
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            value="agreement_checklist"
           >
-            <ShieldBan className="size-[18px]" />
-            {t("Update account permissions")}
+            <NotebookPen className="size-[18px]" />
+            {t("agreement_checklist")}
+          </TabsTrigger>
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            value="more_information"
+          >
+            <Grip className="size-[18px]" />
+            {t("more_information")}
+          </TabsTrigger>
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            value="status"
+          >
+            <Activity className="size-[18px]" />
+            {t("status")}
           </TabsTrigger>
         </TabsList>
-        <TabsContent className="flex-1 m-0" value="Account">
-          <EditUserInformation
-            id={id}
-            failed={failed}
-            userData={userData}
-            setUserData={setUserData}
-            refreshPage={loadInformation}
-          />
-        </TabsContent>
-        <TabsContent className="flex-1 m-0" value="password">
-          <EditUserPassword
-            id={id}
-            userData={userData}
-            failed={failed}
-            refreshPage={loadInformation}
-          />
-        </TabsContent>
-        <TabsContent className="flex-1 m-0" value="permissions">
-          <EditUserPermissions
-            id={id}
-            userData={userData}
-            setUserData={setUserData}
-            failed={failed}
-            refreshPage={loadInformation}
-          />
+        <TabsContent className="flex-1 m-0" value="ngo_information">
+          <EditNgoInformation />
         </TabsContent>
       </Tabs>
     </div>
