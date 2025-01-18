@@ -62,7 +62,6 @@ function NewPage() {
   }>({
     optional_lang: "",
   });
-  return <div className="p-2 flex flex-col gap-y-4"></div>;
   return (
     <>
       <h1 className="bg-primary dark:bg-primary/90 h-16 flex items-center justify-center font-bold text-4xl-ltr text-white">
