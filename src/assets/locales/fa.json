@@ -175,6 +175,7 @@
   "about_us": "درباره ما",
   "moph_address": "چهار راهی صحت عامه، جاده وزیرمحمد اکبر خان، کابل، افغانستان",
   "province": "ولایت",
+  "account_created": "حساب ایجاد شد",
   "application": "application",
   "ngo": "موسسه",
   "donor": "دونر",
@@ -196,5 +197,9 @@
   "moe_registration_no": "شماره ثبت وزارت اقتصاد",
   "enter": "وارد کنید",
   "place_of_establishment": "محل تاسیس",
-  "last_agreement_date": "آخرین تاریخ توافق نامه"
+  "last_agreement_date": "آخرین تاریخ توافق نامه",
+  "ngo_type": "نوع موسسه",
+  "users_login": "صفحه ورود کاربران",
+  "ministry_emp_portal": "صفحه ورود کارمندان وزارت",
+  "ngo_login": "صفحه ورود موسسه"
 }

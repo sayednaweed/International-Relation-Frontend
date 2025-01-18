@@ -5,14 +5,19 @@ import OptionalTab from "./parts/OptionalTab";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
-export interface MultiTabTextareaProps
+export interface SingleTabTextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   children:
     | ReactElement<typeof SingleTab | typeof OptionalTab>
     | ReactElement<typeof SingleTab | typeof OptionalTab>[];
   userData: any;
-  errorData?: any;
-  onTabChanged: (key: string, data: string) => void;
+  errorData?: Map<string, string>;
+  onTabChanged: (
+    key: string,
+    data: string,
+    isOptional: boolean,
+    optionalLang: string
+  ) => void;
   onChanged: (value: string, name: string) => void;
   highlightColor: string;
   placeholder?: string;
@@ -24,7 +29,7 @@ export interface MultiTabTextareaProps
 
 const SingleTabTextarea = React.forwardRef<
   HTMLTextAreaElement,
-  MultiTabTextareaProps
+  SingleTabTextareaProps
 >((props, ref: any) => {
   const {
     className,
@@ -43,7 +48,11 @@ const SingleTabTextarea = React.forwardRef<
   } = props;
   const selectionName = `${name}_selections`;
 
-  const tabChanged = (tabName: string) => onTabChanged(selectionName, tabName);
+  const tabChanged = (
+    tabName: string,
+    isOptional: boolean = false,
+    optionalLang: string
+  ) => onTabChanged(selectionName, tabName, isOptional, optionalLang);
   const inputOnchange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value, name } = e.target;
     onChanged(value, name);
@@ -61,20 +70,27 @@ const SingleTabTextarea = React.forwardRef<
           }
           const comp: ReactElement = child;
           let classNameOne = child.props.className;
-          const newColor =
-            selectedKey === selectItemText
-              ? ` ${highlightColor}`
-              : mainIndex === 0 && !selectedKey
-              ? ` ${highlightColor}`
-              : "";
+          let newColor = "";
+          if (errorData && errorData.get(selectItemText)) {
+            newColor += " bg-red-500 ";
+          } else {
+            newColor =
+              selectedKey === selectItemText
+                ? ` ${highlightColor}`
+                : mainIndex === 0 && !selectedKey
+                ? ` ${highlightColor}`
+                : "";
+          }
+
           if (classNameOne) {
             classNameOne += newColor;
           } else {
             classNameOne = newColor;
           }
+
           return React.cloneElement(comp, {
             className: classNameOne,
-            onClick: () => tabChanged(selectItemText), // Pass the tab value (children)
+            onClick: () => tabChanged(selectItemText, false, "farsi"), // Pass the tab value (children)
           });
         } else if (child.type === OptionalTab) {
           if (Array.isArray(levelOneChildren)) {
@@ -94,12 +110,17 @@ const SingleTabTextarea = React.forwardRef<
                   );
 
                   let classNameOne = childInner.props.className;
-                  const newColor =
-                    selectedKey === selectItemTextInner
-                      ? ` ${highlightColor}`
-                      : mainIndex === 0 && !selectedKey
-                      ? ` ${highlightColor}`
-                      : "";
+                  let newColor = "";
+                  if (errorData && errorData.get(selectItemTextInner)) {
+                    newColor += " bg-red-500 ";
+                  } else {
+                    newColor =
+                      selectedKey === selectItemTextInner
+                        ? ` ${highlightColor}`
+                        : mainIndex === 0 && !selectedKey
+                        ? ` ${highlightColor}`
+                        : "";
+                  }
                   if (classNameOne) {
                     classNameOne += newColor;
                   } else {
@@ -109,7 +130,12 @@ const SingleTabTextarea = React.forwardRef<
                     <>
                       {React.cloneElement(childInner, {
                         className: classNameOne,
-                        onClick: () => tabChanged(selectItemTextInner), // Pass the tab value (children)
+                        onClick: () =>
+                          tabChanged(
+                            selectItemTextInner,
+                            true,
+                            levelTwoChildren
+                          ), // Pass the tab value (children)
                       })}
                       {index % 2 == 0 && (
                         <div className="font-semibold text-[18px] text-primary/80">
@@ -138,7 +164,7 @@ const SingleTabTextarea = React.forwardRef<
   return (
     <div className={cn("flex flex-col", parentClassName)}>
       {/* Title */}
-      <h1 className="ltr:text-2xl-ltr rtl:text-2xl-rtl font-semibold">
+      <h1 className="ltr:text-2xl-ltr rtl:text-2xl-rtl text-start font-semibold">
         {title}
       </h1>
       {/* Header */}

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { RefreshCcw } from "lucide-react";
@@ -30,7 +30,7 @@ export interface EditUserPermissionsProps {
 
 export default function EditUserPermissions(props: EditUserPermissionsProps) {
   const { t } = useTranslation();
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const { id, userData, failed, refreshPage, setUserData } = props;
   const [loading, setLoading] = useState(false);
   const handleChange = (key: string, permission: SelectUserPermission) => {

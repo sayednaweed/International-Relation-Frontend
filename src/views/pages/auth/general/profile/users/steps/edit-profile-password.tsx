@@ -12,12 +12,12 @@ import {
 } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 
 export function EditProfilePassword() {
-  const { logout } = useAuthState();
+  const { logoutUser } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
@@ -65,7 +65,7 @@ export function EditProfilePassword() {
           description: response.data.message,
         });
         // If user changed his password he must login again
-        await logout();
+        await logoutUser();
       }
     } catch (error: any) {
       toast({

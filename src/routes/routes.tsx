@@ -1,10 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/lib/i18n";
-import ProfilePage from "@/views/pages/auth/general/profile/profile-page";
 import LogsPage from "@/views/pages/auth/general/logs/logs-page";
 import ErrorPage from "@/views/pages/error/error-page";
-import LoginPage from "@/views/pages/guest/login-page";
 import ForgotPasswordPage from "@/views/pages/guest/password/forgot-password-page";
 import MainPage from "@/views/site/main-page";
 import HomePage from "@/views/site/tabs/home/home-page";
@@ -12,7 +10,7 @@ import AboutPage from "@/views/site/tabs/about/about-page";
 import SiteLayout from "@/views/layout/site-layout";
 import SuperAuditPage from "@/views/pages/auth/super/audit/super-audit-page";
 import SuperUserEditPage from "@/views/pages/auth/general/users/edit/super-user-edit-page";
-import { User, UserPermission } from "@/database/tables";
+import { Donor, Ngo, User, UserPermission } from "@/database/tables";
 import ProtectedRoute from "@/routes/protected-route";
 import Unauthorized from "@/views/pages/error/unauthorized";
 import GuestLayout from "@/views/layout/guest-layout";
@@ -45,8 +43,14 @@ import UserDonorPage from "@/views/pages/auth/user/donor/user-donor-page";
 import NewsManagementPage from "@/views/pages/auth/general/management/news/news-management-page";
 import AboutManagementPage from "@/views/pages/auth/general/management/about-management.tsx/about-management-page";
 import UserNgoEditPage from "@/views/pages/auth/user/ngo/edit/user-ngo-edit-page";
+import UserLoginPage from "@/views/pages/guest/users/user-login-page";
+import DonorLoginPage from "@/views/pages/guest/donor/donor-login-page";
+import NgoLoginPage from "@/views/pages/guest/ngo/ngo-login-page";
+import UsersProfilePage from "@/views/pages/auth/general/profile/users/users-profile-page";
+import NgoProfilePage from "@/views/pages/auth/general/profile/ngo/ngo-profile-page";
+import DonorProfilePage from "@/views/pages/auth/general/profile/donor/donor-profile-page";
 
-export const getSuperRouter = (user: User) => {
+export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -113,7 +117,7 @@ export const getSuperRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<UsersProfilePage />} />
           <Route
             path="settings"
             element={
@@ -212,7 +216,7 @@ export const getSuperRouter = (user: User) => {
     </BrowserRouter>
   );
 };
-export const getAdminRouter = (user: User) => {
+export const getAdminRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -279,7 +283,7 @@ export const getAdminRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<UsersProfilePage />} />
           <Route
             path="settings"
             element={
@@ -338,7 +342,7 @@ export const getAdminRouter = (user: User) => {
     </BrowserRouter>
   );
 };
-export const getUserRouter = (user: User) => {
+export const getUserRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -395,7 +399,7 @@ export const getUserRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<UsersProfilePage />} />
           <Route
             path="ngo"
             element={
@@ -444,7 +448,7 @@ export const getUserRouter = (user: User) => {
     </BrowserRouter>
   );
 };
-export const getDebuggerRouter = (user: User) => {
+export const getDebuggerRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -501,7 +505,7 @@ export const getDebuggerRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<UsersProfilePage />} />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -522,9 +526,9 @@ export const getGuestRouter = () => {
             </I18nextProvider>
           }
         >
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/donor/login" element={<LoginPage />} />
-          <Route path="/ngo/login" element={<LoginPage />} />
+          <Route path="/user/login" element={<UserLoginPage />} />
+          <Route path="/donor/login" element={<DonorLoginPage />} />
+          <Route path="/ngo/login" element={<NgoLoginPage />} />
           <Route path="/forget-password" element={<ForgotPasswordPage />} />
         </Route>
         {/* Site Routes */}
@@ -545,7 +549,7 @@ export const getGuestRouter = () => {
     </BrowserRouter>
   );
 };
-export const getNgoRouter = (user: User) => {
+export const getNgoRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -612,7 +616,7 @@ export const getNgoRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<NgoProfilePage />} />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -621,7 +625,7 @@ export const getNgoRouter = (user: User) => {
     </BrowserRouter>
   );
 };
-export const getDonorRouter = (user: User) => {
+export const getDonorRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -698,7 +702,7 @@ export const getDonorRouter = (user: User) => {
               />
             }
           />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="profile" element={<DonorProfilePage />} />
         </Route>
 
         {/* Catch-all Route for Errors */}

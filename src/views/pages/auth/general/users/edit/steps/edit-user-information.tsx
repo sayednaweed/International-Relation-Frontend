@@ -16,7 +16,7 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import { toLocaleDate } from "@/lib/utils";
 import { UserInformation } from "@/lib/types";
@@ -37,7 +37,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
   const [tempUserData, setTempUserData] = useState<UserInformation | undefined>(
     userData
   );
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const [state] = useGlobalState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);

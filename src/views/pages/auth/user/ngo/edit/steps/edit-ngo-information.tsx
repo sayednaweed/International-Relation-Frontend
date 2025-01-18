@@ -16,13 +16,13 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import { toLocaleDate } from "@/lib/utils";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { Address, Country, NgoType, UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
+import { LanguageEnum, SectionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
 import SingleTabTextarea from "@/components/custom-ui/input/mult-tab/SingleTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
@@ -30,24 +30,26 @@ import OptionalTabs from "@/components/custom-ui/input/mult-tab/parts/OptionalTa
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
 import { DateObject } from "react-multi-date-picker";
+import { ValidateItem } from "@/validation/types";
 interface EditNgoInformationProps {
   registration_no: string;
-  name_english: string;
+  name_english: string | undefined;
   name_pashto: string;
   name_farsi: string;
   abbr: string;
-  ngo_type: NgoType | undefined;
+  ngo_type: NgoType;
   contact: string;
   email: string;
   place_of_establishment: Country | undefined;
   moe_registration_no: string | undefined;
-  address: Address | undefined;
+  address: Address;
   establishment_date: DateObject | undefined;
   last_agreement_date: DateObject | undefined;
   status: boolean;
+  optional_lang: string;
 }
 export default function EditNgoInformation() {
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const [state] = useGlobalState();
   const { t } = useTranslation();
   let { id } = useParams();
@@ -80,10 +82,7 @@ export default function EditNgoInformation() {
         contact: "",
         email: "",
         moe_registration_no: "",
-        place_of_establishment: {
-          id: "",
-          name: "",
-        },
+        place_of_establishment: undefined,
         address: {
           id: "",
           country: {
@@ -100,9 +99,10 @@ export default function EditNgoInformation() {
           },
           area: "",
         },
-        establishment_date: new DateObject(new Date()),
-        last_agreement_date: new DateObject(new Date()),
+        establishment_date: true ? undefined : new DateObject(new Date()),
+        last_agreement_date: true ? undefined : new DateObject(new Date()),
         status: true,
+        optional_lang: "farsi",
       });
       // }
     } catch (error: any) {
@@ -131,68 +131,70 @@ export default function EditNgoInformation() {
     setLoading(true);
     // 1. Validate data changes
     // 2. Validate form
-    const passed = await validate(
-      [
-        {
-          name: "registration_no",
-          rules: ["required"],
-        },
-        {
-          name: "name_english",
-          rules: ["required", "max:128", "min:3"],
-        },
-        {
-          name: "name_pashto",
-          rules: ["required", "max:128", "min:3"],
-        },
-        {
-          name: "name_farsi",
-          rules: ["required", "max:128", "min:3"],
-        },
-        {
-          name: "moe_registration_no",
-          rules: ["required"],
-        },
-        {
-          name: "abbr",
-          rules: ["required"],
-        },
-        {
-          name: "ngo_type",
-          rules: ["required"],
-        },
-        {
-          name: "contact",
-          rules: ["required"],
-        },
-        {
-          name: "email",
-          rules: ["required"],
-        },
-        {
-          name: "place_of_establishment",
-          rules: ["required"],
-        },
-        {
-          name: "address",
-          rules: ["required"],
-        },
-        {
-          name: "establishment_date",
-          rules: ["required"],
-        },
-        {
-          name: "last_agreement_date",
-          rules: ["required"],
-        },
-        {
-          name: "status",
-          rules: ["required"],
-        },
-      ],
-      ngoData,
-      setError
-    );
+    const compulsoryFields: ValidateItem[] = [
+      {
+        name: "registration_no",
+        rules: ["required"],
+      },
+      {
+        name: "name_english",
+        rules: ["required", "max:128", "min:3"],
+      },
+      {
+        name: "moe_registration_no",
+        rules: ["required"],
+      },
+      {
+        name: "abbr",
+        rules: ["required"],
+      },
+      {
+        name: "ngo_type",
+        rules: ["required"],
+      },
+      {
+        name: "contact",
+        rules: ["required"],
+      },
+      {
+        name: "email",
+        rules: ["required"],
+      },
+      {
+        name: "place_of_establishment",
+        rules: ["required"],
+      },
+      {
+        name: "address",
+        rules: ["required"],
+      },
+      {
+        name: "establishment_date",
+        rules: ["required"],
+      },
+      {
+        name: "last_agreement_date",
+        rules: ["required"],
+      },
+      {
+        name: "status",
+        rules: ["required"],
+      },
+    ];
+    if (ngoData?.optional_lang == LanguageEnum.farsi) {
+      compulsoryFields.push({
+        name: "name_pashto",
+        rules: ["required", "max:128", "min:3"],
+      });
+    } else {
+      compulsoryFields.push({
+        name: "name_farsi",
+        rules: ["required", "max:128", "min:3"],
+      });
+    }
+
+    compulsoryFields.push();
+    const passed = await validate(compulsoryFields, ngoData, setError);
     if (!passed) {
       setLoading(false);
       return;
@@ -225,28 +227,6 @@ export default function EditNgoInformation() {
     }
   };
 
-  const districtComponent = ngoData?.address ? (
-    <APICombobox
-      placeholderText={t("search_item")}
-      errorText={t("no_item")}
-      onSelect={(selection: any) => {
-        let address = ngoData.address;
-        address.district.name = selection.name;
-        address.district.id = selection.id;
-        setNgoData({ ...ngoData, address: address });
-      }}
-      lable={t("district")}
-      required={true}
-      requiredHint={`* ${t("required")}`}
-      selectedItem={ngoData.address.district.name}
-      placeHolder={t("select_a")}
-      errorMessage={error.get("district")}
-      apiUrl={"districts"}
-      params={{ provinceId: ngoData.address?.province?.id }}
-      mode="single"
-      key={ngoData?.address.province?.id}
-    />
-  ) : undefined;
   return (
     <Card>
       <CardHeader className="space-y-0">
@@ -277,10 +257,18 @@ export default function EditNgoInformation() {
               onBlur={handleChange}
             />
             <SingleTabTextarea
-              onTabChanged={(key: string, data: string) => {
+              onTabChanged={(
+                key: string,
+                data: string,
+                isOptional: boolean,
+                optionalLang: string
+              ) => {
                 setNgoData({
                   ...ngoData,
                   [key]: data,
+                  optional_lang: isOptional
+                    ? optionalLang
+                    : ngoData.optional_lang,
                 });
               }}
               onChanged={(value: string, name: string) => {
@@ -293,6 +281,7 @@ export default function EditNgoInformation() {
               title={t("name")}
               highlightColor="bg-tertiary"
               userData={ngoData}
+              errorData={error}
               placeholder={t("content")}
               rows={3}
               className="rtl:text-xl-rtl"
@@ -419,8 +408,7 @@ export default function EditNgoInformation() {
                 errorText={t("no_item")}
                 onSelect={(selection: any) => {
                   let address = ngoData.address;
-                  address.province.name = selection.name;
-                  address.province.id = selection.id;
+                  address.province = selection;
                   setNgoData({ ...ngoData, address: address });
                 }}
                 lable={t("province")}
@@ -431,24 +419,46 @@ export default function EditNgoInformation() {
                 apiUrl={"provinces"}
                 mode="single"
               />
-              {districtComponent}
-              <CustomInput
-                required={true}
-                size_="sm"
-                lable={t("area")}
-                name="area"
-                defaultValue={ngoData?.address?.area}
-                placeholder={t("area")}
-                type="text"
-                parentClassName="w-full"
-                errorMessage={error.get("area")}
-                onChange={(e: any) => {
-                  if (address.area) const { value } = e.target;
-                  let address = ngoData.address;
-                  address.area = value;
-                  setNgoData({ ...ngoData, address: address });
-                }}
-              />
+              {ngoData?.address?.province && (
+                <APICombobox
+                  placeholderText={t("search_item")}
+                  errorText={t("no_item")}
+                  onSelect={(selection: any) => {
+                    let address = ngoData.address;
+                    address.district = selection;
+                    setNgoData({ ...ngoData, address: address });
+                  }}
+                  lable={t("district")}
+                  required={true}
+                  requiredHint={`* ${t("required")}`}
+                  selectedItem={ngoData.address.district.name}
+                  placeHolder={t("select_a")}
+                  errorMessage={error.get("district")}
+                  apiUrl={"districts"}
+                  params={{ provinceId: ngoData.address?.province?.id }}
+                  mode="single"
+                  key={ngoData?.address.province?.id}
+                />
+              )}
+              {ngoData?.address?.district && (
+                <CustomInput
+                  required={true}
+                  size_="sm"
+                  lable={t("area")}
+                  name="area"
+                  defaultValue={ngoData?.address?.area}
+                  placeholder={t("area")}
+                  type="text"
+                  parentClassName="w-full"
+                  errorMessage={error.get("area")}
+                  onChange={(e: any) => {
+                    const { value } = e.target;
+                    let address = ngoData.address;
+                    address.area = value;
+                    setNgoData({ ...ngoData, address: address });
+                  }}
+                />
+              )}
             </BorderContainer>
             {/* <CustomCheckbox
               checked={tempUserData["grant"]}

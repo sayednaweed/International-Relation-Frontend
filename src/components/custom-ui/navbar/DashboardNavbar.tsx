@@ -1,11 +1,11 @@
 import ThemeSwitch from "./ThemeChanger";
 import ProfileDropdown from "./ProfileDropdown";
 import Notification from "./Notification";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import Burger from "../sidebar/Burger";
 
 export default function DashboardNavbar() {
-  const { loading, authenticated } = useAuthState();
+  const { loading, authenticated } = useGeneralAuthState();
   if (loading) return;
   return (
     <div

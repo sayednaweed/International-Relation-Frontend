@@ -9,7 +9,7 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { UserInformation } from "@/lib/types";
 import { UserPermission } from "@/database/tables";
 import { SectionEnum } from "@/lib/constants";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
@@ -20,11 +20,11 @@ export interface UserEditHeaderProps {
 
 export default function UserNgoEditHeader(props: UserEditHeaderProps) {
   const { id, userData, setUserData, failed } = props;
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
   const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.users
+    SectionEnum.ngo
   );
   const hasEdit = per ? per?.edit : false;
   const hasRemove = per ? per?.delete : false;

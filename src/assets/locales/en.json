@@ -175,6 +175,7 @@
   "about_us": "About Us",
   "moph_address": "Sehat-e-Ama Square, Wazir Akbar khan Road, Kabul, Afghanistan",
   "province": "Province",
+  "account_created": "Account created",
   "application": "application",
   "ngo": "NGO",
   "donor": "Donor",
@@ -196,5 +197,9 @@
   "moe_registration_no": "Ministry of Economic Registration Number",
   "enter": "Enter",
   "place_of_establishment": "Place of establishment",
-  "last_agreement_date": "Last agreement date"
+  "last_agreement_date": "Last agreement date",
+  "ngo_type": "NGO type",
+  "users_login": "Users Login Page",
+  "ministry_emp_portal": "Ministry Employee Login Page",
+  "ngo_login": "NGO Login Page"
 }

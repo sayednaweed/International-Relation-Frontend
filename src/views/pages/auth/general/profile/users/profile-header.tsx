@@ -3,12 +3,12 @@ import IconButton from "@/components/custom-ui/button/IconButton";
 import { Pencil, Trash2 } from "lucide-react";
 import { ChangeEvent, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 export default function ProfileHeader() {
-  const { user, setUser } = useAuthState();
+  const { user, setUser } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
 

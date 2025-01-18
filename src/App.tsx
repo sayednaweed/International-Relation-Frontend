@@ -7,11 +7,11 @@ import {
   getSuperRouter,
   getUserRouter,
 } from "./routes/routes";
-import { useAuthState } from "./context/AuthContextProvider";
+import { useGeneralAuthState } from "./context/AuthContextProvider";
 import { RoleEnum } from "./lib/constants";
 
 export default function App() {
-  const { user, loading, authenticated } = useAuthState();
+  const { user, loading, authenticated } = useGeneralAuthState();
   if (loading) return;
   let routes = null;
   if (!authenticated) routes = getGuestRouter();

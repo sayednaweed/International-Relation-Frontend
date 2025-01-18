@@ -1,14 +1,23 @@
 import DashboardNavbar from "@/components/custom-ui/navbar/DashboardNavbar";
 import NastranSidebar from "@/components/custom-ui/sidebar/NastranSidebar";
 import { Toaster } from "@/components/ui/toaster";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { handleKeyPress } from "@/lib/keyboard";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router";
 
 export default function AuthLayout() {
-  const { logout } = useAuthState();
+  const { user, logoutUser, logoutNgo, logoutDonor } = useGeneralAuthState();
   const navigate = useNavigate();
+  const logout = async () => {
+    if (user.role.name === "ngo") {
+      await logoutNgo();
+    } else if (user.role.name === "donor") {
+      await logoutDonor();
+    } else {
+      await logoutUser();
+    }
+  };
   useEffect(() => {
     // Add event listener when the component mounts
     document.addEventListener("keydown", (event) =>

@@ -9,7 +9,11 @@ export const SectionEnum = {
   ngo: "ngo",
   donor: "donor",
 };
-
+export const LanguageEnum = {
+  english: "english",
+  farsi: "farsi",
+  pashto: "pashto",
+};
 export const RoleEnum = {
   super: 1,
   admin: 2,
@@ -17,6 +21,12 @@ export const RoleEnum = {
   debugger: 4,
   ngo: 5,
   donor: 6,
+};
+export const StatusEnum = {
+  active: 1,
+  blocked: 2,
+  unregistered: 3,
+  not_logged_in: 4,
 };
 export const PERMISSIONS_OPERATION = ["Add", "Edit", "Delete", "View"];
 

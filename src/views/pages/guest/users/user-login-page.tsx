@@ -7,14 +7,14 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import AnimUserIcon from "@/components/custom-ui/icons/AnimUserIcon";
 import { Link, useNavigate } from "react-router";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 
-export default function LoginPage() {
+export default function UserLoginPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { login } = useAuthState();
+  const { loginUser } = useUserAuthState();
   const [userData, setUserData] = React.useState<any>({});
   const [error, setError] = React.useState<Map<string, string>>(new Map());
   const [loading, setLoading] = React.useState(false);
@@ -41,7 +41,7 @@ export default function LoginPage() {
         }
 
         // 2. Attempt login
-        const response: any = await login(
+        const response: any = await loginUser(
           userData.email,
           userData.password,
           true
@@ -87,7 +87,7 @@ export default function LoginPage() {
         <AnimUserIcon />
       </div>
       <h1 className="drop-shadow-lg text-center relative text-tertiary uppercase text-[34px] mb-8 font-bold">
-        {t("Welcome")}
+        {t("ministry_emp_portal")}
       </h1>
       <form
         className="flex flex-col space-y-3 w-full sm:w-[400px]"

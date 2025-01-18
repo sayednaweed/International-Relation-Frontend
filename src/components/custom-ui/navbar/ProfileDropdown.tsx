@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { useTranslation } from "react-i18next";
 import CachedImage from "../image/CachedImage";
 import { User2 } from "lucide-react";
@@ -19,7 +19,7 @@ export interface ProfileDropdownProps {
 }
 function ProfileDropdown(props: ProfileDropdownProps) {
   const { root, rootPath } = props;
-  const { user, logout } = useAuthState();
+  const { user, logoutNgo, logoutUser, logoutDonor } = useGeneralAuthState();
   const navigate = useNavigate();
   const { t } = useTranslation();
   return (
@@ -59,8 +59,16 @@ function ProfileDropdown(props: ProfileDropdownProps) {
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={async () => {
-            await logout();
-            navigate("/login", { replace: true });
+            if (user.role.name === "donor") {
+              await logoutDonor();
+              navigate("/donor/login", { replace: true });
+            } else if (user.role.name === "ngo") {
+              await logoutNgo();
+              navigate("/ngo/login", { replace: true });
+            } else {
+              await logoutUser();
+              navigate("/user/login", { replace: true });
+            }
           }}
         >
           {t("log_out")}

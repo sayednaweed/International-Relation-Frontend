@@ -7,16 +7,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
-import { useAuthState } from "@/context/AuthContextProvider";
-import EditProfileInformation from "./steps/edit-profile-information";
-import { EditProfilePassword } from "./steps/edit-profile-password";
+import { useDonorAuthState } from "@/context/AuthContextProvider";
 import { Link } from "react-router";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, KeyRound } from "lucide-react";
-import ProfileHeader from "./profile-header";
 
-export default function ProfilePage() {
-  const { user } = useAuthState();
+export default function DonorProfilePage() {
+  const { user } = useDonorAuthState();
   const { t, i18n } = useTranslation();
   const direction = i18n.dir();
 
@@ -48,35 +43,7 @@ export default function ProfilePage() {
         </BreadcrumbList>
       </Breadcrumb>
       {/* Cards */}
-      <Tabs
-        dir={direction}
-        defaultValue="Account"
-        className="flex flex-col sm:flex-row gap-x-3 mt-2 gap-y-2 sm:gap-y-0"
-      >
-        <TabsList className="min-h-fit sm:min-h-[80vh] overflow-y-auto pb-8 sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
-          <ProfileHeader />
-          <TabsTrigger
-            className={`mt-6 rtl:text-2xl-rtl ltr:text-2xl-ltr  ${selectedTabStyle}`}
-            value="Account"
-          >
-            <Database className="size-[18px]" />
-            {t("account_information")}
-          </TabsTrigger>
-          <TabsTrigger
-            className={`rtl:text-2xl-rtl ltr:text-2xl-ltr ${selectedTabStyle}`}
-            value="password"
-          >
-            <KeyRound className="size-[18px]" />
-            {t("update_account_password")}
-          </TabsTrigger>
-        </TabsList>
-        <TabsContent className="flex-1 m-0" value="Account">
-          <EditProfileInformation />
-        </TabsContent>
-        <TabsContent className="flex-1 m-0" value="password">
-          <EditProfilePassword />
-        </TabsContent>
-      </Tabs>
+      DonorProfilePage
     </div>
   );
 }

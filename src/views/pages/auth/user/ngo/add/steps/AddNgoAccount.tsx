@@ -24,14 +24,27 @@ export default function AddNgoAccount() {
         className="rtl:text-end"
         lable={t("contact")}
         placeholder={t("Enter your phone number")}
-        defaultValue={userData["phone"]}
+        defaultValue={userData["contact"]}
         type="text"
-        name="phone"
-        errorMessage={error.get("phone")}
+        name="contact"
+        errorMessage={error.get("contact")}
         onChange={handleChange}
         startContent={
           <Phone className="text-tertiary size-[18px] pointer-events-none" />
         }
+      />
+      <CustomInput
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        size_="sm"
+        lable={t("username")}
+        name="username"
+        defaultValue={userData["username"]}
+        placeholder={t("username")}
+        type="text"
+        parentClassName="w-full"
+        errorMessage={error.get("username")}
+        onBlur={handleChange}
       />
       <CustomInput
         size_="sm"

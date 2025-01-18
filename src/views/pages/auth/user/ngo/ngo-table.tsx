@@ -36,10 +36,10 @@ import {
 } from "@/lib/types";
 import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 
 export function NgoTable() {
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();

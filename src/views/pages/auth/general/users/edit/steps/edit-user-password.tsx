@@ -14,7 +14,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { UserInformation, UserPassword } from "@/lib/types";
 import axiosClient from "@/lib/axois-client";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { RoleEnum, SectionEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
@@ -29,7 +29,7 @@ export interface EditUserPasswordProps {
 
 export function EditUserPassword(props: EditUserPasswordProps) {
   const { id, userData, failed, refreshPage } = props;
-  const { user, logout } = useAuthState();
+  const { user, logoutUser } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
@@ -71,7 +71,7 @@ export function EditUserPassword(props: EditUserPasswordProps) {
             description: t(response.data.message),
           });
           // If user changed his password he must login again
-          if (user?.id == id) await logout();
+          if (user?.id == id) await logoutUser();
         }
       } catch (error: any) {
         toast({

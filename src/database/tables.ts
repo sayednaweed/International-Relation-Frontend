@@ -2,7 +2,9 @@ export type Role =
   | { role: 3; name: "user" }
   | { role: 2; name: "admin" }
   | { role: 1; name: "super" }
-  | { role: 4; name: "debugger" };
+  | { role: 4; name: "debugger" }
+  | { role: 5; name: "ngo" }
+  | { role: 6; name: "donor" };
 
 export type Permission = {
   name: string;
@@ -30,12 +32,17 @@ export type Email = {
   value: string;
   created_at: string;
 };
+export type Status = {
+  id: number;
+  name: string;
+  created_at: string;
+};
 export type User = {
   id: string;
   full_name: string;
   username: string;
   email: string;
-  status: boolean;
+  status: Status;
   grant: boolean;
   profile: any;
   role: Role;
@@ -125,13 +132,29 @@ export type Ngo = {
   id: string;
   profile: string;
   name: string;
+  username: string;
   abbr: string;
-  status: string;
+  status: NgoStatus;
   registration_no: string;
-  establishment_date: string;
-  agreement_expire_date: string;
-  type: string;
+  type: NgoType;
+  email: Email;
+  contact: Contact;
+  is_editable: boolean;
+  role: Role;
+  address: Address;
+  permissions: Map<string, UserPermission>;
+  created_at: string;
+};
+export type Donor = {
+  id: string;
+  profile: string;
+  name: string;
+  username: string;
+  status: string;
   email: string;
   contact: string;
+  is_editable: boolean;
+  role: Role;
+  permissions: Map<string, UserPermission>;
   created_at: string;
 };

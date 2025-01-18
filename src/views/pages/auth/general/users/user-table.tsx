@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { User, UserPermission } from "@/database/tables";
 import { CACHE, SectionEnum } from "@/lib/constants";
@@ -40,7 +40,7 @@ import {
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 
 export function UserTable() {
-  const { user } = useAuthState();
+  const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();

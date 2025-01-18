@@ -1,13 +1,13 @@
 import ThemeSwitch from "./ThemeChanger";
 import ProfileDropdown from "./ProfileDropdown";
-import { useAuthState } from "@/context/AuthContextProvider";
 import LanguageChanger from "./LanguageChanger";
 import { Link } from "react-router";
 import Notification from "./Notification";
 import { useTranslation } from "react-i18next";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 
 export default function SiteNavbar() {
-  const { loading, authenticated } = useAuthState();
+  const { loading, authenticated } = useGeneralAuthState();
   const { t } = useTranslation();
 
   if (loading) return;

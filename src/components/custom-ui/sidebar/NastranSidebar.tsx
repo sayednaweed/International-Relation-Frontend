@@ -2,14 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
-import { useAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import NetworkSvg from "../image/NetworkSvg";
 import { X } from "lucide-react";
 import { SectionEnum } from "@/lib/constants";
 
 export default function NastranSidebar() {
   const { t, i18n } = useTranslation();
-  const { user } = useAuthState();
+  const { user } = useGeneralAuthState();
   const direction = i18n.dir();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const bgSidebarRef = useRef<HTMLDivElement>(null);

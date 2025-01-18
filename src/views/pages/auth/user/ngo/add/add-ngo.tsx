@@ -24,24 +24,26 @@ export default function AddNgo(props: AddNgoProps) {
     _currentStep: number,
     _setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => true;
+
   const stepsCompleted = async (
     userData: any,
     setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => {
     let formData = new FormData();
-    // 'ngo_type_id' => 'required|integer|exists:ngo_types,id',
-    // 'name_en' => 'required|string|unique:ngotrans,name',
-
     formData.append("email", userData.email);
     formData.append("district_id", userData?.district?.id);
+    formData.append("province_id", userData?.province?.id);
     formData.append("password", userData.password);
-    formData.append("area", userData.area);
-    formData.append("abbr", userData.abbreviation);
+    formData.append("area_english", userData.area_english);
+    formData.append("area_pashto", userData.area_pashto);
+    formData.append("area_farsi", userData.area_farsi);
+    formData.append("abbr", userData.abbr);
     formData.append("ngo_type_id", userData.type.id);
-    formData.append("contact", userData.phone);
-    formData.append("name_en", userData.name_english);
-    formData.append("name_ps", userData.name_pashto);
-    formData.append("name_fa", userData.name_farsi);
+    formData.append("contact", userData.contact);
+    formData.append("name_english", userData.name_english);
+    formData.append("name_pashto", userData.name_pashto);
+    formData.append("name_farsi", userData.name_farsi);
+    formData.append("username", userData.username);
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
@@ -54,7 +56,7 @@ export default function AddNgo(props: AddNgoProps) {
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("Error"),
+        title: t("error"),
         description: error.response.data.message,
       });
       setServerError(error.response.data.errors, setError);
@@ -79,26 +81,26 @@ export default function AddNgo(props: AddNgoProps) {
         size="wrap-height"
         className="bg-transparent dark:!bg-transparent"
         progressText={{
-          complete: t("Complete"),
-          inProgress: t("In Progress"),
-          pending: t("Pending"),
-          step: t("Step"),
+          complete: t("complete"),
+          inProgress: t("in_progress"),
+          pending: t("pending"),
+          step: t("step"),
         }}
-        loadingText={t("Loading")}
-        backText={t("Back")}
-        nextText={t("Next")}
-        confirmText={t("Confirm")}
+        loadingText={t("loading")}
+        backText={t("back")}
+        nextText={t("next")}
+        confirmText={t("confirm")}
         steps={[
           {
-            description: t("Personal details"),
+            description: t("personal_details"),
             icon: <UserIcon className="size-[16px]" />,
           },
           {
-            description: t("Account information"),
+            description: t("account_information"),
             icon: <Database className="size-[16px]" />,
           },
           {
-            description: t("Complete"),
+            description: t("complete"),
             icon: <Check className="size-[16px]" />,
           },
         ]}
@@ -109,17 +111,20 @@ export default function AddNgo(props: AddNgoProps) {
               { name: "name_english", rules: ["required", "max:128", "min:5"] },
               { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
               { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
-              { name: "abbreviation", rules: ["required"] },
+              { name: "abbr", rules: ["required"] },
               { name: "type", rules: ["required"] },
               { name: "province", rules: ["required"] },
               { name: "district", rules: ["required"] },
-              { name: "area", rules: ["required"] },
+              { name: "area_english", rules: ["required"] },
+              { name: "area_pashto", rules: ["required"] },
+              { name: "area_farsi", rules: ["required"] },
             ],
           },
           {
             component: <AddNgoAccount />,
             validationRules: [
-              { name: "phone", rules: ["required"] },
+              { name: "username", rules: ["required", "max:128", "min:5"] },
+              { name: "contact", rules: ["required"] },
               { name: "email", rules: ["required"] },
               { name: "password", rules: ["required", "max:25", "min:8"] },
             ],
@@ -127,9 +132,9 @@ export default function AddNgo(props: AddNgoProps) {
           {
             component: (
               <CompleteStep
-                successText={t("Congratulation")}
-                closeText={t("Close")}
-                againText={t("Again")}
+                successText={t("congratulation")}
+                closeText={t("close")}
+                againText={t("again")}
                 closeModel={closeModel}
                 description={t("User account has been created")}
               />

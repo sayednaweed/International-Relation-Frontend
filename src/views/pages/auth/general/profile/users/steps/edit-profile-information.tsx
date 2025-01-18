@@ -20,20 +20,20 @@ import {
 } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
-import { useAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { Role } from "@/database/tables";
+import { Role, Status } from "@/database/tables";
 import { toLocaleDate } from "@/lib/utils";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import FakeCombobox from "@/components/custom-ui/combobox/FakeCombobox";
+import { useUserAuthState } from "@/context/AuthContextProvider";
 
 interface ProfileInformation {
   id: string;
   full_name: string;
   username: string;
   email: string;
-  status: boolean;
+  status: Status;
   grantPermission: boolean;
   role: Role;
   contact: string;
@@ -43,7 +43,7 @@ interface ProfileInformation {
   imagePreviewUrl: any;
 }
 export default function EditProfileInformation() {
-  const { user, setUser } = useAuthState();
+  const { user, setUser } = useUserAuthState();
   const [state] = useGlobalState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -219,7 +219,7 @@ export default function EditProfileInformation() {
             title={t("join_date")}
             selected={toLocaleDate(new Date(user.created_at), state)}
           />
-          <CustomCheckbox
+          {/* <CustomCheckbox
             readOnly={true}
             checked={userData["status"]}
             onCheckedChange={(value: boolean) =>
@@ -230,7 +230,7 @@ export default function EditProfileInformation() {
             description={t("set_acco_act_or_dec")}
             required={true}
             errorMessage={error.get("status")}
-          />
+          /> */}
           <CustomCheckbox
             readOnly={true}
             checked={userData.grantPermission}
