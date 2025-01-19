@@ -158,3 +158,14 @@ export type Donor = {
   permissions: Map<string, UserPermission>;
   created_at: string;
 };
+
+export type News = {
+  id: string;
+  title: string;
+  news_type: string;
+  priority: string;
+  user: string;
+  visible: boolean;
+  visibility_date: string;
+  created_at: string;
+};

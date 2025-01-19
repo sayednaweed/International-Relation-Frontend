@@ -49,8 +49,8 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
       if (!fileInput.files) {
         toast({
           toastType: "ERROR",
-          title: t("Error"),
-          description: t("No file was chosen"),
+          title: t("error"),
+          description: t("no_file_was_chosen"),
         });
         resetFile(e);
         return;
@@ -59,8 +59,8 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
       if (!fileInput.files || fileInput.files.length === 0) {
         toast({
           toastType: "ERROR",
-          title: t("Error"),
-          description: t("Files list is empty"),
+          title: t("error"),
+          description: t("files_list_is_empty"),
         });
         resetFile(e);
         return;
@@ -70,8 +70,8 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
       if (file.size >= maxFileSize) {
         toast({
           toastType: "ERROR",
-          title: t("Error"),
-          description: t(`File size should be less than ${maxSize}MB`),
+          title: t("error"),
+          description: t(`img_size_shou_less`) + ` ${maxSize}MB`,
         });
         resetFile(e);
         return;
@@ -80,8 +80,8 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
       if (!validTypes.includes(file.type)) {
         toast({
           toastType: "ERROR",
-          title: t("Error"),
-          description: t(validTypes.join(", ")),
+          title: t("error"),
+          description: t("accept_types") + validTypes.join(", "),
         });
         resetFile(e);
         return;
@@ -133,7 +133,7 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
       } catch (error: any) {
         toast({
           toastType: "ERROR",
-          title: t("Error"),
+          title: t("error"),
           description: error.response.data.message,
         });
         console.log(error);
@@ -204,7 +204,7 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
                 )}
               </>
             ) : (
-              t("No File Chosen")
+              t("no_file_was_chosen")
             )}
           </label>
         )}
@@ -214,7 +214,7 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
           </span>
         )}
         {errorMessage && (
-          <h1 className="rtl:text-sm-rtl ltr:text-sm-ltr absolute -bottom-[18px] capitalize text-start text-red-400">
+          <h1 className="rtl:text-md-rtl ltr:text-sm-ltr absolute -bottom-[24px] capitalize text-start text-red-400">
             {errorMessage}
           </h1>
         )}

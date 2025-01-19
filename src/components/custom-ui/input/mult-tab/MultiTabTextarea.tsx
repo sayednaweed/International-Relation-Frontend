@@ -55,6 +55,7 @@ const MultiTabTextarea = React.forwardRef<
   };
   const processTabs = (children: ReactNode) => {
     let selectedTabName = "";
+    const errorMessages: string[] = [];
     const elements = React.Children.map(children, (child, mainIndex) => {
       if (React.isValidElement(child)) {
         const levelOneChildren = child.props.children;
@@ -67,7 +68,9 @@ const MultiTabTextarea = React.forwardRef<
           const comp: ReactElement = child;
           let classNameOne = child.props.className;
           let newColor = "";
-          if (errorData && errorData.get(selectItemText)) {
+          const err = errorData?.get(selectItemText);
+          if (err) {
+            errorMessages.push(err);
             newColor += " bg-red-500 ";
           } else {
             newColor =
@@ -99,7 +102,10 @@ const MultiTabTextarea = React.forwardRef<
                   const levelTwoChildren = childInner.props.children;
                   let classNameOne = childInner.props.className;
                   let newColor = "";
-                  if (errorData && errorData.get(selectedTabName)) {
+                  const err = errorData?.get(selectedTabName);
+
+                  if (err) {
+                    errorMessages.push(err);
                     newColor += " bg-red-500 ";
                   } else {
                     newColor =
@@ -136,11 +142,12 @@ const MultiTabTextarea = React.forwardRef<
     });
     selectedTabName = generateUniqueName(name, selectedTab);
     const selectTabValue = userData[selectedTabName];
-    return { elements, selectTabValue, selectedTabName };
+    return { elements, selectTabValue, selectedTabName, errorMessages };
   };
-  const { elements, selectTabValue, selectedTabName } = processTabs(children);
+  const { elements, selectTabValue, selectedTabName, errorMessages } =
+    processTabs(children);
   return (
-    <div className={cn("flex flex-col", parentClassName)}>
+    <div className={cn(`flex flex-col select-none`, parentClassName)}>
       {/* Title */}
       <h1 className="ltr:text-2xl-ltr rtl:text-xl-rtl text-start">{title}</h1>
       {/* Header */}
@@ -149,7 +156,7 @@ const MultiTabTextarea = React.forwardRef<
       <Textarea
         {...rest}
         className={cn(
-          "mt-2 focus-visible:ring-0 focus-visible:border-primary/30 focus-visible:ring-offset-0",
+          `mt-2 focus-visible:ring-0 focus-visible:border-primary/30 focus-visible:ring-offset-0`,
           className
         )}
         ref={ref}
@@ -159,6 +166,11 @@ const MultiTabTextarea = React.forwardRef<
         onChange={inputOnchange}
         defaultValue={selectTabValue}
       />
+      {errorMessages.map((error: string) => (
+        <h1 className="rtl:text-md-rtl ltr:text-sm-ltr px-2 capitalize text-start text-red-400">
+          {error}
+        </h1>
+      ))}
     </div>
   );
 });

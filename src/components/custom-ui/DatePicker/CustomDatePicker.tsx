@@ -16,6 +16,7 @@ export interface CustomeDatePickerProps {
   dateOnComplete: (date: DateObject) => void;
   value: DateObject | undefined;
   className?: string;
+  parentClassName?: string;
   placeholder: string;
   place?: string;
   required?: boolean;
@@ -31,6 +32,7 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
     dateOnComplete,
     value,
     className,
+    parentClassName,
     placeholder,
     required,
     requiredHint,
@@ -145,7 +147,7 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
     }
   }
   return (
-    <div dir={direction} className="relative">
+    <div dir={direction} className={cn("relative", parentClassName)}>
       {visible && (
         <Calendar
           value={selectedDates}

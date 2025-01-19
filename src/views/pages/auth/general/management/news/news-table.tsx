@@ -1,44 +1,31 @@
-import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { useGlobalState } from "@/context/GlobalStateContext";
-import { Ngo, UserPermission } from "@/database/tables";
+import { useUserAuthState } from "@/context/AuthContextProvider";
+import { News, UserPermission } from "@/database/tables";
 import { CACHE, SectionEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
-import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
-import CachedImage from "@/components/custom-ui/image/CachedImage";
-import { toLocaleDate } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
-import NgoFilterDialog from "./ngo-filter-dialog";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
 import {
-  NgoFilter,
-  NgoPaginationData,
-  NgoSearch,
-  NgoSort,
+  NewsFilter,
+  NewsPaginationData,
+  NewsSearch,
+  NewsSort,
   Order,
 } from "@/lib/types";
-import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-import { useUserAuthState } from "@/context/AuthContextProvider";
-
-export function NgoTable() {
+import AddNews from "./add/add-news";
+import { useGlobalState } from "@/context/GlobalStateContext";
+import NewsFilterDialog from "./news-filter-dialog";
+export default function NewsTable() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
@@ -49,16 +36,16 @@ export function NgoTable() {
   const search = searchParams.get("search");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const [filters, setFilters] = useState<NgoFilter>({
-    sort: sort == null ? "id" : (sort as NgoSort),
+  const [filters, setFilters] = useState<NewsFilter>({
+    sort: sort == null ? "date" : (sort as NewsSort),
     order: order == null ? "asc" : (order as Order),
     search: {
-      column: search == null ? "id" : (search as NgoSearch),
+      column: search == null ? "title" : (search as NewsSearch),
       value: "",
     },
     date: [],
   });
-  const loadList = async (count: number, dataFilters: NgoFilter, page = 1) => {
+  const loadList = async (count: number, dataFilters: NewsFilter, page = 1) => {
     try {
       if (loading) return;
       setLoading(true);
@@ -87,7 +74,7 @@ export function NgoTable() {
         };
       }
       // 2. Send data
-      const response = await axiosClient.get(`ngos/${page}`, {
+      const response = await axiosClient.get(`news/${page}`, {
         params: {
           per_page: count,
           filters: {
@@ -101,30 +88,30 @@ export function NgoTable() {
           },
         },
       });
-      const fetch = response.data.ngos.data as Ngo[];
-      const lastPage = response.data.ngos.last_page;
-      const totalItems = response.data.ngos.total;
-      const perPage = response.data.ngos.per_page;
-      const currentPage = response.data.ngos.current_page;
-      // setNgos({
-      //   filterList: {
-      //     data: fetch,
-      //     lastPage: lastPage,
-      //     totalItems: totalItems,
-      //     perPage: perPage,
-      //     currentPage: currentPage,
-      //   },
-      //   unFilterList: {
-      //     data: fetch,
-      //     lastPage: lastPage,
-      //     totalItems: totalItems,
-      //     perPage: perPage,
-      //     currentPage: currentPage,
-      //   },
-      // });
+      const fetch = response.data.news.data as News[];
+      const lastPage = response.data.news.last_page;
+      const totalItems = response.data.news.total;
+      const perPage = response.data.news.per_page;
+      const currentPage = response.data.news.current_page;
+      setNewsList({
+        filterList: {
+          data: fetch,
+          lastPage: lastPage,
+          totalItems: totalItems,
+          perPage: perPage,
+          currentPage: currentPage,
+        },
+        unFilterList: {
+          data: fetch,
+          lastPage: lastPage,
+          totalItems: totalItems,
+          perPage: perPage,
+          currentPage: currentPage,
+        },
+      });
     } catch (error: any) {
       toast({
-        toastType: t("ERROR"),
+        toastType: "ERROR",
         title: t("error"),
         description: error.response.data.message,
       });
@@ -132,16 +119,16 @@ export function NgoTable() {
       setLoading(false);
     }
   };
-  const initialize = async (dataFilters: NgoFilter) => {
-    const count = await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT);
+  const initialize = async (dataFilters: NewsFilter) => {
+    const count = await getComponentCache(CACHE.NEWS_TABLE_PAGINATION_COUNT);
     loadList(count ? count.value : 10, dataFilters);
   };
   useEffect(() => {
     initialize(filters);
   }, [filters.order, filters.sort]);
-  const [ngos, setNgos] = useState<{
-    filterList: NgoPaginationData;
-    unFilterList: NgoPaginationData;
+  const [newsList, setNewsList] = useState<{
+    filterList: NewsPaginationData;
+    unFilterList: NewsPaginationData;
   }>({
     filterList: {
       data: [],
@@ -160,38 +147,37 @@ export function NgoTable() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
   const [state] = useGlobalState();
 
-  const addItem = (ngo: Ngo) => {
-    setNgos((prevState) => ({
+  const addItem = (news: News) => {
+    setNewsList((prevState) => ({
       filterList: {
         ...prevState.filterList,
-        data: [ngo, ...prevState.filterList.data],
+        data: [news, ...prevState.filterList.data],
       },
       unFilterList: {
         ...prevState.unFilterList,
-        data: [ngo, ...prevState.unFilterList.data],
+        data: [news, ...prevState.unFilterList.data],
       },
     }));
   };
 
-  const deleteOnClick = async (ngo: Ngo) => {
+  const deleteOnClick = async (news: News) => {
     try {
-      const ngoId = ngo.id;
-      const response = await axiosClient.delete("ngo/" + ngoId);
+      const newsId = news.id;
+      const response = await axiosClient.delete("news/" + newsId);
       if (response.status == 200) {
-        const filtered = ngos.unFilterList.data.filter(
-          (item: Ngo) => ngoId != item?.id
+        const filtered = newsList.unFilterList.data.filter(
+          (item: News) => newsId != item?.id
         );
         const item = {
           data: filtered,
-          lastPage: ngos.unFilterList.lastPage,
-          totalItems: ngos.unFilterList.totalItems,
-          perPage: ngos.unFilterList.perPage,
-          currentPage: ngos.unFilterList.currentPage,
+          lastPage: newsList.unFilterList.lastPage,
+          totalItems: newsList.unFilterList.totalItems,
+          perPage: newsList.unFilterList.perPage,
+          currentPage: newsList.unFilterList.currentPage,
         };
-        setNgos({ ...ngos, filterList: item, unFilterList: item });
+        setNewsList({ ...newsList, filterList: item, unFilterList: item });
       }
       toast({
         toastType: "SUCCESS",
@@ -206,45 +192,21 @@ export function NgoTable() {
       });
     }
   };
-  const skeleton = (
-    <TableRow>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-    </TableRow>
-  );
+
   const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
+    SectionEnum.news
   );
   const view = per ? per?.view : false;
   const remove = per ? per?.delete : false;
   const edit = per ? per?.edit : false;
   const add = per ? per?.add : false;
-  const editOnClick = async (ngo: Ngo) => {
-    const ngoId = ngo.id;
-    navigate(`/ngos/${ngoId}`);
+  const editOnClick = async (news: News) => {
+    const newsId = news.id;
+    navigate(`/news/${newsId}`);
   };
-  const watchOnClick = async (ngo: Ngo) => {
-    const ngoId = ngo.id;
-    navigate(`/ngos/${ngoId}`);
+  const watchOnClick = async (news: News) => {
+    const newsId = news.id;
+    navigate(`/news/${newsId}`);
   };
   return (
     <>
@@ -255,12 +217,20 @@ export function NgoTable() {
             isDismissable={false}
             button={
               <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("add")}
+                {t("add_news")}
               </PrimaryButton>
             }
-            showDialog={async () => true}
+            showDialog={async () => {
+              if (add) return true;
+              toast({
+                toastType: "ERROR",
+                title: t("error"),
+                description: t("add_perm_desc"),
+              });
+              return false;
+            }}
           >
-            <AddNgo onComplete={addItem} />
+            <AddNews onComplete={(news: News) => {}} />
           </NastranModel>
         )}
 
@@ -310,9 +280,9 @@ export function NgoTable() {
             }
             showDialog={async () => true}
           >
-            <NgoFilterDialog
+            <NewsFilterDialog
               filters={filters}
-              sortOnComplete={async (filterName: NgoSort) => {
+              sortOnComplete={async (filterName: NewsSort) => {
                 if (filterName != filters.sort) {
                   setFilters({
                     ...filters,
@@ -322,22 +292,22 @@ export function NgoTable() {
                   queryParams.set("search", filters.search.column);
                   queryParams.set("sort", filterName);
                   queryParams.set("order", filters.order);
-                  navigate(`/ngos?${queryParams.toString()}`);
+                  navigate(`/news?${queryParams.toString()}`);
                   // sortList
                   const item = {
-                    data: ngos.filterList.data,
-                    lastPage: ngos.unFilterList.lastPage,
-                    totalItems: ngos.unFilterList.totalItems,
-                    perPage: ngos.unFilterList.perPage,
-                    currentPage: ngos.unFilterList.currentPage,
+                    data: newsList.filterList.data,
+                    lastPage: newsList.unFilterList.lastPage,
+                    totalItems: newsList.unFilterList.totalItems,
+                    perPage: newsList.unFilterList.perPage,
+                    currentPage: newsList.unFilterList.currentPage,
                   };
-                  setNgos({
-                    ...ngos,
+                  setNewsList({
+                    ...newsList,
                     filterList: item,
                   });
                 }
               }}
-              searchOnComplete={async (filterName: NgoSearch) => {
+              searchOnComplete={async (filterName: NewsSearch) => {
                 const search = filters.search;
                 setFilters({
                   ...filters,
@@ -353,7 +323,7 @@ export function NgoTable() {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
-                  navigate(`/ngos?${queryParams.toString()}`, {
+                  navigate(`/news?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -367,17 +337,18 @@ export function NgoTable() {
             />
           </NastranModel>
         </div>
+
         <CustomSelect
-          paginationKey={CACHE.NGO_TABLE_PAGINATION_COUNT}
+          paginationKey={CACHE.NEWS_TABLE_PAGINATION_COUNT}
           options={[
             { value: "10", label: "10" },
             { value: "20", label: "20" },
             { value: "50", label: "50" },
           ]}
           className="w-fit sm:self-baseline"
-          updateCache={(data: any) => updateComponentCache(data)}
+          updateCache={updateComponentCache}
           getCache={async () =>
-            await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT)
+            await getComponentCache(CACHE.NEWS_TABLE_PAGINATION_COUNT)
           }
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
@@ -387,107 +358,35 @@ export function NgoTable() {
           }}
         />
       </div>
-      <Table className="bg-card rounded-md my-[2px] py-8">
-        <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="text-center px-1 w-[60px]">
-              {t("profile")}
-            </TableHead>
-            <TableHead className="text-start">{t("id")}</TableHead>
-            <TableHead className="text-start">{t("registration_no")}</TableHead>
-            <TableHead className="text-start">{t("name")}</TableHead>
-            <TableHead className="text-start">{t("type")}</TableHead>
-            <TableHead className="text-start w-[60px]">{t("status")}</TableHead>
-            <TableHead className="text-start">{t("contact")}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          {loading ? (
-            <>
-              {skeleton}
-              {skeleton}
-              {skeleton}
-            </>
-          ) : (
-            ngos.filterList.data.map((item: Ngo) => (
-              <TableRowIcon
-                read={view}
-                remove={remove}
-                edit={edit}
-                onEdit={editOnClick}
-                key={item.name}
-                item={item}
-                onRemove={deleteOnClick}
-                onRead={watchOnClick}
-              >
-                <TableCell className="px-1 py-0">
-                  <CachedImage
-                    src={item?.profile}
-                    alt="Avatar"
-                    iconClassName="size-[18px]"
-                    loaderClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
-                    className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
-                  />
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.id}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.registration_no}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.name}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.type.name}
-                </TableCell>
-                <TableCell>
-                  {item?.status ? (
-                    <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("active")}
-                    </h1>
-                  ) : (
-                    <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-red-400 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("lock")}
-                    </h1>
-                  )}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.contact.value}
-                </TableCell>
-              </TableRowIcon>
-            ))
-          )}
-        </TableBody>
-      </Table>
+      <section className="">{/* Content */}</section>
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
-        )} ${ngos.unFilterList.currentPage} ${t("of")} ${
-          ngos.unFilterList.lastPage
+        )} ${newsList.unFilterList.currentPage} ${t("of")} ${
+          newsList.unFilterList.lastPage
         }`}</h1>
         <Pagination
-          lastPage={ngos.unFilterList.lastPage}
+          lastPage={newsList.unFilterList.lastPage}
           onPageChange={async (page) => {
             try {
               const count = await getComponentCache(
-                CACHE.NGO_TABLE_PAGINATION_COUNT
+                CACHE.NEWS_TABLE_PAGINATION_COUNT
               );
-              const response = await axiosClient.get(`ngos/${page}`, {
+              const response = await axiosClient.get(`news/${page}`, {
                 params: {
                   per_page: count ? count.value : 10,
                 },
               });
-              const fetch = response.data.ngos.data as Ngo[];
+              const fetch = response.data.news.data as News[];
 
               const item = {
                 currentPage: page,
                 data: fetch,
-                lastPage: ngos.unFilterList.lastPage,
-                totalItems: ngos.unFilterList.totalItems,
-                perPage: ngos.unFilterList.perPage,
+                lastPage: newsList.unFilterList.lastPage,
+                totalItems: newsList.unFilterList.totalItems,
+                perPage: newsList.unFilterList.perPage,
               };
-              setNgos({
+              setNewsList({
                 filterList: item,
                 unFilterList: item,
               });

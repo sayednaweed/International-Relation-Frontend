@@ -6,6 +6,8 @@ export const SectionEnum = {
   logs: "logs",
   audit: "audit",
   projects: "projects",
+  about: "management/about",
+  news: "management/news",
   ngo: "ngo",
   donor: "donor",
 };
@@ -83,5 +85,6 @@ export const CACHE = {
   PROJECT_TABLE_PAGINATION_COUNT: "PROJECT_TABLE",
   AUDIT_TABLE_PAGINATION_COUNT: "AUDIT_TABLE",
   NGO_TABLE_PAGINATION_COUNT: "NGO_TABLE",
+  NEWS_TABLE_PAGINATION_COUNT: "NEWS_TABLE",
   SYSTEM_CALENDAR: "SYSTEM_CALENDAR",
 };

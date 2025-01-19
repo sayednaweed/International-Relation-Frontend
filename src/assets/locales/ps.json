@@ -93,7 +93,7 @@
   "save": "ثبت کول",
   "no_file_was_chosen": "هیڅ فایل غوره نه شو",
   "files_list_is_empty": "د فایلونو لیست خالي دی",
-  "img_size_shou_less_2MB": "د انځور اندازه باید له ۲ ام بی څخه کمه وي",
+  "img_size_shou_less": "د انځور اندازه باید د",
   "ples_sel_vali_img_file ": "مهرباني وکړئ یو درست انځور وټاکئ",
   "no_img_selected!": "هیڅ انځور نه دی غوره شوی",
   "choose": "غوره کړئ",

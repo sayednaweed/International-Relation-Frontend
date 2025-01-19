@@ -1,4 +1,10 @@
-import { Audit, Ngo, SelectUserPermission, User } from "@/database/tables";
+import {
+  Audit,
+  News,
+  Ngo,
+  SelectUserPermission,
+  User,
+} from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -137,6 +143,31 @@ export interface NgoFilter {
 }
 export interface NgoPaginationData {
   data: Ngo[];
+  lastPage: number;
+  perPage: number;
+  currentPage: number;
+  totalItems: number;
+}
+export type NewsSort =
+  | "id"
+  | "title"
+  | "type"
+  | "priority"
+  | "visible"
+  | "visibility_date"
+  | "date";
+export type NewsSearch = "title";
+export interface NewsFilter {
+  sort: NewsSort;
+  order: Order;
+  search: {
+    column: NewsSearch;
+    value: string;
+  };
+  date: DateObject[];
+}
+export interface NewsPaginationData {
+  data: News[];
   lastPage: number;
   perPage: number;
   currentPage: number;
