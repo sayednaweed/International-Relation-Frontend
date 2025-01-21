@@ -166,8 +166,11 @@ const MultiTabTextarea = React.forwardRef<
         onChange={inputOnchange}
         defaultValue={selectTabValue}
       />
-      {errorMessages.map((error: string) => (
-        <h1 className="rtl:text-md-rtl ltr:text-sm-ltr px-2 capitalize text-start text-red-400">
+      {errorMessages.map((error: string, index: number) => (
+        <h1
+          key={index}
+          className="rtl:text-md-rtl ltr:text-sm-ltr px-2 capitalize text-start text-red-400"
+        >
           {error}
         </h1>
       ))}

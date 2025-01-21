@@ -172,7 +172,7 @@
   "debugger": "Debugger",
   "pashto": "Pashto",
   "home": "Home",
-  "about_us": "About Us",
+  "about": "About Us",
   "moph_address": "Sehat-e-Ama Square, Wazir Akbar khan Road, Kabul, Afghanistan",
   "province": "Province",
   "account_created": "Account created",
@@ -218,5 +218,7 @@
   "title_farsi": "Title in Farsi",
   "title_pashto": "Title in Pashto",
   "add_news": "Add News",
-  "profile_pic":"Profile Picture"
+  "news": "News",
+  "ngos": "NGOS",
+  "news_created": "News Added"
 }

@@ -9,7 +9,7 @@ import axiosClient from "@/lib/axois-client";
 import Pagination from "@/components/custom-ui/table/Pagination";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ListFilter, Search } from "lucide-react";
+import { ChevronRight, ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
@@ -25,6 +25,8 @@ import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import AddNews from "./add/add-news";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import NewsFilterDialog from "./news-filter-dialog";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { toLocaleDate } from "@/lib/utils";
 export default function NewsTable() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
@@ -208,6 +210,8 @@ export default function NewsTable() {
     const newsId = news.id;
     navigate(`/news/${newsId}`);
   };
+
+  console.log(newsList, "Naweed");
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
@@ -230,7 +234,7 @@ export default function NewsTable() {
               return false;
             }}
           >
-            <AddNews onComplete={(news: News) => {}} />
+            <AddNews onComplete={addItem} />
           </NastranModel>
         )}
 
@@ -358,7 +362,42 @@ export default function NewsTable() {
           }}
         />
       </div>
-      <section className="">{/* Content */}</section>
+      <div className="flex flex-wrap justify-center place-items-center px-4 sm:grid sm:grid-cols-2 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
+        {newsList.filterList.data.map((news: News) => (
+          <Card
+            key={news.id}
+            className="shadow-xl max-h-[600px] w-[300px] md:w-[320px]"
+          >
+            <CardContent className="p-0  h-[200px] sm:h-[300px]">
+              <img
+                src={news.image}
+                alt={news.title}
+                className="min-w-full h-full object-fill rounded-t border-b"
+              />
+            </CardContent>
+            <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
+              <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
+                {news.title}
+              </h2>
+              <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr text-primary/95 line-clamp-4 px-2">
+                {news.contents}
+              </h1>
+              <div
+                dir="ltr"
+                className="flex justify-between w-full items-center mt-4 px-2"
+              >
+                <h1 className="text-[15px] font-bold text-primary/60">
+                  {toLocaleDate(new Date(news.date), state)}
+                </h1>
+                <h1 className="text-white flex items-center gap-x-1 bg-tertiary px-2 rounded cursor-pointer shadow-md">
+                  {t("detail")}
+                  <ChevronRight className="size-[20px] font-extrabold" />
+                </h1>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"

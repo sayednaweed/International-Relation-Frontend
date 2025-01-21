@@ -1,7 +1,16 @@
-import OptionalTabs from "@/components/custom-ui/input/mult-tab/parts/OptionalTab";
-import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Link } from "react-router";
+import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
+import { useTranslation } from "react-i18next";
+import { ChevronRight } from "lucide-react";
 
 interface Img {
   id: number;
@@ -12,7 +21,8 @@ interface Img {
   date_title: string;
 }
 
-function NewPage() {
+function NewsPage() {
+  const { t } = useTranslation();
   const [images, setImages] = useState<Img[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,10 +58,6 @@ function NewPage() {
     fetchImages();
   }, []);
 
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
-  }
-
   const [errorData, setErrorData] = useState<{
     username_english: string;
   }>({
@@ -64,40 +70,63 @@ function NewPage() {
   });
   return (
     <>
-      <h1 className="bg-primary dark:bg-primary/90 h-16 flex items-center justify-center font-bold text-4xl-ltr text-white">
-        News
-      </h1>
-      <div
-        className="grid gap-8 p-4 mt-28 mb-28 
-                    grid-cols-1 
-                    sm:grid-cols-1 
-                    md:grid-cols-2 
-                    lg:grid-cols-2 
-                    xl:grid-cols-3 
-                    2xl:grid-cols-4"
-      >
-        {images.map((img) => (
-          <Card key={img.id} className="relative group">
-            <CardContent className="p-0  h-[300px]">
-              <img
-                src={img.image}
-                alt={img.title}
-                className="min-w-full h-full object-fill rounded"
-              />
-            </CardContent>
-            <CardFooter className="flex flex-col justify-start items-start p-4">
-              <h2 className="font-bold text-xl ltr:text-left rtl:text-right mb-2">
-                {img.title}
-              </h2>
-              <p className="text-center text-sm text-gray-600">
-                {img.footer} | {img.date} {img.date_title}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
+      <div className="px-2 pt-2 pb-8 flex flex-col gap-y-8 relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
+        <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Link to="/dashboard">
+                <AnimHomeIcon />
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="rtl:rotate-180" />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-fourth">
+                {t("news")}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex flex-wrap justify-center place-items-center px-4 sm:grid sm:grid-cols-2 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
+          {images.map((img) => (
+            <Card
+              key={img.id}
+              className="shadow-xl max-h-[600px] w-[300px] md:w-[320px]"
+            >
+              <CardContent className="p-0  h-[200px] sm:h-[300px]">
+                <img
+                  src={img.image}
+                  alt={img.title}
+                  className="min-w-full h-full object-fill rounded-t border-b"
+                />
+              </CardContent>
+              <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
+                <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
+                  ما متعهد به ارائه خدمات صحی معیاری در سراسر کشور هستیم.
+                </h2>
+                <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr text-primary/95 line-clamp-4 px-2">
+                  ریاست شفاخانه استقلال از تمام داوطلبان واجد شرایط دعوت می
+                  نماید تا در پروسه داوطلبی پروژه تدارک گاز اکسیجن طبی که تحت
+                  ریفرنس نمبر(MOPH/EH/NCB/1404/G01) می باشد ...
+                </h1>
+                <div
+                  dir="ltr"
+                  className="flex justify-between w-full items-center mt-4 px-2"
+                >
+                  <h1 className="text-[15px] font-bold text-primary/60">
+                    01-09-2025
+                  </h1>
+                  <h1 className="text-white flex items-center gap-x-1 bg-tertiary px-2 rounded cursor-pointer shadow-md">
+                    {t("detail")}
+                    <ChevronRight className="size-[20px] font-extrabold" />
+                  </h1>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
       </div>
     </>
   );
 }
 
-export default NewPage;
+export default NewsPage;

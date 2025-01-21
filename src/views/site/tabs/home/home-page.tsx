@@ -8,7 +8,6 @@ export default function HomePage() {
     <div>
       <SliderSection />
       <NewSection />
-      <FooterSection />
     </div>
   );
 }
