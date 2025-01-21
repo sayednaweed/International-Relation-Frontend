@@ -220,5 +220,11 @@
   "add_news": "Add News",
   "news": "News",
   "ngos": "NGOS",
-  "news_created": "News Added"
+  "news_created": "News Added",
+  "profile_pic": "Profile Picture",
+  "actions": "Actions",
+  "director": "Director",
+  "manager": "Manager",
+  "submit": "Submit",
+  "office_info": "Office Information"
 }

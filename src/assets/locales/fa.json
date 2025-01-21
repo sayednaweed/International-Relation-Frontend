@@ -220,5 +220,15 @@
   "add_news": "اضافه کردن اخبار",
   "news": "اخبار",
   "ngos": "موسسات",
-  "news_created": "خبر اضافه شد"
+  "news_created": "خبر اضافه شد",
+  "manager":"مدیر",
+  "office_info":"معلومات دفتر",
+  "profile_pic":"عکس پروفایل",
+  "actions":"عملیات",
+  "technical_sup":"پیشتبانی فنی",
+  "submit":"ارسال",
+  "director":"رئيس"
+
+
+
 }
