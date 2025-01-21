@@ -1,6 +1,7 @@
 import SiteNavbar from "@/components/custom-ui/navbar/SiteNavbar";
 import { Toaster } from "@/components/ui/toaster";
 import { Outlet } from "react-router";
+import FooterSection from "../site/general/footer/footer-section";
 
 export default function SiteLayout() {
   return (
@@ -8,6 +9,7 @@ export default function SiteLayout() {
       <SiteNavbar />
       <Outlet />
       <Toaster />
+      <FooterSection />
     </div>
   );
 }

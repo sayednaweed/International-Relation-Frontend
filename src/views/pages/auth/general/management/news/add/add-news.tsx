@@ -44,7 +44,10 @@ export default function AddNews(props: AddNewsProps) {
     // 2. Send data
     let formData = new FormData();
     if (userData.visibility_date)
-      formData.append("visibility_date", userData.visibility_date);
+      formData.append(
+        "visibility_date",
+        userData.visibility_date.toDate().toISOString()
+      );
     formData.append("title_english", userData.title_english);
     formData.append("title_farsi", userData.title_farsi);
     formData.append("title_pashto", userData.title_pashto);
@@ -61,7 +64,7 @@ export default function AddNews(props: AddNewsProps) {
     try {
       const response = await axiosClient.post("news/store", formData);
       if (response.status == 200) {
-        onComplete(response.data.ngo);
+        onComplete(response.data.news);
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
@@ -129,15 +132,15 @@ export default function AddNews(props: AddNewsProps) {
               },
               {
                 name: "content_english",
-                rules: ["required", "max:128", "min:12"],
+                rules: ["required", "min:12"],
               },
               {
                 name: "content_farsi",
-                rules: ["required", "max:128", "min:32"],
+                rules: ["required", "min:32"],
               },
               {
                 name: "content_pashto",
-                rules: ["required", "max:128", "min:12"],
+                rules: ["required", "min:12"],
               },
               { name: "type", rules: ["required"] },
               { name: "priority", rules: ["required"] },
@@ -152,7 +155,7 @@ export default function AddNews(props: AddNewsProps) {
                 closeText={t("close")}
                 againText={t("again")}
                 closeModel={closeModel}
-                description={t("User account has been created")}
+                description={t("news_created")}
               />
             ),
             validationRules: [],

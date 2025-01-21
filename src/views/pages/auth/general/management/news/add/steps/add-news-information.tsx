@@ -77,7 +77,7 @@ export default function AddNewsInformation() {
           selectedItem={userData["priority"]?.name}
           placeHolder={t("select_a")}
           errorMessage={error.get("priority")}
-          apiUrl={"news-priorities"}
+          apiUrl={"priorities"}
           mode="single"
         />
         <CustomDatePicker

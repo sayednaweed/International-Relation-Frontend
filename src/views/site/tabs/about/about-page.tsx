@@ -166,7 +166,6 @@ export default function AboutPage() {
           </form>
         </div>
       </div>
-      <FooterSection />
     </>
   );
 }

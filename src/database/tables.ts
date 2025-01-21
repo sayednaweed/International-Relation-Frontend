@@ -162,10 +162,15 @@ export type Donor = {
 export type News = {
   id: string;
   title: string;
+  contents: string;
+  image: string;
   news_type: string;
+  news_type_id: string;
   priority: string;
+  priority_id: string;
   user: string;
   visible: boolean;
   visibility_date: string;
+  date: string;
   created_at: string;
 };

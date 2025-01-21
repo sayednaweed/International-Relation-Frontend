@@ -37,8 +37,12 @@ module.exports = {
       "4xl-rtl": "22px", // RTL
     },
     extend: {
+      screens: {
+        xxl: "500px",
+      },
       colors: {
         tertiary: "var(--tertiary)",
+        fourth: "var(--fourth)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
