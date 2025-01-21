@@ -1,3 +1,5 @@
+
+
 export type Role =
   | { role: 3; name: "user" }
   | { role: 2; name: "admin" }
@@ -174,3 +176,10 @@ export type News = {
   date: string;
   created_at: string;
 };
+
+export type About={
+  id:string;
+  name:string;
+  contact:string;
+  profile:any
+}
