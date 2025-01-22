@@ -9,24 +9,20 @@ import axiosClient from "@/lib/axois-client";
 import Pagination from "@/components/custom-ui/table/Pagination";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ChevronRight, ListFilter, Search } from "lucide-react";
+import { Edit, ListFilter, Search, Trash2 } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
-import {
-  NewsFilter,
-  NewsPaginationData,
-  NewsSearch,
-  NewsSort,
-  Order,
-} from "@/lib/types";
+import { NewsPaginationData, NewsSearch, NewsSort, Order } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import AddNews from "./add/add-news";
 import { useGlobalState } from "@/context/GlobalStateContext";
-import NewsFilterDialog from "./news-filter-dialog";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { toLocaleDate } from "@/lib/utils";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 export default function NewsTable() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
@@ -35,66 +31,64 @@ export default function NewsTable() {
 
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
-  const search = searchParams.get("search");
+  const searchValue = searchParams.get("sch_val");
+  const searchColumn = searchParams.get("sch_col");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const [filters, setFilters] = useState<NewsFilter>({
+  const startDate = searchParams.get("st_dt");
+  const endDate = searchParams.get("en_dt");
+  const filters = {
     sort: sort == null ? "date" : (sort as NewsSort),
     order: order == null ? "asc" : (order as Order),
     search: {
-      column: search == null ? "title" : (search as NewsSearch),
-      value: "",
+      column: searchColumn == null ? "title" : (searchColumn as NewsSearch),
+      value: searchValue == null ? "" : searchValue,
     },
-    date: [],
-  });
-  const loadList = async (count: number, dataFilters: NewsFilter, page = 1) => {
+    date:
+      startDate && endDate
+        ? [
+            new DateObject(new Date(startDate)),
+            new DateObject(new Date(endDate)),
+          ]
+        : startDate
+        ? [new DateObject(new Date(startDate))]
+        : endDate
+        ? [new DateObject(new Date(endDate))]
+        : [],
+  };
+  const loadList = async (
+    count: number,
+    searchInput: string | undefined = undefined,
+    page = 1
+  ) => {
     try {
       if (loading) return;
       setLoading(true);
       // 1. Organize date
-      let dates: {
-        startDate: string | null;
-        endDate: string | null;
+      let dates = {
+        startDate: startDate,
+        endDate: endDate,
       };
-      if (filters.date.length === 1) {
-        // set start date
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: null,
-        };
-      } else if (filters.date.length === 2) {
-        // set dates
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: filters.date[1].toDate().toISOString(),
-        };
-      } else {
-        // Set null
-        dates = {
-          startDate: null,
-          endDate: null,
-        };
-      }
       // 2. Send data
-      const response = await axiosClient.get(`news/${page}`, {
+      const response = await axiosClient.get(`user/newses/${page}`, {
         params: {
           per_page: count,
           filters: {
-            sort: dataFilters.sort,
-            order: dataFilters.order,
+            sort: sort,
+            order: order,
             search: {
-              column: dataFilters.search.column,
-              value: dataFilters.search.value,
+              column: searchColumn,
+              value: searchInput ? searchInput : searchValue,
             },
             date: dates,
           },
         },
       });
-      const fetch = response.data.news.data as News[];
-      const lastPage = response.data.news.last_page;
-      const totalItems = response.data.news.total;
-      const perPage = response.data.news.per_page;
-      const currentPage = response.data.news.current_page;
+      const fetch = response.data.newses.data as News[];
+      const lastPage = response.data.newses.last_page;
+      const totalItems = response.data.newses.total;
+      const perPage = response.data.newses.per_page;
+      const currentPage = response.data.newses.current_page;
       setNewsList({
         filterList: {
           data: fetch,
@@ -121,13 +115,13 @@ export default function NewsTable() {
       setLoading(false);
     }
   };
-  const initialize = async (dataFilters: NewsFilter) => {
+  const initialize = async (searchInput: string | undefined = undefined) => {
     const count = await getComponentCache(CACHE.NEWS_TABLE_PAGINATION_COUNT);
-    loadList(count ? count.value : 10, dataFilters);
+    loadList(count ? count.value : 10, searchInput);
   };
   useEffect(() => {
-    initialize(filters);
-  }, [filters.order, filters.sort]);
+    initialize();
+  }, [sort, startDate, endDate, order, searchColumn, searchValue]);
   const [newsList, setNewsList] = useState<{
     filterList: NewsPaginationData;
     unFilterList: NewsPaginationData;
@@ -198,20 +192,35 @@ export default function NewsTable() {
   const per: UserPermission | undefined = user?.permissions.get(
     SectionEnum.news
   );
-  const view = per ? per?.view : false;
   const remove = per ? per?.delete : false;
   const edit = per ? per?.edit : false;
   const add = per ? per?.add : false;
   const editOnClick = async (news: News) => {
     const newsId = news.id;
-    navigate(`/news/${newsId}`);
-  };
-  const watchOnClick = async (news: News) => {
-    const newsId = news.id;
-    navigate(`/news/${newsId}`);
+    navigate(`/management/news/${newsId}`);
   };
 
-  console.log(newsList, "Naweed");
+  const setDateToURL = (
+    queryParams: URLSearchParams,
+    selectedDates: DateObject[]
+  ) => {
+    if (selectedDates.length == 1) {
+      queryParams.set(
+        "st_dt",
+        selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
+      );
+    } else if (selectedDates.length == 2) {
+      queryParams.set(
+        "st_dt",
+        selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
+      );
+      queryParams.set(
+        "en_dt",
+        selectedDates[1].toDate().toISOString().split("T")[0] //2025-01-01
+      );
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
@@ -224,15 +233,7 @@ export default function NewsTable() {
                 {t("add_news")}
               </PrimaryButton>
             }
-            showDialog={async () => {
-              if (add) return true;
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: t("add_perm_desc"),
-              });
-              return false;
-            }}
+            showDialog={async () => true}
           >
             <AddNews onComplete={addItem} />
           </NastranModel>
@@ -251,16 +252,7 @@ export default function NewsTable() {
             <SecondaryButton
               onClick={async () => {
                 if (searchRef.current != undefined) {
-                  const newfilter = {
-                    ...filters,
-                    search: {
-                      column: filters.search.column,
-                      value: searchRef.current.value,
-                    },
-                  };
-
-                  await initialize(newfilter);
-                  setFilters(newfilter);
+                  await initialize(searchRef.current.value);
                 }
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
@@ -284,59 +276,104 @@ export default function NewsTable() {
             }
             showDialog={async () => true}
           >
-            <NewsFilterDialog
+            <FilterDialog
               filters={filters}
               sortOnComplete={async (filterName: NewsSort) => {
-                if (filterName != filters.sort) {
-                  setFilters({
-                    ...filters,
-                    sort: filterName,
-                  });
-                  const queryParams = new URLSearchParams();
-                  queryParams.set("search", filters.search.column);
-                  queryParams.set("sort", filterName);
-                  queryParams.set("order", filters.order);
-                  navigate(`/news?${queryParams.toString()}`);
-                  // sortList
-                  const item = {
-                    data: newsList.filterList.data,
-                    lastPage: newsList.unFilterList.lastPage,
-                    totalItems: newsList.unFilterList.totalItems,
-                    perPage: newsList.unFilterList.perPage,
-                    currentPage: newsList.unFilterList.currentPage,
-                  };
-                  setNewsList({
-                    ...newsList,
-                    filterList: item,
-                  });
-                }
-              }}
-              searchOnComplete={async (filterName: NewsSearch) => {
-                const search = filters.search;
-                setFilters({
-                  ...filters,
-                  search: { ...search, column: filterName },
+                const queryParams = new URLSearchParams();
+                queryParams.set("search", filters.search.column);
+                queryParams.set("sort", filterName);
+                queryParams.set("order", filters.order);
+                navigate(`/management/news?${queryParams.toString()}`, {
+                  replace: true,
                 });
               }}
-              orderOnComplete={async (filterName: Order) => {
-                if (filterName != filters.order) {
-                  setFilters({
-                    ...filters,
-                    order: filterName,
-                  });
+              searchFilterChanged={async (filterName: NewsSearch) => {
+                if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
-                  navigate(`/news?${queryParams.toString()}`, {
+                  queryParams.set("sch_col", filterName);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/management/news?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              orderOnComplete={async (filterName: Order) => {
+                if (filterName != filters.order) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("order", filterName);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/management/news?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
               dateOnComplete={(selectedDates: DateObject[]) => {
-                setFilters({
-                  ...filters,
-                  date: selectedDates,
-                });
+                if (selectedDates.length == 2) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, selectedDates);
+                  navigate(`/management/news?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              filtersShowData={{
+                sort: [
+                  {
+                    name: "id",
+                    translate: t("id"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "type",
+                    translate: t("type"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "priority",
+                    translate: t("priority"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "visible",
+                    translate: t("visible"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "visibility_date",
+                    translate: t("visibility_date"),
+                    onClick: () => {},
+                  },
+                  { name: "date", translate: t("date"), onClick: () => {} },
+                ],
+                order: [
+                  {
+                    name: "asc",
+                    translate: t("asc"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "desc",
+                    translate: t("desc"),
+                    onClick: () => {},
+                  },
+                ],
+                search: [
+                  {
+                    name: "title",
+                    translate: t("title"),
+                    onClick: () => {},
+                  },
+                ],
               }}
             />
           </NastranModel>
@@ -358,45 +395,66 @@ export default function NewsTable() {
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
           onChange={async (value: string) => {
-            loadList(parseInt(value), filters);
+            loadList(parseInt(value));
           }}
         />
       </div>
-      <div className="flex flex-wrap justify-center place-items-center px-4 sm:grid sm:grid-cols-2 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
-        {newsList.filterList.data.map((news: News) => (
-          <Card
-            key={news.id}
-            className="shadow-xl max-h-[600px] w-[300px] md:w-[320px]"
-          >
-            <CardContent className="p-0  h-[200px] sm:h-[300px]">
-              <img
+      <div className="flex flex-wrap py-8 justify-center px-4 gap-6">
+        {loading ? (
+          <NastranSpinner />
+        ) : newsList.filterList.data.length === 0 ? (
+          <h1>{t("no_content")}</h1>
+        ) : (
+          newsList.filterList.data.map((news: News) => (
+            <Card
+              key={news.id}
+              className="shadow-xl max-h-[600px] w-[300px] md:w-[320px]"
+            >
+              <CardContent className="p-0  h-[200px] sm:h-[200px]">
+                <CachedImage
+                  src={news.image}
+                  shimmerClassName="min-w-full h-full object-fill rounded-t"
+                  className="min-w-full shadow-lg h-full object-fill rounded-t"
+                />
+                {/* <img
                 src={news.image}
                 alt={news.title}
                 className="min-w-full h-full object-fill rounded-t border-b"
-              />
-            </CardContent>
-            <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
-              <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
-                {news.title}
-              </h2>
-              <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr text-primary/95 line-clamp-4 px-2">
-                {news.contents}
-              </h1>
-              <div
-                dir="ltr"
-                className="flex justify-between w-full items-center mt-4 px-2"
-              >
-                <h1 className="text-[15px] font-bold text-primary/60">
-                  {toLocaleDate(new Date(news.date), state)}
+              /> */}
+              </CardContent>
+              <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
+                <div className="flex gap-x-2">
+                  {edit && (
+                    <Edit
+                      onClick={async () => await editOnClick(news)}
+                      className="text-green-500 cursor-pointer hover:text-green-500/70 size-[18px] transition"
+                    />
+                  )}
+                  {remove && (
+                    <Trash2
+                      onClick={async () => await deleteOnClick(news)}
+                      className="text-red-400 size-[18px] transition cursor-pointer hover:text-red-400/70"
+                    />
+                  )}
+                </div>
+                <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
+                  {news.title}
+                </h2>
+                <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr text-primary/95 line-clamp-4 px-2">
+                  {news.contents}
                 </h1>
-                <h1 className="text-white flex items-center gap-x-1 bg-tertiary px-2 rounded cursor-pointer shadow-md">
-                  {t("detail")}
-                  <ChevronRight className="size-[20px] font-extrabold" />
-                </h1>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
+                <div
+                  dir="ltr"
+                  className="flex flex-col w-full items-start gap-y-1 mt-4 px-2"
+                >
+                  <h1 className="text-[15px] font-bold text-primary/60">
+                    {toLocaleDate(new Date(news.date), state)}
+                  </h1>
+                </div>
+              </CardFooter>
+            </Card>
+          ))
+        )}
       </div>
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(

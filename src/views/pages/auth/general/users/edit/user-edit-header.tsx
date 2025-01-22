@@ -1,4 +1,3 @@
-import CachedImage from "@/components/custom-ui/image/CachedImage";
 import IconButton from "@/components/custom-ui/button/IconButton";
 import { Pencil, Trash2 } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
@@ -10,6 +9,7 @@ import { UserInformation } from "@/lib/types";
 import { UserPermission } from "@/database/tables";
 import { SectionEnum } from "@/lib/constants";
 import { useUserAuthState } from "@/context/AuthContextProvider";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
@@ -157,7 +157,7 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
       <CachedImage
         src={userData?.profile}
         alt="Avatar"
-        loaderClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
+        shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
       />
       {loading && (

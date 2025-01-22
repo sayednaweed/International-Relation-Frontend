@@ -1,12 +1,12 @@
 import { X } from "lucide-react";
-export interface Item {
+export interface IShowData {
   name: string;
   translate: string;
   onClick: (itemName: string) => void;
 }
 export interface FilterItemProps {
   headerName: string;
-  items: Item[];
+  items: IShowData[];
   selected: string;
 }
 export const FilterItem = (props: FilterItemProps) => {
@@ -16,7 +16,7 @@ export const FilterItem = (props: FilterItemProps) => {
     "uppercase text-start font-semibold border-b border-primary/20 pb-2 rtl:text-2xl-rtl ltr:text-lg-ltr text-primary";
   const itemStyle =
     "rtl:text-lg-rtl ltr:text-md-ltr cursor-pointer px-2 py-1 capitalize rounded-full hover:bg-primary/5 transition flex items-center text-start";
-  const mapItems = items.map((item: Item, index: number) => {
+  const mapItems = items.map((item: IShowData, index: number) => {
     const active = item.name == selected;
     return (
       <h1

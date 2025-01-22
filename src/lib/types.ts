@@ -150,7 +150,6 @@ export interface NgoPaginationData {
 }
 export type NewsSort =
   | "id"
-  | "title"
   | "type"
   | "priority"
   | "visible"

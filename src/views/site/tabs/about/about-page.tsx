@@ -2,7 +2,6 @@ import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 
 import { t } from "i18next";
-import FooterSection from "../../general/footer/footer-section";
 
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
 
