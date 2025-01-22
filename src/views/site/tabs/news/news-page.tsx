@@ -150,51 +150,7 @@ function NewsPage() {
   const { t } = useTranslation();
   const [state] = useGlobalState();
 
-  const addItem = (news: News) => {
-    setNewsList((prevState) => ({
-      filterList: {
-        ...prevState.filterList,
-        data: [news, ...prevState.filterList.data],
-      },
-      unFilterList: {
-        ...prevState.unFilterList,
-        data: [news, ...prevState.unFilterList.data],
-      },
-    }));
-  };
-
-  const deleteOnClick = async (news: News) => {
-    try {
-      const newsId = news.id;
-      const response = await axiosClient.delete("news/" + newsId);
-      if (response.status == 200) {
-        const filtered = newsList.unFilterList.data.filter(
-          (item: News) => newsId != item?.id
-        );
-        const item = {
-          data: filtered,
-          lastPage: newsList.unFilterList.lastPage,
-          totalItems: newsList.unFilterList.totalItems,
-          perPage: newsList.unFilterList.perPage,
-          currentPage: newsList.unFilterList.currentPage,
-        };
-        setNewsList({ ...newsList, filterList: item, unFilterList: item });
-      }
-      toast({
-        toastType: "SUCCESS",
-        title: t("success"),
-        description: response.data.message,
-      });
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-    }
-  };
-
-  const editOnClick = async (news: News) => {
+  const viewOnClick = async (news: News) => {
     const newsId = news.id;
     navigate(`/management/news/${newsId}`);
   };
