@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
-      response = await axiosClient.post("auth-login", formData);
+      response = await axiosClient.post("auth-user", formData);
       if (response.status == 200) {
         if (rememberMe) {
           localStorage.setItem(
@@ -174,7 +174,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
-      response = await axiosClient.post("ngo-auth-login", formData);
+      response = await axiosClient.post("auth-ngo", formData);
+      if (response.status == 200) {
+        if (rememberMe) {
+          localStorage.setItem(
+            import.meta.env.VITE_TOKEN_STORAGE_KEY,
+            response.data.token
+          );
+        }
+        const user = response.data.user as User;
+        if (user != null)
+          user.permissions = returnPermissions(response.data?.permissions);
+        dispatch({ type: "LOGIN", payload: user });
+      }
+    } catch (error: any) {
+      response = error;
+      console.log(error);
+    }
+    return response;
+  };
+  const loginDonor = async (
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ): Promise<any> => {
+    let response: any = null;
+    try {
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("password", password);
+      response = await axiosClient.post("auth-ngo", formData);
       if (response.status == 200) {
         if (rememberMe) {
           localStorage.setItem(
@@ -201,6 +230,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(error);
     }
   };
+  const setNgo = async (ngo: Ngo): Promise<any> => {
+    try {
+      if (ngo != null || ngo != undefined)
+        dispatch({ type: "EDIT", payload: ngo });
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
+  const setDonor = async (donor: Donor): Promise<any> => {
+    try {
+      if (donor != null || donor != undefined)
+        dispatch({ type: "EDIT", payload: donor });
+    } catch (error: any) {
+      console.log(error);
+    }
+  };
 
   const logoutUser = async (): Promise<void> => {
     try {
@@ -213,7 +258,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <StateContext.Provider
-      value={{ ...state, loginUser, loginNgo, logoutUser, setUser }}
+      value={{
+        ...state,
+        loginUser,
+        loginNgo,
+        loginDonor,
+        logoutUser,
+        setUser,
+        setNgo,
+        setDonor,
+      }}
     >
       <DispatchContext.Provider value={dispatch}>
         {children}

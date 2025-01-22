@@ -11,8 +11,8 @@ import {
 import { useNavigate } from "react-router";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { useTranslation } from "react-i18next";
-import CachedImage from "../image/CachedImage";
-import { User2 } from "lucide-react";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+
 export interface ProfileDropdownProps {
   root: string;
   rootPath: string;
@@ -27,11 +27,10 @@ function ProfileDropdown(props: ProfileDropdownProps) {
       <DropdownMenuTrigger asChild className="z-10 cursor-pointer ">
         <div>
           <CachedImage
-            fallback={<User2 className="size-[18px]" />}
             src={user?.profile}
             alt="Avatar"
-            iconClassName="size-[18px]"
-            loaderClassName="size-[36px] ltr:mr-8 rtl:ml-8 shadow-lg border border-tertiary rounded-full size-[36px] select-none"
+            ShimmerIconClassName="size-[18px]"
+            shimmerClassName="size-[36px] ltr:mr-8 rtl:ml-8 shadow-lg border border-tertiary rounded-full size-[36px] select-none"
             className="size-[36px] ltr:mr-8 rtl:ml-8 object-center object-cover shadow-lg border border-tertiary  rounded-full"
           />
         </div>

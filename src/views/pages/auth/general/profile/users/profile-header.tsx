@@ -1,4 +1,3 @@
-import CachedImage from "@/components/custom-ui/image/CachedImage";
 import IconButton from "@/components/custom-ui/button/IconButton";
 import { Pencil, Trash2 } from "lucide-react";
 import { ChangeEvent, useState } from "react";
@@ -7,6 +6,8 @@ import { useUserAuthState } from "@/context/AuthContextProvider";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+
 export default function ProfileHeader() {
   const { user, setUser } = useUserAuthState();
   const { t } = useTranslation();

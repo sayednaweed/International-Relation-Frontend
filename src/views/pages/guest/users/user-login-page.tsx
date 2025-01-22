@@ -6,7 +6,7 @@ import { validate } from "@/validation/validation";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 import AnimUserIcon from "@/components/custom-ui/icons/AnimUserIcon";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 
@@ -46,28 +46,22 @@ export default function UserLoginPage() {
           userData.password,
           true
         );
-        if (response.code == "ERR_NETWORK")
-          toast({
-            title: t("Network problem"),
-            toastType: "ERROR",
-            description: t("Make sure you have internet access"),
-          });
-        else if (response.status == 200) {
+        if (response.status == 200) {
           navigate("/dashboard", { replace: true });
           toast({
-            title: t("Success"),
+            title: t("success"),
             toastType: "SUCCESS",
             description: response.data.message,
           });
         } else
           toast({
-            title: t("Error"),
+            title: t("error"),
             toastType: "ERROR",
             description: response.response.data.message,
           });
       } catch (error: any) {
         toast({
-          title: t("Error"),
+          title: t("error"),
           toastType: "ERROR",
           description: error.response.data.message,
         });
@@ -86,7 +80,7 @@ export default function UserLoginPage() {
       <div className="bg-red-500 shadow-primary-box-shadow bg-tertiary w-fit rounded-full p-4">
         <AnimUserIcon />
       </div>
-      <h1 className="drop-shadow-lg text-center relative text-tertiary uppercase text-[34px] mb-8 font-bold">
+      <h1 className="drop-shadow-lg my-3 text-center relative text-tertiary uppercase text-[34px] mb-8 font-bold">
         {t("ministry_emp_portal")}
       </h1>
       <form
@@ -95,7 +89,7 @@ export default function UserLoginPage() {
       >
         <CustomInput
           size_="sm"
-          placeholder={t("Enter your email")}
+          placeholder={t("enter_your_email")}
           type="email"
           name="email"
           dir="ltr"
@@ -110,7 +104,7 @@ export default function UserLoginPage() {
           size_="sm"
           name="password"
           onChange={handleChange}
-          placeholder={t("Enter password")}
+          placeholder={t("enter_password")}
           errorMessage={error.get("password")}
           startContent={
             <button
@@ -127,13 +121,6 @@ export default function UserLoginPage() {
           }
           type={isVisible ? "text" : "password"}
         />
-        <Link
-          to={"/forget-password"}
-          replace={true}
-          className="text-red-500 self-end text-[14px] mb-4 mt-1 cursor-pointer transition hover:text-red-600 font-semibold"
-        >
-          {t("Forgot Password?")}
-        </Link>
         <PrimaryButton
           className={`w-full mt-8 uppercase ${loading && "opacity-90"}`}
           type="submit"
@@ -142,7 +129,7 @@ export default function UserLoginPage() {
             loading={loading}
             className="rtl:text-2xl-rtl ltr:text-2xl-ltr"
           >
-            {t("Login")}
+            {t("login")}
           </ButtonSpinner>
         </PrimaryButton>
       </form>

@@ -1,18 +1,21 @@
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import axiosClient from "@/lib/axois-client";
-import { cn, isString } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ArrowDownToLine, Paperclip, Trash2 } from "lucide-react";
 import React, { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
-
+export interface FileType {
+  path: string;
+  name: string;
+}
 export interface FileChooserProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;
   lable: string;
   parentClassName?: string;
   errorMessage?: string;
-  defaultFile: File | undefined | string;
+  defaultFile: File | FileType;
   maxSize: number;
   validTypes: string[];
   disabled?: boolean;
@@ -39,7 +42,7 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
     const [downloadProgress, setDownloadProgress] = useState(0);
     const [isDownloading, setIsDownloading] = useState(false);
     const { t } = useTranslation();
-    const [userData, setUserData] = useState<File | undefined | string>(
+    const [userData, setUserData] = useState<File | FileType | undefined>(
       defaultFile
     );
     const onFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -185,9 +188,9 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
           >
             {userData ? (
               <>
-                {isString(userData) ? (
+                {!(userData instanceof File) ? (
                   <>
-                    {userData}
+                    {userData.name}
                     <ArrowDownToLine
                       onClick={download}
                       className="inline-block cursor-pointer min-h-[18px] min-w-[18px] size-[18px] text-primary/90 ltr:ml-2 rtl:mr-2"

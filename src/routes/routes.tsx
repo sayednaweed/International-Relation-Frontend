@@ -49,6 +49,8 @@ import NgoLoginPage from "@/views/pages/guest/ngo/ngo-login-page";
 import UsersProfilePage from "@/views/pages/auth/general/profile/users/users-profile-page";
 import NgoProfilePage from "@/views/pages/auth/general/profile/ngo/ngo-profile-page";
 import DonorProfilePage from "@/views/pages/auth/general/profile/donor/donor-profile-page";
+import LoginPage from "@/views/pages/guest/login-page";
+import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -199,6 +201,16 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="management/news/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNews />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="management/about"
             element={
               <ProtectedRoute
@@ -325,6 +337,16 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="management/news/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNews />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="management/about"
             element={
               <ProtectedRoute
@@ -431,6 +453,16 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="management/news/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNews />}
+                routeName="management/news"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="management/about"
             element={
               <ProtectedRoute
@@ -526,6 +558,7 @@ export const getGuestRouter = () => {
             </I18nextProvider>
           }
         >
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/user/login" element={<UserLoginPage />} />
           <Route path="/donor/login" element={<DonorLoginPage />} />
           <Route path="/ngo/login" element={<NgoLoginPage />} />

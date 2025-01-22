@@ -202,6 +202,7 @@
   "users_login": "Users Login Page",
   "ministry_emp_portal": "Ministry Employee Login Page",
   "ngo_login": "NGO Login Page",
+  "donor_login": "Donor Login Page",
   "title": "Title",
   "priority": "Priority",
   "detail": "Detail",
@@ -227,5 +228,14 @@
   "manager": "Manager",
   "submit": "Submit",
   "office_info": "Office Information",
-  "technical_sup":"Technical Support"
+  "technical_sup":"Technical Support",
+  "click_here": "Click Here",
+  "welcome": "Welcome",
+  "are_a_ngo": "Are you a NGO?",
+  "are_a_donor": "Are you a Donor?",
+  "to_login": "to login",
+  "edit_desc": "Here you can edit the news information.",
+  "no_content": "No Content Found",
+  "visible": "Visible",
+  "saved_by": "Saved By: "
 }
