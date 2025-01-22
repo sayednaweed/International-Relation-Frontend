@@ -384,9 +384,9 @@ export default function EditNews() {
                 maxSize={2}
                 accept="image/png, image/jpeg, image/gif"
               />
-              <div className="flex gap-x-4 rtl:text-lg-rtl font-bold px-4 py-2 bg-primary/10 mt-4">
-                <h1 className="">{t("saved_by")}:</h1>
-                <h1>{userData.user}:</h1>
+              <div className="flex items-center gap-x-4 w-full md:w-[60%] lg:w-[400px] shadow-sm rtl:text-lg-rtl font-bold px-4 py-2 bg-primary/10 mt-8 rounded-md">
+                <h1>{t("saved_by")}</h1>
+                <h1 className="font-medium">{userData.user}</h1>
               </div>
             </>
           )}

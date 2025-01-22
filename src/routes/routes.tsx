@@ -752,6 +752,7 @@ const site = (
     <Route path="home" element={<HomePage />} />
     <Route path="ngos" element={<NgosPage />} />
     <Route path="news" element={<NewsPage />} />
+    <Route path="news:id" element={<NewsPage />} />
     <Route path="about" element={<AboutPage />} />
     <Route path="*" element={<HomePage />} />
     {/* Fallback for unknown routes */}

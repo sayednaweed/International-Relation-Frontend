@@ -390,11 +390,6 @@ function NewsPage() {
                   shimmerClassName="min-w-full h-full object-fill rounded-t"
                   className="min-w-full shadow-lg h-full object-fill rounded-t"
                 />
-                {/* <img
-                src={news.image}
-                alt={news.title}
-                className="min-w-full h-full object-fill rounded-t border-b"
-              /> */}
               </CardContent>
               <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
                 <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
@@ -405,11 +400,18 @@ function NewsPage() {
                 </h1>
                 <div
                   dir="ltr"
-                  className="flex flex-col w-full items-start gap-y-1 mt-4 px-2"
+                  className="flex justify-between w-full gap-y-1 mt-4 px-2"
                 >
                   <h1 className="text-[15px] font-bold text-primary/60">
                     {toLocaleDate(new Date(news.date), state)}
                   </h1>
+                  <Link
+                    to={`/news/${news.id}`}
+                    className="flex items-center select-none gap-x-1 bg-tertiary rounded-sm hover:opacity-70 transition-opacity duration-500 text-white shadow-md px-3 py-1 ltr:text-xl-ltr rtl:text-xl-rtl"
+                  >
+                    {t("detail")}
+                    <ChevronRight className="size-[18px]" />
+                  </Link>
                 </div>
               </CardFooter>
             </Card>
