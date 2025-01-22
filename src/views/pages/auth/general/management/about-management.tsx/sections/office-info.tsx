@@ -4,6 +4,8 @@ import { t } from "i18next";
 import Input from "@/components/custom-ui/input/CustomInput";
 import { useState } from "react";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
+import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
+import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 
 function OfficeInfo() {
   const [error, setError] = useState(new Map<string, string>());
@@ -19,13 +21,34 @@ function OfficeInfo() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {" "}
-            <Input
-              size_="lg"
-              lable={t("address")}
-              type="text"
-              className="w-[400px]"
-            ></Input>
+            <MultiTabTextarea
+              optionalKey={"optional_lang"}
+              onTabChanged={(key: string, tabName: string) => {
+                setInfo({
+                  ...info,
+                  [key]: tabName,
+                  //optional_lang: tabName,
+                });
+              }}
+              onChanged={(value: string, name: string) => {
+                setInfo({
+                  ...info,
+                  [name]: value,
+                });
+              }}
+              name=""
+              highlightColor="bg-tertiary"
+              userData={info}
+              errorData={error}
+              placeholder={t("detail")}
+              rows={1}
+              className="rtl:text-xl-rtl rounded-none border-t border-x-0"
+              tabsClassName="gap-x-5 px-3"
+            >
+              <SingleTab>english</SingleTab>
+              <SingleTab>farsi</SingleTab>
+              <SingleTab>pashto</SingleTab>
+            </MultiTabTextarea>
             <Input
               size_="lg"
               lable={t("contact")}
@@ -39,7 +62,7 @@ function OfficeInfo() {
               className="w-[400px]"
             ></Input>
           </CardContent>{" "}
-          <div className="ltr:ml-6 rtl:mr-6">
+          <div className="ltr:ml-6 rtl:mr-6 mb-6">
             <PrimaryButton>{t("save")}</PrimaryButton>
           </div>
         </div>
