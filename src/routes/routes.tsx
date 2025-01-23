@@ -51,6 +51,7 @@ import NgoProfilePage from "@/views/pages/auth/general/profile/ngo/ngo-profile-p
 import DonorProfilePage from "@/views/pages/auth/general/profile/donor/donor-profile-page";
 import LoginPage from "@/views/pages/guest/login-page";
 import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news";
+import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -752,7 +753,7 @@ const site = (
     <Route path="home" element={<HomePage />} />
     <Route path="ngos" element={<NgosPage />} />
     <Route path="news" element={<NewsPage />} />
-    <Route path="news:id" element={<NewsPage />} />
+    <Route path="news/:id" element={<ViewNewsItem />} />
     <Route path="about" element={<AboutPage />} />
     <Route path="*" element={<HomePage />} />
     {/* Fallback for unknown routes */}

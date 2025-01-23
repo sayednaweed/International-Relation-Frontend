@@ -2,12 +2,37 @@ import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 
 import { t } from "i18next";
-
+import { Link } from "react-router";
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 
 export default function AboutPage() {
   return (
     <>
+      <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
+        <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Link to="/dashboard">
+                <AnimHomeIcon />
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="rtl:rotate-180" />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-tertiary">
+                {t("about us")}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <div
         id="map"
         className="relative h-[600px] overflow-hidden bg-cover bg-[50%] bg-no-repeat"

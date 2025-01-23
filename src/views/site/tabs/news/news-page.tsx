@@ -178,6 +178,23 @@ function NewsPage() {
 
   return (
     <>
+      <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
+        <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <Link to="/dashboard">
+                <AnimHomeIcon />
+              </Link>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="rtl:rotate-180" />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-tertiary">
+                {t("news")}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
         <CustomInput
           size_="lg"

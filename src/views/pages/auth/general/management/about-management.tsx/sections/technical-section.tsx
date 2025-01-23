@@ -212,7 +212,7 @@ export default function TechnicalSection() {
                   setAbout({
                     ...about,
                     [key]: tabName,
-                    //optional_lang: tabName,
+                    // optional_lang: tabName,
                   });
                 }}
                 onChanged={(value: string, name: string) => {
@@ -223,7 +223,7 @@ export default function TechnicalSection() {
                 }}
                 name="name"
                 highlightColor="bg-tertiary"
-                userData={about}
+                userData={about.technicalSupport}
                 errorData={error}
                 placeholder={t("detail")}
                 rows={1}
