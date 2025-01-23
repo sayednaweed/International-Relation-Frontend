@@ -38,10 +38,10 @@ const ViewNewsItem = () => {
         </Breadcrumb>
       </div>
       <div className="flex flex-col justify-center items-center   ">
-        <Card className="bg-gray-200 mb-10 rounded-lg">
+        <Card className="bg-primary/5 mb-10 rounded-xl">
           <CardHeader className=" flex  flex-row  justify-between ltr:text-4xl-ltr text-black font-bold">
             <div>This Is A Latest News About Taliban </div>
-            <h3>2025/1/23</h3>
+            <h3 className="text-primary/25">2025/1/23</h3>
           </CardHeader>
           <CardContent className="p-0 max-w-[800px] max-h-[660px]  ">
             <div>
@@ -53,7 +53,7 @@ const ViewNewsItem = () => {
             </div>
           </CardContent>
         </Card>
-        <Card className="bg-gray-200 mb-10 rounded-lg">
+        <Card className="bg-primary/5 mb-10 rounded-xl">
           <CardContent className="px-4 py-4 text-3xl-ltr w-[1200px]  font-medium ltr:text-left rtl:text-right ">
             <div className="font-bold mb-3  text-justify">
               This all About Taliban and About Afghaistan This all About Taliban
