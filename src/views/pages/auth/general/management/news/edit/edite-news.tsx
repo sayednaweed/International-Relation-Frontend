@@ -196,7 +196,7 @@ export default function EditNews() {
             {t("edit")}
           </CardTitle>
           <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-            {t("edit_desc")}
+            {t("edit_news_desc")}
           </CardDescription>
         </CardHeader>
         <CardContent>

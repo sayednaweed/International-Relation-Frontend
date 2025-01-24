@@ -433,8 +433,8 @@ export function UserTable() {
                   <CachedImage
                     src={item?.profile}
                     alt="Avatar"
-                    iconClassName="size-[18px]"
-                    loaderClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
+                    ShimmerIconClassName="size-[18px]"
+                    shimmerClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
                     className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
                   />
                 </TableCell>

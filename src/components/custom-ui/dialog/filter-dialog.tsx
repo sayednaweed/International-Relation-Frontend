@@ -10,20 +10,20 @@ import {
 } from "@/components/custom-ui/filter/FilterItem";
 import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
 import { DateObject } from "react-multi-date-picker";
-import { NewsFilter, NewsSearch, NewsSort, Order } from "@/lib/types";
-export interface NewsFilterDialogProps {
-  sortOnComplete: (itemName: NewsSort) => void;
-  searchFilterChanged: (itemName: NewsSearch) => void;
-  orderOnComplete: (itemName: Order) => void;
+import { Order } from "@/lib/types";
+export interface FilterDialogProps {
+  sortOnComplete: (itemName: any) => void;
+  searchFilterChanged: (itemName: any) => void;
+  orderOnComplete: (itemName: any) => void;
   dateOnComplete: (selectedDates: DateObject[]) => void;
-  filters: NewsFilter;
+  filters: any;
   filtersShowData: {
     sort: IShowData[];
     order: IShowData[];
     search: IShowData[];
   };
 }
-export default function FilterDialog(props: NewsFilterDialogProps) {
+export default function FilterDialog(props: FilterDialogProps) {
   const {
     sortOnComplete,
     searchFilterChanged,
@@ -35,11 +35,11 @@ export default function FilterDialog(props: NewsFilterDialogProps) {
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
   const handleSort = (itemName: string) => {
-    sortOnComplete(itemName as NewsSort);
+    sortOnComplete(itemName);
     modelOnRequestHide();
   };
   const handleSearch = (itemName: string) => {
-    searchFilterChanged(itemName as NewsSearch);
+    searchFilterChanged(itemName);
     modelOnRequestHide();
   };
   const handleOrder = (itemName: string) => {

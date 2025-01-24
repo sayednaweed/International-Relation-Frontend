@@ -41,7 +41,6 @@ import AdminSettingsPage from "@/views/pages/auth/admin/settings/admin-settings-
 import DonorProjectsPage from "@/views/pages/auth/donor/projects/donor-projects-page";
 import UserDonorPage from "@/views/pages/auth/user/donor/user-donor-page";
 import NewsManagementPage from "@/views/pages/auth/general/management/news/news-management-page";
-import AboutManagementPage from "@/views/pages/auth/general/management/about-management.tsx/about-management-page";
 import UserNgoEditPage from "@/views/pages/auth/user/ngo/edit/user-ngo-edit-page";
 import UserLoginPage from "@/views/pages/guest/users/user-login-page";
 import DonorLoginPage from "@/views/pages/guest/donor/donor-login-page";
@@ -51,6 +50,7 @@ import NgoProfilePage from "@/views/pages/auth/general/profile/ngo/ngo-profile-p
 import DonorProfilePage from "@/views/pages/auth/general/profile/donor/donor-profile-page";
 import LoginPage from "@/views/pages/guest/login-page";
 import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news";
+import AboutManagementPage from "@/views/pages/auth/general/management/about/about-management-page";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;

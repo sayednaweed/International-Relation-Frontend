@@ -30,6 +30,12 @@ export const StatusEnum = {
   unregistered: 3,
   not_logged_in: 4,
 };
+export const StaffEnum = {
+  manager: 1,
+  director: 2,
+  technical_support: 3,
+};
+
 export const PERMISSIONS_OPERATION = ["Add", "Edit", "Delete", "View"];
 
 export const DestinationTypeEnum = {

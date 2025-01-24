@@ -1,5 +1,3 @@
-
-
 export type Role =
   | { role: 3; name: "user" }
   | { role: 2; name: "admin" }
@@ -7,6 +5,12 @@ export type Role =
   | { role: 4; name: "debugger" }
   | { role: 5; name: "ngo" }
   | { role: 6; name: "donor" };
+
+export type StatusType =
+  | { active: 1 }
+  | { blocked: 2 }
+  | { unregistered: 3 }
+  | { not_logged_in: 4 };
 
 export type Permission = {
   name: string;
@@ -130,23 +134,7 @@ export type NgoType = {
   name: string;
   created_at: string;
 };
-export type Ngo = {
-  id: string;
-  profile: string;
-  name: string;
-  username: string;
-  abbr: string;
-  status: NgoStatus;
-  registration_no: string;
-  type: NgoType;
-  email: Email;
-  contact: Contact;
-  is_editable: boolean;
-  role: Role;
-  address: Address;
-  permissions: Map<string, UserPermission>;
-  created_at: string;
-};
+
 export type Donor = {
   id: string;
   profile: string;
@@ -177,9 +165,27 @@ export type News = {
   created_at: string;
 };
 
-export type About={
-  id:string;
-  name:string;
-  contact:string;
-  profile:any
-}
+export type About = {
+  id: string;
+  name: string;
+  contact: string;
+  profile: any;
+};
+
+export type Ngo = {
+  id: string;
+  profile: string;
+  name: string;
+  username: string;
+  abbr: string;
+  status: NgoStatus;
+  registration_no: string;
+  type: NgoType;
+  email: Email;
+  contact: Contact;
+  is_editable: boolean;
+  role: Role;
+  address: Address;
+  permissions: Map<string, UserPermission>;
+  created_at: string;
+};

@@ -7,13 +7,13 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction } from "react";
 import { setServerError } from "@/validation/validation";
-import { Ngo } from "@/database/tables";
 import { Check, Database, User as UserIcon } from "lucide-react";
 import AddNgoInformation from "./steps/AddNgorInformation";
 import AddNgoAccount from "./steps/AddNgoAccount";
+import { NgoInformation } from "@/lib/types";
 
 export interface AddNgoProps {
-  onComplete: (ngo: Ngo) => void;
+  onComplete: (ngo: NgoInformation) => void;
 }
 export default function AddNgo(props: AddNgoProps) {
   const { onComplete } = props;

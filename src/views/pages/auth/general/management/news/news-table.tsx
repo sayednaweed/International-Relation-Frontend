@@ -19,7 +19,7 @@ import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import AddNews from "./add/add-news";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { toLocaleDate } from "@/lib/utils";
+import { setDateToURL, toLocaleDate } from "@/lib/utils";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
@@ -200,27 +200,6 @@ export default function NewsTable() {
     navigate(`/management/news/${newsId}`);
   };
 
-  const setDateToURL = (
-    queryParams: URLSearchParams,
-    selectedDates: DateObject[]
-  ) => {
-    if (selectedDates.length == 1) {
-      queryParams.set(
-        "st_dt",
-        selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
-      );
-    } else if (selectedDates.length == 2) {
-      queryParams.set(
-        "st_dt",
-        selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
-      );
-      queryParams.set(
-        "en_dt",
-        selectedDates[1].toDate().toISOString().split("T")[0] //2025-01-01
-      );
-    }
-  };
-
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
@@ -279,19 +258,23 @@ export default function NewsTable() {
             <FilterDialog
               filters={filters}
               sortOnComplete={async (filterName: NewsSort) => {
-                const queryParams = new URLSearchParams();
-                queryParams.set("search", filters.search.column);
-                queryParams.set("sort", filterName);
-                queryParams.set("order", filters.order);
-                navigate(`/management/news?${queryParams.toString()}`, {
-                  replace: true,
-                });
+                if (filterName != filters.sort) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filterName);
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/management/news?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
               }}
               searchFilterChanged={async (filterName: NewsSearch) => {
                 if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
-                  queryParams.set("order", filterName);
+                  queryParams.set("order", filters.order);
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);

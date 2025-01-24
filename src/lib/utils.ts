@@ -178,3 +178,24 @@ export const toLocaleDate = (date: Date, state: any) => {
     .format();
   return gre;
 };
+
+export const setDateToURL = (
+  queryParams: URLSearchParams,
+  selectedDates: DateObject[]
+) => {
+  if (selectedDates.length == 1) {
+    queryParams.set(
+      "st_dt",
+      selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
+    );
+  } else if (selectedDates.length == 2) {
+    queryParams.set(
+      "st_dt",
+      selectedDates[0].toDate().toISOString().split("T")[0] //2025-01-01
+    );
+    queryParams.set(
+      "en_dt",
+      selectedDates[1].toDate().toISOString().split("T")[0] //2025-01-01
+    );
+  }
+};

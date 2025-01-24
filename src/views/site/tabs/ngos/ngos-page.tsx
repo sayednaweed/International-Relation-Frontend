@@ -14,6 +14,7 @@ import axiosClient from "@/lib/axois-client";
 import { useTranslation } from "react-i18next";
 import {
   NgoFilter,
+  NgoInformation,
   NgoPaginationData,
   NgoSearch,
   NgoSort,
@@ -23,8 +24,6 @@ import { CACHE } from "@/lib/constants";
 import { toast } from "@/components/ui/use-toast";
 import { useSearchParams } from "react-router";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-
-import { Ngo } from "@/database/tables";
 
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import Pagination from "@/components/custom-ui/table/Pagination";
@@ -103,7 +102,7 @@ function NgosPage() {
           },
         },
       });
-      const fetch = response.data.ngos.data as Ngo[];
+      const fetch = response.data.ngos.data as NgoInformation[];
       const lastPage = response.data.ngos.last_page;
       const totalItems = response.data.ngos.total;
       const perPage = response.data.ngos.per_page;
@@ -332,7 +331,8 @@ function NgosPage() {
                           per_page: count ? count.value : 10,
                         },
                       });
-                      const fetch = response.data.users.data as Ngo[];
+                      const fetch = response.data.users
+                        .data as NgoInformation[];
 
                       const item = {
                         currentPage: page,

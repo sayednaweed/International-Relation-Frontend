@@ -1,10 +1,4 @@
-import {
-  Audit,
-  News,
-  Ngo,
-  SelectUserPermission,
-  User,
-} from "@/database/tables";
+import { Audit, News, SelectUserPermission, User } from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -40,6 +34,7 @@ export interface UserInformation {
   allSelected: boolean;
   created_at: string;
 }
+
 export interface UserPassword {
   old_password: string;
   new_password: string;
@@ -123,14 +118,7 @@ export interface Option {
 }
 
 // Application
-export type NgoSort =
-  | "id"
-  | "name"
-  | "type"
-  | "establishment_date"
-  | "contact"
-  | "agreement_expire_date"
-  | "status";
+export type NgoSort = "id" | "name" | "type" | "contact" | "status";
 export type NgoSearch = "id" | "registration_no" | "name" | "type" | "contact";
 export interface NgoFilter {
   sort: NgoSort;
@@ -142,7 +130,7 @@ export interface NgoFilter {
   date: DateObject[];
 }
 export interface NgoPaginationData {
-  data: Ngo[];
+  data: NgoInformation[];
   lastPage: number;
   perPage: number;
   currentPage: number;
@@ -171,4 +159,39 @@ export interface NewsPaginationData {
   perPage: number;
   currentPage: number;
   totalItems: number;
+}
+export type NgoInformation = {
+  id: string;
+  profile: string;
+  name: string;
+  abbr: string;
+  status_id: number;
+  status: string;
+  registration_no: string;
+  type_id: string;
+  type: string;
+  email: string;
+  contact: string;
+  created_at: string;
+};
+export type IStaff = {
+  picture: string;
+  name_english: string;
+  name_farsi: string;
+  name_pashto: string;
+  contact: string;
+  email: string;
+  id: string;
+};
+export interface IStaffSingle {
+  name_english: string;
+  name_farsi: string;
+  name_pashto: string;
+  contact: string;
+  email: string;
+  id: string;
+  picture: File | undefined | string;
+  optional_lang: string;
+  imageUrl: string;
+  editable: boolean;
 }

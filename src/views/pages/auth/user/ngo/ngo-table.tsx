@@ -8,8 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { useGlobalState } from "@/context/GlobalStateContext";
-import { Ngo, UserPermission } from "@/database/tables";
+import { UserPermission } from "@/database/tables";
 import { CACHE, SectionEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,17 +17,16 @@ import axiosClient from "@/lib/axois-client";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
-import { toLocaleDate } from "@/lib/utils";
+import { setDateToURL } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
-import NgoFilterDialog from "./ngo-filter-dialog";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
 import {
-  NgoFilter,
+  NgoInformation,
   NgoPaginationData,
   NgoSearch,
   NgoSort,
@@ -37,6 +35,7 @@ import {
 import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useUserAuthState } from "@/context/AuthContextProvider";
+import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 
 export function NgoTable() {
   const { user } = useUserAuthState();
@@ -46,85 +45,83 @@ export function NgoTable() {
 
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
-  const search = searchParams.get("search");
+  const searchValue = searchParams.get("sch_val");
+  const searchColumn = searchParams.get("sch_col");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const [filters, setFilters] = useState<NgoFilter>({
-    sort: sort == null ? "id" : (sort as NgoSort),
+  const startDate = searchParams.get("st_dt");
+  const endDate = searchParams.get("en_dt");
+  const filters = {
+    sort: sort == null ? "date" : (sort as NgoSort),
     order: order == null ? "asc" : (order as Order),
     search: {
-      column: search == null ? "id" : (search as NgoSearch),
-      value: "",
+      column: searchColumn == null ? "title" : (searchColumn as NgoSearch),
+      value: searchValue == null ? "" : searchValue,
     },
-    date: [],
-  });
-  const loadList = async (count: number, dataFilters: NgoFilter, page = 1) => {
+    date:
+      startDate && endDate
+        ? [
+            new DateObject(new Date(startDate)),
+            new DateObject(new Date(endDate)),
+          ]
+        : startDate
+        ? [new DateObject(new Date(startDate))]
+        : endDate
+        ? [new DateObject(new Date(endDate))]
+        : [],
+  };
+  const loadList = async (
+    count: number,
+    searchInput: string | undefined = undefined,
+    page = 1
+  ) => {
     try {
       if (loading) return;
       setLoading(true);
       // 1. Organize date
-      let dates: {
-        startDate: string | null;
-        endDate: string | null;
+      let dates = {
+        startDate: startDate,
+        endDate: endDate,
       };
-      if (filters.date.length === 1) {
-        // set start date
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: null,
-        };
-      } else if (filters.date.length === 2) {
-        // set dates
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: filters.date[1].toDate().toISOString(),
-        };
-      } else {
-        // Set null
-        dates = {
-          startDate: null,
-          endDate: null,
-        };
-      }
       // 2. Send data
       const response = await axiosClient.get(`ngos/${page}`, {
         params: {
           per_page: count,
           filters: {
-            sort: dataFilters.sort,
-            order: dataFilters.order,
+            sort: sort,
+            order: order,
             search: {
-              column: dataFilters.search.column,
-              value: dataFilters.search.value,
+              column: searchColumn,
+              value: searchInput ? searchInput : searchValue,
             },
             date: dates,
           },
         },
       });
-      const fetch = response.data.ngos.data as Ngo[];
+      const fetch = response.data.ngos.data as NgoInformation[];
       const lastPage = response.data.ngos.last_page;
       const totalItems = response.data.ngos.total;
       const perPage = response.data.ngos.per_page;
       const currentPage = response.data.ngos.current_page;
-      // setNgos({
-      //   filterList: {
-      //     data: fetch,
-      //     lastPage: lastPage,
-      //     totalItems: totalItems,
-      //     perPage: perPage,
-      //     currentPage: currentPage,
-      //   },
-      //   unFilterList: {
-      //     data: fetch,
-      //     lastPage: lastPage,
-      //     totalItems: totalItems,
-      //     perPage: perPage,
-      //     currentPage: currentPage,
-      //   },
-      // });
+      setNgos({
+        filterList: {
+          data: fetch,
+          lastPage: lastPage,
+          totalItems: totalItems,
+          perPage: perPage,
+          currentPage: currentPage,
+        },
+        unFilterList: {
+          data: fetch,
+          lastPage: lastPage,
+          totalItems: totalItems,
+          perPage: perPage,
+          currentPage: currentPage,
+        },
+      });
     } catch (error: any) {
       toast({
-        toastType: t("ERROR"),
+        toastType: "ERROR",
         title: t("error"),
         description: error.response.data.message,
       });
@@ -132,13 +129,13 @@ export function NgoTable() {
       setLoading(false);
     }
   };
-  const initialize = async (dataFilters: NgoFilter) => {
+  const initialize = async (searchInput: string | undefined = undefined) => {
     const count = await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT);
-    loadList(count ? count.value : 10, dataFilters);
+    loadList(count ? count.value : 10, searchInput);
   };
   useEffect(() => {
-    initialize(filters);
-  }, [filters.order, filters.sort]);
+    initialize();
+  }, [sort, startDate, endDate, order, searchColumn, searchValue]);
   const [ngos, setNgos] = useState<{
     filterList: NgoPaginationData;
     unFilterList: NgoPaginationData;
@@ -160,10 +157,7 @@ export function NgoTable() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
-  const [state] = useGlobalState();
-
-  const addItem = (ngo: Ngo) => {
+  const addItem = (ngo: NgoInformation) => {
     setNgos((prevState) => ({
       filterList: {
         ...prevState.filterList,
@@ -176,13 +170,13 @@ export function NgoTable() {
     }));
   };
 
-  const deleteOnClick = async (ngo: Ngo) => {
+  const deleteOnClick = async (ngo: NgoInformation) => {
     try {
       const ngoId = ngo.id;
       const response = await axiosClient.delete("ngo/" + ngoId);
       if (response.status == 200) {
         const filtered = ngos.unFilterList.data.filter(
-          (item: Ngo) => ngoId != item?.id
+          (item: NgoInformation) => ngoId != item?.id
         );
         const item = {
           data: filtered,
@@ -229,6 +223,9 @@ export function NgoTable() {
       <TableCell>
         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
       </TableCell>
+      <TableCell>
+        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+      </TableCell>
     </TableRow>
   );
   const per: UserPermission | undefined = user?.permissions.get(
@@ -238,13 +235,13 @@ export function NgoTable() {
   const remove = per ? per?.delete : false;
   const edit = per ? per?.edit : false;
   const add = per ? per?.add : false;
-  const editOnClick = async (ngo: Ngo) => {
+  const editOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    navigate(`/ngos/${ngoId}`);
+    navigate(`/ngo/${ngoId}`);
   };
-  const watchOnClick = async (ngo: Ngo) => {
+  const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    navigate(`/ngos/${ngoId}`);
+    navigate(`/ngo/${ngoId}`);
   };
   return (
     <>
@@ -277,16 +274,7 @@ export function NgoTable() {
             <SecondaryButton
               onClick={async () => {
                 if (searchRef.current != undefined) {
-                  const newfilter = {
-                    ...filters,
-                    search: {
-                      column: filters.search.column,
-                      value: searchRef.current.value,
-                    },
-                  };
-
-                  await initialize(newfilter);
-                  setFilters(newfilter);
+                  await initialize(searchRef.current.value);
                 }
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
@@ -310,59 +298,120 @@ export function NgoTable() {
             }
             showDialog={async () => true}
           >
-            <NgoFilterDialog
+            <FilterDialog
               filters={filters}
               sortOnComplete={async (filterName: NgoSort) => {
                 if (filterName != filters.sort) {
-                  setFilters({
-                    ...filters,
-                    sort: filterName,
-                  });
                   const queryParams = new URLSearchParams();
-                  queryParams.set("search", filters.search.column);
                   queryParams.set("sort", filterName);
                   queryParams.set("order", filters.order);
-                  navigate(`/ngos?${queryParams.toString()}`);
-                  // sortList
-                  const item = {
-                    data: ngos.filterList.data,
-                    lastPage: ngos.unFilterList.lastPage,
-                    totalItems: ngos.unFilterList.totalItems,
-                    perPage: ngos.unFilterList.perPage,
-                    currentPage: ngos.unFilterList.currentPage,
-                  };
-                  setNgos({
-                    ...ngos,
-                    filterList: item,
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
                   });
                 }
               }}
-              searchOnComplete={async (filterName: NgoSearch) => {
-                const search = filters.search;
-                setFilters({
-                  ...filters,
-                  search: { ...search, column: filterName },
-                });
-              }}
-              orderOnComplete={async (filterName: Order) => {
-                if (filterName != filters.order) {
-                  setFilters({
-                    ...filters,
-                    order: filterName,
-                  });
+              searchFilterChanged={async (filterName: NgoSearch) => {
+                if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
-                  navigate(`/ngos?${queryParams.toString()}`, {
+                  queryParams.set("sch_col", filterName);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              orderOnComplete={async (filterName: Order) => {
+                if (filterName != filters.order) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("order", filterName);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
               dateOnComplete={(selectedDates: DateObject[]) => {
-                setFilters({
-                  ...filters,
-                  date: selectedDates,
-                });
+                if (selectedDates.length == 2) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, selectedDates);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              filtersShowData={{
+                sort: [
+                  {
+                    name: "id",
+                    translate: t("id"),
+                    onClick: () => {},
+                  },
+                  { name: "name", translate: t("name"), onClick: () => {} },
+                  {
+                    name: "type",
+                    translate: t("type"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "contact",
+                    translate: t("contact"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "status",
+                    translate: t("status"),
+                    onClick: () => {},
+                  },
+                ],
+                order: [
+                  {
+                    name: "asc",
+                    translate: t("asc"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "desc",
+                    translate: t("desc"),
+                    onClick: () => {},
+                  },
+                ],
+                search: [
+                  {
+                    name: "id",
+                    translate: t("id"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "registration_no",
+                    translate: t("registration_no"),
+                    onClick: () => {},
+                  },
+                  { name: "name", translate: t("name"), onClick: () => {} },
+                  { name: "type", translate: t("type"), onClick: () => {} },
+                  {
+                    name: "contact",
+                    translate: t("contact"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "email",
+                    translate: t("email"),
+                    onClick: () => {},
+                  },
+                ],
               }}
             />
           </NastranModel>
@@ -383,22 +432,21 @@ export function NgoTable() {
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
           onChange={async (value: string) => {
-            loadList(parseInt(value), filters);
+            loadList(parseInt(value));
           }}
         />
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-center px-1 w-[60px]">
-              {t("profile")}
-            </TableHead>
+            <TableHead className="text-center w-[60px]">{t("pic")}</TableHead>
             <TableHead className="text-start">{t("id")}</TableHead>
             <TableHead className="text-start">{t("registration_no")}</TableHead>
             <TableHead className="text-start">{t("name")}</TableHead>
             <TableHead className="text-start">{t("type")}</TableHead>
             <TableHead className="text-start w-[60px]">{t("status")}</TableHead>
             <TableHead className="text-start">{t("contact")}</TableHead>
+            <TableHead className="text-start">{t("email")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
@@ -406,10 +454,9 @@ export function NgoTable() {
             <>
               {skeleton}
               {skeleton}
-              {skeleton}
             </>
           ) : (
-            ngos.filterList.data.map((item: Ngo) => (
+            ngos.filterList.data.map((item: NgoInformation) => (
               <TableRowIcon
                 read={view}
                 remove={remove}
@@ -424,25 +471,19 @@ export function NgoTable() {
                   <CachedImage
                     src={item?.profile}
                     alt="Avatar"
-                    iconClassName="size-[18px]"
-                    loaderClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
+                    ShimmerIconClassName="size-[18px]"
+                    shimmerClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
                     className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
                   />
                 </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.id}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+                <TableCell className="truncate">{item.id}</TableCell>
+                <TableCell className="truncate rtl:text-md-rtl">
                   {item.registration_no}
                 </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.name}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.type.name}
-                </TableCell>
+                <TableCell className="truncate">{item.name}</TableCell>
+                <TableCell className="truncate">{item.type}</TableCell>
                 <TableCell>
-                  {item?.status ? (
+                  {item.status ? (
                     <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
                       {t("active")}
                     </h1>
@@ -452,8 +493,11 @@ export function NgoTable() {
                     </h1>
                   )}
                 </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.contact.value}
+                <TableCell className="rtl:text-md-rtl truncate">
+                  {item.contact}
+                </TableCell>
+                <TableCell className="rtl:text-md-rtl truncate">
+                  {item.email}
                 </TableCell>
               </TableRowIcon>
             ))
@@ -478,7 +522,7 @@ export function NgoTable() {
                   per_page: count ? count.value : 10,
                 },
               });
-              const fetch = response.data.ngos.data as Ngo[];
+              const fetch = response.data.ngos.data as NgoInformation[];
 
               const item = {
                 currentPage: page,

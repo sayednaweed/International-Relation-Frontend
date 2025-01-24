@@ -15,15 +15,15 @@ export default function AddNgoAccount() {
     setUserData({ ...userData, [name]: value });
   };
   return (
-    <div className="flex flex-col mt-10 w-full gap-y-3 sm:w-[86%] md:w-[60%] lg:w-[400px] mx-auto">
+    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <CustomInput
         size_="sm"
         dir="ltr"
         required={true}
-        requiredHint={`* ${t("Required")}`}
+        requiredHint={`* ${t("required")}`}
         className="rtl:text-end"
         lable={t("contact")}
-        placeholder={t("Enter your phone number")}
+        placeholder={t("enter_ur_pho_num")}
         defaultValue={userData["contact"]}
         type="text"
         name="contact"
@@ -50,10 +50,10 @@ export default function AddNgoAccount() {
         size_="sm"
         name="email"
         required={true}
-        requiredHint={`* ${t("Required")}`}
+        requiredHint={`* ${t("required")}`}
         lable={t("email")}
         defaultValue={userData["email"]}
-        placeholder={t("Enter your email")}
+        placeholder={t("enter_your_email")}
         type="email"
         errorMessage={error.get("email")}
         onChange={handleChange}
@@ -68,10 +68,10 @@ export default function AddNgoAccount() {
         name="password"
         lable={t("password")}
         required={true}
-        requiredHint={`* ${t("Required")}`}
+        requiredHint={`* ${t("required")}`}
         defaultValue={userData["password"]}
         onChange={handleChange}
-        placeholder={t("enter password")}
+        placeholder={t("enter_password")}
         errorMessage={error.get("password")}
         startContent={
           <button
