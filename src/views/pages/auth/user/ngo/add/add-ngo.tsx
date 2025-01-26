@@ -47,6 +47,8 @@ export default function AddNgo(props: AddNgoProps) {
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
+        const item = response.data.ngo;
+        item.type = userData.type.name;
         onComplete(response.data.ngo);
         toast({
           toastType: "SUCCESS",
@@ -136,7 +138,7 @@ export default function AddNgo(props: AddNgoProps) {
                 closeText={t("close")}
                 againText={t("again")}
                 closeModel={closeModel}
-                description={t("User account has been created")}
+                description={t("account_created")}
               />
             ),
             validationRules: [],

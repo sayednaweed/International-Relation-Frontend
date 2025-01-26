@@ -15,7 +15,7 @@ export default function UserNgoPage() {
 
   return (
     <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
-      <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
+      <Breadcrumb className="bg-card dark:!bg-black/30 w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
         <BreadcrumbList>
           <BreadcrumbItem>
             <Link to="/dashboard">

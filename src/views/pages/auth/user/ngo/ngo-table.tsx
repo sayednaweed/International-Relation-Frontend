@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { UserPermission } from "@/database/tables";
-import { CACHE, SectionEnum } from "@/lib/constants";
+import { CACHE, SectionEnum, StatusEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -36,6 +36,7 @@ import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
+import StatusButton from "@/components/custom-ui/button/StatusButton";
 
 export function NgoTable() {
   const { user } = useUserAuthState();
@@ -237,15 +238,47 @@ export function NgoTable() {
   const add = per ? per?.add : false;
   const editOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    navigate(`/ngo/${ngoId}`);
+    if (
+      ngo.status_id == StatusEnum.not_logged_in ||
+      ngo.status_id == StatusEnum.in_progress ||
+      ngo.status_id == StatusEnum.unregistered
+    ) {
+      navigate(`/ngo/profile/edit/${ngoId}`, {
+        state: {
+          data: { edit: true },
+        },
+      });
+    } else {
+      navigate(`/ngo/${ngoId}`);
+    }
   };
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    navigate(`/ngo/${ngoId}`);
+    if (edit) {
+      if (
+        ngo.status_id == StatusEnum.not_logged_in ||
+        ngo.status_id == StatusEnum.in_progress ||
+        ngo.status_id == StatusEnum.unregistered
+      ) {
+        navigate(`/ngo/profile/edit/${ngoId}`, {
+          state: {
+            data: { edit: true },
+          },
+        });
+      } else {
+        navigate(`/ngo/${ngoId}`);
+      }
+    } else {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: t("no_perm_desc"),
+      });
+    }
   };
   return (
     <>
-      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
+      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
         {add && (
           <NastranModel
             size="lg"
@@ -436,7 +469,7 @@ export function NgoTable() {
           }}
         />
       </div>
-      <Table className="bg-card rounded-md my-[2px] py-8">
+      <Table className="bg-card dark:!bg-black/30 rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-center w-[60px]">{t("pic")}</TableHead>
@@ -483,15 +516,10 @@ export function NgoTable() {
                 <TableCell className="truncate">{item.name}</TableCell>
                 <TableCell className="truncate">{item.type}</TableCell>
                 <TableCell>
-                  {item.status ? (
-                    <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("active")}
-                    </h1>
-                  ) : (
-                    <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-red-400 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-                      {t("lock")}
-                    </h1>
-                  )}
+                  <StatusButton
+                    status={item.status}
+                    status_id={item.status_id}
+                  />
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate">
                   {item.contact}
@@ -504,7 +532,7 @@ export function NgoTable() {
           )}
         </TableBody>
       </Table>
-      <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
+      <div className="flex justify-between rounded-md bg-card dark:!bg-black/30 flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
         )} ${ngos.unFilterList.currentPage} ${t("of")} ${

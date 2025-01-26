@@ -146,13 +146,15 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
     return (
       <div
         className={cn(
-          `grid grid-cols-[auto_1fr] relative ${errorMessage && "mb-2"}`,
+          `flex sm:grid sm:grid-cols-[auto_1fr] relative ${
+            errorMessage && "mb-2"
+          }`,
           parentClassName
         )}
       >
         <Label
           htmlFor="initail_scan"
-          className={`w-fit rounded-s-md shadow-md bg-primary px-4 hover:opacity-90 transition-opacity cursor-pointer py-2 flex items-center gap-x-3 text-primary-foreground`}
+          className={`w-fit rounded-s-md py-3 shadow-md bg-primary px-4 hover:opacity-90 transition-opacity cursor-pointer flex items-center gap-x-3 text-primary-foreground`}
         >
           <h1 className="rtl:text-lg-rtl font-semibold ltr:text-lg-ltr pb-[1px] cursor-pointer">
             {lable}
@@ -182,7 +184,7 @@ const FileChooser = React.forwardRef<HTMLInputElement, FileChooserProps>(
         ) : (
           <label
             htmlFor="initail_scan"
-            className={`font-medium flex items-center justify-between px-3 border rounded-e-md flex-1 rtl:text-lg-rtl ltr:text-md-ltr ${
+            className={`bg-card dark:!bg-black/30 flex items-center justify-between px-3 border rounded-e-md flex-1 rtl:text-lg-rtl ltr:text-md-ltr ${
               errorMessage && "border-red-400"
             }`}
           >

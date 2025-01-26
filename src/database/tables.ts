@@ -155,9 +155,9 @@ export type News = {
   contents: string;
   image: string;
   news_type: string;
-  news_type_id: string;
+  news_type_id: number;
   priority: string;
-  priority_id: string;
+  priority_id: number;
   user: string;
   visible: boolean;
   visibility_date: string;
@@ -188,4 +188,10 @@ export type Ngo = {
   address: Address;
   permissions: Map<string, UserPermission>;
   created_at: string;
+};
+export type CheckList = {
+  id: string;
+  name: string;
+  file_extensions: string;
+  description: string;
 };

@@ -29,11 +29,17 @@ export const StatusEnum = {
   blocked: 2,
   unregistered: 3,
   not_logged_in: 4,
+  in_progress: 5,
 };
 export const StaffEnum = {
   manager: 1,
   director: 2,
   technical_support: 3,
+};
+export const PriorityEnum = {
+  high: 1,
+  medium: 2,
+  low: 3,
 };
 
 export const PERMISSIONS_OPERATION = ["Add", "Edit", "Delete", "View"];

@@ -51,6 +51,8 @@ import DonorProfilePage from "@/views/pages/auth/general/profile/donor/donor-pro
 import LoginPage from "@/views/pages/guest/login-page";
 import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news";
 import AboutManagementPage from "@/views/pages/auth/general/management/about/about-management-page";
+import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
+import EditNgoProgress from "@/views/pages/auth/general/ngo/edit-ngo-progress";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -165,6 +167,16 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             element={
               <ProtectedRoute
                 element={<UserNgoEditPage />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/profile/edit/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNgoProgress />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -317,6 +329,16 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="ngo/profile/edit/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNgoProgress />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="projects"
             element={
               <ProtectedRoute
@@ -427,6 +449,16 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             element={
               <ProtectedRoute
                 element={<UserNgoPage />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/profile/edit/:id"
+            element={
+              <ProtectedRoute
+                element={<EditNgoProgress />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -752,7 +784,7 @@ const site = (
     <Route path="home" element={<HomePage />} />
     <Route path="ngos" element={<NgosPage />} />
     <Route path="news" element={<NewsPage />} />
-    <Route path="news:id" element={<NewsPage />} />
+    <Route path="news/:id" element={<ViewNewsItem />} />
     <Route path="about" element={<AboutPage />} />
     <Route path="*" element={<HomePage />} />
     {/* Fallback for unknown routes */}

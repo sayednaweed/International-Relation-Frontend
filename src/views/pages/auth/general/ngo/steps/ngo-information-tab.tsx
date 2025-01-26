@@ -1,24 +1,27 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
+import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { DateObject } from "react-multi-date-picker";
 
-export default function AddNgoInformation() {
+export default function NgoInformationTab() {
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
+
+  // The passed state
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-
   return (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <BorderContainer
-        title={t("name")}
+        title={t("ngo_name")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -81,8 +84,87 @@ export default function AddNgoInformation() {
         apiUrl={"ngo-types"}
         mode="single"
       />
+      <CustomInput
+        size_="sm"
+        dir="ltr"
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        className="rtl:text-end"
+        lable={t("contact")}
+        placeholder={t("enter_ur_pho_num")}
+        defaultValue={userData["contact"]}
+        type="text"
+        name="contact"
+        errorMessage={error.get("contact")}
+        onChange={handleChange}
+      />
+      <CustomInput
+        size_="sm"
+        name="email"
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        lable={t("email")}
+        defaultValue={userData["email"]}
+        placeholder={t("enter_your_email")}
+        type="email"
+        errorMessage={error.get("email")}
+        onChange={handleChange}
+        dir="ltr"
+        className="rtl:text-right"
+      />
+
+      <CustomInput
+        size_="sm"
+        name="moe_registration_no"
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        lable={t("moe_registration_no")}
+        defaultValue={userData["moe_registration_no"]}
+        placeholder={t("enter_your_email")}
+        type="moe_registration_no"
+        errorMessage={error.get("moe_registration_no")}
+        onChange={handleChange}
+        dir="ltr"
+        className="rtl:text-right"
+      />
+
       <BorderContainer
-        title={t("address")}
+        title={t("place_of_establishment")}
+        required={true}
+        parentClassName="mt-3"
+        className="flex flex-col items-stretch gap-y-3"
+      >
+        <APICombobox
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) =>
+            setUserData({ ...userData, ["country"]: selection })
+          }
+          lable={t("country")}
+          required={true}
+          selectedItem={userData["country"]?.name}
+          placeHolder={t("select_a")}
+          errorMessage={error.get("country")}
+          apiUrl={"countries"}
+          params={{ country_id: 1 }}
+          mode="single"
+        />
+        <CustomDatePicker
+          placeholder={t("select_a_date")}
+          lable={t("establishment_date")}
+          requiredHint={`* ${t("required")}`}
+          required={true}
+          value={userData.establishment_date}
+          dateOnComplete={(date: DateObject) => {
+            setUserData({ ...userData, establishment_date: date });
+          }}
+          className="py-3 w-full"
+          errorMessage={error.get("establishment_date")}
+        />
+      </BorderContainer>
+
+      <BorderContainer
+        title={t("head_office_add")}
         required={true}
         parentClassName="mt-3"
         className="flex flex-col items-start gap-y-3"
@@ -152,19 +234,6 @@ export default function AddNgoInformation() {
             <SingleTab>farsi</SingleTab>
             <SingleTab>pashto</SingleTab>
           </MultiTabTextarea>
-          // <CustomInput
-          //   required={true}
-          //   requiredHint={`* ${t("required")}`}
-          //   size_="sm"
-          //   lable={t("area")}
-          //   name="area"
-          //   defaultValue={userData["area"]}
-          //   placeholder={t("area")}
-          //   type="text"
-          //   parentClassName="w-full"
-          //   errorMessage={error.get("area")}
-          //   onBlur={handleChange}
-          // />
         )}
       </BorderContainer>
     </div>

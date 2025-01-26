@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Link, useNavigate, useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { ChevronRight, ListFilter, Search } from "lucide-react";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { NewsPaginationData, NewsSearch, NewsSort, Order } from "@/lib/types";
-import axiosClient from "@/lib/axois-client";
 import { News } from "@/database/tables";
 import { toast } from "@/components/ui/use-toast";
 import { CACHE } from "@/lib/constants";
@@ -20,6 +19,7 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import Pagination from "@/components/custom-ui/table/Pagination";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
+import axiosClient from "@/lib/axois-client";
 
 function NewsPage() {
   const navigate = useNavigate();
@@ -146,7 +146,7 @@ function NewsPage() {
 
   const viewOnClick = async (news: News) => {
     const newsId = news.id;
-    navigate(`/management/news/${newsId}`);
+    navigate(`/news/${newsId}`);
   };
 
   return (
@@ -338,13 +338,13 @@ function NewsPage() {
                   <h1 className="text-[15px] font-bold text-primary/60">
                     {toLocaleDate(new Date(news.date), state)}
                   </h1>
-                  <Link
-                    to={`/news/${news.id}`}
+                  <h1
+                    onClick={() => viewOnClick(news)}
                     className="flex items-center select-none gap-x-1 bg-tertiary rounded-sm hover:opacity-70 transition-opacity duration-500 text-white shadow-md px-3 py-1 ltr:text-xl-ltr rtl:text-xl-rtl"
                   >
                     {t("detail")}
                     <ChevronRight className="size-[18px]" />
-                  </Link>
+                  </h1>
                 </div>
               </CardFooter>
             </Card>
@@ -364,7 +364,7 @@ function NewsPage() {
               const count = await getComponentCache(
                 CACHE.NEWS_PUB_TABLE_PAGINATION_COUNT
               );
-              const response = await axiosClient.get(`news/${page}`, {
+              const response = await axiosClient.get(`public/newses/${page}`, {
                 params: {
                   per_page: count ? count.value : 10,
                 },

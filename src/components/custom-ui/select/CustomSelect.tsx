@@ -172,7 +172,7 @@ const CustomSelect: React.FC<SelectProps> = ({
                   ? selectData.select.value
                   : ""
               }
-              className={`bg-primary rtl:text-lg-rtl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none ${
+              className={`bg-card dark:!bg-black/80 rtl:text-lg-rtl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none ${
                 selectData.select.option === KEYS.input
                   ? "bg-primary text-tertiary"
                   : "text-primary-foreground"

@@ -23,52 +23,51 @@ export default function UserLoginPage() {
   const toggleVisibility = () => setIsVisible(!isVisible);
   const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!loading) {
-      setLoading(true);
-      try {
-        // 1. Validate before submission
-        const result: boolean = await validate(
-          [
-            { name: "email", rules: ["required"] },
-            { name: "password", rules: ["required", "max:45", "min:8"] },
-          ],
-          userData,
-          setError
-        );
-        if (!result) {
-          setLoading(false);
-          return;
-        }
+    if (loading) return;
+    try {
+      // 1. Validate before submission
+      const result: boolean = await validate(
+        [
+          { name: "email", rules: ["required"] },
+          { name: "password", rules: ["required", "max:45", "min:8"] },
+        ],
+        userData,
+        setError
+      );
+      if (!result) {
+        setLoading(false);
+        return;
+      }
 
-        // 2. Attempt login
-        const response: any = await loginUser(
-          userData.email,
-          userData.password,
-          true
-        );
-        if (response.status == 200) {
-          navigate("/dashboard", { replace: true });
-          toast({
-            title: t("success"),
-            toastType: "SUCCESS",
-            description: response.data.message,
-          });
-        } else
-          toast({
-            title: t("error"),
-            toastType: "ERROR",
-            description: response.response.data.message,
-          });
-      } catch (error: any) {
+      setLoading(true);
+      // 2. Attempt login
+      const response: any = await loginUser(
+        userData.email,
+        userData.password,
+        true
+      );
+      if (response.status == 200) {
+        navigate("/dashboard", { replace: true });
+        toast({
+          title: t("success"),
+          toastType: "SUCCESS",
+          description: response.data.message,
+        });
+      } else
         toast({
           title: t("error"),
           toastType: "ERROR",
-          description: error.response.data.message,
+          description: response.response.data.message,
         });
-        console.log(error, "Error");
-      }
-      setLoading(false);
+    } catch (error: any) {
+      toast({
+        title: t("error"),
+        toastType: "ERROR",
+        description: error.response?.data?.message,
+      });
+      console.log(error, "Error");
     }
+    setLoading(false);
   };
   const handleChange = (e: any) => {
     const { name, value } = e.target;
