@@ -166,12 +166,6 @@ function NgosPage() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const [state] = useGlobalState();
-
-  const viewOnClick = async (ngolist: NgoList) => {
-    const newsId = ngolist.id;
-    navigate(`ngos${newsId}`);
-  };
 
   const setDateToURL = (
     queryParams: URLSearchParams,
