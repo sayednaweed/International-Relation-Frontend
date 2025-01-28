@@ -191,7 +191,15 @@ export type Ngo = {
 };
 export type CheckList = {
   id: string;
+  checklist_id: string;
   name: string;
   file_extensions: string;
   description: string;
+};
+
+export type CheckListFile = {
+  pending_id: string;
+  path: string;
+  name: string;
+  file_extensions: string;
 };

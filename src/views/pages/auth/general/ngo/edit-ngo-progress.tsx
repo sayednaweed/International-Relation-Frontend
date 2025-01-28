@@ -33,20 +33,26 @@ export default function EditNgoProgress() {
     setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => {
     let formData = new FormData();
+    // Step.1
+    formData.append("name_english", userData.name_english);
+    formData.append("name_farsi", userData.name_farsi);
+    formData.append("name_pashto", userData.name_pashto);
+    formData.append("abbr", userData.abbr);
+    formData.append("type_id", userData.type?.id);
+    formData.append("contact", userData.contact);
     formData.append("email", userData.email);
-    formData.append("district_id", userData?.district?.id);
-    formData.append("province_id", userData?.province?.id);
-    formData.append("password", userData.password);
+    formData.append("moe_registration_no", userData.moe_registration_no);
+    formData.append("country_id", userData.country?.id);
+    formData.append(
+      "establishment_date",
+      userData.establishment_date.toDate().toISOString()
+    );
+    formData.append("province", userData.province?.id);
+    formData.append("district", userData.district?.id);
     formData.append("area_english", userData.area_english);
     formData.append("area_pashto", userData.area_pashto);
     formData.append("area_farsi", userData.area_farsi);
-    formData.append("abbr", userData.abbr);
-    formData.append("ngo_type_id", userData.type.id);
-    formData.append("contact", userData.contact);
-    formData.append("name_english", userData.name_english);
-    formData.append("name_pashto", userData.name_pashto);
-    formData.append("name_farsi", userData.name_farsi);
-    formData.append("username", userData.username);
+    // Step.2
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
@@ -128,21 +134,21 @@ export default function EditNgoProgress() {
           {
             component: <NgoInformationTab />,
             validationRules: [
-              //   { name: "name_english", rules: ["required", "max:128", "min:5"] },
-              //   { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
-              //   { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
-              //   { name: "abbr", rules: ["required"] },
-              //   { name: "type", rules: ["required"] },
-              //   { name: "contact", rules: ["required"] },
-              //   { name: "email", rules: ["required"] },
-              //   { name: "moe_registration_no", rules: ["required"] },
-              //   { name: "country", rules: ["required"] },
-              //   { name: "establishment_date", rules: ["required"] },
-              //   { name: "province", rules: ["required"] },
-              //   { name: "district", rules: ["required"] },
-              //   { name: "area_english", rules: ["required"] },
-              //   { name: "area_pashto", rules: ["required"] },
-              //   { name: "area_farsi", rules: ["required"] },
+              { name: "name_english", rules: ["required", "max:128", "min:5"] },
+              { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
+              { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
+              { name: "abbr", rules: ["required"] },
+              { name: "type", rules: ["required"] },
+              { name: "contact", rules: ["required"] },
+              { name: "email", rules: ["required"] },
+              { name: "moe_registration_no", rules: ["required"] },
+              { name: "country", rules: ["required"] },
+              { name: "establishment_date", rules: ["required"] },
+              { name: "province", rules: ["required"] },
+              { name: "district", rules: ["required"] },
+              { name: "area_english", rules: ["required"] },
+              { name: "area_pashto", rules: ["required"] },
+              { name: "area_farsi", rules: ["required"] },
             ],
           },
           {

@@ -131,7 +131,6 @@ export default function DirectorInformationTab() {
         errorMessage={error.get("gender")}
         apiUrl={"genders"}
         mode="single"
-        key={userData?.province?.id}
       />
 
       <APICombobox
@@ -147,7 +146,6 @@ export default function DirectorInformationTab() {
         errorMessage={error.get("nationality")}
         apiUrl={"countries"}
         mode="single"
-        key={userData?.province?.id}
       />
       <APICombobox
         placeholderText={t("search_item")}
@@ -162,7 +160,6 @@ export default function DirectorInformationTab() {
         errorMessage={error.get("identity_type")}
         apiUrl={"identities"}
         mode="single"
-        key={userData?.province?.id}
       />
 
       <CustomInput

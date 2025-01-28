@@ -53,12 +53,24 @@ import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news
 import AboutManagementPage from "@/views/pages/auth/general/management/about/about-management-page";
 import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
 import EditNgoProgress from "@/views/pages/auth/general/ngo/edit-ngo-progress";
+import ErrorLayout from "@/views/layout/error-layout";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -233,9 +245,6 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             }
           />
         </Route>
-
-        {/* Catch-all Route for Errors */}
-        <Route path="*" element={<Unauthorized />} />
       </Routes>
     </BrowserRouter>
   );
@@ -245,6 +254,17 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -391,6 +411,17 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -517,6 +548,17 @@ export const getDebuggerRouter = (user: User | Ngo | Donor) => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -582,6 +624,17 @@ export const getGuestRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         <Route
           path="/"
           element={
@@ -619,6 +672,17 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -695,6 +759,17 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Error Routes */}
+        <Route
+          path="/"
+          element={
+            <I18nextProvider i18n={i18n}>
+              <ErrorLayout />
+            </I18nextProvider>
+          }
+        >
+          {error}
+        </Route>
         {/* Site Routes */}
         <Route
           path="/"
@@ -786,7 +861,9 @@ const site = (
     <Route path="news" element={<NewsPage />} />
     <Route path="news/:id" element={<ViewNewsItem />} />
     <Route path="about" element={<AboutPage />} />
+    {/* Catch-all Route for Errors */}
     <Route path="*" element={<HomePage />} />
     {/* Fallback for unknown routes */}
   </Route>
 );
+const error = <Route path="/unauthorized" element={<Unauthorized />}></Route>;

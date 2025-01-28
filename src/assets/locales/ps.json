@@ -177,6 +177,8 @@
   "province": "ولایت",
   "account_created": "حساب جوړ شو",
   "no_perm_desc": "تاسو سرچینو ته د لاسرسي اجازه نلرئ.",
+  "unauthorized": "غیر مجاز",
+  "unauthorized_desc": "د کور پاڼې لیدلو لپاره",
   "application": "application",
   "ngo": "موسسه",
   "donor": "دونر",

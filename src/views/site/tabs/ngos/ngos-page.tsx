@@ -50,7 +50,7 @@ function NgosPage() {
   const search1 = searchParams.get("search1");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const [filters, setFilters] = useState<NgoFilter>({
+  const [filters, _setFilters] = useState<NgoFilter>({
     sort: sort == null ? "id" : (sort as NgoSort),
     order: order == null ? "asc" : (order as Order),
     search: {
@@ -59,6 +59,7 @@ function NgosPage() {
     },
     date: [],
   });
+
   const loadList = async (count: number, dataFilters: NgoFilter, page = 1) => {
     try {
       if (loading) return;

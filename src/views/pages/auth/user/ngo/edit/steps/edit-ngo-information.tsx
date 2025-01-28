@@ -1,8 +1,7 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import { CalendarDays, Mail, Phone, RefreshCcw, UserRound } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
+import { RefreshCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import {
@@ -18,9 +17,7 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
-import { toLocaleDate } from "@/lib/utils";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { useGlobalState } from "@/context/GlobalStateContext";
 import { Address, Country, NgoType, UserPermission } from "@/database/tables";
 import { LanguageEnum, SectionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
@@ -50,7 +47,6 @@ interface EditNgoInformationProps {
 }
 export default function EditNgoInformation() {
   const { user } = useUserAuthState();
-  const [state] = useGlobalState();
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
@@ -120,7 +116,7 @@ export default function EditNgoInformation() {
     loadInformation();
   }, []);
 
-  const handleChange = (e: any) => {
+  const handleChange = (_e: any) => {
     // const { name, value } = e.target;
   };
   const saveData = async () => {

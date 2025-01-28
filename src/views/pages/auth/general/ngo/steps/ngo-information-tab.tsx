@@ -4,21 +4,47 @@ import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
-import { useContext } from "react";
+import { toast } from "@/components/ui/use-toast";
+import axiosClient from "@/lib/axois-client";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
+import { useNavigate, useParams } from "react-router";
 
 export default function NgoInformationTab() {
   const { t } = useTranslation();
+  let { id } = useParams();
+  const navigate = useNavigate();
   const { userData, setUserData, error } = useContext(StepperContext);
+  const [allowed, setAllowed] = useState(false);
+
+  const initialize = async () => {
+    try {
+      const response = await axiosClient.get(`user/news/${id}`);
+      if (response.status == 200) {
+        setAllowed(true);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+      });
+      console.log(error);
+      navigate("/unauthorized", { replace: true });
+    }
+  };
+  useEffect(() => {
+    initialize();
+  }, []);
 
   // The passed state
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-  return (
+  return allowed ? (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <BorderContainer
         title={t("ngo_name")}
@@ -146,7 +172,6 @@ export default function NgoInformationTab() {
           placeHolder={t("select_a")}
           errorMessage={error.get("country")}
           apiUrl={"countries"}
-          params={{ country_id: 1 }}
           mode="single"
         />
         <CustomDatePicker
@@ -237,5 +262,7 @@ export default function NgoInformationTab() {
         )}
       </BorderContainer>
     </div>
+  ) : (
+    <NastranSpinner />
   );
 }
