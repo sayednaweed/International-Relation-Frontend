@@ -1,4 +1,4 @@
-import { Audit, News, SelectUserPermission, User } from "@/database/tables";
+import { Audit, News, NgoList, SelectUserPermission, User } from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -195,3 +195,27 @@ export interface IStaffSingle {
   imageUrl: string;
   editable: boolean;
 }
+
+//add by Imran orya for Ngo list 
+//start 
+export type NgoListSort =
+  | "establishment_date"
+  | "status";
+  export type NgoListSearch = "ngo_name" | "abbr";
+  export interface NgoListFilter {
+    sort: NgoListSort;
+    order: Order;
+    search: {
+      column: NgoListSearch;
+      value: string;
+    };
+    date: DateObject[];
+  }
+  export interface NgoListPaginationData {
+    data: NgoList[];
+    lastPage: number;
+    perPage: number;
+    currentPage: number;
+    totalItems: number;
+  }
+//end
