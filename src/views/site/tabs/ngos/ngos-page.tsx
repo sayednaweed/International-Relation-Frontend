@@ -361,9 +361,9 @@ function NgosPage() {
       <div className="flex flex-col gap-y-4">
         {/* Table */}
         <Card className="p-0">
-          <Table className="min-w-full bg-white border rounded-lg shadow-xl">
+          <Table className="min-w-full bg-primary/30 border rounded-lg shadow-xl">
             <TableHeader>
-              <TableRow className="text-left text-gray-600 rtl:text-2xl-rtl">
+              <TableRow className="text-left text-white rtl:text-2xl-rtl">
                 <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
                   {t("reg_no")}
                 </TableHead>
@@ -377,10 +377,10 @@ function NgosPage() {
                   {t("status")}
                 </TableHead>
                 <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("abbrebviation")}
+                  {t("abbr")}
                 </TableHead>
                 <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("date_of_est")}
+                  {t("date_of_estib")}
                 </TableHead>
                 <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
                   {t("direc_name")}
@@ -400,8 +400,8 @@ function NgosPage() {
                 <h1>{t("no_content")}</h1>
               ) : (
                 ngoList.filterList.data.map((ngo: NgoList) => (
-                  <TableRow key={ngo.id}>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                  <TableRow key={ngo.id} className="">
+                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left ">
                       {ngo.reg_no}
                     </TableCell>
                     <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
