@@ -157,7 +157,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
       <CachedImage
         src={userData?.profile}
         alt="Avatar"
-        loaderClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
+        shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
       />
       {loading && (

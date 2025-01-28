@@ -177,6 +177,8 @@
   "province": "Province",
   "account_created": "Account created",
   "no_perm_desc": "You don't have permission to access resources.",
+  "unauthorized": "Unauthorized",
+  "unauthorized_desc": "To vist home page ",
   "application": "application",
   "ngo": "NGO",
   "donor": "Donor",
@@ -279,5 +281,8 @@
   "objes_in_afg": "Objectives in Afghanistan",
   "objes_in_afg_english": "Objectives in Afghanistan in English",
   "objes_in_afg_farsi": "Objectives in Afghanistan in Farsi",
-  "objes_in_afg_pashto": "Objectives in Afghanistan in Pashto"
+  "objes_in_afg_pashto": "Objectives in Afghanistan in Pashto",
+  "select_a_file": "Select a file",
+  "failed_to_upld": "Some files failed to upload",
+  "download": "Download"
 }

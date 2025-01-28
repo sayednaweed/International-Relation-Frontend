@@ -43,7 +43,7 @@ export default function UserNgoEditPage() {
     }
   };
   useEffect(() => {
-    // loadInformation();
+    loadInformation();
   }, []);
 
   const selectedTabStyle = `after:duration-500 data-[state=active]:after:opacity-100 after:opacity-0 data-[state=active]:after:translate-x-0

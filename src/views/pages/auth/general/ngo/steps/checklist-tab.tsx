@@ -5,11 +5,10 @@ import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ChunkUpload from "../ChunkUpload";
 
 export default function CheckListTab() {
   const { t } = useTranslation();
-  const { userData, setUserData, error } = useContext(StepperContext);
+  const { userData, setUserData } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
     try {
@@ -37,17 +36,30 @@ export default function CheckListTab() {
           maxSize={1024}
           accept="image/png, image/jpeg, image/gif, application/pdf"
           name={item.name}
-          defaultFile={userData[""]}
+          // defaultFile={{
+          //   path: "private/user-profile/2dcab70c-36dd-4add-b53e-db92daf3c889.jpg",
+          //   size: "20mb",
+          //   pending_id: "1",
+          //   name: "profile",
+          //   extension: "jpg",
+          // }}
+          defaultFile={userData[item.checklist_id]}
           validTypes={[
             "image/png",
             "image/jpeg",
             "image/gif",
             "application/pdf",
           ]}
-          onchange={function (file: File | undefined): void {}}
+          onComplete={async (record: any) => {
+            for (const element of record) {
+              const item = element[element.length - 1] as File;
+            }
+          }}
+          onStart={async (file: File) => {
+            setUserData({ ...userData, [item.checklist_id]: file });
+          }}
         />
       ))}
-      <ChunkUpload />
     </div>
   );
 }
