@@ -28,7 +28,7 @@ export default function MainHeader() {
     <>
       <header
         ref={headerRef}
-        className={`bg-fourth h-[90px] xxl:h-fit px-3 pt-3 pb-12 xxl:pb-3 sm:px-6 md:px-12 shadow-md select-none overflow-hidden text-white`}
+        className={`bg-fourth dark:bg-transparent dark:shadow-none dark:border-b dark:border-slate-700 h-[90px] xxl:h-fit px-3 pt-3 pb-12 xxl:pb-3 sm:px-6 md:px-12 shadow-md select-none overflow-hidden text-white`}
       >
         <header className="grid grid-cols-2 gap-y-4 xxl:flex xxl:justify-between">
           <div className="flex items-center justify-end gap-3 justify-self-start">
