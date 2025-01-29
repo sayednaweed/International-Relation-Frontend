@@ -360,122 +360,123 @@ function NgosPage() {
 
       <div className="flex flex-col gap-y-4">
         {/* Table */}
-        <Card className="p-0">
-          <Table className="min-w-full bg-primary/30 border rounded-lg shadow-xl">
-            <TableHeader>
-              <TableRow className="text-left text-white rtl:text-2xl-rtl">
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("reg_no")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("ngo_name")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("ngo_type")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("status")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("abbr")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("date_of_estib")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("direc_name")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("province")}
-                </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("activi_area")}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading ? (
+        <Table className="bg-card rounded-md my-[2px] py-8">
+          <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("reg_no")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("ngo_name")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("ngo_type")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("status")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("abbr")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("date_of_estib")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("direc_name")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("province")}
+              </TableHead>
+              <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
+                {t("activi_area")}
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
+            {loading ? (
+              <div className="flex items-center justify-center h-64">
                 <NastranSpinner />
-              ) : ngoList.filterList.data.length === 0 ? (
-                <h1>{t("no_content")}</h1>
-              ) : (
-                ngoList.filterList.data.map((ngo: NgoList) => (
-                  <TableRow key={ngo.id} className="">
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left ">
-                      {ngo.reg_no}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.ngo_name}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.ngo_type}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.status}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.abbr}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.date_of_est}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.direc_name}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.provience}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.activity_area}
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-
-              <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
-                <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
-                  "page"
-                )} ${ngoList.unFilterList.currentPage} ${t("of")} ${
-                  ngoList.unFilterList.lastPage
-                }`}</h1>
-                <Pagination
-                  lastPage={ngoList.unFilterList.lastPage}
-                  onPageChange={async (page) => {
-                    try {
-                      const count = await getComponentCache(
-                        CACHE.NGO_LIST_TABLE_PAGINATION_COUNT
-                      );
-                      const response = await axiosClient.get(`ngos/${page}`, {
-                        params: {
-                          per_page: count ? count.value : 10,
-                        },
-                      });
-                      const fetch = response.data.news.data as NgoList[];
-
-                      const item = {
-                        currentPage: page,
-                        data: fetch,
-                        lastPage: ngoList.unFilterList.lastPage,
-                        totalItems: ngoList.unFilterList.totalItems,
-                        perPage: ngoList.unFilterList.perPage,
-                      };
-                      setNgoList({
-                        filterList: item,
-                        unFilterList: item,
-                      });
-                    } catch (error: any) {
-                      toast({
-                        toastType: "ERROR",
-                        title: t("error"),
-                        description: error.response.data.message,
-                      });
-                    }
-                  }}
-                />
               </div>
-            </TableBody>
-          </Table>
-        </Card>
+            ) : ngoList.filterList.data.length === 0 ? (
+              <div className="flex items-center justify-center h-64">
+                <h1 className="text-lg font-medium">{t("no_content")}</h1>
+              </div>
+            ) : (
+              ngoList.filterList.data.map((ngo: NgoList) => (
+                <TableRow key={ngo.id} className="">
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left ">
+                    {ngo.reg_no}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.ngo_name}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.ngo_type}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.status}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.abbr}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.date_of_est}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.direc_name}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.provience}
+                  </TableCell>
+                  <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
+                    {ngo.activity_area}
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
+        <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
+          "page"
+        )} ${ngoList.unFilterList.currentPage} ${t("of")} ${
+          ngoList.unFilterList.lastPage
+        }`}</h1>
+        <Pagination
+          lastPage={ngoList.unFilterList.lastPage}
+          onPageChange={async (page) => {
+            try {
+              const count = await getComponentCache(
+                CACHE.NGO_LIST_TABLE_PAGINATION_COUNT
+              );
+              const response = await axiosClient.get(`ngos/${page}`, {
+                params: {
+                  per_page: count ? count.value : 10,
+                },
+              });
+              const fetch = response.data.news.data as NgoList[];
+
+              const item = {
+                currentPage: page,
+                data: fetch,
+                lastPage: ngoList.unFilterList.lastPage,
+                totalItems: ngoList.unFilterList.totalItems,
+                perPage: ngoList.unFilterList.perPage,
+              };
+              setNgoList({
+                filterList: item,
+                unFilterList: item,
+              });
+            } catch (error: any) {
+              toast({
+                toastType: "ERROR",
+                title: t("error"),
+                description: error.response.data.message,
+              });
+            }
+          }}
+        />
       </div>
     </>
   );
