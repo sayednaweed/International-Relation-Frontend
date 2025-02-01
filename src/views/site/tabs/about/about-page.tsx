@@ -12,34 +12,32 @@ import TechnicalStaff from "./sections/technical-staff-section";
 import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
 export default function AboutPage() {
-  const { page } = useParams<{ page: string }>();
   const [staffs, setStaffs] = useState<
     | {
         director: Staff;
-        manager: Staff;
       }
     | undefined
   >(undefined);
 
   const initialize = async () => {
     try {
-      const response = await axiosClient.get(`/staff/director/${page}`);
+      const response = await axiosClient.get(`staff/director`);
 
       if (response.status === 200) {
-        setStaffs(response.data.staffs);
+        setStaffs(response.data.director);
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response?.data?.message || t("something_went_wrong"),
+        description: error.response.data?.message || t("something_went_wrong"),
       });
     }
   };
 
   useEffect(() => {
-    if (page) initialize();
-  }, [page]);
+    initialize();
+  }, []);
 
   return (
     <>
@@ -62,8 +60,8 @@ export default function AboutPage() {
 
           <div className="flex flex-row mt-16 justify-between items-center">
             {/* Ird staff */}
-            <Director director={staffs?.director} />
-            <Manager manager={staffs?.manager} />
+            <Director />
+            <Manager />
 
             {/* Technical Support */}
             <TechnicalStaff />
