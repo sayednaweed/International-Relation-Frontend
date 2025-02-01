@@ -1,4 +1,4 @@
-import { Audit, News, NgoList, SelectUserPermission, User } from "@/database/tables";
+import { Audit, News, SelectUserPermission, User } from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -119,7 +119,13 @@ export interface Option {
 
 // Application
 export type NgoSort = "id" | "name" | "type" | "contact" | "status";
-export type NgoSearch = "id" | "registration_no" | "name" | "type" | "contact";
+export type NgoSearch =
+  | "id"
+  | "abbr"
+  | "registration_no"
+  | "name"
+  | "type"
+  | "contact";
 export interface NgoFilter {
   sort: NgoSort;
   order: Order;
@@ -196,26 +202,32 @@ export interface IStaffSingle {
   editable: boolean;
 }
 
-//add by Imran orya for Ngo list 
-//start 
-export type NgoListSort =
-  | "establishment_date"
-  | "status";
-  export type NgoListSearch = "ngo_name" | "abbr";
-  export interface NgoListFilter {
-    sort: NgoListSort;
-    order: Order;
-    search: {
-      column: NgoListSearch;
-      value: string;
-    };
-    date: DateObject[];
-  }
-  export interface NgoListPaginationData {
-    data: NgoList[];
-    lastPage: number;
-    perPage: number;
-    currentPage: number;
-    totalItems: number;
-  }
+//add by Imran orya for Ngo list
+//start
+export type PublicNgo = {
+  id: string;
+  registration_no: string;
+  name: string;
+  type: string;
+  status: string;
+  abbr: string;
+  establishment_date: string;
+  director: string;
+  province: string;
+};
+export interface NgoListFilter {
+  sort: NgoSort;
+  order: Order;
+  search: {
+    column: NgoSearch;
+    value: string;
+  };
+}
+export interface NgoListPaginationData {
+  data: PublicNgo[];
+  lastPage: number;
+  perPage: number;
+  currentPage: number;
+  totalItems: number;
+}
 //end

@@ -1,8 +1,9 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
+import ConfirmationDialog from "@/components/custom-ui/dialog/confirmation-dialog";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
+import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
@@ -19,16 +20,33 @@ export default function NgoInformationTab() {
   const navigate = useNavigate();
   const { userData, setUserData, error } = useContext(StepperContext);
 
-  const initialize = async () => {
+  const fetchData = async () => {
     try {
       const response = await axiosClient.get(`ngoInit/${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
-        setUserData({
-          ...userData,
-          allowed: true,
-          ...ngo,
-        });
+
+        let content = response.data.content;
+        // Ask if user wants to resume prevoius operation
+        if (content) {
+          content = JSON.parse(content);
+          setUserData({
+            ...content,
+            allowed: true,
+            shouldContinue: false,
+            establishment_date: new DateObject(
+              new Date(content.establishment_date)
+            ),
+          });
+        } else {
+          // no data is stored
+          setUserData({
+            ...userData,
+            allowed: true,
+            shouldContinue: true,
+            ...ngo,
+          });
+        }
       }
     } catch (error: any) {
       toast({
@@ -39,24 +57,42 @@ export default function NgoInformationTab() {
       navigate("/unauthorized", { replace: true });
     }
   };
-  useEffect(() => {
-    initialize();
-  }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, []);
   // The passed state
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-  return userData?.allowed ? (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+  return userData?.shouldContinue == false ? (
+    <ConfirmationDialog
+      onComplete={async (clearState: boolean) => {
+        if (clearState) {
+          setUserData({
+            allowed: true,
+            shouldContinue: true,
+          });
+        } else {
+          setUserData({
+            ...userData,
+            allowed: true,
+            shouldContinue: true,
+          });
+        }
+      }}
+      url={"ngos/personalDetail/destory/" + id}
+    />
+  ) : userData?.allowed ? (
+    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[600px] gap-y-6 pb-12">
       <BorderContainer
         title={t("ngo_name")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
       >
-        <MultiTabTextarea
+        <MultiTabInput
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
             setUserData({
@@ -76,14 +112,13 @@ export default function NgoInformationTab() {
           userData={userData}
           errorData={error}
           placeholder={t("content")}
-          rows={3}
           className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0"
           tabsClassName="gap-x-5 px-3"
         >
           <SingleTab>english</SingleTab>
           <SingleTab>farsi</SingleTab>
           <SingleTab>pashto</SingleTab>
-        </MultiTabTextarea>
+        </MultiTabInput>
       </BorderContainer>
 
       <CustomInput
@@ -113,6 +148,7 @@ export default function NgoInformationTab() {
         errorMessage={error.get("type")}
         apiUrl={"ngo-types"}
         mode="single"
+        readonly={true}
       />
       <CustomInput
         size_="sm"
@@ -233,7 +269,7 @@ export default function NgoInformationTab() {
         )}
 
         {userData.district && (
-          <MultiTabTextarea
+          <MultiTabInput
             title={t("area")}
             parentClassName="w-full"
             optionalKey={"optional_lang"}
@@ -255,14 +291,13 @@ export default function NgoInformationTab() {
             userData={userData}
             errorData={error}
             placeholder={t("content")}
-            rows={5}
             className="rtl:text-xl-rtl"
             tabsClassName="gap-x-5"
           >
             <SingleTab>english</SingleTab>
             <SingleTab>farsi</SingleTab>
             <SingleTab>pashto</SingleTab>
-          </MultiTabTextarea>
+          </MultiTabInput>
         )}
       </BorderContainer>
     </div>

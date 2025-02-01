@@ -156,7 +156,7 @@ const MultiTabTextarea = React.forwardRef<
       <Textarea
         {...rest}
         className={cn(
-          `mt-2 focus-visible:ring-0 bg-card dark:!bg-black/30 focus-visible:border-primary/30 focus-visible:ring-offset-0 ${
+          `mt-2 focus-visible:ring-0 bg-card dark:bg-card-secondary focus-visible:border-primary/30 focus-visible:ring-offset-0 ${
             errorMessages.length > 0 && "border-red-400 !border-b"
           }`,
           className
