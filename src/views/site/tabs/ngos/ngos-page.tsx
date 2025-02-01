@@ -1,7 +1,7 @@
-import { useState, ChangeEvent, useEffect, useRef } from "react";
-import { Input } from "@/components/ui/input";
+import { useState, useEffect, useRef } from "react";
+
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
-import { Card } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -36,7 +36,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import { DateObject } from "react-multi-date-picker";
-import { useGlobalState } from "@/context/GlobalStateContext";
 import { ListFilter, Search } from "lucide-react";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
@@ -207,7 +206,7 @@ function NgosPage() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
+      <div className="bg-card dark:!bg-black/30 flex flex-col sm:items-baseline sm:flex-row rounded-md  gap-2 flex-1 px-2 py-2 mt-4">
         <CustomInput
           size_="lg"
           placeholder={`${t(filters.search.column)}...`}
@@ -358,9 +357,9 @@ function NgosPage() {
         />
       </div>
 
-      <div className="flex flex-col gap-y-4">
+      <div>
         {/* Table */}
-        <Table className="bg-card rounded-md my-[2px] py-8">
+        <Table className="bg-card dark:!bg-black/30 rounded-md my-[2px] py-8 ">
           <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
             <TableRow className="hover:bg-transparent">
               <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
@@ -392,15 +391,13 @@ function NgosPage() {
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
+          <TableBody className=" rtl:text-xl-rtl ltr:text-2xl-ltr">
             {loading ? (
-              <div className="flex items-center justify-center h-64">
-                <NastranSpinner />
-              </div>
+              <NastranSpinner />
             ) : ngoList.filterList.data.length === 0 ? (
-              <div className="flex items-center justify-center h-64">
-                <h1 className="text-lg font-medium">{t("no_content")}</h1>
-              </div>
+              <h1 className="rtl:text-xl-rtl text-primary/80">
+                {t("no_content")}
+              </h1>
             ) : (
               ngoList.filterList.data.map((ngo: NgoList) => (
                 <TableRow key={ngo.id} className="">
@@ -437,7 +434,7 @@ function NgosPage() {
           </TableBody>
         </Table>
       </div>
-      <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
+      <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center  dark:!bg-black/30">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
         )} ${ngoList.unFilterList.currentPage} ${t("of")} ${

@@ -1,4 +1,4 @@
-import { Audit, News, NgoList, SelectUserPermission, User } from "@/database/tables";
+import { About, Audit, News, NgoList, SelectUserPermission, User } from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -174,6 +174,7 @@ export type NgoInformation = {
   contact: string;
   created_at: string;
 };
+
 export type IStaff = {
   picture: string;
   name_english: string;
@@ -197,7 +198,7 @@ export interface IStaffSingle {
 }
 
 //add by Imran orya for Ngo list 
-//start 
+//start
 export type NgoListSort =
   | "establishment_date"
   | "status";

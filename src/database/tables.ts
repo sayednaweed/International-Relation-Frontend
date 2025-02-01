@@ -217,3 +217,11 @@ export type CheckListFile = {
   name: string;
   file_extensions: string;
 };
+
+export type Staff = {
+  profile: string;
+  name: string;
+  contact: string;
+  email: string;
+  id: string;
+};
