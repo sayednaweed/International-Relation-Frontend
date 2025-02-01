@@ -43,6 +43,7 @@ export default function EditNgoProgress() {
           ?.toISOString();
         formData.append("contents", JSON.stringify(content));
         if (id) formData.append("id", id.toString());
+        formData.append("step", "1");
         try {
           const response = await axiosClient.post(
             `ngos/storePersonalDetial/${id}`,

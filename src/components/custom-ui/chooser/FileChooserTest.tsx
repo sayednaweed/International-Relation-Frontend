@@ -45,7 +45,6 @@ const FileChooserTest = React.forwardRef<
       downloadRef.current.style.opacity = lock ? "0.5" : "1";
     }
   };
-  console.log(errorMessage);
   return (
     <ul className="gap-x-2 grid w-full grid-cols-[auto_auto_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center">
       <li className="flex items-center gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
@@ -78,7 +77,7 @@ const FileChooserTest = React.forwardRef<
           withCredentials={true}
           method="POST"
           destination={{
-            url: `${import.meta.env.VITE_API_BASE_URL}/api/v1/file/upload`,
+            url: `${import.meta.env.VITE_API_BASE_URL}/api/v1/ngo/file/upload`,
             headers: {
               "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
               "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,

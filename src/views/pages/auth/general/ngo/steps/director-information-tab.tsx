@@ -219,7 +219,7 @@ export default function DirectorInformationTab() {
                 "application/pdf",
               ]}
               uploadParam={{
-                check_list_id: 1,
+                checklist_id: 3,
                 ngo_id: 1,
               }}
               onComplete={async (record: any) => {
