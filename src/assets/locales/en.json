@@ -284,5 +284,12 @@
   "objes_in_afg_pashto": "Objectives in Afghanistan in Pashto",
   "select_a_file": "Select a file",
   "failed_to_upld": "Some files failed to upload",
-  "download": "Download"
+  "download": "Download",
+  "store_infor": "Storing Information",
+  "area_pashto": "Area in Pashto",
+  "area_english": "Area in English",
+  "area_farsi": "Area in Farsi",
+  "continue_op_desc": "Do you want to continue from where you left?",
+  "confirmation": "Confirmation",
+  "continue": "Continue"
 }

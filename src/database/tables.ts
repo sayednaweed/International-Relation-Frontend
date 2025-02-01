@@ -134,21 +134,6 @@ export type NgoType = {
   name: string;
   created_at: string;
 };
-// add by Imran orya Ngo list here. 
-// start
-export type NgoList={
-  id:string;
-  reg_no:string;
-  ngo_name:string;
-  ngo_type:string;
-  status:string;
-  abbr:string;
-  date_of_est:string;
-  direc_name:string;
-  provience:string;
-  activity_area:string;
-}
-//end
 export type Donor = {
   id: string;
   profile: string;

@@ -36,13 +36,6 @@ export default function CheckListTab() {
           maxSize={1024}
           accept="image/png, image/jpeg, image/gif, application/pdf"
           name={item.name}
-          // defaultFile={{
-          //   path: "private/user-profile/2dcab70c-36dd-4add-b53e-db92daf3c889.jpg",
-          //   size: "20mb",
-          //   pending_id: "1",
-          //   name: "profile",
-          //   extension: "jpg",
-          // }}
           defaultFile={userData[item.checklist_id]}
           validTypes={[
             "image/png",
