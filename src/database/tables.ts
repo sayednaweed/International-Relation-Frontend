@@ -202,3 +202,11 @@ export type CheckListFile = {
   name: string;
   file_extensions: string;
 };
+
+export type Staff = {
+  picture: string;
+  name: string;
+  contact: string;
+  email: string;
+  id: string;
+};

@@ -180,6 +180,7 @@ export type NgoInformation = {
   contact: string;
   created_at: string;
 };
+
 export type IStaff = {
   picture: string;
   name_english: string;

@@ -286,7 +286,6 @@ function NgosPage() {
             }}
           />
         </div>
-
         <div className="flex flex-col gap-y-4">
           {/* Table */}
           <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
@@ -379,7 +378,6 @@ function NgosPage() {
                   },
                 });
                 const fetch = response.data.news.data as PublicNgo[];
-
                 const item = {
                   currentPage: page,
                   data: fetch,
