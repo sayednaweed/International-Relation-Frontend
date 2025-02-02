@@ -36,6 +36,9 @@ export const StaffEnum = {
   director: 2,
   technical_support: 3,
 };
+export const CountryEnum = {
+  afghanistan: 1,
+};
 export const PriorityEnum = {
   high: 1,
   medium: 2,
@@ -97,7 +100,7 @@ export const CACHE = {
   PROJECT_TABLE_PAGINATION_COUNT: "PROJECT_TABLE",
   AUDIT_TABLE_PAGINATION_COUNT: "AUDIT_TABLE",
   NGO_TABLE_PAGINATION_COUNT: "NGO_TABLE",
-  NGO_LIST_TABLE_PAGINATION_COUNT:"NGO_LIST_TABLE",
+  NGO_LIST_TABLE_PAGINATION_COUNT: "NGO_LIST_TABLE",
   NEWS_TABLE_PAGINATION_COUNT: "NEWS_TABLE",
   NEWS_PUB_TABLE_PAGINATION_COUNT: "NEWS_PUB_TABLE",
   SYSTEM_CALENDAR: "SYSTEM_CALENDAR",

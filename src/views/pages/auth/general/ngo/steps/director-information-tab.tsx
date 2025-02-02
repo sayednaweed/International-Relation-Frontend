@@ -1,4 +1,5 @@
 import FileChooser from "@/components/custom-ui/chooser/FileChooser";
+import FileChooserTest from "@/components/custom-ui/chooser/FileChooserTest";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
@@ -6,6 +7,7 @@ import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
+import { CountryEnum } from "@/lib/constants";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +20,7 @@ export default function DirectorInformationTab() {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
+
   return (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <BorderContainer
@@ -158,7 +161,7 @@ export default function DirectorInformationTab() {
         selectedItem={userData["identity_type"]?.name}
         placeHolder={t("select_a")}
         errorMessage={error.get("identity_type")}
-        apiUrl={"identities"}
+        apiUrl={"nid/types"}
         mode="single"
       />
 
@@ -176,20 +179,62 @@ export default function DirectorInformationTab() {
         errorMessage={error.get("nid")}
         onChange={handleChange}
       />
-      <FileChooser
-        parentClassName="mt-6"
-        lable={t("nid_attach")}
-        required={true}
-        requiredHint={`* ${t("required")}`}
-        defaultFile={userData.nid_attach}
-        errorMessage={error.get("nid_attach")}
-        onchange={(file: File | undefined) =>
-          setUserData({ ...userData, nid_attach: file })
-        }
-        validTypes={["image/png", "image/jpeg", "image/gif", "application/pdf"]}
-        maxSize={2}
-        accept="image/png, image/jpeg, image/gif, application/pdf"
-      />
+      {userData.nationality?.id != CountryEnum.afghanistan && (
+        <>
+          {/* <FileChooser
+            parentClassName="mt-6"
+            lable={t("nid_attach")}
+            required={true}
+            requiredHint={`* ${t("required")}`}
+            defaultFile={userData.nid_attach}
+            errorMessage={error.get("nid_attach")}
+            onchange={(file: File | undefined) =>
+              setUserData({ ...userData, nid_attach: file })
+            }
+            validTypes={[
+              "image/png",
+              "image/jpeg",
+              "image/gif",
+              "application/pdf",
+            ]}
+            maxSize={2}
+            accept="image/png, image/jpeg, image/gif, application/pdf"
+          /> */}
+          <BorderContainer
+            title={t("nid_attach")}
+            required={true}
+            parentClassName="mt-3 p-0 rounded-md"
+            className="flex flex-col items-start"
+          >
+            <FileChooserTest
+              maxSize={1024}
+              accept="image/png, image/jpeg, image/gif, application/pdf"
+              name={""}
+              defaultFile={userData?.nid_attach}
+              errorMessage={error.get("nid_attach")}
+              validTypes={[
+                "image/png",
+                "image/jpeg",
+                "image/gif",
+                "application/pdf",
+              ]}
+              uploadParam={{
+                check_list_id: 1,
+                ngo_id: 1,
+              }}
+              onComplete={async (record: any) => {
+                for (const element of record) {
+                  const item = element[element.length - 1] as File;
+                  console.log(item);
+                }
+              }}
+              onStart={async (file: File) => {
+                setUserData({ ...userData, nid_attach: file });
+              }}
+            />
+          </BorderContainer>
+        </>
+      )}
 
       <BorderContainer
         title={t("address")}

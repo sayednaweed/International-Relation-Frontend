@@ -191,6 +191,12 @@ function NewsPage() {
           >
             <FilterDialog
               filters={filters}
+              showColumns={{
+                sort: true,
+                order: true,
+                search: true,
+                date: true,
+              }}
               sortOnComplete={async (filterName: NewsSort) => {
                 if (filterName != filters.sort) {
                   const queryParams = new URLSearchParams();

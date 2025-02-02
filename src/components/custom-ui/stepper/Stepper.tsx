@@ -20,7 +20,8 @@ export interface IStepperProps {
   beforeStepSuccess?: (
     userData: any,
     step: number,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
+    setError: Dispatch<SetStateAction<Map<string, string>>>,
+    backClicked: boolean
   ) => Promise<boolean>;
   stepsCompleted: (
     userData: any[],
@@ -63,6 +64,7 @@ export default function Stepper(props: IStepperProps) {
   const displayStep = (step: number) => components[step - 1].component;
 
   const handleDirection = async (direction: string) => {
+    let backClicked = false;
     if (direction == "again") {
       setCurrentStep(1);
       return;
@@ -74,7 +76,10 @@ export default function Stepper(props: IStepperProps) {
         return;
       }
       newStep++;
-    } else newStep--;
+    } else {
+      newStep--;
+      backClicked = true;
+    }
     if (newStep === steps.length) {
       setUserData({ ...userData, ["complete"]: false });
       const complete = await stepsCompleted(userData, setError);
@@ -85,20 +90,21 @@ export default function Stepper(props: IStepperProps) {
     if (beforeStepSuccess) {
       // Send data to user in each step
       setUserData({ ...userData, ["complete"]: false });
-      const complete = await beforeStepSuccess(userData, currentStep, setError);
+      const complete = await beforeStepSuccess(
+        userData,
+        currentStep,
+        setError,
+        backClicked
+      );
       setUserData({ ...userData, complete: true });
       if (!complete) return;
     }
 
     newStep > 0 && newStep <= steps.length && setCurrentStep(newStep);
   };
+
   return (
-    <div
-      className={cn(
-        "w-full rounded-2xl pb-2 bg-white/40 dark:!bg-black/30",
-        className
-      )}
-    >
+    <div className={cn("w-full rounded-2xl pb-2", className)}>
       {/* Stepper */}
       <div className={`${!isCardActive && "mt-4 sm:container"}`}>
         <StepperSteps
@@ -111,7 +117,7 @@ export default function Stepper(props: IStepperProps) {
         <div
           className={`container overflow-y-auto ${
             isCardActive
-              ? "bg-card rounded-md border border-primary/10 dark:border-primary/20"
+              ? "bg-card px-3 sm:px-7 dark:bg-card-secondary rounded-md border border-primary/10 dark:border-primary/20"
               : "mb-4 mt-12"
           } ${
             size === "wrap-height"
