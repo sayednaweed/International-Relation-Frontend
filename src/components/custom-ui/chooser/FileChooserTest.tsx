@@ -29,13 +29,23 @@ export interface FileChooserTestProps
   uploadParam?: any;
   onComplete: (record: any) => Promise<void>;
   onStart: (file: File) => Promise<void>;
+  url: string;
+  headers: any;
 }
 
 const FileChooserTest = React.forwardRef<
   HTMLInputElement,
   FileChooserTestProps
 >((props, _ref: any) => {
-  const { defaultFile, onComplete, onStart, uploadParam, errorMessage } = props;
+  const {
+    defaultFile,
+    onComplete,
+    onStart,
+    uploadParam,
+    errorMessage,
+    url,
+    headers,
+  } = props;
   const { t } = useTranslation();
   const [uploaded, setUploaded] = useState(false);
   const downloadRef = useRef<HTMLLIElement>(null);
@@ -77,14 +87,8 @@ const FileChooserTest = React.forwardRef<
           withCredentials={true}
           method="POST"
           destination={{
-            url: `${import.meta.env.VITE_API_BASE_URL}/api/v1/ngo/file/upload`,
-            headers: {
-              "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-              "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-              Authorization:
-                "Bearer " +
-                localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
-            },
+            url: url,
+            headers: headers,
             params: uploadParam,
           }}
           chunkSize={1400000}

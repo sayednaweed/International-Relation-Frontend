@@ -59,7 +59,7 @@ export default function NgoInformationTab() {
   };
 
   useEffect(() => {
-    fetchData();
+    if (userData.shouldContinue == undefined) fetchData();
   }, []);
   // The passed state
   const handleChange = (e: any) => {
