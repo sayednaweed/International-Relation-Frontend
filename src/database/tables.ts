@@ -219,7 +219,7 @@ export type CheckListFile = {
 };
 
 export type Staff = {
-  profile: string;
+  picture: string;
   name: string;
   contact: string;
   email: string;

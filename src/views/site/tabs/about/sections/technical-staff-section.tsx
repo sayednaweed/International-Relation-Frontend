@@ -1,3 +1,10 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { t } from "i18next";
 
 import { useEffect, useState } from "react";
@@ -5,21 +12,18 @@ import axiosClient from "@/lib/axois-client";
 
 import { toast } from "@/components/ui/use-toast";
 import { Staff } from "@/database/tables";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 
 export default function TechnicalStaff() {
-  const [staffs, setStaffs] = useState<
-    | {
-        technicalStaff: Staff[];
-      }
-    | undefined
-  >(undefined);
+  const [technical, setTechnical] = useState<Staff[] | undefined>(undefined);
 
   const initialize = async () => {
     try {
-      const response = await axiosClient.get(`staff/technicalSupports`);
+      const response = await axiosClient.get(`staff/public/technicalSupports`);
 
       if (response.status === 200) {
-        setStaffs({ technicalStaff: response.data.technicalStaff });
+        setTechnical(response.data.technicalStaff);
       }
     } catch (error: any) {
       toast({
@@ -35,27 +39,70 @@ export default function TechnicalStaff() {
   }, []);
 
   return (
-    <>
-      {/* Technical Support */}
-      <div>
-        <p className="mb-2 font-bold">{t("technical_support")}</p>
-        <div className="relative rounded-xl overflow-auto p-8">
-          <div className="flex -space-x-3">
-            {staffs?.technicalStaff?.map((tech, index) => (
-              <div
-                key={index}
-                className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-500 shadow-lg ring-2 ring-white dark:ring-slate-900"
-              >
-                <img
-                  className="size-14 rounded-full"
-                  src={tech.profile}
-                  alt={tech.name}
-                />
-              </div>
-            ))}
-          </div>
+    <div className="space-y-2 text-center">
+      <p className="font-bold uppercase">{t("technical_support")}</p>
+      <div className="relative rounded-xl overflow-auto p-8">
+        <div className="flex -space-x-3">
+          {technical?.map((tech, index) => (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {technical ? (
+                    <CachedImage
+                      key={index}
+                      src={tech.picture}
+                      alt="Avatar"
+                      shimmerClassName="size-24 shadow-lg border border-primary/30 rounded-full"
+                      className="size-24 object-center object-cover shadow-lg border-[2px] border-primary  rounded-full"
+                    />
+                  ) : (
+                    <Shimmer className="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full" />
+                  )}
+                </TooltipTrigger>
+                <TooltipContent className="flex flex-col items-start pt-6 pb-12 px-4">
+                  <CachedImage
+                    src={tech.picture}
+                    alt="Avatar"
+                    shimmerClassName="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full"
+                    className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
+                  />
+                  <p className=" font-bold text-primary mt-2 mb-6 ltr:text-4xl-ltr self-center">
+                    {t("Software Developer ")}
+                  </p>
+                  {tech ? (
+                    <div className="grid grid-cols-[auto_auto] text-start gap-x-6 text-primary">
+                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                        {t("name")}:
+                      </p>
+                      <p className="rtl:text-2xl-rtl">{tech.name}</p>
+                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                        {t("job")}:
+                      </p>
+                      <p className="rtl:text-2xl-rtl">{t("director")}</p>
+                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                        {t("contact")}:
+                      </p>
+                      <p className="rtl:text-2xl-rtl">{tech.contact}</p>
+                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                        {t("email")}:
+                      </p>
+                      <p className="rtl:text-2xl-rtl">{tech.email}</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center ">
+                      <Shimmer className="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full" />
+                      <Shimmer className="h-[32px]" />
+                      <Shimmer className="h-[32px]" />
+                      <Shimmer className="h-[32px]" />
+                      <Shimmer className="h-[32px]" />
+                    </div>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

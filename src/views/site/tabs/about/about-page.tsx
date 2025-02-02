@@ -58,7 +58,7 @@ export default function AboutPage() {
             {t("contact_us")}
           </h1>
 
-          <div className="flex flex-row mt-16 justify-between items-center">
+          <div className="flex flex-row mt-16 justify-between">
             {/* Ird staff */}
             <Director />
             <Manager />
