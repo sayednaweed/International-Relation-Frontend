@@ -21,6 +21,7 @@ import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import CheckListTab from "./steps/checklist-tab";
 import { ValidateItem } from "@/validation/types";
 import { CountryEnum } from "@/lib/constants";
+import { isString } from "@/lib/utils";
 
 export default function EditNgoProgress() {
   const { t } = useTranslation();
@@ -38,11 +39,13 @@ export default function EditNgoProgress() {
         let formData = new FormData();
         // Step.1
         const content = userData;
-        content.establishment_date = content.establishment_date
-          ?.toDate()
-          ?.toISOString();
+        if (!isString(content.establishment_date))
+          content.establishment_date = content.establishment_date
+            ?.toDate()
+            ?.toISOString();
         formData.append("contents", JSON.stringify(content));
         if (id) formData.append("id", id.toString());
+        formData.append("step", "1");
         try {
           const response = await axiosClient.post(
             `ngos/storePersonalDetial/${id}`,

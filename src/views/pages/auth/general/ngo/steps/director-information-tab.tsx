@@ -21,6 +21,7 @@ export default function DirectorInformationTab() {
     setUserData({ ...userData, [name]: value });
   };
 
+  console.log(userData);
   return (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <BorderContainer
@@ -207,6 +208,16 @@ export default function DirectorInformationTab() {
             className="flex flex-col items-start"
           >
             <FileChooserTest
+              url={`${
+                import.meta.env.VITE_API_BASE_URL
+              }/api/v1/ngo/file/upload`}
+              headers={{
+                "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+                "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+                Authorization:
+                  "Bearer " +
+                  localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+              }}
               maxSize={1024}
               accept="image/png, image/jpeg, image/gif, application/pdf"
               name={""}
@@ -219,13 +230,25 @@ export default function DirectorInformationTab() {
                 "application/pdf",
               ]}
               uploadParam={{
-                check_list_id: 1,
+                checklist_id: 1,
                 ngo_id: 1,
               }}
               onComplete={async (record: any) => {
                 for (const element of record) {
-                  const item = element[element.length - 1] as File;
-                  console.log(item);
+                  const item = element[element.length - 1];
+                  const checklistArray = userData.checklistArray;
+                  if (checklistArray) {
+                    const filteredUsers = checklistArray.filter(
+                      (checklist: any) =>
+                        checklist.check_list_id !== item.check_list_id
+                    );
+                    setUserData({
+                      ...userData,
+                      checklistArray: [...filteredUsers, item],
+                    });
+                  } else {
+                    setUserData({ ...userData, checklistArray: [item] });
+                  }
                 }
               }}
               onStart={async (file: File) => {
