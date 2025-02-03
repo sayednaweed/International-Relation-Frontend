@@ -40,8 +40,10 @@ export default function TechnicalStaff() {
 
   return (
     <div className="space-y-2 text-center">
-      <p className="font-bold uppercase">{t("technical_support")}</p>
-      <div className="relative rounded-xl overflow-auto p-8">
+      <p className="font-bold uppercase bg-transparent border border-primary rounded-full rtl:text-4xl-rtl p-2">
+        {t("technical_sup")}
+      </p>
+      <div className="relative rounded-xl overflow-auto p-4">
         <div className="flex -space-x-3">
           {technical?.map((tech, index) => (
             <TooltipProvider>
@@ -69,7 +71,7 @@ export default function TechnicalStaff() {
                   <p className=" font-bold text-primary mt-2 mb-6 ltr:text-4xl-ltr self-center">
                     {t("Software Developer ")}
                   </p>
-                  {tech ? (
+                  {technical ? (
                     <div className="grid grid-cols-[auto_auto] text-start gap-x-6 text-primary">
                       <p className="ltr:font-semibold rtl:text-3xl-rtl">
                         {t("name")}:

@@ -2,43 +2,11 @@ import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { t } from "i18next";
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
-import { useEffect, useState } from "react";
-import axiosClient from "@/lib/axois-client";
-import { useParams } from "react-router";
-import { toast } from "@/components/ui/use-toast";
-import { Staff } from "@/database/tables";
 
 import TechnicalStaff from "./sections/technical-staff-section";
 import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
 export default function AboutPage() {
-  const [staffs, setStaffs] = useState<
-    | {
-        director: Staff;
-      }
-    | undefined
-  >(undefined);
-
-  const initialize = async () => {
-    try {
-      const response = await axiosClient.get(`staff/director`);
-
-      if (response.status === 200) {
-        setStaffs(response.data.director);
-      }
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data?.message || t("something_went_wrong"),
-      });
-    }
-  };
-
-  useEffect(() => {
-    initialize();
-  }, []);
-
   return (
     <>
       <div
@@ -52,74 +20,68 @@ export default function AboutPage() {
           loading="lazy"
         ></iframe>
       </div>
-      <div className="w-[90%] mx-auto px-6 md:px-12 mb-28 -mt-[64px]">
-        <div className="block rounded-lg bg-[hsla(0,0%,100%,0.8)] px-6 py-12 shadow-md md:py-16 md:px-12 backdrop-blur-md dark:bg-black/30">
-          <h1 className="text-center font-bold text-2xl rounded-md bg-sky-200 p-4 text-primary">
-            {t("contact_us")}
-          </h1>
+      <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg bg-[hsla(0,0%,100%,0.8)] shadow-md backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
+        <h1 className="text-center shadow-sm font-bold text-2xl rounded-md bg-sky-200 p-4 text-primary">
+          {t("contact_us")}
+        </h1>
 
-          <div className="flex flex-row mt-16 justify-between">
-            {/* Ird staff */}
-            <Director />
-            <Manager />
+        <div className="flex flex-col items-center gap-y-12 sm:flex-row sm:justify-around sm:flex-wrap mt-16 justify-between">
+          <Director />
+          <Manager />
 
-            {/* Technical Support */}
-            <TechnicalStaff />
-          </div>
-
-          {/* Form */}
-          <form className="flex flex-col mt-16 items-center">
-            <CustomInput
-              lable={t("name")}
-              id="name"
-              size_="sm"
-              placeholder={t("enter_your_name")}
-              type="text"
-              name="name"
-              className="md:w-96 mb-4"
-            />
-
-            <CustomInput
-              lable={t("email")}
-              id="email"
-              size_="sm"
-              placeholder={t("enter_your_email")}
-              type="email"
-              name="email"
-              className="md:w-96 mb-4"
-            />
-
-            <CustomInput
-              lable={t("contact")}
-              id="contact"
-              size_="sm"
-              placeholder={t("enter_ur_phno")}
-              type="number"
-              name="contact"
-              className="md:w-96 mb-4"
-            />
-
-            <CustomInput
-              lable={t("subject")}
-              id="subject"
-              size_="sm"
-              placeholder={t("enter_your_subject")}
-              type="text"
-              name="subject"
-              className="md:w-96 mb-4"
-            />
-
-            <CustomTextarea
-              id="message"
-              className="w-[500px] p-3 rounded-lg"
-              placeholder={t("enter_ur_messhere...")}
-            />
-
-            <PrimaryButton className="w-20 mt-8 uppercase" type="submit">
-              {t("submit")}
-            </PrimaryButton>
-          </form>
+          <TechnicalStaff />
         </div>
+
+        {/* Form */}
+        <form className="flex flex-col mx-auto sm:w-[70%] lg:w-[50%] xl:w-[40%]">
+          <CustomInput
+            lable={t("name")}
+            id="name"
+            size_="sm"
+            placeholder={t("enter_your_name")}
+            type="text"
+            name="name"
+          />
+
+          <CustomInput
+            lable={t("email")}
+            id="email"
+            size_="sm"
+            placeholder={t("enter_your_email")}
+            type="email"
+            name="email"
+          />
+
+          <CustomInput
+            lable={t("contact")}
+            id="contact"
+            size_="sm"
+            placeholder={t("enter_ur_phno")}
+            type="number"
+            name="contact"
+          />
+
+          <CustomInput
+            lable={t("subject")}
+            id="subject"
+            size_="sm"
+            placeholder={t("enter_your_subject")}
+            type="text"
+            name="subject"
+          />
+
+          <CustomTextarea
+            id="message"
+            placeholder={t("enter_ur_messhere...")}
+          />
+
+          <PrimaryButton
+            className="w-20 mt-8 uppercase self-center"
+            type="submit"
+          >
+            {t("submit")}
+          </PrimaryButton>
+        </form>
       </div>
     </>
   );
