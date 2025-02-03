@@ -23,7 +23,7 @@ export default function AboutPage() {
         ></iframe>
       </div>
       <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg bg-[hsla(0,0%,100%,0.8)] shadow-md backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
-        <h1 className="text-center shadow-sm font-bold text-2xl rounded-md bg-sky-200 p-4 text-primary">
+        <h1 className="text-center shadow-sm font-bold text-2xl rounded-md bg-primary p-4 text-white dark:bg-secondary">
           {t("contact_us")}
         </h1>
 
