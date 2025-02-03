@@ -141,32 +141,13 @@ export default function EditNgoProgress() {
 
     // Step.2
     try {
-      const response = await axiosClient.post("ngo/store", formData);
-      formData.append("name_english", userData.name_english);
-      formData.append("name_farsi", userData.name_farsi);
-      formData.append("name_pashto", userData.name_pashto);
-      formData.append("abbr", userData.abbr);
-      formData.append("type_id", userData.type?.id);
-      formData.append("contact", userData.contact);
-      formData.append("email", userData.email);
-      formData.append("moe_registration_no", userData.moe_registration_no);
-      formData.append("country_id", userData.country?.id);
-      formData.append(
-        "establishment_date",
-        userData.establishment_date.toDate().toISOString()
+      formData.append("content", JSON.stringify(userData));
+      const response = await axiosClient.post(
+        "ngo/store/personal/detail-final",
+        formData
       );
-      formData.append("province", userData.province?.id);
-      formData.append("district", userData.district?.id);
-      formData.append("area_english", userData.area_english);
-      formData.append("area_pashto", userData.area_pashto);
-      formData.append("area_farsi", userData.area_farsi);
+
       if (response.status == 200) {
-        const item = response.data.ngo;
-        item.type = userData.type.name;
-        toast({
-          toastType: "SUCCESS",
-          description: response.data.message,
-        });
       }
     } catch (error: any) {
       toast({
@@ -178,7 +159,7 @@ export default function EditNgoProgress() {
       console.log(error);
       return false;
     }
-    return true;
+    return false;
   };
 
   const closeModel = async () => {};

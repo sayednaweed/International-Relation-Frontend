@@ -45,6 +45,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       uploadParam,
       name,
       number,
+      accept,
     } = props;
     const { t } = useTranslation();
     const [uploaded, setUploaded] = useState(false);
@@ -99,6 +100,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
             }}
             chunkSize={1400000}
             inputFieldName={"file"}
+            // accept="application/pdf, image/png"
           >
             <div className="flex items-center gap-x-4">
               <UploadButton text="">
