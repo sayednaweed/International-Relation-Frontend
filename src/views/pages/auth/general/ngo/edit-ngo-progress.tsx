@@ -45,7 +45,7 @@ export default function EditNgoProgress() {
             ?.toISOString();
         formData.append("contents", JSON.stringify(content));
         if (id) formData.append("id", id.toString());
-        formData.append("step", "1");
+        formData.append("step", currentStep.toString());
         try {
           const response = await axiosClient.post(
             `ngos/storePersonalDetial/${id}`,
@@ -80,11 +80,40 @@ export default function EditNgoProgress() {
         let formData = new FormData();
         // Step.1
         formData.append("contents", JSON.stringify(userData));
+        formData.append("step", currentStep.toString());
         if (id) formData.append("id", id.toString());
         try {
           const response = await axiosClient.post(
             `ngos/storePersonalDetial/${id}`,
             formData
+          );
+          if (response.status == 200) {
+            return true;
+          }
+        } catch (error: any) {
+          toast({
+            toastType: "ERROR",
+            title: t("error"),
+            description: error.response.data.message,
+          });
+          setServerError(error.response.data.errors, setError);
+          console.log(error);
+        }
+      } else if (currentStep == 3) {
+        let formData = new FormData();
+        // Step.1
+        formData.append("contents", JSON.stringify(userData));
+        formData.append("step", currentStep.toString());
+        if (id) formData.append("id", id.toString());
+        try {
+          const response = await axiosClient.post(
+            `ngos/storePersonalDetial/${id}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data", // This is handled by axios automatically, but it's here just for clarity
+              },
+            }
           );
           if (response.status == 200) {
             return true;
@@ -304,54 +333,54 @@ export default function EditNgoProgress() {
           {
             component: <MoreInformationTab />,
             validationRules: [
-              // {
-              //   name: "vision_english",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "vision_pashto",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "vision_farsi",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "mission_english",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "mission_pashto",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "mission_farsi",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "general_objes_english",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "general_objes_pashto",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "general_objes_farsi",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "objes_in_afg_english",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "objes_in_afg_pashto",
-              //   rules: ["required", "min:30"],
-              // },
-              // {
-              //   name: "objes_in_afg_farsi",
-              //   rules: ["required", "min:30"],
-              // },
+              {
+                name: "vision_english",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "vision_pashto",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "vision_farsi",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "mission_english",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "mission_pashto",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "mission_farsi",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "general_objes_english",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "general_objes_pashto",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "general_objes_farsi",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "objes_in_afg_english",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "objes_in_afg_pashto",
+                rules: ["required", "min:30"],
+              },
+              {
+                name: "objes_in_afg_farsi",
+                rules: ["required", "min:30"],
+              },
             ],
           },
           {

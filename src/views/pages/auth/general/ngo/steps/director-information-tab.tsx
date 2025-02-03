@@ -1,4 +1,3 @@
-import FileChooser from "@/components/custom-ui/chooser/FileChooser";
 import FileChooserTest from "@/components/custom-ui/chooser/FileChooserTest";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";

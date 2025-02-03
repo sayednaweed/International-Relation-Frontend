@@ -177,6 +177,8 @@
   "province": "ولایت",
   "account_created": "حساب ایجاد شد",
   "no_perm_desc": "شما اجازه دسترسی به منابع را ندارید.",
+  "unauthorized": "غیر مجاز",
+  "unauthorized_desc": "برای بازدید از صفحه اصلی ",
   "application": "application",
   "ngo": "موسسه",
   "donor": "دونر",
@@ -282,5 +284,15 @@
   "objes_in_afg_pashto": "اهداف در افغانستان به پشتو",
   "select_a_file": "یک فایل را انتخاب کنید",
   "failed_to_upld": "برخی از فایل ها بارگذاری نشدند",
-  "download": "دانلود"
+  "download": "دانلود",
+  "store_infor": "ذخیره سازی اطلاعات",
+  "area_pashto": "منطقه به پشتو",
+  "area_english": "منطقه به انگلیسی",
+  "area_farsi": "منطقه به فارسی",
+  "continue_op_desc": "آیا می خواهید از جایی که ترک کردید ادامه دهید؟",
+  "confirmation": "تاییدی",
+  "continue": "ادامه",
+  "director_area_english": "منطقه انگلیسی رئیس",
+  "director_area_farsi": "منطقه فارسی رئیس",
+  "director_area_pashto": "منطقه پشتو رئیس"
 }

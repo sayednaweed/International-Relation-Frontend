@@ -291,5 +291,8 @@
   "area_farsi": "Area in Farsi",
   "continue_op_desc": "Do you want to continue from where you left?",
   "confirmation": "Confirmation",
-  "continue": "Continue"
+  "continue": "Continue",
+  "director_area_english": "Director English Area",
+  "director_area_farsi": "Director Farsi Area",
+  "director_area_pashto": "Director Pashto Area"
 }
