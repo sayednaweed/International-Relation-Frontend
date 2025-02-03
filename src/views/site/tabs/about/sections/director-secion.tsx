@@ -32,9 +32,8 @@ export default function Director() {
 
   return (
     <>
-      {/* Director */}
       {director ? (
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-center">
           <CachedImage
             src={director.picture}
             alt="Avatar"
@@ -54,7 +53,7 @@ export default function Director() {
             </p>
             <p className="rtl:text-2xl-rtl">{director?.contact}</p>
             <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("email")}:</p>
-            <p className="rtl:text-2xl-rtl">{director?.email}</p>
+            <p className="rtl:text-2xl-rtl truncate">{director?.email}</p>
           </div>
         </div>
       ) : (
