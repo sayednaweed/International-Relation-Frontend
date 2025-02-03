@@ -19,6 +19,7 @@ export interface CheckListProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;
   name: string;
+  number: string;
   parentClassName?: string;
   errorMessage?: string;
   defaultFile: File | FileType;
@@ -28,11 +29,23 @@ export interface CheckListProps
   downloadParam?: { path: string; fileName: string };
   onComplete: (record: any) => Promise<void>;
   onStart: (file: File) => Promise<void>;
+  url: string;
+  uploadParam?: any;
+  headers: any;
 }
 
 const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
   (props, _ref: any) => {
-    const { defaultFile, onComplete, onStart } = props;
+    const {
+      defaultFile,
+      onComplete,
+      onStart,
+      url,
+      headers,
+      uploadParam,
+      name,
+      number,
+    } = props;
     const { t } = useTranslation();
     const [uploaded, setUploaded] = useState(false);
     const downloadRef = useRef<HTMLLIElement>(null);
@@ -44,8 +57,10 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
     };
     return (
       <ul className="gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center">
-        <li className="font-bold text-[15px]">1.</li>
-        <li className="rtl:text-lg-rtl ltr:text-lg-ltr font-semibold"></li>
+        <li className="font-bold text-[15px]">{number}</li>
+        <li className="rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
+          {name}
+        </li>
         <li className="flex items-center gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
           {uploaded ? (
             <Check className="size-[22px] text-green-500 rounded-sm" />
@@ -78,15 +93,9 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
             withCredentials={true}
             method="POST"
             destination={{
-              url: `${import.meta.env.VITE_API_BASE_URL}/api/v1/file/upload`,
-              headers: {
-                "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-                "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                Authorization:
-                  "Bearer " +
-                  localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
-              },
-              // params: { parent: id },
+              url: url,
+              headers: headers,
+              params: uploadParam,
             }}
             chunkSize={1400000}
             inputFieldName={"file"}

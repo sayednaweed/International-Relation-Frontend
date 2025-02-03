@@ -32,9 +32,18 @@ export default function CheckListTab() {
     <div className="flex flex-col gap-y-6 pb-12">
       {list.map((item: CheckList) => (
         <CheckListChooser
+          number={item.id}
           key={item.id}
+          url={`${import.meta.env.VITE_API_BASE_URL}/api/v1/ngo/file/upload`}
+          headers={{
+            "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+            "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+            Authorization:
+              "Bearer " +
+              localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+          }}
           maxSize={1024}
-          accept="image/png, image/jpeg, image/gif, application/pdf"
+          accept={item.acceptable_extensions}
           name={item.name}
           defaultFile={userData[item.checklist_id]}
           validTypes={[
@@ -43,9 +52,26 @@ export default function CheckListTab() {
             "image/gif",
             "application/pdf",
           ]}
+          uploadParam={{
+            checklist_id: 1,
+            ngo_id: 1,
+          }}
           onComplete={async (record: any) => {
             for (const element of record) {
-              const item = element[element.length - 1] as File;
+              const item = element[element.length - 1];
+              const checklistArray = userData.checklistArray;
+              if (checklistArray) {
+                const filteredUsers = checklistArray.filter(
+                  (checklist: any) =>
+                    checklist.check_list_id !== item.check_list_id
+                );
+                setUserData({
+                  ...userData,
+                  checklistArray: [...filteredUsers, item],
+                });
+              } else {
+                setUserData({ ...userData, checklistArray: [item] });
+              }
             }
           }}
           onStart={async (file: File) => {

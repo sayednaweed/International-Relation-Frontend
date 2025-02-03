@@ -192,7 +192,7 @@ export type CheckList = {
   id: string;
   checklist_id: string;
   name: string;
-  file_extensions: string;
+  acceptable_extensions: string;
   description: string;
 };
 

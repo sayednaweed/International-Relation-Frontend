@@ -1,12 +1,14 @@
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import { t } from "i18next";
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
 
 import TechnicalStaff from "./sections/technical-staff-section";
 import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
+import { useTranslation } from "react-i18next";
 export default function AboutPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       <div
@@ -56,7 +58,7 @@ export default function AboutPage() {
             lable={t("contact")}
             id="contact"
             size_="sm"
-            placeholder={t("enter_ur_phno")}
+            placeholder={t("enter_ur_pho_num")}
             type="number"
             name="contact"
           />
@@ -70,10 +72,7 @@ export default function AboutPage() {
             name="subject"
           />
 
-          <CustomTextarea
-            id="message"
-            placeholder={t("enter_ur_messhere...")}
-          />
+          <CustomTextarea id="message" placeholder={t("content")} />
 
           <PrimaryButton
             className="w-20 mt-8 uppercase self-center"

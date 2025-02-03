@@ -1,13 +1,13 @@
-import { t } from "i18next";
-
 import { Staff } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
+import { useTranslation } from "react-i18next";
 
 export default function Manager() {
+  const { t, i18n } = useTranslation();
   const [manager, setManager] = useState<Staff | undefined>(undefined);
 
   const initialize = async () => {
@@ -28,7 +28,7 @@ export default function Manager() {
 
   useEffect(() => {
     initialize();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <>
@@ -43,20 +43,29 @@ export default function Manager() {
           />
 
           <p className=" font-bold mt-2 mb-6 text-primary ltr:text-4xl-ltr self-center ">
-            {t("Manager")}
+            {t("manager")}
           </p>
           <div className="grid grid-cols-[auto_auto] gap-x-6 text-primary ">
-            {" "}
-            <p className="ltr:font-semibold  rtl:text-3xl-rtl">{t("name")}:</p>
-            <p className="rtl:text-2xl-rtl">{manager?.name}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("job")}:</p>
-            <p className="rtl:text-2xl-rtl">{t("Manager")}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("name")}:
+            </p>
+            <p className="rtl:text-3xl-rtl text-primary/85">{manager?.name}</p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("job")}:
+            </p>
+            <p className="rtl:text-3xl-rtl text-primary/85">{t("manager")}</p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
               {t("contact")}:
             </p>
-            <p className="rtl:text-2xl-rtl">{manager?.contact}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("email")}:</p>
-            <p className="rtl:text-2xl-rtl">{manager?.email}</p>
+            <p className="text-[17px] text-end" dir="ltr">
+              {manager?.contact}
+            </p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("email")}:
+            </p>
+            <p className="text-[17px] text-end" dir="ltr">
+              {manager?.email}
+            </p>
           </div>
         </div>
       ) : (

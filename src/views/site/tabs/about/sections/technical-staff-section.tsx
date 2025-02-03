@@ -5,8 +5,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { t } from "i18next";
-
 import { useEffect, useState } from "react";
 import axiosClient from "@/lib/axois-client";
 
@@ -14,8 +12,10 @@ import { toast } from "@/components/ui/use-toast";
 import { Staff } from "@/database/tables";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
+import { useTranslation } from "react-i18next";
 
 export default function TechnicalStaff() {
+  const { t, i18n } = useTranslation();
   const [technical, setTechnical] = useState<Staff[] | undefined>(undefined);
 
   const initialize = async () => {
@@ -36,11 +36,11 @@ export default function TechnicalStaff() {
 
   useEffect(() => {
     initialize();
-  }, []);
+  }, [i18n.language]);
 
   return (
     <div className="space-y-2 text-center">
-      <p className="font-bold uppercase bg-transparent border border-primary rounded-full rtl:text-4xl-rtl p-2">
+      <p className="font-bold uppercase bg-tertiary text-white shadow-lg rounded-full rtl:text-3xl-rtl p-2">
         {t("technical_sup")}
       </p>
       <div className="relative rounded-xl overflow-auto p-4">
