@@ -6,36 +6,34 @@ import TechnicalStaff from "./sections/technical-staff-section";
 import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
 import { useTranslation } from "react-i18next";
+import { SendHorizonal } from "lucide-react";
 export default function AboutPage() {
   const { t } = useTranslation();
-
   return (
     <>
-      <div
-        id="map"
-        className="relative h-[600px] overflow-hidden bg-cover bg-[50%] bg-no-repeat"
-      >
-        <iframe
-          src="https://www.google.com/maps/embed?..."
-          width="100%"
-          height="100%"
-          loading="lazy"
-        ></iframe>
-      </div>
-      <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg bg-[hsla(0,0%,100%,0.8)] shadow-md backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
-        <h1 className="text-center shadow-sm font-bold text-2xl rounded-md bg-sky-200 p-4 text-primary">
+      <iframe
+        src="https://www.google.com/maps/embed?..."
+        width="100%"
+        height="100%"
+        className="h-[600px]"
+        onLoadStart={() => {
+          console.log("asas");
+        }}
+      ></iframe>
+
+      <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg shadow-md backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
+        <h1 className="text-center font-bold text-2xl rounded-md rtl:text-[32px] p-4 text-primary">
           {t("contact_us")}
         </h1>
 
         <div className="flex flex-col items-center gap-y-12 sm:flex-row sm:justify-around sm:flex-wrap mt-16 justify-between">
           <Director />
           <Manager />
-
           <TechnicalStaff />
         </div>
 
         {/* Form */}
-        <form className="flex flex-col mx-auto sm:w-[70%] lg:w-[50%] xl:w-[40%]">
+        <form className="flex flex-col mx-auto sm:w-[70%] gap-y-4 lg:w-[50%] xl:w-[40%]">
           <CustomInput
             lable={t("name")}
             id="name"
@@ -75,9 +73,10 @@ export default function AboutPage() {
           <CustomTextarea id="message" placeholder={t("content")} />
 
           <PrimaryButton
-            className="w-20 mt-8 uppercase self-center"
+            className="mt-8 px-3 uppercase self-center"
             type="submit"
           >
+            <SendHorizonal />
             {t("submit")}
           </PrimaryButton>
         </form>

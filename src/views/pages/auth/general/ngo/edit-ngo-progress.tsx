@@ -6,7 +6,7 @@ import { Dispatch, SetStateAction } from "react";
 import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 import { Check, Database, Grip, NotebookPen, UserRound } from "lucide-react";
 import NgoInformationTab from "./steps/ngo-information-tab";
-import { setServerError, validate } from "@/validation/validation";
+import { setServerError } from "@/validation/validation";
 import DirectorInformationTab from "./steps/director-information-tab";
 import MoreInformationTab from "./steps/more-information-tab";
 import {
@@ -19,8 +19,6 @@ import {
 import { Link, useNavigate, useParams } from "react-router";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import CheckListTab from "./steps/checklist-tab";
-import { ValidateItem } from "@/validation/types";
-import { CountryEnum } from "@/lib/constants";
 import { isString } from "@/lib/utils";
 
 export default function EditNgoProgress() {
@@ -64,19 +62,6 @@ export default function EditNgoProgress() {
           console.log(error);
         }
       } else if (currentStep == 2) {
-        // 1. Validate
-        const compulsoryFields: ValidateItem[] = [];
-        if (userData.nationality?.id != CountryEnum.afghanistan) {
-          compulsoryFields.push({
-            name: "nid_attach",
-            rules: ["required"],
-          });
-        }
-
-        const passed = await validate(compulsoryFields, userData, setError);
-        if (!passed) {
-          return false;
-        }
         let formData = new FormData();
         // Step.1
         formData.append("contents", JSON.stringify(userData));
@@ -141,7 +126,14 @@ export default function EditNgoProgress() {
 
     // Step.2
     try {
-      formData.append("content", JSON.stringify(userData));
+      const content = {
+        ...userData, // shallow copy of the userData object
+        checklistMap: Array.from(userData.checklistMap?.values()), // deep copy of checklistMap
+      };
+
+      if (id) formData.append("ngo_id", id.toString());
+      formData.append("content", JSON.stringify(content));
+
       const response = await axiosClient.post(
         "ngo/store/personal/detail-final",
         formData

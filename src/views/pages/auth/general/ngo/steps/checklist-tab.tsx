@@ -5,9 +5,12 @@ import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router";
 
 export default function CheckListTab() {
   const { t } = useTranslation();
+  let { id } = useParams();
+
   const { userData, setUserData } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
@@ -48,13 +51,13 @@ export default function CheckListTab() {
                 localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
             }}
             maxSize={1024}
-            accept={checklist.acceptable_extensions}
+            accept="application/pdf, image/*"
             name={checklist.name}
             defaultFile={selectedFile}
             validTypes={["image/png", "image/jpeg", "image/gif"]}
             uploadParam={{
-              checklist_id: 1,
-              ngo_id: 1,
+              checklist_id: checklist.id,
+              ngo_id: id,
             }}
             onComplete={async (record: any) => {
               for (const element of record) {

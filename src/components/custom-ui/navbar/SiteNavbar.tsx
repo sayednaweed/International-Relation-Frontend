@@ -13,7 +13,7 @@ export default function SiteNavbar() {
   if (loading) return;
   return (
     <div
-      className={`flex z-10 items-center ltr:pr-6 rtl:pl-4 py-1 border-b border-primary/5 bg-[rgba(0,0,0,0)] dark:bg-card backdrop-blur-[10px] sticky top-0 justify-end gap-x-1`}
+      className={`flex items-center ltr:pr-6 rtl:pl-4 py-1 border-b border-primary/5 bg-[rgba(0,0,0,0)] z-20 backdrop-blur-[20px] sticky top-0 justify-end gap-x-1`}
     >
       {authenticated ? (
         <>
