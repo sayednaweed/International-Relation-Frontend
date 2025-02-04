@@ -1,4 +1,5 @@
-import { memo } from "react";
+import { memo, useState } from "react";
+import ButtonSpinner from "../spinner/ButtonSpinner";
 
 export interface IStepperControlProps {
   backText: string;
@@ -11,6 +12,8 @@ export interface IStepperControlProps {
   currentStep: number;
   isCardActive?: boolean;
   handleClick: (direction: string) => void;
+  onSaveClose?: () => Promise<void>;
+  onSaveCloseText?: string;
 }
 function StepperControl(props: IStepperControlProps) {
   const {
@@ -21,13 +24,24 @@ function StepperControl(props: IStepperControlProps) {
     nextText,
     confirmText,
     isCardActive,
+    onSaveClose,
+    onSaveCloseText,
   } = props;
+  const [loading, setLoading] = useState(false);
+
+  const onClose = async () => {
+    if (onSaveClose) {
+      setLoading(true);
+      await onSaveClose();
+      setLoading(false);
+    }
+  };
   return (
     <div
       className={`${
         isCardActive &&
         "mt-[3px] rounded-md bg-card dark:bg-card-secondary py-4 border border-primary/10 dark:border-primary/20"
-      } container flex justify-around mb-4 text-[13px]`}
+      } flex flex-wrap gap-x-1 gap-y-4 justify-around mb-4 text-[13px]`}
     >
       {/* Back Button */}
       <button
@@ -49,6 +63,17 @@ function StepperControl(props: IStepperControlProps) {
       >
         {currentStep == steps.length - 1 ? confirmText : nextText}
       </button>
+      {onSaveClose && (
+        <button
+          disabled={loading}
+          onClick={onClose}
+          className={`flex items-center transition-all duration-500 text-[14px] font-semibold w-fit text-primary rounded-md hover:bg-primary hover:text-primary-foreground px-4 py-2 ${
+            loading ? " bg-primary/30 border" : "border border-primary"
+          }`}
+        >
+          <ButtonSpinner loading={loading}>{onSaveCloseText}</ButtonSpinner>
+        </button>
+      )}
     </div>
   );
 }

@@ -63,7 +63,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
           {name}
         </li>
         <li className="flex items-center gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
-          {uploaded ? (
+          {uploaded || defaultFile?.name ? (
             <Check className="size-[22px] text-green-500 rounded-sm" />
           ) : (
             <X className="size-[24px] text-red-500 rounded-full p-[2px]" />

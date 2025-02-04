@@ -37,6 +37,10 @@ export default function NgoInformationTab() {
             establishment_date: new DateObject(
               new Date(content.establishment_date)
             ),
+            // If checklistMap exist means it is array
+            checklistMap: content.checklistMap
+              ? new Map(content.checklistMap)
+              : new Map<string, any>(),
           });
         } else {
           // no data is stored
@@ -44,6 +48,7 @@ export default function NgoInformationTab() {
             ...userData,
             allowed: true,
             shouldContinue: true,
+            checklistMap: new Map<string, any>(),
             ...ngo,
           });
         }

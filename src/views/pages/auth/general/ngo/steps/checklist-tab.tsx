@@ -34,10 +34,6 @@ export default function CheckListTab() {
   return (
     <div className="flex flex-col gap-y-6 pb-12">
       {list.map((checklist: CheckList) => {
-        let selectedFile = undefined;
-        if (userData?.checklistMap) {
-          selectedFile = userData.checklistMap.get(checklist.id);
-        }
         return (
           <CheckListChooser
             number={checklist.id}
@@ -51,9 +47,9 @@ export default function CheckListTab() {
                 localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
             }}
             maxSize={1024}
-            accept="application/pdf, image/*"
+            accept={checklist.acceptable_mimes}
             name={checklist.name}
-            defaultFile={selectedFile}
+            defaultFile={userData.checklistMap.get(checklist.id)}
             validTypes={["image/png", "image/jpeg", "image/gif"]}
             uploadParam={{
               checklist_id: checklist.id,
@@ -63,32 +59,20 @@ export default function CheckListTab() {
               for (const element of record) {
                 const item = element[element.length - 1];
                 const checklistMap: Map<string, any> = userData.checklistMap;
-                if (checklistMap) {
-                  checklistMap.set(checklist.id, item);
-                  setUserData({
-                    ...userData,
-                    checklistMap: checklistMap,
-                  });
-                } else {
-                  const files = new Map<string, any>();
-                  files.set(checklist.id, item);
-                  setUserData({ ...userData, checklistMap: files });
-                }
-              }
-            }}
-            onStart={async (file: File) => {
-              const checklistMap: Map<string, any> = userData.checklistMap;
-              if (checklistMap) {
-                checklistMap.set(checklist.id, file);
+                checklistMap.set(checklist.id, item);
                 setUserData({
                   ...userData,
                   checklistMap: checklistMap,
                 });
-              } else {
-                const files = new Map<string, any>();
-                files.set(checklist.id, file);
-                setUserData({ ...userData, checklistMap: files });
               }
+            }}
+            onStart={async (file: File) => {
+              const checklistMap: Map<string, any> = userData.checklistMap;
+              checklistMap.set(checklist.id, file);
+              setUserData({
+                ...userData,
+                checklistMap: checklistMap,
+              });
             }}
           />
         );
