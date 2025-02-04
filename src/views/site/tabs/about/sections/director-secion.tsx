@@ -44,24 +44,34 @@ export default function Director() {
             {t("director")}
           </p>
           <div className="grid grid-cols-[auto_auto] gap-x-6 text-primary ">
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("name")}:</p>
-            <p className="rtl:text-2xl-rtl">{director?.name}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("job")}:</p>
-            <p className="rtl:text-2xl-rtl">{t("director")}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("name")}:
+            </p>
+            <p className="rtl:text-3xl-rtl text-primary/85">{director?.name}</p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("job")}:
+            </p>
+            <p className="rtl:text-3xl-rtl text-primary/85">{t("director")}</p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
               {t("contact")}:
             </p>
-            <p className="rtl:text-xl-rtl">{director?.contact}</p>
-            <p className="ltr:font-semibold rtl:text-3xl-rtl">{t("email")}:</p>
-            <p className="rtl:text-xl-rtl truncate">{director?.email}</p>
+            <p className="text-[17px] rtl:text-end" dir="ltr">
+              {director?.contact}
+            </p>
+            <p className="ltr:font-semibold font-bold rtl:text-[19px]">
+              {t("email")}:
+            </p>
+            <p className="text-[17px] rtl:text-end" dir="ltr">
+              {director?.email}
+            </p>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col items-center">
-          <Shimmer className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full" />
-          <Shimmer className="h-[32px] mt-2 mb-2" />
-          <Shimmer className="h-[32px] mb-2" />
-          <Shimmer className="h-[32px] mb-2" />
+        <div className="flex flex-col items-center gap-y-2">
+          <Shimmer className="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full" />
+          <Shimmer className="h-[32px] " />
+          <Shimmer className="h-[32px] " />
+          <Shimmer className="h-[32px]" />
           <Shimmer className="h-[32px]" />
         </div>
       )}

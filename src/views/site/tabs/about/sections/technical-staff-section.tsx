@@ -70,26 +70,37 @@ export default function TechnicalStaff() {
                     className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
                   />
                   <p className=" font-bold text-primary mt-2 mb-6 ltr:text-4xl-ltr self-center">
-                    {t("Software Developer ")}
+                    {t("soft_eng")}
                   </p>
                   {technical ? (
                     <div className="grid grid-cols-[auto_auto] text-start gap-x-6 text-primary">
-                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                      <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("name")}:
                       </p>
-                      <p className="rtl:text-2xl-rtl">{tech.name}</p>
-                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                      <p className="rtl:text-3xl-rtl text-primary/85">
+                        {tech.name}
+                      </p>
+                      <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("job")}:
                       </p>
-                      <p className="rtl:text-2xl-rtl">{t("director")}</p>
-                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                      <p className="rtl:text-3xl-rtl text-primary/85">
+                        {t("director")}
+                      </p>
+                      <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("contact")}:
                       </p>
-                      <p className="rtl:text-2xl-rtl">{tech.contact}</p>
-                      <p className="ltr:font-semibold rtl:text-3xl-rtl">
+                      <p className="text-[17px] text-end" dir="ltr">
+                        {tech.contact}
+                      </p>
+                      <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("email")}:
                       </p>
-                      <p className="rtl:text-2xl-rtl">{tech.email}</p>
+                      <p
+                        className="text-[17px] text-end overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px] sm:max-w-[250px]"
+                        dir="ltr"
+                      >
+                        {tech.email}
+                      </p>
                     </div>
                   ) : (
                     <div className="flex flex-col items-center ">
