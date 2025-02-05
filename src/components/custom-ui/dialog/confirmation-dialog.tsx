@@ -16,7 +16,7 @@ import NastranSpinner from "../spinner/NastranSpinner";
 import { cn } from "@/lib/utils";
 
 export interface ConfirmationDialogProps {
-  onComplete: (clearState: boolean) => void;
+  onComplete: (clearState: boolean, response: any) => void;
   url: string;
   params?: any;
 }
@@ -33,7 +33,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
         params: params,
       });
       if (response.status === 200) {
-        onComplete(true);
+        onComplete(true, response);
       }
     } catch (error: any) {
       console.log(error);
@@ -45,7 +45,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
     setLoading(false);
   };
   const continueBtn = async () => {
-    onComplete(false);
+    onComplete(false, undefined);
   };
 
   return (

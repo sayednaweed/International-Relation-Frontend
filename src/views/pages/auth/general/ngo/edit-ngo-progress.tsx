@@ -20,6 +20,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import CheckListTab from "./steps/checklist-tab";
 import { isString } from "@/lib/utils";
+import { ServerError } from "@/components/custom-ui/errors/ServerError";
 
 export default function EditNgoProgress() {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export default function EditNgoProgress() {
 
   const stepsCompleted = async (
     userData: any,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
+    _setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => {
     let formData = new FormData();
     try {
@@ -107,16 +108,15 @@ export default function EditNgoProgress() {
       );
 
       if (response.status == 200) {
+        return true;
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response.data.message,
+        description: <ServerError errors={error.response.data.errors} />,
+        duration: 9000 * 10,
       });
-      setServerError(error.response.data.errors, setError);
-      console.log(error);
-      return false;
     }
     return false;
   };

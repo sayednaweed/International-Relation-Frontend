@@ -30,6 +30,7 @@ export const StatusEnum = {
   unregistered: 3,
   not_logged_in: 4,
   in_progress: 5,
+  register_form_submitted: 6,
 };
 export const StaffEnum = {
   manager: 1,

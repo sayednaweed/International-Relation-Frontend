@@ -11,7 +11,7 @@ export default function CheckListTab() {
   const { t } = useTranslation();
   let { id } = useParams();
 
-  const { userData, setUserData } = useContext(StepperContext);
+  const { userData, setUserData, error } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
     try {
@@ -31,6 +31,7 @@ export default function CheckListTab() {
   useEffect(() => {
     loadInformation();
   }, []);
+
   return (
     <div className="flex flex-col gap-y-6 pb-12">
       {list.map((checklist: CheckList) => {

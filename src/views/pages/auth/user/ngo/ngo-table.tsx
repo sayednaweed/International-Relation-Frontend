@@ -240,7 +240,6 @@ export function NgoTable() {
     const ngoId = ngo.id;
     if (
       ngo.status_id == StatusEnum.not_logged_in ||
-      ngo.status_id == StatusEnum.in_progress ||
       ngo.status_id == StatusEnum.unregistered
     ) {
       navigate(`/ngo/profile/edit/${ngoId}`, {
@@ -445,6 +444,12 @@ export function NgoTable() {
                     onClick: () => {},
                   },
                 ],
+              }}
+              showColumns={{
+                sort: true,
+                order: true,
+                search: true,
+                date: true,
               }}
             />
           </NastranModel>

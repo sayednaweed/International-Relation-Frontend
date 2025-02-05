@@ -73,11 +73,14 @@ export default function NgoInformationTab() {
   };
   return userData?.shouldContinue == false ? (
     <ConfirmationDialog
-      onComplete={async (clearState: boolean) => {
+      onComplete={async (clearState: boolean, response: any) => {
         if (clearState) {
+          const ngo = response.data.ngo;
           setUserData({
             allowed: true,
             shouldContinue: true,
+            ...ngo,
+            checklistMap: new Map<string, any>(),
           });
         } else {
           setUserData({
