@@ -21,7 +21,7 @@ export default function AboutPage() {
         }}
       ></iframe>
 
-      <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg shadow-md backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
+      <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg shadow-md bg-card/80 backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
         <h1 className="text-center font-bold text-2xl rounded-md rtl:text-[32px] p-4 text-primary">
           {t("contact_us")}
         </h1>
