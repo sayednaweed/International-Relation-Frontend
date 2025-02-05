@@ -190,9 +190,9 @@ export type Ngo = {
 };
 export type CheckList = {
   id: string;
-  checklist_id: string;
   name: string;
   acceptable_extensions: string;
+  acceptable_mimes: string;
   description: string;
 };
 

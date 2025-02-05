@@ -49,7 +49,7 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
   return (
     progress > 0 && (
       <>
-        <div className="relative mx-[4px] mb-[6px] w-[50px] h-[50px]">
+        <div className="relative mx-[4px] mb-[6px] w-fit flex justify-center h-[50px]">
           {/* Background Circle */}
           <svg className="absolute transform rotate-90" width="50" height="50">
             <circle
@@ -77,16 +77,18 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
           </svg>
 
           {/* Text inside circle */}
-          <div className="absolute text-primary text-[11px] font-semibold top-0 bottom-0 left-0 flex items-center justify-center w-full h-full">
+          <div className="text-primary text-[12px] font-semibold flex items-center justify-center w-fit h-full">
             {progress}%
           </div>
         </div>
-        <h1
-          onClick={cancel}
-          className="rtl:text-[14px] ltr:text-[12px] font-semibold shadow-lg cursor-pointer hover:shadow bg-red-500 px-1 rounded-md text-white "
-        >
-          {cancelText}
-        </h1>
+        {progress != 100 && (
+          <h1
+            onClick={cancel}
+            className="rtl:text-[14px] ltr:text-[12px] font-semibold shadow-lg cursor-pointer hover:shadow bg-red-500 px-1 rounded-md text-white "
+          >
+            {cancelText}
+          </h1>
+        )}
       </>
     )
   );

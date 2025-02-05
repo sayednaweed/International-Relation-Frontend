@@ -179,6 +179,7 @@
   "no_perm_desc": "شما اجازه دسترسی به منابع را ندارید.",
   "unauthorized": "غیر مجاز",
   "unauthorized_desc": "برای بازدید از صفحه اصلی ",
+  "save_close": "ذخیره و بستن",
   "application": "application",
   "ngo": "موسسه",
   "donor": "دونر",
@@ -294,5 +295,7 @@
   "continue": "ادامه",
   "director_area_english": "منطقه انگلیسی رئیس",
   "director_area_farsi": "منطقه فارسی رئیس",
-  "director_area_pashto": "منطقه پشتو رئیس"
+  "director_area_pashto": "منطقه پشتو رئیس",
+  "contact_us": "تماس با ما",
+  "subject": "موضوع"
 }

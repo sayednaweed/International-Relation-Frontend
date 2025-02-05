@@ -5,10 +5,13 @@ import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router";
 
 export default function CheckListTab() {
   const { t } = useTranslation();
-  const { userData, setUserData } = useContext(StepperContext);
+  let { id } = useParams();
+
+  const { userData, setUserData, error } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
     try {
@@ -28,57 +31,53 @@ export default function CheckListTab() {
   useEffect(() => {
     loadInformation();
   }, []);
+
   return (
     <div className="flex flex-col gap-y-6 pb-12">
-      {list.map((item: CheckList) => (
-        <CheckListChooser
-          number={item.id}
-          key={item.id}
-          url={`${import.meta.env.VITE_API_BASE_URL}/api/v1/ngo/file/upload`}
-          headers={{
-            "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-            "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-            Authorization:
-              "Bearer " +
-              localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
-          }}
-          maxSize={1024}
-          accept={item.acceptable_extensions}
-          name={item.name}
-          defaultFile={userData[item.checklist_id]}
-          validTypes={[
-            "image/png",
-            "image/jpeg",
-            "image/gif",
-            "application/pdf",
-          ]}
-          uploadParam={{
-            checklist_id: 1,
-            ngo_id: 1,
-          }}
-          onComplete={async (record: any) => {
-            for (const element of record) {
-              const item = element[element.length - 1];
-              const checklistArray = userData.checklistArray;
-              if (checklistArray) {
-                const filteredUsers = checklistArray.filter(
-                  (checklist: any) =>
-                    checklist.check_list_id !== item.check_list_id
-                );
+      {list.map((checklist: CheckList) => {
+        return (
+          <CheckListChooser
+            number={checklist.id}
+            key={checklist.id}
+            url={`${import.meta.env.VITE_API_BASE_URL}/api/v1/ngo/file/upload`}
+            headers={{
+              "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+              "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+              Authorization:
+                "Bearer " +
+                localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+            }}
+            maxSize={1024}
+            accept={checklist.acceptable_mimes}
+            name={checklist.name}
+            defaultFile={userData.checklistMap.get(checklist.id)}
+            validTypes={["image/png", "image/jpeg", "image/gif"]}
+            uploadParam={{
+              checklist_id: checklist.id,
+              ngo_id: id,
+            }}
+            onComplete={async (record: any) => {
+              for (const element of record) {
+                const item = element[element.length - 1];
+                const checklistMap: Map<string, any> = userData.checklistMap;
+                checklistMap.set(checklist.id, item);
                 setUserData({
                   ...userData,
-                  checklistArray: [...filteredUsers, item],
+                  checklistMap: checklistMap,
                 });
-              } else {
-                setUserData({ ...userData, checklistArray: [item] });
               }
-            }
-          }}
-          onStart={async (file: File) => {
-            setUserData({ ...userData, [item.checklist_id]: file });
-          }}
-        />
-      ))}
+            }}
+            onStart={async (file: File) => {
+              const checklistMap: Map<string, any> = userData.checklistMap;
+              checklistMap.set(checklist.id, file);
+              setUserData({
+                ...userData,
+                checklistMap: checklistMap,
+              });
+            }}
+          />
+        );
+      })}
     </div>
   );
 }

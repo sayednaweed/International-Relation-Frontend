@@ -80,8 +80,7 @@ export const setServerError = (
 ) => {
   const errMap = new Map<string, string>();
   for (const key in serverErrors) {
-    errMap.set(key, t(serverErrors[key][0]));
-    console.log(key);
+    errMap.set(key, serverErrors[key][0]);
   }
   setError(errMap);
 };

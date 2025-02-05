@@ -25,12 +25,12 @@ export function Toaster() {
           <Toast
             key={id}
             {...props}
-            className={`grid gap-1 h-fit ltr:text-lg-ltr rtl:text-xl-rtl fixed rtl:left-4 ltr:right-4 bottom-5 p-4 w-fit min-w-[400px] max-w-[400px] ${
+            className={`grid gap-1 h-fit ltr:text-lg-ltr rtl:text-xl-rtl fixed rtl:left-4 ltr:right-4 bottom-5 p-4 w-fit sm:min-w-[400px] mx-4 max-w-[400px] ${
               toastType == "ERROR" ? "bg-red-400" : "bg-green-400"
             }`}
           >
             {title && <ToastTitle>{title}</ToastTitle>}
-            {description && <ToastDescription>{description}</ToastDescription>}
+            <ToastDescription>{description}</ToastDescription>
             {action}
             <ToastClose className="rtl:left-0 rtl:flex rtl:items-start rtl:justify-end" />
           </Toast>

@@ -179,6 +179,7 @@
   "no_perm_desc": "You don't have permission to access resources.",
   "unauthorized": "Unauthorized",
   "unauthorized_desc": "To vist home page ",
+  "save_close": "Save & Close",
   "application": "application",
   "ngo": "NGO",
   "donor": "Donor",
@@ -294,5 +295,7 @@
   "continue": "Continue",
   "director_area_english": "Director English Area",
   "director_area_farsi": "Director Farsi Area",
-  "director_area_pashto": "Director Pashto Area"
+  "director_area_pashto": "Director Pashto Area",
+  "contact_us": "Contact Us",
+  "subject": "Subject"
 }

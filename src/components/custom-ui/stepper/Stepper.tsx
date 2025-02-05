@@ -27,6 +27,12 @@ export interface IStepperProps {
     userData: any[],
     setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => Promise<boolean>;
+  onSaveClose?: (
+    userData: any,
+    currentStep: number,
+    setError: Dispatch<SetStateAction<Map<string, string>>>
+  ) => Promise<void>;
+  onSaveCloseText?: string;
   className?: string;
   size?: StepperSize;
   heightsize?: StepperHeightSize;
@@ -46,6 +52,7 @@ export default function Stepper(props: IStepperProps) {
     components,
     beforeStepSuccess,
     stepsCompleted,
+    onSaveClose,
     className,
     size,
     heightsize,
@@ -54,6 +61,7 @@ export default function Stepper(props: IStepperProps) {
     confirmText,
     progressText,
     isCardActive,
+    onSaveCloseText,
   } = props;
   const [currentStep, setCurrentStep] = useState(1);
   const [userData, setUserData] = useState<any>([]);
@@ -160,6 +168,10 @@ export default function Stepper(props: IStepperProps) {
           handleClick={handleDirection}
           currentStep={currentStep}
           steps={steps}
+          onSaveCloseText={onSaveCloseText}
+          onSaveClose={async () => {
+            if (onSaveClose) await onSaveClose(userData, currentStep, setError);
+          }}
         />
       )}
     </div>

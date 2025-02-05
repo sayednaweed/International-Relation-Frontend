@@ -40,13 +40,13 @@ export default function TechnicalStaff() {
 
   return (
     <div className="space-y-2 text-center">
-      <p className="font-bold uppercase bg-tertiary text-white shadow-lg rounded-full rtl:text-3xl-rtl p-2">
+      <p className="font-bold min-w-[190px] uppercase bg-tertiary text-white shadow-xl rounded-full rtl:text-3xl-rtl p-2">
         {t("technical_sup")}
       </p>
       <div className="relative rounded-xl overflow-auto p-4">
-        <div className="flex ltr:-space-x-3 rtl:">
+        <div className="flex -space-x-3">
           {technical?.map((tech, index) => (
-            <TooltipProvider>
+            <TooltipProvider key={index}>
               <Tooltip>
                 <TooltipTrigger>
                   {technical ? (
