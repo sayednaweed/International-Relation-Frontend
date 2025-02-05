@@ -1,54 +1,74 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-
-interface Img {
-  id: number;
-  image: string;
-  title: string;
-  footer: string;
-  date: string;
-  date_title: string;
-}
+import axiosClient from "@/lib/axois-client";
+import { News } from "@/database/tables";
+import { toast } from "@/components/ui/use-toast";
+import i18n from "@/lib/i18n";
+import { useTranslation } from "react-i18next";
+import { NewsPaginationData } from "@/lib/types";
 
 function NewSection() {
-  const [images, setImages] = useState<Img[]>([]);
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
+  const [newsList, setNewsList] = useState<{
+    filterList: NewsPaginationData;
+  }>({
+    filterList: {
+      data: [],
+      lastPage: 1,
+      totalItems: 0,
+      perPage: 0,
+      currentPage: 0,
+    },
+  });
+  const loadList = async (page = 1) => {
+    try {
+      if (loading) return;
+      setLoading(true);
+      // 1. Organize date
+      // 2. Send data
+      const response = await axiosClient.get(`public/newses/${page}`, {
+        params: {
+          per_page: 12,
+          filters: {
+            sort: "asc",
+            order: "date",
+            search: {
+              column: "",
+              value: "",
+            },
+            date: "",
+          },
+        },
+      });
+      const fetch = response.data.newses.data as News[];
+      const lastPage = response.data.newses.last_page;
+      const totalItems = response.data.newses.total;
+      const perPage = response.data.newses.per_page;
+      const currentPage = response.data.newses.current_page;
+      setNewsList({
+        filterList: {
+          data: fetch,
+          lastPage: lastPage,
+          totalItems: totalItems,
+          perPage: perPage,
+          currentPage: currentPage,
+        },
+      });
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await fetch(
-          "https://newsapi.org/v2/top-headlines?country=us&apiKey=17ca245082a945f7bc6081b9c1a5832c"
-        );
-
-        if (!response.ok) throw new Error("Failed to fetch data");
-
-        const data = await response.json();
-        const mappedImages = data.articles.map(
-          (article: any, index: number) => ({
-            id: index,
-            image: article.urlToImage || "https://via.placeholder.com/300",
-            title: article.title || "No Title",
-            footer: article.source?.name || "Unknown Source",
-            date:
-              new Date(article.publishedAt).toLocaleDateString() || "No Date",
-            date_title: "Published",
-          })
-        );
-        setImages(mappedImages);
-      } catch (error) {
-        console.error("Error fetching images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchImages();
+    loadList();
   }, []);
-
-  if (loading) {
-    return <div className="text-center mt-20">Loading...</div>;
-  }
 
   return (
     <>
