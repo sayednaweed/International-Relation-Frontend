@@ -44,8 +44,7 @@ export default function TechnicalStaff() {
         {t("technical_sup")}
       </p>
       <div className="relative rounded-xl overflow-auto p-4">
-        <div className="flex items-center justify-center -space-x-4 rtl:space-x-reverse">
-          {/* <div className="flex -space-x-3"> */}
+        <div className="flex -space-x-3">
           {technical?.map((tech, index) => (
             <TooltipProvider key={index}>
               <Tooltip>
@@ -56,7 +55,7 @@ export default function TechnicalStaff() {
                       src={tech.picture}
                       alt="Avatar"
                       shimmerClassName="size-24 shadow-lg border border-primary/30 rounded-full"
-                      className="size-24 object-center object-cover shadow-lg border-[2px] border-primary  rounded-full"
+                      className=" size-24 object-center object-cover shadow-lg border-[2px] border-primary  rounded-full  "
                     />
                   ) : (
                     <Shimmer className="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full" />
@@ -67,7 +66,7 @@ export default function TechnicalStaff() {
                     src={tech.picture}
                     alt="Avatar"
                     shimmerClassName="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full"
-                    className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
+                    className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full "
                   />
                   <p className=" font-bold text-primary mt-2 mb-6 ltr:text-4xl-ltr self-center">
                     {t("soft_eng")}
