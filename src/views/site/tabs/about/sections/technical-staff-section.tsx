@@ -56,13 +56,13 @@ export default function TechnicalStaff() {
                       src={tech.picture}
                       alt="Avatar"
                       shimmerClassName="size-24 shadow-lg border border-primary/30 rounded-full"
-                      className="size-24 object-center object-cover shadow-lg border-[2px] border-primary  rounded-full"
+                      className="size-24 object-center object-cover shadow-lg border-[2px] border-primary rounded-full"
                     />
                   ) : (
                     <Shimmer className="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full" />
                   )}
                 </TooltipTrigger>
-                <TooltipContent className="flex flex-col items-start pt-6 pb-12 px-4">
+                <TooltipContent className="flex max-w-[290px] sm:max-w-[330px] flex-col items-start pt-6 pb-12 px-4 rounded-2xl">
                   <CachedImage
                     src={tech.picture}
                     alt="Avatar"
@@ -77,7 +77,7 @@ export default function TechnicalStaff() {
                       <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("name")}:
                       </p>
-                      <p className="rtl:text-3xl-rtl text-primary/85">
+                      <p className="rtl:text-3xl-rtl text-primary/85 truncate">
                         {tech.name}
                       </p>
                       <p className="ltr:font-semibold font-bold rtl:text-[19px]">
@@ -89,16 +89,13 @@ export default function TechnicalStaff() {
                       <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("contact")}:
                       </p>
-                      <p className="text-[17px] text-end" dir="ltr">
+                      <p className="text-[15px] text-end truncate" dir="ltr">
                         {tech.contact}
                       </p>
                       <p className="ltr:font-semibold font-bold rtl:text-[19px]">
                         {t("email")}:
                       </p>
-                      <p
-                        className="text-[17px] text-end overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px] sm:max-w-[250px]"
-                        dir="ltr"
-                      >
+                      <p className="text-[15px] truncate" dir="ltr">
                         {tech.email}
                       </p>
                     </div>

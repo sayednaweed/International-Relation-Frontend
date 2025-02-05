@@ -77,15 +77,15 @@ export default function OfficeSection() {
       [
         {
           name: "address_english",
-          rules: ["required", "max:45", "min:3"],
+          rules: ["required", "max:100", "min:3"],
         },
         {
           name: "address_farsi",
-          rules: ["required", "max:45", "min:3"],
+          rules: ["required", "max:100", "min:3"],
         },
         {
           name: "address_pashto",
-          rules: ["required", "max:45", "min:3"],
+          rules: ["required", "max:100", "min:3"],
         },
         {
           name: "contact",

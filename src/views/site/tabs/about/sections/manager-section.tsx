@@ -56,13 +56,13 @@ export default function Manager() {
             <p className="ltr:font-semibold font-bold rtl:text-[19px]">
               {t("contact")}:
             </p>
-            <p className="text-[17px] rtl:text-end" dir="ltr">
+            <p className="text-[15px] rtl:text-end" dir="ltr">
               {manager?.contact}
             </p>
             <p className="ltr:font-semibold font-bold rtl:text-[19px]">
               {t("email")}:
             </p>
-            <p className="text-[17px] rtl:text-end" dir="ltr">
+            <p className="text-[15px] rtl:text-end" dir="ltr">
               {manager?.email}
             </p>
           </div>

@@ -65,7 +65,7 @@ export default function AboutPage() {
             lable={t("subject")}
             id="subject"
             size_="sm"
-            placeholder={t("enter_your_subject")}
+            placeholder={t("content")}
             type="text"
             name="subject"
           />
