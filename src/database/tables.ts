@@ -71,6 +71,14 @@ export type Job = {
   name: string;
   createdAt: string;
 };
+export type Gender = {
+  id: string;
+  name: string;
+};
+export type NidType = {
+  id: string;
+  name: string;
+};
 // APPLICATION
 
 export type DestinationType = {

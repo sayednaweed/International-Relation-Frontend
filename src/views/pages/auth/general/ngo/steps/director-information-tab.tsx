@@ -176,62 +176,6 @@ export default function DirectorInformationTab() {
         errorMessage={error.get("nid")}
         onChange={handleChange}
       />
-      {/* <BorderContainer
-            title={t("nid_attach")}
-            required={true}
-            parentClassName="mt-3 p-0 rounded-md"
-            className="flex flex-col items-start"
-          >
-            <FileChooserTest
-              url={`${
-                import.meta.env.VITE_API_BASE_URL
-              }/api/v1/ngo/file/upload`}
-              headers={{
-                "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-                "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                Authorization:
-                  "Bearer " +
-                  localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
-              }}
-              maxSize={1024}
-              accept="image/png, image/jpeg, image/gif, application/pdf"
-              name={""}
-              defaultFile={userData?.nid_attach}
-              errorMessage={error.get("nid_attach")}
-              validTypes={[
-                "image/png",
-                "image/jpeg",
-                "image/gif",
-                "application/pdf",
-              ]}
-              uploadParam={{
-                checklist_id: ,
-                ngo_id: id,
-              }}
-              onComplete={async (record: any) => {
-                for (const element of record) {
-                  const item = element[element.length - 1];
-                  const checklistArray = userData.checklistArray;
-                  if (checklistArray) {
-                    const filteredUsers = checklistArray.filter(
-                      (checklist: any) =>
-                        checklist.check_list_id !== item.check_list_id
-                    );
-                    setUserData({
-                      ...userData,
-                      checklistArray: [...filteredUsers, item],
-                    });
-                  } else {
-                    setUserData({ ...userData, checklistArray: [item] });
-                  }
-                }
-              }}
-              onStart={async (file: File) => {
-                setUserData({ ...userData, nid_attach: file });
-              }}
-            />
-          </BorderContainer> */}
-
       <BorderContainer
         title={t("address")}
         required={true}

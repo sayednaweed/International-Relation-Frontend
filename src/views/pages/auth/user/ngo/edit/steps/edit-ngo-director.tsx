@@ -21,7 +21,8 @@ import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import {
   Country,
   District,
-  NgoType,
+  Gender,
+  NidType,
   Province,
   UserPermission,
 } from "@/database/tables";
@@ -29,39 +30,38 @@ import { LanguageEnum, SectionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
-import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
 import { DateObject } from "react-multi-date-picker";
 import { ValidateItem } from "@/validation/types";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
-interface EditNgoInformationProps {
-  registration_no: string;
-  name_english: string | undefined;
+import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
+interface EditNgoDirectorProps {
+  name_english: string;
   name_pashto: string;
   name_farsi: string;
-  area_english: string;
-  area_pashto: string;
-  area_farsi: string;
-  abbr: string;
-  type: NgoType;
+  surname_english: string;
+  surname_pashto: string;
+  surname_farsi: string;
   contact: string;
   email: string;
-  place_of_establishment: Country | undefined;
+  gender: Gender;
   moe_registration_no: string;
-  country: Country;
+  nationality: Country;
+  nid: string;
+  identity_type: NidType;
   province: Province;
   district: District;
   establishment_date: DateObject;
   status: boolean;
   optional_lang: string;
 }
-export default function EditNgoInformation() {
+export default function EditNgoDirector() {
   const { user } = useUserAuthState();
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
-  const [ngoData, setNgoData] = useState<EditNgoInformationProps>();
+  const [ngoData, setNgoData] = useState<EditNgoDirectorProps>();
 
   const per: UserPermission | undefined = user?.permissions.get(
     SectionEnum.ngo
@@ -70,12 +70,11 @@ export default function EditNgoInformation() {
 
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`ngo/details/${id}`);
+      const response = await axiosClient.get(`ngo/director/${id}`);
       if (response.status == 200) {
-        const ngo = response.data.ngo;
-        setNgoData(ngo);
+        const director = response.data.director;
+        setNgoData(director);
       }
-      // const details = response.data.ngo_details;
       // setNgoData({
       //   registration_no: "",
       //   name_english: "",
@@ -251,7 +250,7 @@ export default function EditNgoInformation() {
         ) : (
           <div className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">
             <BorderContainer
-              title={t("ngo_name")}
+              title={t("name")}
               required={true}
               parentClassName="p-t-4 pb-0 px-0"
               className="grid grid-cols-1 gap-y-3"
@@ -276,6 +275,41 @@ export default function EditNgoInformation() {
                 userData={ngoData}
                 errorData={error}
                 placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabInput>
+            </BorderContainer>
+
+            <BorderContainer
+              title={t("director_sur_en")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabInput
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setNgoData({
+                    ...ngoData,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  });
+                }}
+                onChanged={(value: string, name: string) => {
+                  setNgoData({
+                    ...ngoData,
+                    [name]: value,
+                  });
+                }}
+                name="surname"
+                highlightColor="bg-tertiary"
+                userData={ngoData}
+                errorData={error}
+                placeholder={t("content")}
                 className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0"
                 tabsClassName="gap-x-5 px-3"
               >
@@ -285,35 +319,6 @@ export default function EditNgoInformation() {
               </MultiTabInput>
             </BorderContainer>
 
-            <CustomInput
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              size_="sm"
-              lable={t("abbr")}
-              name="abbr"
-              defaultValue={ngoData["abbr"]}
-              placeholder={t("abbr_english")}
-              type="text"
-              className="uppercase"
-              errorMessage={error.get("abbr")}
-              onBlur={handleChange}
-            />
-            <APICombobox
-              placeholderText={t("search_item")}
-              errorText={t("no_item")}
-              onSelect={(selection: any) =>
-                setNgoData({ ...ngoData, ["type"]: selection })
-              }
-              lable={t("type")}
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              selectedItem={ngoData["type"]?.name}
-              placeHolder={t("select_a")}
-              errorMessage={error.get("type")}
-              apiUrl={"ngo-types"}
-              mode="single"
-              readonly={true}
-            />
             <CustomInput
               size_="sm"
               dir="ltr"
@@ -330,70 +335,78 @@ export default function EditNgoInformation() {
             />
             <CustomInput
               size_="sm"
-              name="email"
+              dir="ltr"
               required={true}
               requiredHint={`* ${t("required")}`}
+              className="rtl:text-end"
               lable={t("email")}
-              defaultValue={ngoData["email"]}
               placeholder={t("enter_your_email")}
-              type="email"
+              defaultValue={ngoData["email"]}
+              type="text"
+              name="email"
               errorMessage={error.get("email")}
               onChange={handleChange}
-              dir="ltr"
-              className="rtl:text-right"
+            />
+            <APICombobox
+              placeholderText={t("search_item")}
+              errorText={t("no_item")}
+              onSelect={(selection: any) =>
+                setNgoData({ ...ngoData, ["gender"]: selection })
+              }
+              lable={t("gender")}
+              required={true}
+              selectedItem={ngoData["gender"]?.name}
+              placeHolder={t("select_a")}
+              errorMessage={error.get("gender")}
+              apiUrl={"genders"}
+              mode="single"
+            />
+
+            <APICombobox
+              placeholderText={t("search_item")}
+              errorText={t("no_item")}
+              onSelect={(selection: any) =>
+                setNgoData({ ...ngoData, ["nationality"]: selection })
+              }
+              lable={t("nationality")}
+              required={true}
+              selectedItem={ngoData["nationality"]?.name}
+              placeHolder={t("select_a")}
+              errorMessage={error.get("nationality")}
+              apiUrl={"countries"}
+              mode="single"
+            />
+            <APICombobox
+              placeholderText={t("search_item")}
+              errorText={t("no_item")}
+              onSelect={(selection: any) =>
+                setNgoData({ ...ngoData, ["identity_type"]: selection })
+              }
+              lable={t("identity_type")}
+              required={true}
+              selectedItem={ngoData["identity_type"]?.name}
+              placeHolder={t("select_a")}
+              errorMessage={error.get("identity_type")}
+              apiUrl={"nid/types"}
+              mode="single"
             />
 
             <CustomInput
               size_="sm"
-              name="moe_registration_no"
+              dir="ltr"
               required={true}
               requiredHint={`* ${t("required")}`}
-              lable={t("moe_registration_no")}
-              defaultValue={ngoData["moe_registration_no"]}
-              placeholder={t("enter_your_email")}
-              type="moe_registration_no"
-              errorMessage={error.get("moe_registration_no")}
+              className="rtl:text-end"
+              lable={t("nid")}
+              placeholder={t("enter_ur_pho_num")}
+              defaultValue={ngoData["nid"]}
+              type="text"
+              name="nid"
+              errorMessage={error.get("nid")}
               onChange={handleChange}
-              dir="ltr"
-              className="rtl:text-right"
             />
-
             <BorderContainer
-              title={t("place_of_establishment")}
-              required={true}
-              parentClassName="mt-3"
-              className="flex flex-col items-stretch gap-y-3"
-            >
-              <APICombobox
-                placeholderText={t("search_item")}
-                errorText={t("no_item")}
-                onSelect={(selection: any) =>
-                  setNgoData({ ...ngoData, ["country"]: selection })
-                }
-                lable={t("country")}
-                required={true}
-                selectedItem={ngoData["country"]?.name}
-                placeHolder={t("select_a")}
-                errorMessage={error.get("country")}
-                apiUrl={"countries"}
-                mode="single"
-              />
-              <CustomDatePicker
-                placeholder={t("select_a_date")}
-                lable={t("establishment_date")}
-                requiredHint={`* ${t("required")}`}
-                required={true}
-                value={ngoData.establishment_date}
-                dateOnComplete={(date: DateObject) => {
-                  setNgoData({ ...ngoData, establishment_date: date });
-                }}
-                className="py-3 w-full"
-                errorMessage={error.get("establishment_date")}
-              />
-            </BorderContainer>
-
-            <BorderContainer
-              title={t("head_office_add")}
+              title={t("address")}
               required={true}
               parentClassName="mt-3"
               className="flex flex-col items-start gap-y-3"
@@ -433,7 +446,7 @@ export default function EditNgoInformation() {
               )}
 
               {ngoData.district && (
-                <MultiTabInput
+                <MultiTabTextarea
                   title={t("area")}
                   parentClassName="w-full"
                   optionalKey={"optional_lang"}
@@ -455,13 +468,14 @@ export default function EditNgoInformation() {
                   userData={ngoData}
                   errorData={error}
                   placeholder={t("content")}
+                  rows={5}
                   className="rtl:text-xl-rtl"
                   tabsClassName="gap-x-5"
                 >
                   <SingleTab>english</SingleTab>
                   <SingleTab>farsi</SingleTab>
                   <SingleTab>pashto</SingleTab>
-                </MultiTabInput>
+                </MultiTabTextarea>
               )}
             </BorderContainer>
           </div>
