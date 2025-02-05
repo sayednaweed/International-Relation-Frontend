@@ -63,7 +63,7 @@ function StepperControl(props: IStepperControlProps) {
       >
         {currentStep == steps.length - 1 ? confirmText : nextText}
       </button>
-      {onSaveClose && (
+      {onSaveCloseText && (
         <button
           disabled={loading}
           onClick={onClose}
