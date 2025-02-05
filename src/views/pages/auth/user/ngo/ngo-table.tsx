@@ -526,7 +526,10 @@ export function NgoTable() {
                     status_id={item.status_id}
                   />
                 </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate">
+                <TableCell
+                  className="rtl:text-md-rtl truncate rtl:text-end"
+                  dir="ltr"
+                >
                   {item.contact}
                 </TableCell>
                 <TableCell className="rtl:text-md-rtl truncate">
