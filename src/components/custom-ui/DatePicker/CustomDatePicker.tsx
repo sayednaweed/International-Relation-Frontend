@@ -14,7 +14,7 @@ import { CalendarDays } from "lucide-react";
 
 export interface CustomeDatePickerProps {
   dateOnComplete: (date: DateObject) => void;
-  value: DateObject | undefined;
+  value: DateObject | undefined | string;
   className?: string;
   parentClassName?: string;
   placeholder: string;

@@ -21,11 +21,14 @@ import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import CheckListTab from "./steps/checklist-tab";
 import { isString } from "@/lib/utils";
 import { ServerError } from "@/components/custom-ui/errors/ServerError";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
+import { RoleEnum } from "@/lib/constants";
 
 export default function EditNgoProgress() {
   const { t } = useTranslation();
   let { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useGeneralAuthState();
 
   const SaveContent = async (
     formData: FormData,
@@ -96,7 +99,10 @@ export default function EditNgoProgress() {
     try {
       const content = {
         ...userData, // shallow copy of the userData object
-        checklistMap: Array.from(userData.checklistMap), // deep copy of checklistMap
+        checklistMap: Array.from(userData.checklistMap),
+        establishment_date: !isString(userData.establishment_date)
+          ? userData.establishment_date?.toDate()?.toISOString()
+          : userData.establishment_date,
       };
 
       if (id) formData.append("ngo_id", id.toString());
@@ -108,6 +114,12 @@ export default function EditNgoProgress() {
       );
 
       if (response.status == 200) {
+        if (user.role.role == RoleEnum.ngo) {
+          // Incase of ngo
+          navigate("/dashboard", { replace: true });
+        } else {
+          navigate("/ngo", { replace: true });
+        }
         return true;
       }
     } catch (error: any) {
@@ -117,8 +129,10 @@ export default function EditNgoProgress() {
         description: <ServerError errors={error.response.data.errors} />,
         duration: 9000 * 10,
       });
+      return false;
     }
-    return false;
+    console.log("Naweed");
+    return true;
   };
 
   const onSaveClose = async (

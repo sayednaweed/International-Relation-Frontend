@@ -1,3 +1,5 @@
+import { FileType } from "@/lib/types";
+
 export type Role =
   | { role: 3; name: "user" }
   | { role: 2; name: "admin" }
@@ -204,13 +206,6 @@ export type CheckList = {
   description: string;
 };
 
-export type CheckListFile = {
-  pending_id: string;
-  path: string;
-  name: string;
-  file_extensions: string;
-};
-
 export type Staff = {
   picture: string;
   name: string;
@@ -218,3 +213,16 @@ export type Staff = {
   email: string;
   id: string;
 };
+export type Agreement = {
+  id: string;
+  start_date: string;
+  end_date: string;
+};
+export interface AgreementDocument extends FileType {
+  document_id: string;
+  checklist_id: string;
+  checklist_name: string;
+  acceptable_extensions: string;
+  acceptable_mimes: string;
+  description: string;
+}

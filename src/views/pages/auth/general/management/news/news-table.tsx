@@ -358,6 +358,12 @@ export default function NewsTable() {
                   },
                 ],
               }}
+              showColumns={{
+                sort: true,
+                order: true,
+                search: true,
+                date: true,
+              }}
             />
           </NastranModel>
         </div>

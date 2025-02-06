@@ -8,13 +8,7 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import SimpleProgressBar from "./SimpleProgressBar";
-export interface FileType {
-  pending_id: string;
-  path: string;
-  name: string;
-  extension: string;
-  size: string;
-}
+import { FileType } from "@/lib/types";
 export interface CheckListProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;

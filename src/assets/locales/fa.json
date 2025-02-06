@@ -19,6 +19,7 @@
   "join_date": "تاریخ عضویت",
   "error": "خطا",
   "active": "فعال",
+  "in_active": "غیر فعال",
   "Lock": "قفل",
   "sort_by": "مرتب سازی بر اساس",
   "department": "دیپارتمنت",
@@ -297,5 +298,7 @@
   "director_area_farsi": "منطقه فارسی رئیس",
   "director_area_pashto": "منطقه پشتو رئیس",
   "contact_us": "تماس باما",
-  "subject": "موضوع"
+  "subject": "موضوع",
+  "start_date": "تاریخ شروع",
+  "end_date": "تاریخ ختم"
 }

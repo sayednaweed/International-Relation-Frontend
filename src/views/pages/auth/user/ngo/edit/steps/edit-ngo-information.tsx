@@ -45,7 +45,7 @@ interface EditNgoInformationProps {
   type: NgoType;
   contact: string;
   email: string;
-  place_of_establishment: Country | undefined;
+  place_of_establishment: Country;
   moe_registration_no: string;
   country: Country;
   province: Province;
@@ -75,42 +75,6 @@ export default function EditNgoInformation() {
         const ngo = response.data.ngo;
         setNgoData(ngo);
       }
-      // const details = response.data.ngo_details;
-      // setNgoData({
-      //   registration_no: "",
-      //   name_english: "",
-      //   name_pashto: "",
-      //   name_farsi: "",
-      //   area_english: "",
-      //   area_pashto: "",
-      //   area_farsi: "",
-      //   abbr: "",
-      //   type: {
-      //     id: "",
-      //     name: "",
-      //     created_at: "",
-      //   },
-      //   contact: "",
-      //   email: "",
-      //   moe_registration_no: "",
-      //   place_of_establishment: undefined,
-      //   country: {
-      //     id: "",
-      //     name: "",
-      //   },
-      //   province: {
-      //     id: "",
-      //     name: "",
-      //   },
-      //   district: {
-      //     id: "",
-      //     name: "",
-      //   },
-      //   establishment_date: new DateObject(new Date()),
-      //   status: true,
-      //   optional_lang: "english",
-      // });
-      // }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
@@ -368,13 +332,16 @@ export default function EditNgoInformation() {
                 placeholderText={t("search_item")}
                 errorText={t("no_item")}
                 onSelect={(selection: any) =>
-                  setNgoData({ ...ngoData, ["country"]: selection })
+                  setNgoData({
+                    ...ngoData,
+                    ["place_of_establishment"]: selection,
+                  })
                 }
-                lable={t("country")}
+                lable={t("place_of_establishment")}
                 required={true}
-                selectedItem={ngoData["country"]?.name}
+                selectedItem={ngoData["place_of_establishment"]?.name}
                 placeHolder={t("select_a")}
-                errorMessage={error.get("country")}
+                errorMessage={error.get("place_of_establishment")}
                 apiUrl={"countries"}
                 mode="single"
               />
