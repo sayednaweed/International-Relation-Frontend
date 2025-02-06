@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import axiosClient from "@/lib/axois-client";
 import { News } from "@/database/tables";
 import { toast } from "@/components/ui/use-toast";
-import i18n from "@/lib/i18n";
 import { useTranslation } from "react-i18next";
 import { NewsPaginationData } from "@/lib/types";
-
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import { PublicNews } from "@/components/custom-ui/card/PublicNews";
+import { useGlobalState } from "@/context/GlobalStateContext";
+import { useNavigate } from "react-router";
 function NewSection() {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
+  const [state] = useGlobalState();
+  const navigate = useNavigate();
+
   const [newsList, setNewsList] = useState<{
     filterList: NewsPaginationData;
   }>({
@@ -31,13 +35,13 @@ function NewSection() {
         params: {
           per_page: 12,
           filters: {
-            sort: "asc",
-            order: "date",
+            sort: "date",
+            order: "asc",
             search: {
-              column: "",
-              value: "",
+              column: null,
+              value: null,
             },
-            date: "",
+            date: null,
           },
         },
       });
@@ -70,39 +74,30 @@ function NewSection() {
     loadList();
   }, []);
 
+  const viewOnClick = async (news: News) => {
+    const newsId = news.id;
+    navigate(`/news/${newsId}`);
+  };
   return (
     <>
       <h1 className="bg-primary dark:bg-primary/90 h-16 flex items-center justify-center font-bold text-4xl-ltr text-white">
         News
       </h1>
-      <div
-        className="grid gap-8 p-4 mt-28 mb-28 
-                    grid-cols-1 
-                    sm:grid-cols-1 
-                    md:grid-cols-2 
-                    lg:grid-cols-2 
-                    xl:grid-cols-3 
-                    2xl:grid-cols-4"
-      >
-        {images.map((img) => (
-          <Card key={img.id} className="relative group">
-            <CardContent className="p-0  h-[300px]">
-              <img
-                src={img.image}
-                alt={img.title}
-                className="min-w-full h-full object-fill rounded"
-              />
-            </CardContent>
-            <CardFooter className="flex flex-col justify-start items-start p-4">
-              <h2 className="font-bold text-xl ltr:text-left rtl:text-right mb-2">
-                {img.title}
-              </h2>
-              <p className="text-center text-sm text-gray-600">
-                {img.footer} | {img.date} {img.date_title}
-              </p>
-            </CardFooter>
-          </Card>
-        ))}
+      <div className="flex flex-wrap py-8 justify-center px-4 gap-6">
+        {loading ? (
+          <NastranSpinner />
+        ) : newsList.filterList.data.length === 0 ? (
+          <h1 className="rtl:text-xl-rtl text-primary/80">{t("no_content")}</h1>
+        ) : (
+          newsList.filterList.data.map((news: News) => (
+            <PublicNews
+              news={news}
+              viewOnClick={viewOnClick}
+              detailText={t("detail")}
+              state={state}
+            />
+          ))
+        )}
       </div>
     </>
   );
