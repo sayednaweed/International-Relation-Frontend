@@ -19,6 +19,7 @@
   "join_date": "Join Date",
   "error": "Error",
   "active": "Active",
+  "in_active": "Inactive",
   "Lock": "Lock",
   "sort_by": "Sort By",
   "department": "Department",
@@ -297,5 +298,7 @@
   "director_area_farsi": "Director Farsi Area",
   "director_area_pashto": "Director Pashto Area",
   "contact_us": "Contact Us",
-  "subject": "Subject"
+  "subject": "Subject",
+  "start_date": "Start Date",
+  "end_date": "End Date"
 }

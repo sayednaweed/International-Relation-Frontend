@@ -231,4 +231,19 @@ export interface NgoListPaginationData {
   currentPage: number;
   totalItems: number;
 }
+export interface FileType {
+  id: string;
+  path: string;
+  name: string;
+  extension: string;
+  size: string;
+}
+export interface IDirector {
+  id: string;
+  is_active: string;
+  name: string;
+  surname: string;
+  contact: string;
+  email: string;
+}
 //end

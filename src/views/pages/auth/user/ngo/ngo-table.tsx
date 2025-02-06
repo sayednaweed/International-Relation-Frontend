@@ -474,7 +474,7 @@ export function NgoTable() {
           }}
         />
       </div>
-      <Table className="bg-card dark:!bg-black/30 rounded-md my-[2px] py-8">
+      <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-center w-[60px]">{t("pic")}</TableHead>
@@ -540,7 +540,7 @@ export function NgoTable() {
           )}
         </TableBody>
       </Table>
-      <div className="flex justify-between rounded-md bg-card dark:!bg-black/30 flex-1 p-3 items-center">
+      <div className="flex justify-between rounded-md bg-card dark:bg-card-secondary flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
         )} ${ngos.unFilterList.currentPage} ${t("of")} ${

@@ -11,7 +11,7 @@ export default function CheckListTab() {
   const { t } = useTranslation();
   let { id } = useParams();
 
-  const { userData, setUserData, error } = useContext(StepperContext);
+  const { userData, setUserData } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
     try {
