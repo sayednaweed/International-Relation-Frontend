@@ -123,7 +123,7 @@ function NgosPage() {
   };
   useEffect(() => {
     initialize();
-  }, [sort, order, searchColumn, searchValue]);
+  }, [order]);
   const [ngoList, setNgoList] = useState<{
     filterList: NgoListPaginationData;
     unFilterList: NgoListPaginationData;
@@ -309,9 +309,6 @@ function NgosPage() {
                 <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
                   {t("director")}
                 </TableHead>
-                <TableHead className="p-3 border-b rtl:text-right ltr:text-left rtl:font-bold">
-                  {t("province")}
-                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
@@ -349,9 +346,6 @@ function NgosPage() {
                     </TableCell>
                     <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
                       {ngo.director}
-                    </TableCell>
-                    <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                      {ngo.province}
                     </TableCell>
                   </TableRow>
                 ))

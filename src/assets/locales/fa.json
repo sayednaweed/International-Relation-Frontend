@@ -98,7 +98,7 @@
   "ples_sel_vali_img_file ": "(jpg، png، jpeg)  لطفاً یک فایل تصویری معتبر انتخاب کنید.",
   "no_img_selected!": "هیچ تصویری انتخاب نشده ",
   "choose": "انتخاب کنید",
-  "failed_retry": "تلاش مجدد ناموفق بود",
+  "failed_retry": "تلاش مجدد",
   "update_account_password": "رمز عبور حساب را به روز کنید",
   "update_pass_descrip": "مطمئن شوید که حساب از یک رمز عبور طولانی برای حفظ امنیت استفاده می کند",
   "old_password": "رمز قدیمی",
@@ -300,5 +300,7 @@
   "contact_us": "تماس باما",
   "subject": "موضوع",
   "start_date": "تاریخ شروع",
-  "end_date": "تاریخ ختم"
+  "end_date": "تاریخ ختم",
+  "currently": "بر حال",
+  "formerly": "قبلا"
 }

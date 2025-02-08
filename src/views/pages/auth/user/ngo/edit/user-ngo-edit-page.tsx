@@ -17,8 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, Database, Grip, NotebookPen, UserRound } from "lucide-react";
 import EditNgoInformation from "./steps/edit-ngo-information";
 import UserNgoEditHeader from "./user-ngo-edit-header";
-import EditNgoDirector from "./steps/edit-ngo-director";
 import EditNgoAgreement from "./steps/edit-ngo-agreement";
+import EditDirectorTab from "./steps/edit-director-tab";
 
 export default function UserNgoEditPage() {
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertia
           <EditNgoInformation />
         </TabsContent>
         <TabsContent className="flex-1 m-0" value="director_information">
-          <EditNgoDirector />
+          <EditDirectorTab />
         </TabsContent>
         <TabsContent className="flex-1 m-0" value="agreement_checklist">
           <EditNgoAgreement />

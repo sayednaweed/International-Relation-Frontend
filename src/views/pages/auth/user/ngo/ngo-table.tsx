@@ -53,10 +53,10 @@ export function NgoTable() {
   const startDate = searchParams.get("st_dt");
   const endDate = searchParams.get("en_dt");
   const filters = {
-    sort: sort == null ? "date" : (sort as NgoSort),
+    sort: sort == null ? "id" : (sort as NgoSort),
     order: order == null ? "asc" : (order as Order),
     search: {
-      column: searchColumn == null ? "title" : (searchColumn as NgoSearch),
+      column: searchColumn == null ? "name" : (searchColumn as NgoSearch),
       value: searchValue == null ? "" : searchValue,
     },
     date:
@@ -136,7 +136,7 @@ export function NgoTable() {
   };
   useEffect(() => {
     initialize();
-  }, [sort, startDate, endDate, order, searchColumn, searchValue]);
+  }, [sort, startDate, endDate, order]);
   const [ngos, setNgos] = useState<{
     filterList: NgoPaginationData;
     unFilterList: NgoPaginationData;
@@ -349,7 +349,7 @@ export function NgoTable() {
                 if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
-                  queryParams.set("order", filterName);
+                  queryParams.set("order", filters.order);
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);

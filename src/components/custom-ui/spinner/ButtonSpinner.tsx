@@ -25,7 +25,7 @@ export default function ButtonSpinner(props: IButtonSpinnerProps) {
           />
         </div>
       )}
-      <h1 className={cn("", className)}>{children}</h1>
+      <h1 className={cn("flex items-center", className)}>{children}</h1>
     </>
   );
 }

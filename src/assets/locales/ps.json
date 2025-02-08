@@ -97,7 +97,7 @@
   "ples_sel_vali_img_file ": "مهرباني وکړئ یو درست انځور وټاکئ",
   "no_img_selected!": "هیڅ انځور نه دی غوره شوی",
   "choose": "غوره کړئ",
-  "failed_retry": "ناکام شو! بیا هڅه وکړه",
+  "failed_retry": "بیا هڅه وکړه",
   "update_account_password": "د حساب پاسورډ نوي کړئ",
   "update_pass_descrip": "ډاډ ترلاسه کړئ چې حساب د خوندي پاتې کیدو لپاره اوږد پټنوم کاروي.",
   "old_password": "زوړ پټنوم",
