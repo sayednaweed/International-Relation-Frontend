@@ -8,46 +8,39 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import axiosClient from "@/lib/axois-client";
+import { toast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
-interface Slide {
+interface SliderProps {
   id: number;
-  image1: string;
-  title: string;
-  description: string;
-  date: string;
+  picture: string;
 }
 
 function SliderSection() {
-  const [slides, setSlides] = useState<Slide[]>([]);
+  const { t, i18n } = useTranslation();
+  const [slider, setSlider] = useState<SliderProps[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const initialize = async () => {
+    try {
+      const response = await axiosClient.get(`staff/puplic/slider`);
+
+      if (response.status === 200) {
+        setSlider(response.data.technicalStaff);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data?.message || t("something_went_wrong"),
+      });
+    }
+  };
 
   useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const response = await axios.get(
-          "https://newsapi.org/v2/top-headlines?country=us&apiKey=17ca245082a945f7bc6081b9c1a5832c"
-        );
-
-        const formattedSlides: Slide[] = response.data.articles.map(
-          (article: any, index: number) => ({
-            id: index + 1,
-            image1: article.urlToImage || "",
-            title: article.title || "No Title",
-            description: article.description || "No Description",
-          })
-        );
-
-        setSlides(formattedSlides);
-      } catch (err) {
-        setError("Failed to load slides.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSlides();
-  }, []);
+    initialize();
+  }, [i18n.language]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -61,21 +54,15 @@ function SliderSection() {
     <div className="w-full max-w-lg mx-auto py-20">
       <Carousel opts={{ align: "start" }}>
         <CarouselContent className="relative group">
-          {slides.map((slide) => (
+          {slider.map((slide) => (
             <CarouselItem key={slide.id} className=" w-full">
               <Card className="relative group">
                 <CardContent className="p-0  h-[300px] ">
                   <img
-                    src={slide.image1}
+                    src={slide.picture}
                     alt={`Slide ${slide.id} Image`}
                     className="min-w-full h-full object-fill rounded"
                   />
-                  <div>
-                    {" "}
-                    <h3 className="flex flex-col justify-start items-start p-4">
-                      {slide.title}
-                    </h3>
-                  </div>
                 </CardContent>
               </Card>
             </CarouselItem>
