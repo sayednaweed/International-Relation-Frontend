@@ -1,7 +1,37 @@
+import { toast } from "@/components/ui/use-toast";
+import axiosClient from "@/lib/axois-client";
+import i18n from "@/lib/i18n";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+type FooterPorps = {
+  id: string;
+  address: string;
+  contact: string;
+  email: string;
+};
 
 function FooterSection() {
+  const [footer, setFooter] = useState<FooterPorps>();
   const { t } = useTranslation();
+  const initialize = async () => {
+    try {
+      const response = await axiosClient.get(`staff/public/office`);
+
+      if (response.status === 200) {
+        setFooter(response.data.office);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data?.message || t("something_went_wrong"),
+      });
+    }
+  };
+
+  useEffect(() => {
+    initialize();
+  }, [i18n.language]);
 
   return (
     <div className="mt-auto">
@@ -11,13 +41,14 @@ function FooterSection() {
           <span className=" rtl:text-lg-rtl text-primary-foreground/90 dark:text-card-foreground/90">
             {t("moph_address")}
           </span>
+
           <h1 className="font-semibold">{`${t("email")}: `}</h1>
           <span className="rtl:text-[14px] rtl:pt-1 text-primary-foreground/90 dark:text-card-foreground/90">
-            info@moph.gov.af
+            {footer?.email}
           </span>
           <h1 className="font-semibold">{`${t("contact")}: `}</h1>
           <span className="rtl:text-[14px] rtl:pt-1 text-primary-foreground/90 dark:text-card-foreground/90">
-            +93(0) 20 230 1374
+            {footer?.contact}
           </span>
         </div>
         <div dir="ltr" className="flex gap-x-4 items-center mt-4">

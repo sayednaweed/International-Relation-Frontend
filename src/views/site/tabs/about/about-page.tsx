@@ -7,6 +7,7 @@ import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
 import { useTranslation } from "react-i18next";
 import { SendHorizonal } from "lucide-react";
+
 export default function AboutPage() {
   const { t } = useTranslation();
   return (

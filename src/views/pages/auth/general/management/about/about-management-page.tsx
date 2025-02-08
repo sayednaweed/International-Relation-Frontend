@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import DirectorSection from "./sections/director-section";
 import ManagerSection from "./sections/manager-section";
 import OfficeSection from "./sections/office-section";
+import SliderSection from "./sections/slider-section";
 
 export default function AboutManagementPage() {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ export default function AboutManagementPage() {
       <TechnicalSection />
       <DirectorSection />
       <ManagerSection />
+      <SliderSection />
       <OfficeSection />
     </div>
   );
