@@ -10,6 +10,8 @@ import {
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+import { useParams } from "react-router";
 
 interface SliderProps {
   id: number;
@@ -18,22 +20,30 @@ interface SliderProps {
 
 function SliderSection() {
   const { t, i18n } = useTranslation();
+  let { id } = useParams();
+  const [failed, setFailed] = useState(false);
   const [slider, setSlider] = useState<SliderProps[]>([]);
-  const [loading, _setLoading] = useState<boolean>(true);
-  const [error, _setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   const initialize = async () => {
     try {
-      const response = await axiosClient.get(`staff/puplic/slider`);
-
-      if (response.status === 200) {
-        setSlider(response.data.technicalStaff);
+      // 1. Organize date
+      const response = await axiosClient.get(`public/sliders`);
+      if (response.status == 200) {
+        const fetch = response.data.sliders as SliderProps[];
+        setSlider(fetch);
+        if (failed) {
+          setFailed(false);
+        }
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response.data?.message || t("something_went_wrong"),
+        description: error.response.data.message,
       });
+      setFailed(true);
     }
   };
 
@@ -41,26 +51,27 @@ function SliderSection() {
     initialize();
   }, [i18n.language]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  // if (error) {
+  //   return <div>{error}</div>;
+  // }
 
   return (
     <div className="w-full max-w-lg mx-auto py-20">
       <Carousel opts={{ align: "start" }}>
         <CarouselContent className="relative group">
-          {slider.map((slide) => (
+          {slider?.map((slide) => (
             <CarouselItem key={slide.id} className=" w-full">
               <Card className="relative group">
                 <CardContent className="p-0  h-[300px] ">
-                  <img
+                  <CachedImage
                     src={slide.picture}
-                    alt={`Slide ${slide.id} Image`}
-                    className="min-w-full h-full object-fill rounded"
+                    alt="Avatar"
+                    shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
+                    className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
                   />
                 </CardContent>
               </Card>
