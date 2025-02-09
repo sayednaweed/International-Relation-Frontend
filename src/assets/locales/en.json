@@ -98,7 +98,7 @@
   "ples_sel_vali_img_file ": "Select a valid image file (jpg، png، jpeg).",
   "no_img_selected!": "No image selected",
   "choose": "Choose",
-  "failed_retry": "Failed Retry",
+  "failed_retry": "Retry",
   "update_account_password": "Update account password",
   "update_pass_descrip": "Make sure the account uses a long password to stay secure",
   "old_password": "Old Password",
@@ -300,5 +300,7 @@
   "contact_us": "Contact Us",
   "subject": "Subject",
   "start_date": "Start Date",
-  "end_date": "End Date"
+  "end_date": "End Date",
+  "currently": "Currently",
+  "formerly": "Formerly"
 }

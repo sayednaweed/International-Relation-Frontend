@@ -1,4 +1,14 @@
-import { Audit, News, SelectUserPermission, User } from "@/database/tables";
+import {
+  Audit,
+  Country,
+  District,
+  Gender,
+  News,
+  NidType,
+  Province,
+  SelectUserPermission,
+  User,
+} from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
 
 export interface IMenuItem {
@@ -168,7 +178,7 @@ export interface NewsPaginationData {
 }
 export type NgoInformation = {
   id: string;
-  profile: string;
+  profile: string | undefined;
   name: string;
   abbr: string;
   status_id: number;
@@ -178,6 +188,7 @@ export type NgoInformation = {
   type: string;
   email: string;
   contact: string;
+  username: string;
   created_at: string;
 };
 
@@ -245,5 +256,25 @@ export interface IDirector {
   surname: string;
   contact: string;
   email: string;
+}
+export interface INgoDirector {
+  name_english: string;
+  name_pashto: string;
+  name_farsi: string;
+  surname_english: string;
+  surname_pashto: string;
+  surname_farsi: string;
+  contact: string;
+  email: string;
+  gender: Gender | undefined;
+  moe_registration_no: string;
+  nationality: Country | undefined;
+  nid: string;
+  identity_type: NidType | undefined;
+  province: Province | undefined;
+  district: District | undefined;
+  establishment_date: DateObject | undefined;
+  is_active: boolean;
+  optional_lang: string;
 }
 //end

@@ -19,84 +19,76 @@ import axiosClient from "@/lib/axois-client";
 
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
-import { toLocaleDate } from "@/lib/utils";
+import { setDateToURL, toLocaleDate } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
-import UserFilterDialog from "./user-filter-dialog";
 import AddUser from "./add/add-user";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
-import {
-  Order,
-  UserFilter,
-  UserPaginationData,
-  UserSearch,
-  UserSort,
-} from "@/lib/types";
+import { Order, UserPaginationData, UserSearch, UserSort } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
+import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 
 export function UserTable() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
-
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
-  const search = searchParams.get("search");
+  const searchValue = searchParams.get("sch_val");
+  const searchColumn = searchParams.get("sch_col");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const [filters, setFilters] = useState<UserFilter>({
-    sort: sort == null ? "created_at" : (sort as UserSort),
-    order: order == null ? "asc" : (order as Order),
+  const startDate = searchParams.get("st_dt");
+  const endDate = searchParams.get("en_dt");
+  const filters = {
+    sort: sort == null ? "id" : (sort as UserSort),
+    order: order == null ? "desc" : (order as Order),
     search: {
-      column: search == null ? "username" : (search as UserSearch),
-      value: "",
+      column: searchColumn == null ? "name" : (searchColumn as UserSearch),
+      value: searchValue == null ? "" : searchValue,
     },
-    date: [],
-  });
-  const loadList = async (count: number, dataFilters: UserFilter, page = 1) => {
+    date:
+      startDate && endDate
+        ? [
+            new DateObject(new Date(startDate)),
+            new DateObject(new Date(endDate)),
+          ]
+        : startDate
+        ? [new DateObject(new Date(startDate))]
+        : endDate
+        ? [new DateObject(new Date(endDate))]
+        : [],
+  };
+  const loadList = async (
+    searchInput: string | undefined = undefined,
+    count: number | undefined,
+    page: number | undefined
+  ) => {
     try {
       if (loading) return;
       setLoading(true);
       // 1. Organize date
-      let dates: {
-        startDate: string | null;
-        endDate: string | null;
+      let dates = {
+        startDate: startDate,
+        endDate: endDate,
       };
-      if (filters.date.length === 1) {
-        // set start date
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: null,
-        };
-      } else if (filters.date.length === 2) {
-        // set dates
-        dates = {
-          startDate: filters.date[0].toDate().toISOString(),
-          endDate: filters.date[1].toDate().toISOString(),
-        };
-      } else {
-        // Set null
-        dates = {
-          startDate: null,
-          endDate: null,
-        };
-      }
       // 2. Send data
-      const response = await axiosClient.get(`users/${page}`, {
+      const response = await axiosClient.get(`users`, {
         params: {
+          page: page,
           per_page: count,
           filters: {
-            sort: dataFilters.sort,
-            order: dataFilters.order,
+            sort: filters.sort,
+            order: filters.order,
             search: {
-              column: dataFilters.search.column,
-              value: dataFilters.search.value,
+              column: filters.search.column,
+              value: searchInput,
             },
             date: dates,
           },
@@ -133,13 +125,28 @@ export function UserTable() {
       setLoading(false);
     }
   };
-  const initialize = async (dataFilters: UserFilter) => {
-    const count = await getComponentCache(CACHE.USER_TABLE_PAGINATION_COUNT);
-    loadList(count ? count.value : 10, dataFilters);
+  const initialize = async (
+    searchInput: string | undefined = undefined,
+    count: number | undefined,
+    page: number | undefined
+  ) => {
+    if (!count) {
+      const countSore = await getComponentCache(
+        CACHE.USER_TABLE_PAGINATION_COUNT
+      );
+      count = countSore?.value ? countSore.value : 10;
+    }
+    if (!searchInput) {
+      searchInput = filters.search.value;
+    }
+    if (!page) {
+      page = 1;
+    }
+    loadList(searchInput, count, page);
   };
   useEffect(() => {
-    initialize(filters);
-  }, [filters.order, filters.sort]);
+    initialize(undefined, undefined, 1);
+  }, [sort, startDate, endDate, order]);
   const [users, setUsers] = useState<{
     filterList: UserPaginationData;
     unFilterList: UserPaginationData;
@@ -285,18 +292,12 @@ export function UserTable() {
           endContent={
             <SecondaryButton
               onClick={async () => {
-                if (searchRef.current != undefined) {
-                  const newfilter = {
-                    ...filters,
-                    search: {
-                      column: filters.search.column,
-                      value: searchRef.current.value,
-                    },
-                  };
-
-                  await initialize(newfilter);
-                  setFilters(newfilter);
-                }
+                if (searchRef.current != undefined)
+                  await initialize(
+                    searchRef.current.value,
+                    undefined,
+                    undefined
+                  );
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
             >
@@ -319,59 +320,111 @@ export function UserTable() {
             }
             showDialog={async () => true}
           >
-            <UserFilterDialog
+            <FilterDialog
               filters={filters}
               sortOnComplete={async (filterName: UserSort) => {
                 if (filterName != filters.sort) {
-                  setFilters({
-                    ...filters,
-                    sort: filterName,
-                  });
                   const queryParams = new URLSearchParams();
-                  queryParams.set("search", filters.search.column);
                   queryParams.set("sort", filterName);
                   queryParams.set("order", filters.order);
-                  navigate(`/users?${queryParams.toString()}`);
-                  // sortList
-                  const item = {
-                    data: users.filterList.data,
-                    lastPage: users.unFilterList.lastPage,
-                    totalItems: users.unFilterList.totalItems,
-                    perPage: users.unFilterList.perPage,
-                    currentPage: users.unFilterList.currentPage,
-                  };
-                  setUsers({
-                    ...users,
-                    filterList: item,
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
                   });
                 }
               }}
-              searchOnComplete={async (filterName: UserSearch) => {
-                const search = filters.search;
-                setFilters({
-                  ...filters,
-                  search: { ...search, column: filterName },
-                });
+              searchFilterChanged={async (filterName: UserSearch) => {
+                if (filterName != filters.search.column) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sch_col", filterName);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
               }}
               orderOnComplete={async (filterName: Order) => {
                 if (filterName != filters.order) {
-                  setFilters({
-                    ...filters,
-                    order: filterName,
-                  });
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
-                  navigate(`/users?${queryParams.toString()}`, {
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/ngo?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
               dateOnComplete={(selectedDates: DateObject[]) => {
-                setFilters({
-                  ...filters,
-                  date: selectedDates,
-                });
+                if (selectedDates.length == 2) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, selectedDates);
+                  navigate(`/ngo?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              filtersShowData={{
+                sort: [
+                  {
+                    name: "created_at",
+                    translate: t("date"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "username",
+                    translate: t("username"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "destination",
+                    translate: t("department"),
+                    onClick: () => {},
+                  },
+                  { name: "status", translate: t("status"), onClick: () => {} },
+                  { name: "job", translate: t("job"), onClick: () => {} },
+                ],
+                order: [
+                  {
+                    name: "asc",
+                    translate: t("asc"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "desc",
+                    translate: t("desc"),
+                    onClick: () => {},
+                  },
+                ],
+                search: [
+                  {
+                    name: "username",
+                    translate: t("username"),
+                    onClick: () => {},
+                  },
+                  { name: "email", translate: t("email"), onClick: () => {} },
+                  {
+                    name: "contact",
+                    translate: t("contact"),
+                    onClick: () => {},
+                  },
+                ],
+              }}
+              showColumns={{
+                sort: true,
+                order: true,
+                search: true,
+                date: true,
               }}
             />
           </NastranModel>
@@ -391,9 +444,9 @@ export function UserTable() {
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
-          onChange={async (value: string) => {
-            loadList(parseInt(value), filters);
-          }}
+          onChange={async (value: string) =>
+            await initialize(undefined, parseInt(value), undefined)
+          }
         />
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
@@ -481,37 +534,9 @@ export function UserTable() {
         }`}</h1>
         <Pagination
           lastPage={users.unFilterList.lastPage}
-          onPageChange={async (page) => {
-            try {
-              const count = await getComponentCache(
-                CACHE.USER_TABLE_PAGINATION_COUNT
-              );
-              const response = await axiosClient.get(`users/${page}`, {
-                params: {
-                  per_page: count ? count.value : 10,
-                },
-              });
-              const fetch = response.data.users.data as User[];
-
-              const item = {
-                currentPage: page,
-                data: fetch,
-                lastPage: users.unFilterList.lastPage,
-                totalItems: users.unFilterList.totalItems,
-                perPage: users.unFilterList.perPage,
-              };
-              setUsers({
-                filterList: item,
-                unFilterList: item,
-              });
-            } catch (error: any) {
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: error.response.data.message,
-              });
-            }
-          }}
+          onPageChange={async (page) =>
+            await initialize(undefined, undefined, page)
+          }
         />
       </div>
     </>

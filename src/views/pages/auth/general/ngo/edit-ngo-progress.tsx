@@ -36,7 +36,7 @@ export default function EditNgoProgress() {
   ) => {
     try {
       const response = await axiosClient.post(
-        `ngos/storePersonalDetial/${id}`,
+        `store/ngo/register-task/${id}`,
         formData
       );
       if (response.status == 200) {
@@ -54,41 +54,42 @@ export default function EditNgoProgress() {
     return false;
   };
   const beforeStepSuccess = async (
-    userData: any,
-    currentStep: number,
-    setError: Dispatch<SetStateAction<Map<string, string>>>,
-    backClicked: boolean
+    _userData: any,
+    _currentStep: number,
+    _setError: Dispatch<SetStateAction<Map<string, string>>>,
+    _backClicked: boolean
   ) => {
-    if (!backClicked) {
-      const content = {
-        ...userData, // shallow copy of the userData object
-        checklistMap: Array.from(userData.checklistMap),
-        establishment_date: !isString(userData.establishment_date)
-          ? userData.establishment_date?.toDate()?.toISOString()
-          : userData.establishment_date,
-      };
-      if (currentStep == 1) {
-        let formData = new FormData();
-        formData.append("contents", JSON.stringify(content));
-        if (id) formData.append("id", id.toString());
-        formData.append("step", currentStep.toString());
-        return await SaveContent(formData, setError);
-      } else if (currentStep == 2) {
-        let formData = new FormData();
-        formData.append("contents", JSON.stringify(content));
-        formData.append("step", currentStep.toString());
-        if (id) formData.append("id", id.toString());
-        return await SaveContent(formData, setError);
-      } else if (currentStep == 3) {
-        let formData = new FormData();
-        // Step.1
-        formData.append("contents", JSON.stringify(content));
-        formData.append("step", currentStep.toString());
-        if (id) formData.append("id", id.toString());
-        return await SaveContent(formData, setError);
-      }
-    } else return true;
-    return false;
+    // if (!backClicked) {
+    //   const content = {
+    //     ...userData, // shallow copy of the userData object
+    //     checklistMap: Array.from(userData.checklistMap),
+    //     establishment_date: !isString(userData.establishment_date)
+    //       ? userData.establishment_date?.toDate()?.toISOString()
+    //       : userData.establishment_date,
+    //   };
+    //   if (currentStep == 1) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     if (id) formData.append("id", id.toString());
+    //     formData.append("step", currentStep.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 2) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 3) {
+    //     let formData = new FormData();
+    //     // Step.1
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   }
+    // } else return true;
+    // return false;
+    return true;
   };
 
   const stepsCompleted = async (
@@ -109,7 +110,7 @@ export default function EditNgoProgress() {
       formData.append("content", JSON.stringify(content));
 
       const response = await axiosClient.post(
-        "ngo/store/personal/detail-final",
+        "ngo/register/form/complete",
         formData
       );
 
@@ -131,7 +132,6 @@ export default function EditNgoProgress() {
       });
       return false;
     }
-    console.log("Naweed");
     return true;
   };
 

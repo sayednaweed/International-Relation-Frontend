@@ -35,18 +35,14 @@ export default function EditNgoAgreement() {
   const { t } = useTranslation();
   let { id } = useParams();
   const [state] = useGlobalState();
-
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [_failed, setFailed] = useState(false);
   const [agreements, setAgreements] = useState<Agreement[]>([]);
-  const [agreementDocuments, setAgreementDocuments] = useState<
-    Map<string, AgreementDocument>
-  >(new Map<string, AgreementDocument>());
 
   const per: UserPermission | undefined = user?.permissions.get(
     SectionEnum.ngo
   );
-  const hasEdit = per ? per?.edit : false;
+  const _hasEdit = per ? per?.edit : false;
 
   const loadAgreement = async () => {
     try {
@@ -70,27 +66,6 @@ export default function EditNgoAgreement() {
     loadAgreement();
   }, []);
 
-  const loadAgreementDocuments = async (agreement_id: string) => {
-    try {
-      const response = await axiosClient.get(
-        `ngo/agreement-documents/${agreement_id}`
-      );
-      if (response.status == 200) {
-        const agreement_documents = response.data.agreement_documents;
-        setAgreementDocuments(agreement_documents);
-      }
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-      console.log(error);
-      setFailed(true);
-    }
-    setLoading(false);
-  };
-
   return (
     <Card className=" h-full">
       <CardHeader className="space-y-0">
@@ -113,76 +88,12 @@ export default function EditNgoAgreement() {
               <NastranSpinner className="mt-6" />
             ) : (
               agreements.map((agreement: Agreement, index: number) => (
-                <Collapsible key={agreement.id}>
-                  <div className="flex items-center p-2">
-                    <h1 className="max-w-[30px] w-[30px]">{index + 1}</h1>
-                    <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
-                      {toLocaleDate(new Date(agreement.start_date), state)}
-                    </h1>
-                    <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
-                      {toLocaleDate(new Date(agreement.end_date), state)}
-                    </h1>
-                    <CollapsibleTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={async () =>
-                          await loadAgreementDocuments(agreement.id)
-                        }
-                      >
-                        <ChevronsUpDown className="h-4 w-4" />
-                        <span className="sr-only">Toggle</span>
-                      </Button>
-                    </CollapsibleTrigger>
-                  </div>
-                  <CollapsibleContent className="space-y-2">
-                    {Array.from(agreementDocuments).map(([key, documents]) => (
-                      <CheckListChooser
-                        number={documents.id}
-                        key={key}
-                        url={`${
-                          import.meta.env.VITE_API_BASE_URL
-                        }/api/v1/ngo/file/upload`}
-                        headers={{
-                          "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-                          "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                          Authorization:
-                            "Bearer " +
-                            localStorage.getItem(
-                              import.meta.env.VITE_TOKEN_STORAGE_KEY
-                            ),
-                        }}
-                        maxSize={1024}
-                        accept={documents.acceptable_mimes}
-                        name={documents.checklist_name}
-                        defaultFile={
-                          agreementDocuments.get(documents.id) as FileType
-                        }
-                        validTypes={["image/png", "image/jpeg", "image/gif"]}
-                        uploadParam={{
-                          document_id: documents.document_id,
-                        }}
-                        onComplete={async (record: any) => {
-                          for (const element of record) {
-                            const item = element[element.length - 1];
-                            setAgreementDocuments((prevDocs) => {
-                              const updatedDocs = new Map(prevDocs); // Create a new Map to preserve immutability
-                              updatedDocs.set(documents.document_id, item); // Add the new document to the Map
-                              return updatedDocs; // Return the updated Map
-                            });
-                          }
-                        }}
-                        onStart={async (file: File) => {
-                          setAgreementDocuments((prevDocs) => {
-                            const updatedDocs = new Map(prevDocs); // Create a new Map to preserve immutability
-                            updatedDocs.set(documents.document_id, file as any); // Add the new document to the Map
-                            return updatedDocs; // Return the updated Map
-                          });
-                        }}
-                      />
-                    ))}
-                  </CollapsibleContent>
-                </Collapsible>
+                <AgreementDocumentComponent
+                  ngo_id={id}
+                  index={index}
+                  state={state}
+                  agreement={agreement}
+                />
               ))
             )}
           </div>
@@ -191,3 +102,120 @@ export default function EditNgoAgreement() {
     </Card>
   );
 }
+
+export interface AgreementProps {
+  agreement: Agreement;
+  index: number;
+  state: any;
+  ngo_id: string | undefined;
+}
+
+const AgreementDocumentComponent = (props: AgreementProps) => {
+  const { agreement, index, state, ngo_id } = props;
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [_failed, setFailed] = useState(false);
+
+  const [documents, setDocuments] = useState<AgreementDocument[]>([]);
+  const loadAgreementDocuments = async (agreement_id: string) => {
+    try {
+      setLoading(true);
+      const response = await axiosClient.get(`ngo/agreement-documents`, {
+        params: {
+          ngo_id: ngo_id,
+          agreement_id: agreement_id,
+        },
+      });
+      if (response.status == 200) {
+        const agreement_documents = response.data.agreement_documents;
+        setDocuments(agreement_documents);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
+      console.log(error);
+      setFailed(true);
+    }
+    setLoading(false);
+  };
+  return (
+    <Collapsible key={agreement.id}>
+      <div className="flex items-center p-2">
+        <h1 className="max-w-[30px] w-[30px]">{index + 1}</h1>
+        <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
+          {toLocaleDate(new Date(agreement.start_date), state)}
+        </h1>
+        <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
+          {toLocaleDate(new Date(agreement.end_date), state)}
+        </h1>
+        <CollapsibleTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={async () => await loadAgreementDocuments(agreement.id)}
+          >
+            <ChevronsUpDown className="h-4 w-4" />
+            <span className="sr-only">Toggle</span>
+          </Button>
+        </CollapsibleTrigger>
+      </div>
+      <CollapsibleContent className="space-y-2">
+        {loading ? (
+          <NastranSpinner className="size-[20px]" />
+        ) : documents.length == 0 ? (
+          <h1 className=" rtl:text-xl-rtl bg-primary/20 text-center">
+            {t("no_content")}
+          </h1>
+        ) : (
+          documents.map((document: AgreementDocument, index: number) => (
+            <CheckListChooser
+              number={`${index + 1}`}
+              key={index}
+              url={`${
+                import.meta.env.VITE_API_BASE_URL
+              }/api/v1/ngo/file/upload`}
+              headers={{
+                "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+                "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+                Authorization:
+                  "Bearer " +
+                  localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+              }}
+              maxSize={1024}
+              accept={document.acceptable_mimes}
+              name={document.name}
+              defaultFile={document as FileType}
+              validTypes={["image/png", "image/jpeg", "image/gif"]}
+              uploadParam={{
+                document_id: document.document_id,
+              }}
+              onComplete={async (record: any) => {
+                for (const element of record) {
+                  const item = element[element.length - 1];
+                  // setDocuments((prevDocs) => {
+                  //   const updatedDocs = new Map(prevDocs); // Create a new Map to preserve immutability
+                  //   updatedDocs.set(documents.document_id, item); // Add the new document to the Map
+                  //   return updatedDocs; // Return the updated Map
+                  // });
+                }
+              }}
+              onStart={async (file: File) => {
+                // setAgreementDocuments((prevDocs) => {
+                //   const updatedDocs = new Map(prevDocs); // Create a new Map to preserve immutability
+                //   updatedDocs.set(
+                //     documents.document_id,
+                //     file as any
+                //   ); // Add the new document to the Map
+                //   return updatedDocs; // Return the updated Map
+                // });
+              }}
+            />
+          ))
+        )}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};

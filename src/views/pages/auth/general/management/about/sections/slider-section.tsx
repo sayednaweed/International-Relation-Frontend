@@ -21,7 +21,6 @@ import { isFile } from "@/validation/utils";
 
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-
 import { UserPermission } from "@/database/tables";
 import { SectionEnum } from "@/lib/constants";
 import { useUserAuthState } from "@/context/AuthContextProvider";
@@ -50,7 +49,6 @@ export default function TechnicalSection() {
     imageUrl: "",
     isactive: true,
   });
-  const [error, setError] = useState<Map<string, string>>(new Map());
 
   const initialize = async () => {
     try {
@@ -107,10 +105,8 @@ export default function TechnicalSection() {
         title: t("error"),
         description: error.response.data.message,
       });
-      setServerError(error.response.data.errors, setError);
       console.log(error);
     } finally {
-      setManipulating(false);
     }
   };
 

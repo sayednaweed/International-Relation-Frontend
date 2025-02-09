@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -24,8 +23,9 @@ function SliderSection() {
   let { id } = useParams();
   const [failed, setFailed] = useState(false);
   const [slider, setSlider] = useState<SliderProps[]>([]);
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
   const initialize = async () => {
     try {
       // 1. Organize date

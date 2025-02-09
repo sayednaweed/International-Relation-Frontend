@@ -152,7 +152,7 @@ export default function AddNewsInformation() {
           userData={userData}
           errorData={error}
           placeholder={t("detail")}
-          rows={3}
+          rows={10}
           className="rtl:text-xl-rtl rounded-none border-t border-x-0"
           tabsClassName="gap-x-5 px-3"
         >
