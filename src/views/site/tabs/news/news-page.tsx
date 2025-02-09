@@ -53,9 +53,9 @@ function NewsPage() {
         : [],
   };
   const loadList = async (
-    count: number,
     searchInput: string | undefined = undefined,
-    page = 1
+    count: number | undefined,
+    page: number | undefined
   ) => {
     try {
       if (loading) return;
@@ -66,15 +66,16 @@ function NewsPage() {
         endDate: endDate,
       };
       // 2. Send data
-      const response = await axiosClient.get(`public/newses/${page}`, {
+      const response = await axiosClient.get(`public/newses`, {
         params: {
+          page: page,
           per_page: count,
           filters: {
-            sort: sort,
-            order: order,
+            sort: filters.sort,
+            order: filters.order,
             search: {
-              column: searchColumn,
-              value: searchInput ? searchInput : searchValue,
+              column: filters.search.column,
+              value: searchInput,
             },
             date: dates,
           },
@@ -111,14 +112,27 @@ function NewsPage() {
       setLoading(false);
     }
   };
-  const initialize = async (searchInput: string | undefined = undefined) => {
-    const count = await getComponentCache(
-      CACHE.NEWS_PUB_TABLE_PAGINATION_COUNT
-    );
-    loadList(count ? count.value : 10, searchInput);
+  const initialize = async (
+    searchInput: string | undefined = undefined,
+    count: number | undefined,
+    page: number | undefined
+  ) => {
+    if (!count) {
+      const countSore = await getComponentCache(
+        CACHE.NEWS_PUB_TABLE_PAGINATION_COUNT
+      );
+      count = countSore?.value ? countSore.value : 10;
+    }
+    if (!searchInput) {
+      searchInput = filters.search.value;
+    }
+    if (!page) {
+      page = 1;
+    }
+    loadList(searchInput, count, page);
   };
   useEffect(() => {
-    initialize();
+    initialize(undefined, undefined, 1);
   }, [sort, startDate, endDate, order, searchColumn, searchValue]);
   const [newsList, setNewsList] = useState<{
     filterList: NewsPaginationData;
@@ -163,9 +177,12 @@ function NewsPage() {
           endContent={
             <SecondaryButton
               onClick={async () => {
-                if (searchRef.current != undefined) {
-                  await initialize(searchRef.current.value);
-                }
+                if (searchRef.current != undefined)
+                  await initialize(
+                    searchRef.current.value,
+                    undefined,
+                    undefined
+                  );
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
             >
@@ -305,9 +322,9 @@ function NewsPage() {
             placeholder={`${t("select")}...`}
             emptyPlaceholder={t("no_options_found")}
             rangePlaceholder={t("count")}
-            onChange={async (value: string) => {
-              loadList(parseInt(value));
-            }}
+            onChange={async (value: string) =>
+              await initialize(undefined, parseInt(value), undefined)
+            }
           />
         </div>
       </div>
@@ -320,6 +337,7 @@ function NewsPage() {
           newsList.filterList.data.map((news: News) => (
             <PublicNews
               news={news}
+              key={news.id}
               viewOnClick={viewOnClick}
               detailText={t("detail")}
               state={state}
@@ -335,37 +353,9 @@ function NewsPage() {
         }`}</h1>
         <Pagination
           lastPage={newsList.unFilterList.lastPage}
-          onPageChange={async (page) => {
-            try {
-              const count = await getComponentCache(
-                CACHE.NEWS_PUB_TABLE_PAGINATION_COUNT
-              );
-              const response = await axiosClient.get(`public/newses/${page}`, {
-                params: {
-                  per_page: count ? count.value : 10,
-                },
-              });
-              const fetch = response.data.news.data as News[];
-
-              const item = {
-                currentPage: page,
-                data: fetch,
-                lastPage: newsList.unFilterList.lastPage,
-                totalItems: newsList.unFilterList.totalItems,
-                perPage: newsList.unFilterList.perPage,
-              };
-              setNewsList({
-                filterList: item,
-                unFilterList: item,
-              });
-            } catch (error: any) {
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: error.response.data.message,
-              });
-            }
-          }}
+          onPageChange={async (page) =>
+            await initialize(undefined, undefined, page)
+          }
         />
       </div>
     </div>

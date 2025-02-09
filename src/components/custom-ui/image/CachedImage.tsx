@@ -56,6 +56,7 @@ const CachedImage = React.forwardRef<HTMLImageElement, ImageProps>(
     const download = async () => {
       try {
         if (src == null || src == undefined) {
+          if (image) setImage(null);
           setLoading(false);
           return;
         }

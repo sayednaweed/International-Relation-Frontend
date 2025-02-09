@@ -25,7 +25,7 @@ import {
   Province,
   UserPermission,
 } from "@/database/tables";
-import { LanguageEnum, SectionEnum } from "@/lib/constants";
+import { SectionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
@@ -33,6 +33,7 @@ import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker
 import { DateObject } from "react-multi-date-picker";
 import { ValidateItem } from "@/validation/types";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
+import { isString } from "@/lib/utils";
 interface EditNgoInformationProps {
   registration_no: string;
   name_english: string | undefined;
@@ -51,7 +52,6 @@ interface EditNgoInformationProps {
   province: Province;
   district: District;
   establishment_date: DateObject;
-  status: boolean;
   optional_lang: string;
 }
 export default function EditNgoInformation() {
@@ -73,7 +73,7 @@ export default function EditNgoInformation() {
       const response = await axiosClient.get(`ngo/details/${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
-        setNgoData(ngo);
+        if (ngo) setNgoData(ngo);
       }
     } catch (error: any) {
       toast({
@@ -102,82 +102,40 @@ export default function EditNgoInformation() {
     // 1. Validate data changes
     // 2. Validate form
     const compulsoryFields: ValidateItem[] = [
-      {
-        name: "registration_no",
-        rules: ["required"],
-      },
-      {
-        name: "name_english",
-        rules: ["required", "max:128", "min:3"],
-      },
-      {
-        name: "moe_registration_no",
-        rules: ["required"],
-      },
-      {
-        name: "abbr",
-        rules: ["required"],
-      },
-      {
-        name: "ngo_type",
-        rules: ["required"],
-      },
-      {
-        name: "contact",
-        rules: ["required"],
-      },
-      {
-        name: "email",
-        rules: ["required"],
-      },
-      {
-        name: "place_of_establishment",
-        rules: ["required"],
-      },
-      {
-        name: "address",
-        rules: ["required"],
-      },
-      {
-        name: "establishment_date",
-        rules: ["required"],
-      },
-      {
-        name: "last_agreement_date",
-        rules: ["required"],
-      },
-      {
-        name: "status",
-        rules: ["required"],
-      },
+      { name: "name_english", rules: ["required", "max:128", "min:5"] },
+      { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
+      { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
+      { name: "abbr", rules: ["required"] },
+      { name: "type", rules: ["required"] },
+      { name: "contact", rules: ["required"] },
+      { name: "email", rules: ["required"] },
+      { name: "moe_registration_no", rules: ["required"] },
+      { name: "place_of_establishment", rules: ["required"] },
+      { name: "establishment_date", rules: ["required"] },
+      { name: "province", rules: ["required"] },
+      { name: "district", rules: ["required"] },
+      { name: "area_english", rules: ["required", "max:128", "min:5"] },
+      { name: "area_pashto", rules: ["required", "max:128", "min:5"] },
+      { name: "area_farsi", rules: ["required", "max:128", "min:5"] },
     ];
-    if (ngoData?.optional_lang == LanguageEnum.farsi) {
-      compulsoryFields.push({
-        name: "name_pashto",
-        rules: ["required", "max:128", "min:3"],
-      });
-    } else {
-      compulsoryFields.push({
-        name: "name_farsi",
-        rules: ["required", "max:128", "min:3"],
-      });
-    }
-
-    compulsoryFields.push();
     const passed = await validate(compulsoryFields, ngoData, setError);
     if (!passed) {
       setLoading(false);
       return;
     }
+    const content = {
+      ...ngoData, // shallow copy of the userData object
+      establishment_date: !isString(ngoData!.establishment_date)
+        ? ngoData!.establishment_date?.toDate()?.toISOString()
+        : ngoData!.establishment_date,
+    };
     // 2. Store
     const formData = new FormData();
     formData.append("id", id);
+    formData.append("contents", JSON.stringify(content));
     try {
-      const response = await axiosClient.post("user/update", formData);
+      const response = await axiosClient.post("ngo/update-info", formData);
       if (response.status == 200) {
-        // Update user state
-        const details = response.data.ngo_details;
-        setNgoData(details);
         toast({
           toastType: "SUCCESS",
           title: t("success"),

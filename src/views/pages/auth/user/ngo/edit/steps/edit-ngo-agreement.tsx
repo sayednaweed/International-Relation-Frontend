@@ -37,7 +37,7 @@ export default function EditNgoAgreement() {
   const [state] = useGlobalState();
 
   const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
+  const [_failed, setFailed] = useState(false);
   const [agreements, setAgreements] = useState<Agreement[]>([]);
   const [agreementDocuments, setAgreementDocuments] = useState<
     Map<string, AgreementDocument>
@@ -46,7 +46,8 @@ export default function EditNgoAgreement() {
   const per: UserPermission | undefined = user?.permissions.get(
     SectionEnum.ngo
   );
-  const hasEdit = per ? per?.edit : false;
+  const _hasEdit = per ? per?.edit : false;
+  console.log(_hasEdit);
 
   const loadAgreement = async () => {
     try {

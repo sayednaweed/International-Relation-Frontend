@@ -140,13 +140,17 @@ const CustomSelect: React.FC<SelectProps> = ({
     }
   }, [selectData.isOpen]);
 
+  const dialogPaddingFix =
+    selectData.select.value && selectData.select.value.length == 1
+      ? "px-3"
+      : "px-2";
   return (
     <div className={cn("relative", className)} ref={selectRef}>
       <button
         onClick={() =>
           setSelectData({ ...selectData, isOpen: !selectData.isOpen })
         }
-        className="w-full rtl:text-sm-rtl px-2 py-2 border rounded-md flex items-center justify-between bg-card text-card-foreground"
+        className={`w-full rtl:text-sm-rtl py-2 border rounded-md flex items-center justify-between bg-card text-card-foreground ${dialogPaddingFix}`}
       >
         {selectData.select.value || placeholder}
         <ChevronDown
@@ -172,11 +176,7 @@ const CustomSelect: React.FC<SelectProps> = ({
                   ? selectData.select.value
                   : ""
               }
-              className={`bg-card dark:!bg-black/80 rtl:text-lg-rtl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none ${
-                selectData.select.option === KEYS.input
-                  ? "bg-primary text-tertiary"
-                  : "text-primary-foreground"
-              }`}
+              className={`bg-card  dark:bg-card-secondary text-tertiary rtl:text-lg-rtl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-center text-sm px-4 py-2 border-b border-primary/15 rounded-t-md focus:outline-none`}
             />
             <Check
               onClick={() => {

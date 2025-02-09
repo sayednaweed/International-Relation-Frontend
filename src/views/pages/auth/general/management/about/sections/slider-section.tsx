@@ -9,7 +9,6 @@ import {
 import { t } from "i18next";
 import { ChangeEvent, useEffect, useState } from "react";
 
-import { setServerError } from "@/validation/validation";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -20,7 +19,6 @@ import { isFile } from "@/validation/utils";
 
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 type SliderProps = {
   id: string;
   picture: string;
@@ -34,14 +32,12 @@ type PictureDataProps = {
 export default function SliderSection() {
   const [slider, setSlider] = useState<SliderProps[]>([]);
   const [loading, setLoading] = useState(false);
-  const [manipulating, setManipulating] = useState(false);
   const [pictureData, setPictureData] = useState<PictureDataProps>({
     id: "",
     picture: undefined,
     imageUrl: "",
     editable: false,
   });
-  const [error, setError] = useState<Map<string, string>>(new Map());
 
   const initialize = async () => {
     try {
@@ -70,7 +66,6 @@ export default function SliderSection() {
     if (loading) {
       return;
     }
-    setManipulating(true);
 
     // 2. Store
     const formData = new FormData();
@@ -104,10 +99,8 @@ export default function SliderSection() {
         title: t("error"),
         description: error.response.data.message,
       });
-      setServerError(error.response.data.errors, setError);
       console.log(error);
     } finally {
-      setManipulating(false);
     }
   };
 

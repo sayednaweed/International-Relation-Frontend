@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -20,8 +19,8 @@ interface SliderProps {
 function SliderSection() {
   const { t, i18n } = useTranslation();
   const [slider, setSlider] = useState<SliderProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, _setLoading] = useState<boolean>(true);
+  const [error, _setError] = useState<string | null>(null);
   const initialize = async () => {
     try {
       const response = await axiosClient.get(`staff/puplic/slider`);

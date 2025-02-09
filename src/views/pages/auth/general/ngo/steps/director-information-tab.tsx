@@ -17,7 +17,6 @@ export default function DirectorInformationTab() {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
-
   return (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
       <BorderContainer

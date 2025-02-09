@@ -178,7 +178,7 @@ export interface NewsPaginationData {
 }
 export type NgoInformation = {
   id: string;
-  profile: string;
+  profile: string | undefined;
   name: string;
   abbr: string;
   status_id: number;
@@ -188,6 +188,7 @@ export type NgoInformation = {
   type: string;
   email: string;
   contact: string;
+  username: string;
   created_at: string;
 };
 

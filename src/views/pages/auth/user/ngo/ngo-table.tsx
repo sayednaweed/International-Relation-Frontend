@@ -54,7 +54,7 @@ export function NgoTable() {
   const endDate = searchParams.get("en_dt");
   const filters = {
     sort: sort == null ? "id" : (sort as NgoSort),
-    order: order == null ? "asc" : (order as Order),
+    order: order == null ? "desc" : (order as Order),
     search: {
       column: searchColumn == null ? "name" : (searchColumn as NgoSearch),
       value: searchValue == null ? "" : searchValue,
@@ -72,9 +72,9 @@ export function NgoTable() {
         : [],
   };
   const loadList = async (
-    count: number,
     searchInput: string | undefined = undefined,
-    page = 1
+    count: number | undefined,
+    page: number | undefined
   ) => {
     try {
       if (loading) return;
@@ -85,15 +85,16 @@ export function NgoTable() {
         endDate: endDate,
       };
       // 2. Send data
-      const response = await axiosClient.get(`ngos/${page}`, {
+      const response = await axiosClient.get(`ngos`, {
         params: {
+          page: page,
           per_page: count,
           filters: {
-            sort: sort,
-            order: order,
+            sort: filters.sort,
+            order: filters.order,
             search: {
-              column: searchColumn,
-              value: searchInput ? searchInput : searchValue,
+              column: filters.search.column,
+              value: searchInput,
             },
             date: dates,
           },
@@ -130,12 +131,27 @@ export function NgoTable() {
       setLoading(false);
     }
   };
-  const initialize = async (searchInput: string | undefined = undefined) => {
-    const count = await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT);
-    loadList(count ? count.value : 10, searchInput);
+  const initialize = async (
+    searchInput: string | undefined = undefined,
+    count: number | undefined,
+    page: number | undefined
+  ) => {
+    if (!count) {
+      const countSore = await getComponentCache(
+        CACHE.NGO_TABLE_PAGINATION_COUNT
+      );
+      count = countSore?.value ? countSore.value : 10;
+    }
+    if (!searchInput) {
+      searchInput = filters.search.value;
+    }
+    if (!page) {
+      page = 1;
+    }
+    loadList(searchInput, count, page);
   };
   useEffect(() => {
-    initialize();
+    initialize(undefined, undefined, 1);
   }, [sort, startDate, endDate, order]);
   const [ngos, setNgos] = useState<{
     filterList: NgoPaginationData;
@@ -256,7 +272,6 @@ export function NgoTable() {
     if (edit) {
       if (
         ngo.status_id == StatusEnum.not_logged_in ||
-        ngo.status_id == StatusEnum.in_progress ||
         ngo.status_id == StatusEnum.unregistered
       ) {
         navigate(`/ngo/profile/edit/${ngoId}`, {
@@ -305,9 +320,12 @@ export function NgoTable() {
           endContent={
             <SecondaryButton
               onClick={async () => {
-                if (searchRef.current != undefined) {
-                  await initialize(searchRef.current.value);
-                }
+                if (searchRef.current != undefined)
+                  await initialize(
+                    searchRef.current.value,
+                    undefined,
+                    undefined
+                  );
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
             >
@@ -469,9 +487,9 @@ export function NgoTable() {
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
-          onChange={async (value: string) => {
-            loadList(parseInt(value));
-          }}
+          onChange={async (value: string) =>
+            await initialize(undefined, parseInt(value), undefined)
+          }
         />
       </div>
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
@@ -548,37 +566,9 @@ export function NgoTable() {
         }`}</h1>
         <Pagination
           lastPage={ngos.unFilterList.lastPage}
-          onPageChange={async (page) => {
-            try {
-              const count = await getComponentCache(
-                CACHE.NGO_TABLE_PAGINATION_COUNT
-              );
-              const response = await axiosClient.get(`ngos/${page}`, {
-                params: {
-                  per_page: count ? count.value : 10,
-                },
-              });
-              const fetch = response.data.ngos.data as NgoInformation[];
-
-              const item = {
-                currentPage: page,
-                data: fetch,
-                lastPage: ngos.unFilterList.lastPage,
-                totalItems: ngos.unFilterList.totalItems,
-                perPage: ngos.unFilterList.perPage,
-              };
-              setNgos({
-                filterList: item,
-                unFilterList: item,
-              });
-            } catch (error: any) {
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: error.response.data.message,
-              });
-            }
-          }}
+          onPageChange={async (page) =>
+            await initialize(undefined, undefined, page)
+          }
         />
       </div>
     </>

@@ -6,16 +6,16 @@ import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import { UserInformation } from "@/lib/types";
+import { NgoInformation } from "@/lib/types";
 import { UserPermission } from "@/database/tables";
 import { SectionEnum } from "@/lib/constants";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
-  userData: UserInformation | undefined;
+  userData: NgoInformation | undefined;
   failed: boolean;
-  setUserData: Dispatch<SetStateAction<UserInformation | undefined>>;
+  setUserData: Dispatch<SetStateAction<NgoInformation | undefined>>;
 }
 
 export default function UserNgoEditHeader(props: UserEditHeaderProps) {
@@ -81,7 +81,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
     if (id !== undefined) formData.append("id", id);
     formData.append("profile", file);
     try {
-      const response = await axiosClient.post("user/update-profile", formData, {
+      const response = await axiosClient.post("ngo/update-profile", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -128,7 +128,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
     setLoading(true);
 
     try {
-      const response = await axiosClient.delete("user/delete-profile/" + id);
+      const response = await axiosClient.delete("ngo/delete-profile/" + id);
       if (response.status == 200 && userData) {
         // Change logged in user data
         setUserData({
@@ -158,7 +158,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
         src={userData?.profile}
         alt="Avatar"
         shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
-        className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
+        className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
       />
       {loading && (
         <NastranSpinner
