@@ -221,7 +221,6 @@ export type Agreement = {
 export interface AgreementDocument extends FileType {
   document_id: string;
   checklist_id: string;
-  checklist_name: string;
   acceptable_extensions: string;
   acceptable_mimes: string;
   description: string;

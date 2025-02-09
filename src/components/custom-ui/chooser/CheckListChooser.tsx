@@ -51,25 +51,25 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       }
     };
     return (
-      <ul className="gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto_1fr] items-center">
+      <ul className="gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_1fr_1fr] items-center">
         <li className="font-bold text-[15px]">{number}</li>
-        <li className="rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
+        <li className="rtl:text-md-rtl ltr:text-lg-ltr font-semibold">
           {name}
         </li>
-        <li className="flex items-center gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
+        <li className="flex items-center justify-end gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
           {uploaded || defaultFile?.name ? (
             <Check className="size-[22px] text-green-500 rounded-sm" />
           ) : (
             <X className="size-[24px] text-red-500 rounded-full p-[2px]" />
           )}
           {isFile(defaultFile) ? (
-            <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden">
+            <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden text-end">
               {defaultFile?.name}
             </h1>
           ) : (
             defaultFile?.name && (
               <>
-                <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden">
+                <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden text-end">
                   {defaultFile?.name}
                 </h1>
                 <Downloader
@@ -83,7 +83,10 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
             )
           )}
         </li>
-        <li className="col-span-full sm:col-span-1" ref={downloadRef}>
+        <li
+          className="flex sm:justify-end col-span-full sm:col-span-1"
+          ref={downloadRef}
+        >
           <ChunkedUploady
             withCredentials={true}
             method="POST"

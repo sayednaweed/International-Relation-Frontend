@@ -93,16 +93,16 @@ export default function UserNgoEditPage() {
       <Tabs
         dir={direction}
         defaultValue="ngo_information"
-        className="flex flex-col sm:flex-row gap-x-3 mt-2 gap-y-2 sm:gap-y-0"
+        className="flex flex-col md:flex-row gap-x-3 mt-2 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
           <>
-            <Shimmer className="min-h-fit sm:min-h-[80vh] w-full sm:w-[300px]" />
+            <Shimmer className="min-h-fit sm:min-h-[80vh] w-full md:w-[300px]" />
             <Shimmer className="h-full w-full" />
           </>
         ) : (
           <>
-            <TabsList className="pb-8 min-h-fit sm:min-h-[80vh] h-fit sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
+            <TabsList className="pb-8 min-h-fit sm:min-h-[80vh] h-fit md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
               <UserNgoEditHeader
                 id={id}
                 failed={failed}
