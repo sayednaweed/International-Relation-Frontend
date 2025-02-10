@@ -77,7 +77,6 @@ export default function TechnicalSection() {
     // 2. Store
     const formData = new FormData();
     formData.append("id", pictureData.id);
-    formData.append("staff_type_id", StaffEnum.slider.toString());
     if (pictureData.picture) formData.append("picture", pictureData.picture);
 
     try {

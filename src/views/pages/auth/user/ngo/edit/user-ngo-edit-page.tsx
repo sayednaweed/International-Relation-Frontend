@@ -14,12 +14,14 @@ import { NgoInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, Database, Grip, NotebookPen, UserRound } from "lucide-react";
-import EditNgoInformation from "./steps/edit-ngo-information";
 import UserNgoEditHeader from "./user-ngo-edit-header";
-import EditNgoAgreement from "./steps/edit-ngo-agreement";
 import EditDirectorTab from "./steps/edit-director-tab";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import { StatusEnum } from "@/lib/constants";
+import EditAgreemenTab from "./steps/edit-agreement-tab";
+import EditMoreInformationTab from "./steps/edit-more-information-tab";
+import EditInformationTab from "./steps/edit-information-tab";
+import EditStatusTab from "./steps/edit-status-tab";
 
 export default function UserNgoEditPage() {
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ export default function UserNgoEditPage() {
     loadInformation();
   }, []);
 
-  const selectedTabStyle = `relative w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3 justify-start`;
+  const selectedTabStyle = `relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
   return (
     <div className="flex flex-col gap-y-6 px-3 mt-2">
@@ -92,7 +94,7 @@ export default function UserNgoEditPage() {
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue="ngo_information"
+        defaultValue="n_i"
         className="flex flex-col md:flex-row gap-x-3 mt-2 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
@@ -111,48 +113,54 @@ export default function UserNgoEditPage() {
               />
               <TabsTrigger
                 className={`mt-6 rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="ngo_information"
+                value="n_i"
               >
                 <Database className="size-[18px]" />
                 {t("ngo_information")}
               </TabsTrigger>
               <TabsTrigger
                 className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="director_information"
+                value="d_i"
               >
                 <UserRound className="size-[18px]" />
                 {t("director_information")}
               </TabsTrigger>
               <TabsTrigger
                 className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="agreement_checklist"
+                value="a_c"
               >
                 <NotebookPen className="size-[18px]" />
                 {t("agreement_checklist")}
               </TabsTrigger>
               <TabsTrigger
                 className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="more_information"
+                value="m_i"
               >
                 <Grip className="size-[18px]" />
                 {t("more_information")}
               </TabsTrigger>
               <TabsTrigger
                 className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="status"
+                value="s_i"
               >
                 <Activity className="size-[18px]" />
                 {t("status")}
               </TabsTrigger>
             </TabsList>
-            <TabsContent className="flex-1 m-0" value="ngo_information">
-              <EditNgoInformation />
+            <TabsContent className="flex-1 m-0" value="n_i">
+              <EditInformationTab />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="director_information">
+            <TabsContent className="flex-1 m-0" value="d_i">
               <EditDirectorTab />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="agreement_checklist">
-              <EditNgoAgreement />
+            <TabsContent className="flex-1 m-0" value="a_c">
+              <EditAgreemenTab />
+            </TabsContent>
+            <TabsContent className="flex-1 m-0" value="m_i">
+              <EditMoreInformationTab />
+            </TabsContent>
+            <TabsContent className="flex-1 m-0" value="s_i">
+              <EditStatusTab />
             </TabsContent>
           </>
         )}

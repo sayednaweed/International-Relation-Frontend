@@ -52,7 +52,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
     };
     return (
       <ul className="gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_1fr_1fr] items-center">
-        <li className="font-bold text-[15px]">{number}</li>
+        <li className="font-bold text-[15px]">{number}.</li>
         <li className="rtl:text-md-rtl ltr:text-lg-ltr font-semibold">
           {name}
         </li>
