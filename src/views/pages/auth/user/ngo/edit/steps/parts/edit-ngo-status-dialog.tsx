@@ -11,19 +11,13 @@ import { Button } from "@/components/ui/button";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { useEffect, useState } from "react";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import CustomInput from "@/components/custom-ui/input/CustomInput";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { setServerError, validate } from "@/validation/validation";
 import { useParams } from "react-router";
-import BorderContainer from "@/components/custom-ui/container/BorderContainer";
-import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
-import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
-import APICombobox from "@/components/custom-ui/combobox/APICombobox";
-import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 import { NgoStatus } from "@/database/tables";
+import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 
 export interface EditNgoStatusDialogProps {
   onComplete: (ngoStatus: NgoStatus) => void;
@@ -54,7 +48,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
       setLoading(true);
       const response = await axiosClient.get(`ngo/ngoStatus/${ngoStatus?.id}`);
       if (response.status === 200) {
-        const ngoStatus = response.data.ngoStatus;
+        const ngoStatus = response.data.status;
         setUserData(ngoStatus);
       }
     } catch (error: any) {
@@ -184,7 +178,27 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
       {loading ? (
         <NastranSpinner className=" mx-auto" />
       ) : (
-        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12"></CardContent>
+        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+          <APICombobox
+            placeholderText={t("search_item")}
+            errorText={t("no_item")}
+            onSelect={(selection: any) => {
+              if (ngoStatus)
+                setUserData({
+                  ...ngoStatus,
+                  status_type_id: selection.id,
+                  name: selection.name,
+                });
+            }}
+            lable={t("gender")}
+            required={true}
+            selectedItem={ngoStatus?.name}
+            placeHolder={t("select_a")}
+            errorMessage={error.get("gender")}
+            apiUrl={"genders"}
+            mode="single"
+          />
+        </CardContent>
       )}
       <CardFooter className="flex justify-between">
         <Button

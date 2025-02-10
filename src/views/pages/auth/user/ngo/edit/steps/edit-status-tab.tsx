@@ -16,7 +16,6 @@ import { RefreshCcw } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import { useParams } from "react-router";
-import EditDirectorDialog from "./parts/edit-director-dialog";
 import {
   Card,
   CardContent,
@@ -27,6 +26,7 @@ import {
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { NgoStatus } from "@/database/tables";
 import EditNgoStatusDialog from "./parts/edit-ngo-status-dialog";
+import StatusButton from "@/components/custom-ui/button/StatusButton";
 export default function EditStatusTab() {
   const { t } = useTranslation();
   let { id } = useParams();
@@ -48,8 +48,8 @@ export default function EditStatusTab() {
       // 2. Send data
       const response = await axiosClient.get(`ngo/statuses/${id}`);
       if (response.status === 200) {
-        // const fetch = response.data.directors as IDirector[];
-        // setDirectors(fetch);
+        const fetch = response.data.statuses as NgoStatus[];
+        setNgoStatuses(fetch);
         if (failed) setFailed(false);
       }
     } catch (error: any) {
@@ -119,7 +119,7 @@ export default function EditStatusTab() {
     <Card>
       <CardHeader>
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
-          {t("director_information")}
+          {t("status")}
         </CardTitle>
       </CardHeader>
       <CardContent className="grid gap-x-4 gap-y-6 w-full xl:w-1/">
@@ -133,7 +133,7 @@ export default function EditStatusTab() {
               className="py-8"
               button={
                 <PrimaryButton className="text-primary-foreground">
-                  {t("add")}
+                  {t("edit")}
                 </PrimaryButton>
               }
               showDialog={async () => true}
@@ -165,13 +165,10 @@ export default function EditStatusTab() {
                       <TableCell>
                         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                       </TableCell>
-                      <TableCell>
-                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                      </TableCell>
                     </TableRow>
                   </>
                 ) : (
-                  ngoStatuses.map((ngoStatus: NgoStatus) => (
+                  ngoStatuses.map((ngoStatus: NgoStatus, index: number) => (
                     <TableRowIcon
                       read={false}
                       remove={false}
@@ -187,10 +184,13 @@ export default function EditStatusTab() {
                       onRemove={async () => {}}
                       onRead={async () => {}}
                     >
-                      <TableCell className="font-medium">
-                        {ngoStatus.id}
+                      <TableCell className="font-medium">{index + 1}</TableCell>
+                      <TableCell>
+                        <StatusButton
+                          status_id={parseInt(ngoStatus.status_type_id)}
+                          status={ngoStatus.name}
+                        />
                       </TableCell>
-                      <TableCell>{ngoStatus.name}</TableCell>
                       <TableCell>
                         {ngoStatus.is_active == "1" ? (
                           <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">

@@ -220,6 +220,7 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
               defaultFile={document as FileType}
               validTypes={["image/png", "image/jpeg", "image/gif"]}
               uploadParam={{
+                ngo_id: ngo_id,
                 document_id: document.document_id,
                 checklist_id: document.checklist_id,
               }}
