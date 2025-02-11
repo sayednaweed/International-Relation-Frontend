@@ -46,7 +46,7 @@ export default function TechnicalTable(props: TechnicalTableProps) {
     </TableRow>
   );
   return (
-    <Table className="bg-card my-[2px] py-8">
+    <Table className="px-0  pt-0 bg-card my-[2px] py-8 ">
       <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
         <TableRow className="hover:bg-transparent">
           <TableHead className="text-center px-1 w-[60px]">

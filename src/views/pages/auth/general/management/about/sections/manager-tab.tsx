@@ -20,7 +20,7 @@ import StaffInputs from "./parts/staff-inputs";
 import { IStaffSingle } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function ManagerSection() {
+export default function ManagerTab() {
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState<IStaffSingle>({
@@ -212,21 +212,21 @@ export default function ManagerSection() {
     }
   };
   return (
-    <Card className="w-full self-center bg-card">
+    <Card className=" w-full self-center bg-card">
       <CardHeader className="relative text-start">
-        <CardTitle className="rtl:text-4xl-rtl ltr:text-4xl-ltr text-tertiary text-start">
+        <CardTitle className=" rtl:text-4xl-rtl ltr:text-4xl-ltr text-tertiary text-start">
           {t("manager")}
         </CardTitle>
         <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
           {t("general_desc")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-y-8">
+      <CardContent className="px-0 flex flex-col gap-y-8">
         {loading ? (
           <NastranSpinner />
         ) : (
           <>
-            <div className="flex flex-col justify-center gap-y-2">
+            <div className=" flex flex-col justify-center gap-y-2">
               {isFile(userData.picture) ? (
                 <img
                   src={userData.imageUrl}

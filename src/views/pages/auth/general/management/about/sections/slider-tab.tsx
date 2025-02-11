@@ -37,7 +37,7 @@ type PictureProps = {
   imageUrl: string;
   isactive: boolean;
 };
-export default function TechnicalSection() {
+export default function SliderTab() {
   const { user } = useUserAuthState();
   const { t } = useTranslation();
   const [technical, setTechnical] = useState<SliderProps[]>([]);

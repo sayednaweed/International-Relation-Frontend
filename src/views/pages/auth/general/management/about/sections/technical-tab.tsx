@@ -8,6 +8,7 @@ import {
 
 import { t } from "i18next";
 import { ChangeEvent, useEffect, useState } from "react";
+import { IStaff, IStaffSingle } from "@/lib/types";
 import { setServerError, validate } from "@/validation/validation";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
@@ -16,11 +17,12 @@ import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { Pencil } from "lucide-react";
 import IconButton from "@/components/custom-ui/button/IconButton";
 import { isFile } from "@/validation/utils";
+import TechnicalTable from "./parts/technical-table";
 import StaffInputs from "./parts/staff-inputs";
-import { IStaffSingle } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function DirectorSection() {
+export default function TechnicalTab() {
+  const [technical, setTechnical] = useState<IStaff[]>([]);
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState<IStaffSingle>({
@@ -40,25 +42,11 @@ export default function DirectorSection() {
   const initialize = async () => {
     try {
       setLoading(true);
-      const response = await axiosClient.get("staff/director");
+      const response = await axiosClient.get("staff/technicalSupports");
       if (response.status == 200) {
         // 1. Add data to list
-        if (response.data.director) {
-          const data = response.data.director;
-          const item = {
-            id: data.id,
-            picture: data.picture,
-            name_english: data.name_english,
-            name_farsi: data.name_farsi,
-            name_pashto: data.name_pashto,
-            contact: data.contact,
-            email: data.email,
-            optional_lang: "",
-            imageUrl: "",
-            editable: true,
-          };
-          setUserData(item as IStaffSingle);
-        }
+        const technicalStaff = response.data.technicalStaff;
+        setTechnical(technicalStaff as IStaff[]);
       }
     } catch (error: any) {
       toast({
@@ -118,7 +106,7 @@ export default function DirectorSection() {
     formData.append("name_pashto", userData.name_pashto);
     formData.append("contact", userData.contact);
     formData.append("email", userData.email);
-    formData.append("staff_type_id", StaffEnum.director.toString());
+    formData.append("staff_type_id", StaffEnum.technical_support.toString());
     if (userData.picture) formData.append("picture", userData.picture);
 
     try {
@@ -126,17 +114,28 @@ export default function DirectorSection() {
       const response = await axiosClient.post(url, formData);
       if (response.status == 200) {
         const staff = response.data.staff;
+
+        if (userData.editable) {
+          setTechnical((prevTechnical) => {
+            return prevTechnical.map((item) =>
+              item.id === userData.id ? staff : item
+            );
+          });
+        } else {
+          // 1. Add data to list
+          setTechnical((prev) => [staff, ...prev]);
+        }
         setUserData({
-          id: staff.id,
-          picture: staff.picture,
-          name_english: staff.name_english,
-          name_farsi: staff.name_farsi,
-          name_pashto: staff.name_pashto,
-          contact: staff.contact,
-          email: staff.email,
+          id: "",
+          picture: undefined,
+          name_english: "",
+          name_farsi: "",
+          name_pashto: "",
+          contact: "",
+          email: "",
           optional_lang: "",
           imageUrl: "",
-          editable: true,
+          editable: false,
         });
         toast({
           toastType: "SUCCESS",
@@ -154,6 +153,43 @@ export default function DirectorSection() {
       console.log(error);
     } finally {
       setManipulating(false);
+    }
+  };
+  const editOnClick = async (staff: IStaff) => {
+    setUserData({
+      id: staff.id,
+      picture: staff.picture,
+      name_english: staff.name_english,
+      name_farsi: staff.name_farsi,
+      name_pashto: staff.name_pashto,
+      contact: staff.contact,
+      email: staff.email,
+      optional_lang: "",
+      imageUrl: "",
+      editable: true,
+    });
+  };
+
+  const deleteOnClick = async (staff: IStaff) => {
+    try {
+      const response = await axiosClient.delete("staff/" + staff.id);
+      if (response.status == 200) {
+        const filtered = technical.filter(
+          (item: IStaff) => staff.id != item.id
+        );
+        setTechnical(filtered);
+      }
+      toast({
+        toastType: "SUCCESS",
+        title: t("success"),
+        description: response.data.message,
+      });
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
     }
   };
 
@@ -215,13 +251,13 @@ export default function DirectorSection() {
     <Card className="w-full self-center bg-card">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-4xl-ltr text-tertiary text-start">
-          {t("director")}
+          {t("technical_sup")}
         </CardTitle>
         <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
           {t("general_desc")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-y-8">
+      <CardContent className="px-0 pt-0 flex flex-col gap-y-8 ">
         {loading ? (
           <NastranSpinner />
         ) : (
@@ -266,6 +302,13 @@ export default function DirectorSection() {
               error={error}
               manipulating={manipulating}
               saveData={saveData}
+            />
+
+            <TechnicalTable
+              deleteOnClick={deleteOnClick}
+              editOnClick={editOnClick}
+              staffs={technical}
+              loading={loading}
             />
           </>
         )}

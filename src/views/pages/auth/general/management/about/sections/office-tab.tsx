@@ -15,7 +15,7 @@ import { StaffEnum } from "@/lib/constants";
 import StaffInputs from "./parts/staff-inputs";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function OfficeSection() {
+export default function OfficeTab() {
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState({

@@ -1,44 +1,74 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import TechnicalSection from "./sections/technical-section";
-import { Link } from "react-router";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Briefcase, Languages, MapPinHouse } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import DirectorSection from "./sections/director-section";
-import ManagerSection from "./sections/manager-section";
-import OfficeSection from "./sections/office-section";
-import SliderSection from "./sections/slider-section";
+import TechnicalTab from "./sections/technical-tab";
+import DirectorTab from "./sections/director-tab";
+import ManagerTab from "./sections/manager-tab";
+import SliderTab from "./sections/slider-tab";
+import OfficeTab from "./sections/office-tab";
 
 export default function AboutManagementPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const direction = i18n.dir();
 
   return (
-    <div className="px-2 pt-2 flex flex-col relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr gap-y-12">
-      <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              {t("management/about")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <TechnicalSection />
-      <DirectorSection />
-      <ManagerSection />
-      <SliderSection />
-      <OfficeSection />
-    </div>
+    <Tabs
+      dir={direction}
+      defaultValue="tech"
+      className="flex flex-col items-center"
+    >
+      <TabsList className="px-0 pb-1 h-fit mt-2 flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">
+        <TabsTrigger
+          value="tech"
+          className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <Languages className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("technical")}
+        </TabsTrigger>
+        <TabsTrigger
+          value="dir"
+          className="gap-x-1 bg-card shadow  rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <Briefcase className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("director")}
+        </TabsTrigger>
+        <TabsTrigger
+          value="mang"
+          className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <MapPinHouse className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("manager")}
+        </TabsTrigger>
+        <TabsTrigger
+          value="slid"
+          className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <MapPinHouse className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("slider")}
+        </TabsTrigger>
+        <TabsTrigger
+          value="off"
+          className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <MapPinHouse className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("office")}
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="tech" className="w-full px-4 pt-8">
+        <TechnicalTab />
+      </TabsContent>
+      <TabsContent value="dir" className="w-full px-4 pt-8">
+        <DirectorTab />
+      </TabsContent>
+      <TabsContent value="mang" className="w-full px-4 pt-8">
+        <ManagerTab />
+      </TabsContent>
+      <TabsContent value="slid" className="w-full px-4 pt-8">
+        <SliderTab />
+      </TabsContent>
+      <TabsContent value="off" className="w-full px-4 pt-8">
+        <OfficeTab />
+      </TabsContent>
+    </Tabs>
   );
 }
