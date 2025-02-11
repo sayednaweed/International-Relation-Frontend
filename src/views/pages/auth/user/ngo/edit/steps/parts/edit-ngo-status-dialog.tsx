@@ -9,7 +9,7 @@ import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useMode
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
@@ -18,145 +18,82 @@ import { useParams } from "react-router";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { NgoStatus } from "@/database/tables";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
+import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
 
 export interface EditNgoStatusDialogProps {
   onComplete: (ngoStatus: NgoStatus) => void;
-  ngoStatus?: NgoStatus;
 }
 export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
-  const { onComplete, ngoStatus } = props;
-  const [loading, setLoading] = useState(false);
+  const { onComplete } = props;
   const [storing, setStoring] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
-  let { id } = useParams();
+  const { id } = useParams();
 
-  const [userData, setUserData] = useState<NgoStatus>({
-    id: "",
-    ngo_id: "",
-    status_type_id: "",
-    is_active: "",
-    name: "",
+  const [userData, setUserData] = useState<{
+    status: { id: string; name: string } | undefined;
+    comment: "";
+  }>({
+    status: undefined,
     comment: "",
-    created_at: "",
-    optional_lang: "english",
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
 
-  const fetch = async () => {
+  const add = async () => {
     try {
-      setLoading(true);
-      const response = await axiosClient.get(`ngo/ngoStatus/${ngoStatus?.id}`);
-      if (response.status === 200) {
-        const ngoStatus = response.data.status;
-        setUserData(ngoStatus);
-      }
-    } catch (error: any) {
-      console.log(error);
-    }
-    setLoading(false);
-  };
-  useEffect(() => {
-    if (ngoStatus) fetch();
-  }, []);
-
-  const addOrUpdate = async () => {
-    const url = ngoStatus ? "ngo/status/update" : "ngo/status/store";
-    const idToPass = ngoStatus ? ngoStatus.id : id;
-    try {
-      if (loading) return;
+      if (storing) return;
       setStoring(true);
       // 1. Validate form
       const passed = await validate(
         [
           {
-            name: "name_english",
-            rules: ["required", "max:128", "min:5"],
-          },
-          {
-            name: "name_farsi",
-            rules: ["required", "max:128", "min:5"],
-          },
-          {
-            name: "name_pashto",
-            rules: ["required", "max:128", "min:5"],
-          },
-          {
-            name: "surname_english",
+            name: "status",
             rules: ["required", "max:128", "min:3"],
           },
           {
-            name: "surname_pashto",
-            rules: ["required", "max:128", "min:3"],
-          },
-          {
-            name: "surname_farsi",
-            rules: ["required", "max:128", "min:3"],
-          },
-          {
-            name: "contact",
-            rules: ["required"],
-          },
-          {
-            name: "email",
-            rules: ["required"],
-          },
-          {
-            name: "gender",
-            rules: ["required"],
-          },
-          {
-            name: "nationality",
-            rules: ["required"],
-          },
-          {
-            name: "identity_type",
-            rules: ["required"],
-          },
-          {
-            name: "nid",
-            rules: ["required"],
-          },
-          {
-            name: "province",
-            rules: ["required"],
-          },
-          {
-            name: "district",
-            rules: ["required"],
-          },
-          {
-            name: "area_english",
-            rules: ["required", "max:128", "min:5"],
-          },
-          {
-            name: "area_farsi",
-            rules: ["required", "max:128", "min:5"],
-          },
-          {
-            name: "area_pashto",
-            rules: ["required", "max:128", "min:5"],
+            name: "comment",
+            rules: ["required", "max:128", "min:15"],
           },
         ],
         userData,
         setError
       );
-      if (!passed) return;
+      if (!passed) {
+        setStoring(false);
+        return;
+      }
       // 2. Store
       let formData = new FormData();
-      if (idToPass) formData.append("id", idToPass.toString());
-      formData.append("contents", JSON.stringify(userData));
+      if (id) formData.append("ngo_id", id.toString());
+      formData.append("comment", userData.comment);
+      if (userData?.status)
+        formData.append("status_type_id", userData.status.id);
 
-      const response = await axiosClient.post(url, formData);
+      const response = await axiosClient.post("ngo/change-status", formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        onComplete(response.data.ngoStatus);
+        const status = response.data.status;
+        const ngoStatus = {
+          id: status.ngo_status_id as string,
+          is_active: status.is_active as string,
+          created_at: status.created_at as string,
+          ngo_id: id as string,
+          comment: userData.comment as string,
+          name: userData.status?.name as string,
+          status_type_id: userData.status?.id as string,
+        };
+        onComplete(ngoStatus);
         modelOnRequestHide();
       }
     } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
       setServerError(error.response.data.errors, setError);
       console.log(error);
     } finally {
@@ -167,36 +104,47 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
     const { name, value } = e.target;
     if (userData) setUserData({ ...userData, [name]: value });
   };
-
   return (
     <Card className="w-full self-center [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
-          {ngoStatus ? t("edit") : t("add")}
+          {t("edit")}
         </CardTitle>
       </CardHeader>
-      {loading ? (
+      {storing ? (
         <NastranSpinner className=" mx-auto" />
       ) : (
-        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+        <CardContent className="flex flex-col mt-10 w-full lg:w-1/2 gap-y-6 pb-12">
           <APICombobox
+            requiredHint={`* ${t("required")}`}
             placeholderText={t("search_item")}
             errorText={t("no_item")}
             onSelect={(selection: any) => {
-              if (ngoStatus)
-                setUserData({
-                  ...ngoStatus,
-                  status_type_id: selection.id,
-                  name: selection.name,
-                });
+              setUserData({
+                ...userData,
+                status: selection,
+              });
             }}
-            lable={t("gender")}
+            lable={t("status")}
             required={true}
-            selectedItem={ngoStatus?.name}
+            selectedItem={userData?.status?.name}
             placeHolder={t("select_a")}
-            errorMessage={error.get("gender")}
-            apiUrl={"genders"}
+            errorMessage={error.get("status")}
+            apiUrl={"block/statuse/types"}
             mode="single"
+          />
+
+          <CustomTextarea
+            required={true}
+            requiredHint={`* ${t("required")}`}
+            lable={t("comment")}
+            name="comment"
+            defaultValue={userData["comment"]}
+            placeholder={t("detail")}
+            className="uppercase"
+            errorMessage={error.get("comment")}
+            onBlur={handleChange}
+            rows={5}
           />
         </CardContent>
       )}
@@ -209,8 +157,8 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
           {t("cancel")}
         </Button>
         <PrimaryButton
-          disabled={storing || loading}
-          onClick={addOrUpdate}
+          disabled={storing}
+          onClick={add}
           className={`${storing && "opacity-90"}`}
           type="submit"
         >

@@ -142,7 +142,6 @@ export type NgoStatus = {
   name: string;
   comment: string;
   created_at: string;
-  optional_lang?: string; // Optional
 };
 export type NgoType = {
   id: string;

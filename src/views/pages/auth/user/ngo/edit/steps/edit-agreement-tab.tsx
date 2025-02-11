@@ -74,7 +74,7 @@ export default function EditAgreemenTab() {
   }, []);
 
   return (
-    <Card className=" h-full">
+    <Card className="h-fit">
       <CardHeader className="space-y-0">
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
           {t("account_information")}
@@ -98,6 +98,7 @@ export default function EditAgreemenTab() {
                 <AgreementDocumentComponent
                   ngo_id={id}
                   index={index}
+                  key={index}
                   state={state}
                   agreement={agreement}
                 />

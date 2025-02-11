@@ -156,7 +156,10 @@ const Downloader = (props: DownloaderProps) => {
     try {
       lockUpload(true);
       setIsDownloading(true);
-      const response = await axiosClient.get(`media/${filetoDownload?.path}`, {
+      const response = await axiosClient.get(`media`, {
+        params: {
+          path: filetoDownload?.path,
+        },
         responseType: "blob", // Important to handle the binary data (PDF)
         cancelToken: source.token, // Pass the cancel token here
         onDownloadProgress: (progressEvent) => {

@@ -9,12 +9,11 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import axiosClient from "@/lib/axois-client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { RefreshCcw } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
-import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import { useParams } from "react-router";
 import {
   Card,
@@ -27,24 +26,19 @@ import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { NgoStatus } from "@/database/tables";
 import EditNgoStatusDialog from "./parts/edit-ngo-status-dialog";
 import StatusButton from "@/components/custom-ui/button/StatusButton";
+import { toLocaleDate } from "@/lib/utils";
+import { useGlobalState } from "@/context/GlobalStateContext";
 export default function EditStatusTab() {
   const { t } = useTranslation();
-  let { id } = useParams();
+  const { id } = useParams();
+  const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [selected, setSelected] = useState<{
-    visible: boolean;
-    ngoStatus: NgoStatus | undefined;
-  }>({
-    visible: false,
-    ngoStatus: undefined,
-  });
   const [ngoStatuses, setNgoStatuses] = useState<NgoStatus[]>([]);
   const initialize = async () => {
     try {
       if (loading) return;
       setLoading(true);
-
       // 2. Send data
       const response = await axiosClient.get(`ngo/statuses/${id}`);
       if (response.status === 200) {
@@ -77,44 +71,7 @@ export default function EditStatusTab() {
       setNgoStatuses([ngoStatus, ...ngoStatuses]);
     }
   };
-  const update = (ngoStatus: NgoStatus) => {
-    let updatedUnFiltered = [];
-    if (ngoStatus.is_active == "1") {
-      updatedUnFiltered = ngoStatuses.map((item) =>
-        item.id === ngoStatus.id ? ngoStatus : { ...item, is_active: "0" }
-      );
-    } else {
-      updatedUnFiltered = ngoStatuses.map((item) =>
-        item.id === ngoStatus.id ? ngoStatus : item
-      );
-    }
-    setNgoStatuses(updatedUnFiltered);
-  };
 
-  const dailog = useMemo(
-    () => (
-      <NastranModel
-        size="lg"
-        visible={selected.visible}
-        className="py-8"
-        isDismissable={false}
-        button={<button></button>}
-        showDialog={async () => {
-          setSelected({
-            visible: false,
-            ngoStatus: undefined,
-          });
-          return true;
-        }}
-      >
-        <EditNgoStatusDialog
-          ngoStatus={selected.ngoStatus}
-          onComplete={update}
-        />
-      </NastranModel>
-    ),
-    [selected.visible]
-  );
   return (
     <Card>
       <CardHeader>
@@ -147,6 +104,7 @@ export default function EditStatusTab() {
                   <TableHead className="text-start">{t("name")}</TableHead>
                   <TableHead className="text-start">{t("status")}</TableHead>
                   <TableHead className="text-start">{t("comment")}</TableHead>
+                  <TableHead className="text-start">{t("date")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="rtl:text-xl-rtl ltr:text-lg-ltr">
@@ -165,26 +123,15 @@ export default function EditStatusTab() {
                       <TableCell>
                         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                       </TableCell>
+                      <TableCell>
+                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                      </TableCell>
                     </TableRow>
                   </>
                 ) : (
                   ngoStatuses.map((ngoStatus: NgoStatus, index: number) => (
-                    <TableRowIcon
-                      read={false}
-                      remove={false}
-                      edit={true}
-                      onEdit={async (ngoStatus: NgoStatus) => {
-                        setSelected({
-                          visible: true,
-                          ngoStatus: ngoStatus,
-                        });
-                      }}
-                      key={ngoStatus.id}
-                      item={ngoStatus}
-                      onRemove={async () => {}}
-                      onRead={async () => {}}
-                    >
-                      <TableCell className="font-medium">{index + 1}</TableCell>
+                    <TableRow key={index}>
+                      <TableCell>{index + 1}</TableCell>
                       <TableCell>
                         <StatusButton
                           status_id={parseInt(ngoStatus.status_type_id)}
@@ -193,28 +140,26 @@ export default function EditStatusTab() {
                       </TableCell>
                       <TableCell>
                         {ngoStatus.is_active == "1" ? (
-                          <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
+                          <h1 className="truncate text-center rtl:text-md-rtl ltr:text-md-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
                             {t("currently")}
                           </h1>
                         ) : (
-                          <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-red-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
+                          <h1 className="truncate text-center rtl:text-md-rtl ltr:text-md-ltr bg-primary/30 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
                             {t("formerly")}
                           </h1>
                         )}
                       </TableCell>
-
-                      <TableCell
-                        className=" rtl:text-end text-[15px]"
-                        dir="ltr"
-                      >
+                      <TableCell className="truncate">
+                        {toLocaleDate(new Date(ngoStatus.created_at), state)}
+                      </TableCell>
+                      <TableCell className="truncate max-w-44">
                         {ngoStatus.comment}
                       </TableCell>
-                    </TableRowIcon>
+                    </TableRow>
                   ))
                 )}
               </TableBody>
             </Table>
-            {dailog}
           </>
         )}
       </CardContent>
