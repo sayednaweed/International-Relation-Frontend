@@ -30,7 +30,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { UserPermission } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
-import { SectionEnum } from "@/lib/constants";
+import { PermissionEnum } from "@/lib/constants";
 import { ValidateItem } from "@/validation/types";
 import { validate } from "@/validation/validation";
 import { RefreshCcw } from "lucide-react";
@@ -166,10 +166,11 @@ export default function EditNews() {
     }
   };
 
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.news
-  );
-  const hasEdit = per ? per?.edit : false;
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.news.name
+  ) as UserPermission;
+  const hasEdit = per.sub.get(PermissionEnum.news.sub.operations)?.edit;
+
   return (
     <div className="flex flex-col gap-y-6 px-3 mt-2">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">

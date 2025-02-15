@@ -4,11 +4,20 @@ import { useTranslation } from "react-i18next";
 import LanguageTab from "./tabs/language/language-tab";
 import JobTab from "./tabs/job/job-tab";
 import DestinationTab from "./tabs/destination/destination-tab";
+import { useUserAuthState } from "@/context/AuthContextProvider";
+import { UserPermission } from "@/database/tables";
+import { PermissionEnum } from "@/lib/constants";
 
-export default function UserSettingsPage() {
+export default function SettingsPage() {
+  const { user } = useUserAuthState();
   const { t, i18n } = useTranslation();
   const direction = i18n.dir();
-
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.settings.name
+  ) as UserPermission;
+  const hasView = per.sub.get(
+    PermissionEnum.settings.sub.setting_destination
+  )?.view;
   return (
     <Tabs
       dir={direction}

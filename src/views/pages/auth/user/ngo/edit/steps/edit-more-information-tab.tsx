@@ -5,7 +5,6 @@ import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -17,7 +16,7 @@ import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
+import { PermissionEnum, SectionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
@@ -50,10 +49,13 @@ export default function EditMoreInformationTab() {
   const [error, setError] = useState<Map<string, string>>(new Map());
   const [ngoData, setNgoData] = useState<EditNgoInformationProps>();
 
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
-  );
-  const hasEdit = per ? per?.edit : false;
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.ngo.name
+  ) as UserPermission;
+
+  const hasEdit = per.sub.get(
+    PermissionEnum.ngo.sub.ngo_more_information
+  )?.edit;
 
   const loadInformation = async () => {
     try {
@@ -138,11 +140,8 @@ export default function EditMoreInformationTab() {
     <Card>
       <CardHeader className="space-y-0">
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
-          {t("account_information")}
+          {t("more_information")}
         </CardTitle>
-        <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-          {t("update_user_acc_info")}
-        </CardDescription>
       </CardHeader>
       <CardContent>
         {failed ? (
@@ -309,13 +308,7 @@ export default function EditMoreInformationTab() {
         ) : (
           ngoData &&
           hasEdit && (
-            <PrimaryButton
-              onClick={async () => {
-                if (user?.permissions.get(SectionEnum.users)?.edit)
-                  await saveData();
-              }}
-              className={`shadow-lg`}
-            >
+            <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
             </PrimaryButton>
           )

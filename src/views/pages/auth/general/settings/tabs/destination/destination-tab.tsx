@@ -44,7 +44,7 @@ export default function DestinationTab() {
       setLoading(true);
 
       // 2. Send data
-      const response = await axiosClient.get(`destinations`);
+      const response = await axiosClient.get(`complete-destinations`);
       const fetch = response.data as Destination[];
       setDestinations({
         unFilterList: fetch,
@@ -53,7 +53,7 @@ export default function DestinationTab() {
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: t("error"),
+        title: "Error!",
         description: error.response.data.message,
       });
     } finally {
@@ -151,7 +151,7 @@ export default function DestinationTab() {
           isDismissable={false}
           button={
             <PrimaryButton className="text-primary-foreground">
-              {t("add_reference")}
+              {t("add reference")}
             </PrimaryButton>
           }
           showDialog={async () => true}

@@ -20,7 +20,13 @@ import StaffInputs from "./parts/staff-inputs";
 import { IStaffSingle } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function ManagerSection() {
+interface ManagerSectionProps {
+  hasEdit: boolean;
+  hasAdd: boolean;
+}
+export default function ManagerSection(props: ManagerSectionProps) {
+  const { hasAdd, hasEdit } = props;
+
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState<IStaffSingle>({
@@ -211,6 +217,7 @@ export default function ManagerSection() {
       e.currentTarget.type = "file"; // Reset to file type
     }
   };
+
   return (
     <Card className="w-full self-center bg-card">
       <CardHeader className="relative text-start">
@@ -266,6 +273,8 @@ export default function ManagerSection() {
               error={error}
               manipulating={manipulating}
               saveData={saveData}
+              hasEdit={hasEdit}
+              hasAdd={hasAdd}
             />
           </>
         )}

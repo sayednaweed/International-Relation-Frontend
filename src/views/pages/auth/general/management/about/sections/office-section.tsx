@@ -15,7 +15,13 @@ import { StaffEnum } from "@/lib/constants";
 import StaffInputs from "./parts/staff-inputs";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function OfficeSection() {
+interface OfficeSectionProps {
+  hasEdit: boolean;
+  hasAdd: boolean;
+}
+export default function OfficeSection(props: OfficeSectionProps) {
+  const { hasEdit, hasAdd } = props;
+
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState({
@@ -170,6 +176,8 @@ export default function OfficeSection() {
             error={error}
             manipulating={manipulating}
             saveData={saveData}
+            hasEdit={hasEdit}
+            hasAdd={hasAdd}
           />
         )}
       </CardContent>

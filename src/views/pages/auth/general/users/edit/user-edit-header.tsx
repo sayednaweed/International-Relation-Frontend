@@ -6,9 +6,6 @@ import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { UserInformation } from "@/lib/types";
-import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 
 export interface UserEditHeaderProps {
@@ -20,14 +17,8 @@ export interface UserEditHeaderProps {
 
 export default function UserEditHeader(props: UserEditHeaderProps) {
   const { id, userData, setUserData, failed } = props;
-  const { user } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.users
-  );
-  const hasEdit = per ? per?.edit : false;
-  const hasRemove = per ? per?.delete : false;
 
   const onFileUploadChange = async (e: ChangeEvent<HTMLInputElement>) => {
     // Handle execution
@@ -169,34 +160,31 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
       )}
       {userData && !failed && (
         <div className="flex self-center justify-center !mt-2 !mb-6 gap-x-4">
-          {hasEdit && (
-            <IconButton className="hover:bg-primary/20 transition-all text-primary">
-              <label
-                className={`flex w-fit gap-x-1 items-center cursor-pointer justify-center`}
-              >
-                <Pencil className={`size-[13px] pointer-events-none`} />
-                <h1 className={`rtl:text-lg-rtl ltr:text-md-ltr`}>
-                  {t("choose")}
-                </h1>
-                <input
-                  type="file"
-                  className={`block w-0 h-0`}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    onFileUploadChange(e);
-                  }}
-                />
-              </label>
-            </IconButton>
-          )}
-          {hasRemove && (
-            <IconButton
-              className="hover:bg-red-400/30 transition-all border-red-400/40 text-red-400"
-              onClick={deleteProfilePicture}
+          <IconButton className="hover:bg-primary/20 transition-all text-primary">
+            <label
+              className={`flex w-fit gap-x-1 items-center cursor-pointer justify-center`}
             >
-              <Trash2 className="size-[13px] pointer-events-none" />
-              <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
-            </IconButton>
-          )}
+              <Pencil className={`size-[13px] pointer-events-none`} />
+              <h1 className={`rtl:text-lg-rtl ltr:text-md-ltr`}>
+                {t("choose")}
+              </h1>
+              <input
+                type="file"
+                className={`block w-0 h-0`}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                  onFileUploadChange(e);
+                }}
+              />
+            </label>
+          </IconButton>
+
+          <IconButton
+            className="hover:bg-red-400/30 transition-all border-red-400/40 text-red-400"
+            onClick={deleteProfilePicture}
+          >
+            <Trash2 className="size-[13px] pointer-events-none" />
+            <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
+          </IconButton>
         </div>
       )}
 

@@ -28,17 +28,17 @@ export default function DestinationDialog(props: DestinationDialogProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
   const [userData, setUserData] = useState<{
-    farsi: string;
-    english: string;
-    pashto: string;
-    destination_type: DestinationType | undefined;
-    color: string;
+    Farsi: string;
+    English: string;
+    Pashto: string;
+    destinationType: DestinationType | undefined;
+    Color: string;
   }>({
-    farsi: "",
-    english: "",
-    pashto: "",
-    destination_type: undefined,
-    color: destination ? "" : "#B4D455",
+    Farsi: "",
+    English: "",
+    Pashto: "",
+    destinationType: undefined,
+    Color: destination ? "" : "#B4D455",
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
@@ -47,13 +47,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
     try {
       const response = await axiosClient.get(`destination/${destination?.id}`);
       if (response.status === 200) {
-        setUserData({
-          farsi: response.data.destination.fa,
-          english: response.data.destination.en,
-          pashto: response.data.destination.ps,
-          color: response.data.destination.color,
-          destination_type: response.data.destination.type,
-        });
+        setUserData(response.data);
       }
     } catch (error: any) {
       console.log(error);
@@ -74,19 +68,19 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       const passed = await validate(
         [
           {
-            name: "english",
+            name: "English",
             rules: ["required"],
           },
           {
-            name: "farsi",
+            name: "Farsi",
             rules: ["required"],
           },
           {
-            name: "pashto",
+            name: "Pashto",
             rules: ["required"],
           },
           {
-            name: "destination_type",
+            name: "destinationType",
             rules: ["required"],
           },
         ],
@@ -96,12 +90,12 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       if (!passed) return;
       // 2. Store
       let formData = new FormData();
-      formData.append("english", userData.english);
-      formData.append("farsi", userData.farsi);
-      formData.append("pashto", userData.pashto);
-      formData.append("color", userData.color);
-      if (userData.destination_type)
-        formData.append("destination_type_id", userData.destination_type.id);
+      formData.append("english", userData.English);
+      formData.append("farsi", userData.Farsi);
+      formData.append("pashto", userData.Pashto);
+      formData.append("color", userData.Color);
+      if (userData.destinationType)
+        formData.append("destination_type_id", userData.destinationType.id);
       const response = await axiosClient.post("destination/store", formData);
       if (response.status === 200) {
         toast({
@@ -126,19 +120,19 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       const passed = await validate(
         [
           {
-            name: "english",
+            name: "English",
             rules: ["required"],
           },
           {
-            name: "farsi",
+            name: "Farsi",
             rules: ["required"],
           },
           {
-            name: "pashto",
+            name: "Pashto",
             rules: ["required"],
           },
           {
-            name: "destination_type",
+            name: "destinationType",
             rules: ["required"],
           },
         ],
@@ -149,19 +143,25 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       // 2. update
       let formData = new FormData();
       if (destination?.id) formData.append("id", destination.id);
-      formData.append("english", userData.english);
-      formData.append("farsi", userData.farsi);
-      formData.append("pashto", userData.pashto);
-      formData.append("color", userData.color);
-      if (userData.destination_type)
-        formData.append("destination_type_id", userData.destination_type.id);
+      formData.append("english", userData.English);
+      formData.append("farsi", userData.Farsi);
+      formData.append("pashto", userData.Pashto);
+      formData.append("color", userData.Color);
+      if (userData.destinationType)
+        formData.append("destination_type_id", userData.destinationType.id);
       const response = await axiosClient.post(`destination/update`, formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        onComplete(response.data.destination);
+        const des = response.data.destination;
+        des.type = {
+          id: userData.destinationType!.id,
+          name: userData.destinationType!.name,
+          created_at: "",
+        };
+        onComplete(des);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -179,7 +179,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
     <Card className="w-fit min-w-[400px] self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
-          {destination ? t("edit") : t("add")}
+          {destination ? t("Edit") : t("Add")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col">
@@ -188,12 +188,12 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           dir="ltr"
           className="rtl:text-end"
           required={true}
-          requiredHint={`* ${t("required")}`}
+          requiredHint={`* ${t("Required")}`}
           placeholder={t("translate_en")}
-          defaultValue={userData.english}
+          defaultValue={userData.English}
           type="text"
-          name="english"
-          errorMessage={error.get("english")}
+          name="English"
+          errorMessage={error.get("English")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -205,12 +205,12 @@ export default function DestinationDialog(props: DestinationDialogProps) {
         <CustomInput
           size_="sm"
           required={true}
-          requiredHint={`* ${t("required")}`}
+          requiredHint={`* ${t("Required")}`}
           placeholder={t("translate_fa")}
-          defaultValue={userData.farsi}
+          defaultValue={userData.Farsi}
           type="text"
-          name="farsi"
-          errorMessage={error.get("farsi")}
+          name="Farsi"
+          errorMessage={error.get("Farsi")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -222,12 +222,12 @@ export default function DestinationDialog(props: DestinationDialogProps) {
         <CustomInput
           size_="sm"
           required={true}
-          requiredHint={`* ${t("required")}`}
+          requiredHint={`* ${t("Required")}`}
           placeholder={t("translate_ps")}
-          defaultValue={userData.pashto}
+          defaultValue={userData.Pashto}
           type="text"
-          name="pashto"
-          errorMessage={error.get("pashto")}
+          name="Pashto"
+          errorMessage={error.get("Pashto")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -237,16 +237,16 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           }
         />
         <APICombobox
-          placeholderText={t("search_item")}
-          errorText={t("no_item")}
+          placeholderText={t("Search item")}
+          errorText={t("No item")}
           onSelect={(selection: any) =>
-            setUserData({ ...userData, ["destination_type"]: selection })
+            setUserData({ ...userData, ["destinationType"]: selection })
           }
           required={true}
-          requiredHint={`* ${t("required")}`}
-          selectedItem={userData.destination_type?.name}
-          placeHolder={t("select_a_type")}
-          errorMessage={error.get("destination_type")}
+          requiredHint={`* ${t("Required")}`}
+          selectedItem={userData.destinationType?.name}
+          placeHolder={t("select a type")}
+          errorMessage={error.get("destinationType")}
           apiUrl={"destination-types"}
           mode="single"
         />
@@ -255,11 +255,11 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           <ColorPicker
             gradientTitle={t("gradient")}
             solidTitle={t("solid")}
-            background={userData.color}
+            background={userData.Color}
             setBackground={(background: string) =>
               setUserData({
                 ...userData,
-                color: background,
+                Color: background,
               })
             }
             className=" self-start w-fit"
@@ -272,7 +272,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           variant="outline"
           onClick={modelOnRequestHide}
         >
-          {t("cancel")}
+          {t("Cancel")}
         </Button>
         <PrimaryButton
           disabled={loading}
@@ -280,7 +280,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           className={`${loading && "opacity-90"}`}
           type="submit"
         >
-          <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
+          <ButtonSpinner loading={loading}>{t("Save")}</ButtonSpinner>
         </PrimaryButton>
       </CardFooter>
     </Card>

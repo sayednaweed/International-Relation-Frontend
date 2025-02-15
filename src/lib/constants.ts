@@ -24,6 +24,60 @@ export const RoleEnum = {
   ngo: 5,
   donor: 6,
 };
+export const PermissionEnum = {
+  users: {
+    name: "users",
+    sub: {
+      add: 1,
+      delete: 2,
+      user_information: 3,
+      user_password: 4,
+      user_permission: 5,
+    },
+  },
+  dashboard: { name: "dashboard", sub: {} },
+  reports: { name: "reports", sub: {} },
+  settings: {
+    name: "settings",
+    sub: {
+      setting_language: 21,
+      setting_job: 22,
+      setting_destination: 23,
+    },
+  },
+  logs: { name: "logs", sub: {} },
+  audit: { name: "audit", sub: {} },
+  projects: { projects: "projects", sub: {} },
+  about: {
+    name: "management/about",
+    sub: {
+      director: 71,
+      manager: 72,
+      office: 73,
+      slider: 74,
+      technical: 75,
+    },
+  },
+  news: {
+    name: "management/news",
+    sub: {
+      operations: 81,
+    },
+  },
+  ngo: {
+    name: "ngo",
+    sub: {
+      ngo_add: 51,
+      ngo_information: 52,
+      ngo_director_information: 53,
+      ngo_agreement: 54,
+      ngo_more_information: 55,
+      ngo_status: 56,
+      ngo_representative: 57,
+    },
+  },
+  donor: { name: "donor", sub: {} },
+};
 export const StatusEnum = {
   active: 1,
   blocked: 2,

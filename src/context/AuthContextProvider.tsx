@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import axiosClient from "../lib/axois-client";
 import { Donor, Ngo, User } from "@/database/tables";
-import { returnPermissions } from "@/lib/utils";
+import {
+  getConfiguration,
+  removeToken,
+  returnPermissions,
+  setToken,
+} from "@/lib/utils";
 import { StatusEnum } from "@/lib/constants";
 // import secureLocalStorage from "react-secure-storage";
 interface AuthState {
@@ -49,7 +54,7 @@ const initUser: User | Ngo | Donor = {
   },
   grant: false,
   profile: "",
-  role: { role: 2, name: "admin" },
+  role: { role: 3, name: "user" },
   job: "",
   contact: "",
   destination: "",
@@ -80,13 +85,15 @@ function reducer(state: AuthState, action: Action) {
         ...state,
         authenticated: true,
         user: action.payload,
+        loading: false,
       };
     case "LOGOUT":
-      localStorage.removeItem(import.meta.env.VITE_TOKEN_STORAGE_KEY);
+      removeToken();
       return {
         ...state,
         authenticated: false,
         user: initUser,
+        loading: false,
       };
     case "EDIT":
       return {
@@ -108,29 +115,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const token = localStorage.getItem(
-          import.meta.env.VITE_TOKEN_STORAGE_KEY
-        );
-        if (token === null || token === undefined) {
+        const configuration = getConfiguration();
+        if (
+          configuration?.token === null ||
+          configuration?.token === undefined
+        ) {
+          dispatch({ type: "STOP_LOADING" });
           return;
         }
-        await axiosClient
-          .get("auth-user", {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then(({ data }) => {
-            const user = data.user as User;
-            if (user != null)
-              user.permissions = returnPermissions(data?.permissions);
-            dispatch({ type: "LOGIN", payload: user });
-          });
+        const response = await axiosClient.get(`auth-${configuration?.type}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (response.status === 200) {
+          const user = response.data.user;
+          if (user != null) {
+            user.permissions = returnPermissions(response.data?.permissions);
+          }
+          dispatch({ type: "LOGIN", payload: user });
+        }
       } catch (err) {
         console.log(err);
         dispatch({ type: "LOGOUT" });
-      } finally {
-        dispatch({ type: "STOP_LOADING" });
       }
     };
     loadUser();
@@ -148,10 +155,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       response = await axiosClient.post("auth-user", formData);
       if (response.status == 200) {
         if (rememberMe) {
-          localStorage.setItem(
-            import.meta.env.VITE_TOKEN_STORAGE_KEY,
-            response.data.token
-          );
+          setToken({
+            token: response.data.token,
+            type: "user",
+          });
         }
         const user = response.data.user as User;
         if (user != null)
@@ -177,12 +184,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       response = await axiosClient.post("auth-ngo", formData);
       if (response.status == 200) {
         if (rememberMe) {
-          localStorage.setItem(
-            import.meta.env.VITE_TOKEN_STORAGE_KEY,
-            response.data.token
-          );
+          setToken(response.data.token);
+          setToken({
+            token: response.data.token,
+            type: "ngo",
+          });
         }
-        const user = response.data.user as User;
+        const user = response.data.user as Ngo;
         if (user != null)
           user.permissions = returnPermissions(response.data?.permissions);
         dispatch({ type: "LOGIN", payload: user });
@@ -206,10 +214,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       response = await axiosClient.post("auth-ngo", formData);
       if (response.status == 200) {
         if (rememberMe) {
-          localStorage.setItem(
-            import.meta.env.VITE_TOKEN_STORAGE_KEY,
-            response.data.token
-          );
+          setToken({
+            token: response.data.token,
+            type: "donor",
+          });
         }
         const user = response.data.user as User;
         if (user != null)
@@ -255,6 +263,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     dispatch({ type: "LOGOUT" });
   };
+  const logoutNgo = async (): Promise<void> => {
+    try {
+      await axiosClient.post("logout-ngo");
+    } catch (error: any) {
+      console.log(error);
+    }
+    dispatch({ type: "LOGOUT" });
+  };
+  const logoutDonor = async (): Promise<void> => {
+    try {
+      await axiosClient.post("logout-donor");
+    } catch (error: any) {
+      console.log(error);
+    }
+    dispatch({ type: "LOGOUT" });
+  };
 
   return (
     <StateContext.Provider
@@ -264,6 +288,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loginNgo,
         loginDonor,
         logoutUser,
+        logoutNgo,
+        logoutDonor,
         setUser,
         setNgo,
         setDonor,

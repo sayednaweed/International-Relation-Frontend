@@ -15,17 +15,9 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import {
-  Country,
-  District,
-  NgoType,
-  Province,
-  UserPermission,
-} from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
+import { Country, District, NgoType, Province } from "@/database/tables";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
@@ -34,7 +26,7 @@ import { DateObject } from "react-multi-date-picker";
 import { ValidateItem } from "@/validation/types";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import { isString } from "@/lib/utils";
-interface EditNgoInformationProps {
+interface EditNgoInformation {
   registration_no: string;
   name_english: string | undefined;
   name_pashto: string;
@@ -54,19 +46,17 @@ interface EditNgoInformationProps {
   establishment_date: DateObject;
   optional_lang: string;
 }
-export default function EditInformationTab() {
-  const { user } = useUserAuthState();
+interface EditInformationTabProps {
+  hasEdit?: boolean;
+}
+export default function EditInformationTab(props: EditInformationTabProps) {
+  const { hasEdit } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
-  const [ngoData, setNgoData] = useState<EditNgoInformationProps>();
-
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
-  );
-  const hasEdit = per ? per?.edit : false;
+  const [ngoData, setNgoData] = useState<EditNgoInformation>();
 
   const loadInformation = async () => {
     try {
@@ -176,6 +166,7 @@ export default function EditInformationTab() {
               className="grid grid-cols-1 gap-y-3"
             >
               <MultiTabInput
+                readOnly={hasEdit}
                 optionalKey={"optional_lang"}
                 onTabChanged={(key: string, tabName: string) => {
                   setNgoData({
@@ -205,6 +196,7 @@ export default function EditInformationTab() {
             </BorderContainer>
 
             <CustomInput
+              readOnly={hasEdit}
               required={true}
               requiredHint={`* ${t("required")}`}
               size_="sm"
@@ -234,7 +226,7 @@ export default function EditInformationTab() {
               errorMessage={error.get("type")}
               apiUrl={"ngo-types"}
               mode="single"
-              readonly={true}
+              readonly={hasEdit}
             />
             <CustomInput
               size_="sm"
@@ -252,6 +244,7 @@ export default function EditInformationTab() {
                 const { name, value } = e.target;
                 setNgoData({ ...ngoData, [name]: value });
               }}
+              readOnly={hasEdit}
             />
             <CustomInput
               size_="sm"
@@ -269,6 +262,7 @@ export default function EditInformationTab() {
               }}
               dir="ltr"
               className="rtl:text-right"
+              readOnly={hasEdit}
             />
 
             <CustomInput
@@ -287,6 +281,7 @@ export default function EditInformationTab() {
               }}
               dir="ltr"
               className="rtl:text-right"
+              readOnly={hasEdit}
             />
 
             <BorderContainer
@@ -311,6 +306,7 @@ export default function EditInformationTab() {
                 errorMessage={error.get("place_of_establishment")}
                 apiUrl={"countries"}
                 mode="single"
+                readonly={hasEdit}
               />
               <CustomDatePicker
                 placeholder={t("select_a_date")}
@@ -323,6 +319,7 @@ export default function EditInformationTab() {
                 }}
                 className="py-3 w-full"
                 errorMessage={error.get("establishment_date")}
+                readonly={hasEdit}
               />
             </BorderContainer>
 
@@ -346,6 +343,7 @@ export default function EditInformationTab() {
                 apiUrl={"provinces"}
                 params={{ country_id: 1 }}
                 mode="single"
+                readonly={hasEdit}
               />
               {ngoData.province && (
                 <APICombobox
@@ -363,6 +361,7 @@ export default function EditInformationTab() {
                   params={{ province_id: ngoData?.province?.id }}
                   mode="single"
                   key={ngoData?.province?.id}
+                  readonly={hasEdit}
                 />
               )}
 
@@ -391,6 +390,7 @@ export default function EditInformationTab() {
                   placeholder={t("content")}
                   className="rtl:text-xl-rtl"
                   tabsClassName="gap-x-5"
+                  readOnly={hasEdit}
                 >
                   <SingleTab>english</SingleTab>
                   <SingleTab>farsi</SingleTab>
@@ -413,13 +413,7 @@ export default function EditInformationTab() {
         ) : (
           ngoData &&
           hasEdit && (
-            <PrimaryButton
-              onClick={async () => {
-                if (user?.permissions.get(SectionEnum.users)?.edit)
-                  await saveData();
-              }}
-              className={`shadow-lg`}
-            >
+            <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
             </PrimaryButton>
           )

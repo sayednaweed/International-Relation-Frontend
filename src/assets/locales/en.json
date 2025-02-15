@@ -1,5 +1,5 @@
 {
-  "app_name": "App Name",
+  "app_name": "International Relations Directorate",
   "total": "Total",
   "user_today": "User Today",
   "total_active": "Total Active",
@@ -304,5 +304,8 @@
   "currently": "Currently",
   "formerly": "Formerly",
   "comment": "Comment",
-  "extend_reg": "Extend Registration"
+  "extend_reg": "Extend Registration",
+  "up_register_fo": "Upload Register Form",
+  "under_testing": "Section is Locked Until other testing phase complete.",
+  "agreement_information": "Agreement Information"
 }

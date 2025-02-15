@@ -14,7 +14,11 @@ const NetworkSvg = React.forwardRef<HTMLElement, NetworkSvgProps>(
     useEffect(() => {
       const fetchSvg = async () => {
         try {
-          const response = await axiosClient.get(src);
+          const response = await axiosClient.get("media", {
+            params: {
+              path: src,
+            },
+          });
           if (response.status == 200) {
             const svgData = await response.data;
             setSvgContent(svgData);

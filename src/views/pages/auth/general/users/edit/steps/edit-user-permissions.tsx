@@ -12,26 +12,35 @@ import {
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { RefreshCcw } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
-import { SelectUserPermission, UserPermission } from "@/database/tables";
+import { ChevronsUpDown, RefreshCcw } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  AuthSubPermission,
+  SelectUserPermission,
+  SubPermission,
+} from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { SectionEnum } from "@/lib/constants";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
 export interface EditUserPermissionsProps {
   id: string | undefined;
   refreshPage: () => Promise<void>;
   userData: UserInformation | undefined;
   setUserData: Dispatch<SetStateAction<UserInformation | undefined>>;
   failed: boolean;
+  hasEdit: boolean;
 }
 
 export default function EditUserPermissions(props: EditUserPermissionsProps) {
   const { t } = useTranslation();
   const { user } = useUserAuthState();
-  const { id, userData, failed, refreshPage, setUserData } = props;
+  const { id, userData, failed, refreshPage, setUserData, hasEdit } = props;
   const [loading, setLoading] = useState(false);
   const handleChange = (key: string, permission: SelectUserPermission) => {
     if (userData != undefined)
@@ -44,18 +53,26 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
     if (userData?.permission != undefined) {
       const permissionMap = new Map<string, SelectUserPermission>();
 
-      for (const [_key, item] of userData?.permission) {
-        console.log(item);
+      for (const [_key, item] of userData.permission) {
+        const sub: Map<number, AuthSubPermission> = new Map();
+        for (const [key, subItem] of item.sub) {
+          sub.set(key, {
+            id: subItem.id,
+            edit: value,
+            delete: value,
+            add: value,
+            view: value,
+          });
+        }
         const permission: SelectUserPermission = {
           id: item.id,
-          edit: value,
           view: value,
-          delete: value,
-          add: value,
-          icon: "", // No need to be added
-          priority: 0, // No need to be added
+          icon: item.icon,
           permission: item.permission,
           allSelected: value,
+          visible: item.visible,
+          priority: item.priority,
+          sub: sub,
         };
         permissionMap.set(item.permission, permission);
       }
@@ -111,11 +128,7 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
     }
   };
 
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.users
-  );
-  const hasEdit = per ? per?.edit : false;
-
+  console.log(userData?.permission);
   return (
     <Card>
       <CardHeader className="space-y-0">
@@ -132,182 +145,12 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
         ) : userData?.permission == undefined ? (
           <NastranSpinner />
         ) : (
-          <div className="relative overflow-x-auto max-h-[500px]">
-            <table className="w-full text-left rtl:text-right">
-              <thead className="rtl:text-2xl-rtl ltr:text-xl-ltr text-primary/80 uppercase bg-secondary">
-                <tr>
-                  <th scope="col" className="p-4">
-                    <CustomCheckbox
-                      checked={userData.allSelected}
-                      onCheckedChange={(value: boolean) => {
-                        selectAllRows(value);
-                      }}
-                      className={`mx-auto ${!hasEdit && "cursor-not-allowed"}`}
-                    />
-                  </th>
-                  <th scope="col" className="text-start py-3">
-                    {t("section")}
-                  </th>
-                  <th scope="col" className="text-start py-3">
-                    {t("add")}
-                  </th>
-                  <th scope="col" className="text-start py-3">
-                    {t("view")}
-                  </th>
-                  <th scope="col" className="text-start py-3">
-                    {t("edit")}
-                  </th>
-                  <th scope="col" className="text-start py-3">
-                    {t("delete")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="relative rtl:text-3xl-rtl ltr:text-lg-ltr">
-                {userData?.permission ? (
-                  Array.from(userData?.permission).map(
-                    ([key, item], index: number) => {
-                      return (
-                        <tr className="bg-transparent border-b " key={index}>
-                          <td className="w-4 p-4">
-                            <CustomCheckbox
-                              readOnly={!hasEdit}
-                              checked={item.allSelected}
-                              onCheckedChange={(value: boolean) => {
-                                const permission: SelectUserPermission = {
-                                  id: item.id,
-                                  edit: value,
-                                  view: value,
-                                  delete: value,
-                                  add: value,
-                                  icon: "", // No need to be added
-                                  priority: 0, // No need to be added
-                                  permission: item.permission,
-                                  allSelected: value,
-                                };
-                                handleChange(key, permission);
-                              }}
-                            />
-                          </td>
-                          <th
-                            scope="row"
-                            className="text-start py-4 rtl:text-xl-rtl font-medium text-primary whitespace-nowrap"
-                          >
-                            {t(key)}
-                          </th>
-                          <td className="py-4">
-                            <CustomCheckbox
-                              readOnly={!hasEdit}
-                              checked={item.add}
-                              onCheckedChange={(value: boolean) => {
-                                const permission: SelectUserPermission = {
-                                  id: item.id,
-                                  edit: item.edit,
-                                  view: item.view,
-                                  icon: "", // No need to be added
-                                  priority: 0, // No need to be added
-                                  delete: item.delete,
-                                  add: value,
-                                  permission: item.permission,
-                                  allSelected:
-                                    item.edit &&
-                                    item.view &&
-                                    item.delete &&
-                                    value
-                                      ? true
-                                      : false,
-                                };
-                                handleChange(key, permission);
-                              }}
-                            />
-                          </td>
-                          <td className="py-4">
-                            <CustomCheckbox
-                              readOnly={!hasEdit}
-                              checked={item.view}
-                              onCheckedChange={(value: boolean) => {
-                                const permission: SelectUserPermission = {
-                                  id: item.id,
-                                  edit: item.edit,
-                                  view: value,
-                                  icon: "", // No need to be added
-                                  priority: 0, // No need to be added
-                                  delete: item.delete,
-                                  add: item.add,
-                                  permission: item.permission,
-                                  allSelected:
-                                    item.edit &&
-                                    value &&
-                                    item.delete &&
-                                    item.add
-                                      ? true
-                                      : false,
-                                };
-                                handleChange(key, permission);
-                              }}
-                            />
-                          </td>
-                          <td className="py-4">
-                            <CustomCheckbox
-                              readOnly={!hasEdit}
-                              checked={item.edit}
-                              onCheckedChange={(value: boolean) => {
-                                const permission: SelectUserPermission = {
-                                  id: item.id,
-                                  edit: value,
-                                  icon: "", // No need to be added
-                                  priority: 0, // No need to be added
-                                  view: item.view,
-                                  delete: item.delete,
-                                  add: item.add,
-                                  permission: item.permission,
-                                  allSelected:
-                                    value &&
-                                    item.view &&
-                                    item.delete &&
-                                    item.add
-                                      ? true
-                                      : false,
-                                };
-                                handleChange(key, permission);
-                              }}
-                            />
-                          </td>
-                          <td className="py-4">
-                            <CustomCheckbox
-                              readOnly={!hasEdit}
-                              checked={item.delete}
-                              onCheckedChange={(value: boolean) => {
-                                const permission: SelectUserPermission = {
-                                  id: item.id,
-                                  edit: item.edit,
-                                  view: item.view,
-                                  icon: "", // No need to be added
-                                  priority: 0, // No need to be added
-                                  delete: value,
-                                  add: item.add,
-                                  permission: item.permission,
-                                  allSelected:
-                                    item.edit && item.view && value && item.add
-                                      ? true
-                                      : false,
-                                };
-                                handleChange(key, permission);
-                              }}
-                            />
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )
-                ) : (
-                  <tr className=" absolute left-1/2 mt-20">
-                    <td>
-                      <NastranSpinner className=" mx-auto" />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="relative overflow-x-auto border">
+            {Array.from(userData.permission).map(([key, item]) => {
+              return (
+                <PermissionSub permission={item} user_id={user.id} key={key} />
+              );
+            })}
           </div>
         )}
       </CardContent>
@@ -339,3 +182,75 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
     </Card>
   );
 }
+
+interface PermissionSubProps {
+  permission: SelectUserPermission;
+  user_id: string;
+}
+const PermissionSub = (props: PermissionSubProps) => {
+  const { permission, user_id } = props;
+  const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [subPermissions, setSubPermissions] = useState<SubPermission[]>([]);
+
+  const loadSubPermissions = async () => {
+    try {
+      if (loading) return;
+      setLoading(true);
+      const response = await axiosClient.get(`sub-permissions`, {
+        params: {
+          permission: permission.permission,
+          user_id: user_id,
+        },
+      });
+      if (response.status == 200) {
+        setSubPermissions(response.data);
+        if (failed) {
+          setFailed(false);
+        }
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
+      console.log(error);
+      setFailed(true);
+    }
+  };
+
+  console.log(loading);
+
+  return (
+    <Collapsible>
+      <CollapsibleTrigger asChild>
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm" onClick={loadSubPermissions}>
+            <h1 className=" rtl:text-xl-rtl">{t(permission.permission)}</h1>
+            <ChevronsUpDown className="h-4 w-4" />
+            <span className="sr-only">Toggle</span>
+          </Button>
+        </CollapsibleTrigger>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="space-y-2">
+        {loading ? (
+          <NastranSpinner className="size-[20px]" />
+        ) : failed ? (
+          <h1 className="rtl:text-xl-rtl ltr:text-sm-ltr text-white bg-red-500 text-center">
+            {t("error")}
+          </h1>
+        ) : subPermissions.length == 0 ? (
+          <h1 className=" rtl:text-xl-rtl ltr:text-sm-ltr bg-primary/20 text-center">
+            {t("no_content")}
+          </h1>
+        ) : (
+          subPermissions.map((subPermission, index: number) => (
+            <h1 key={index}>{subPermission.name}</h1>
+          ))
+        )}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};

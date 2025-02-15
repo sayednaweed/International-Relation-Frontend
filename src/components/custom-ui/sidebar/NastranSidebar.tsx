@@ -27,6 +27,8 @@ export default function NastranSidebar() {
     if (user?.permissions != undefined) {
       let items: JSX.Element[] = [];
       for (const [key, value] of user?.permissions) {
+        // Show only button with visibility
+        if (!value.visible) continue;
         const path = `/${value.permission}`;
         const active = activeTab === "/" ? `/dashboard` : activeTab;
         const isActive = active.startsWith(path);
@@ -46,7 +48,7 @@ export default function NastranSidebar() {
             }`}
             key={key}
           >
-            <NetworkSvg src={"media/" + value.icon} />
+            <NetworkSvg src={value.icon} />
             <h1 className="truncate">{t(key)}</h1>
           </div>
         );
@@ -73,14 +75,14 @@ export default function NastranSidebar() {
       <nav
         ref={sidebarRef}
         id="nastran_sidebar"
-        className={`z-20 bg-primary dark:bg-card dark:text-card-foreground text-primary-foreground overflow-auto absolute lg:relative top-[50%] lg:top-0 ltr:left-[-300px] ltr:lg:!left-0 rtl:lg:!right-0 rtl:right-[-300px] translate-y-[-50%] lg:translate-y-0 rounded-[12px] lg:rounded-none h-[98vh] lg:h-screen w-[240px] dark:border-primary/10`}
+        className={`z-20 bg-primary dark:bg-card pb-6 overflow-y-hidden hover:overflow-y-auto dark:text-card-foreground text-primary-foreground overflow-auto absolute lg:relative top-[50%] lg:top-0 ltr:left-[-300px] ltr:lg:!left-0 rtl:lg:!right-0 rtl:right-[-300px] translate-y-[-50%] lg:translate-y-0 rounded-[12px] lg:rounded-none h-[98vh] lg:h-screen w-[240px] dark:border-primary/10`}
       >
         <X
           className="size-[18px] lg:hidden text-primary mt-2 ltr:ml-2 rtl:mr-2 cursor-pointer"
           onClick={resizeSidebar}
         />
         {/* Header */}
-        <div className="flex items-center gap-x-4 pb-2 mb-8 ltr:pl-3 rtl:pr-3 lg:pt-1 border-b border-secondary/5">
+        <div className="flex flex-col items-center gap-y-2 border-b pb-4 border-secondary/20 mb-8 lg:pt-1">
           <img
             src="http://127.0.0.1:8000/images/app-logo.png"
             className="size-[56px] text-primary/70 max-h-[76px] rounded-lg max-w-[76px]"

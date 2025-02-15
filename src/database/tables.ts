@@ -19,15 +19,26 @@ export type StatusType =
 export type Permission = {
   name: string;
 };
-export type UserPermission = {
+export interface SubPermission {
+  id: number;
+  name: string;
+  permission: boolean;
+}
+export interface AuthSubPermission {
   id: number;
   edit: boolean;
   view: boolean;
   delete: boolean;
   add: boolean;
+}
+export type UserPermission = {
+  id: number;
+  view: boolean;
+  visible: boolean;
   permission: string;
   icon: string;
   priority: number;
+  sub: Map<number, AuthSubPermission>;
 };
 export type SelectUserPermission = UserPermission & {
   allSelected: boolean;
@@ -190,15 +201,10 @@ export type Ngo = {
   profile: string;
   name: string;
   username: string;
-  abbr: string;
-  status: NgoStatus;
-  registration_no: string;
-  type: NgoType;
+  status_type_id: string;
   email: Email;
-  contact: Contact;
   is_editable: boolean;
   role: Role;
-  address: Address;
   permissions: Map<string, UserPermission>;
   created_at: string;
 };

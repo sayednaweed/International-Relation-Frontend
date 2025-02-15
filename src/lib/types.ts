@@ -57,6 +57,11 @@ export interface UserPaginationData {
   currentPage: number;
   totalItems: number;
 }
+export interface Configuration {
+  token?: string;
+  type?: string;
+  language?: string;
+}
 // Filter
 export interface UserData {
   name: string;

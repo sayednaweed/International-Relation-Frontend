@@ -16,6 +16,7 @@ import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
+import { getConfiguration, setConfiguration } from "@/lib/utils";
 
 export interface LanguageChangerProps {
   className?: string;
@@ -40,7 +41,11 @@ function LanguageChanger(props: LanguageChangerProps) {
       });
     }
     const direction = language === "en" ? "ltr" : "rtl";
-    localStorage.setItem(import.meta.env.VITE_LANGUAGE, language); // Store preference
+    const configuration = getConfiguration();
+    setConfiguration({
+      ...configuration,
+      language: language,
+    });
     i18n.changeLanguage(language);
     setLanguageDirection(direction);
   };

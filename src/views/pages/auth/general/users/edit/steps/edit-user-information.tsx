@@ -16,37 +16,29 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import { toLocaleDate } from "@/lib/utils";
 import { UserInformation } from "@/lib/types";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import FakeCombobox from "@/components/custom-ui/combobox/FakeCombobox";
-import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
 export interface EditUserInformationProps {
   id: string | undefined;
   failed: boolean;
   userData: UserInformation | undefined;
   setUserData: Dispatch<SetStateAction<UserInformation | undefined>>;
   refreshPage: () => Promise<void>;
+  hasEdit: boolean;
 }
 export default function EditUserInformation(props: EditUserInformationProps) {
-  const { id, failed, userData, setUserData, refreshPage } = props;
+  const { id, failed, userData, setUserData, refreshPage, hasEdit } = props;
   const [tempUserData, setTempUserData] = useState<UserInformation | undefined>(
     userData
   );
-  const { user } = useUserAuthState();
   const [state] = useGlobalState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.users
-  );
-  const hasEdit = per ? per?.edit : false;
-
   useEffect(() => {
     setTempUserData(userData);
   }, [userData]);
@@ -228,12 +220,13 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               lable={t("destination")}
               required={true}
               requiredHint={`* ${t("required")}`}
-              selectedItem={tempUserData["destination"]?.name}
+              selectedItem={tempUserData?.destination?.name}
               placeHolder={t("select_destination")}
               errorMessage={error.get("destination")}
               apiUrl={"destinations"}
               mode="single"
             />
+
             <APICombobox
               placeholderText={t("search_item")}
               errorText={t("no_item")}
@@ -249,6 +242,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               apiUrl={"jobs"}
               mode="single"
             />
+            {/* 
             <APICombobox
               placeholderText={t("search_item")}
               errorText={t("no_item")}
@@ -264,7 +258,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               apiUrl={"roles"}
               mode="single"
               translate={true}
-            />
+            /> */}
             <FakeCombobox
               icon={
                 <CalendarDays className="size-[16px] text-tertiary absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
@@ -309,13 +303,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
         ) : (
           tempUserData &&
           hasEdit && (
-            <PrimaryButton
-              onClick={async () => {
-                if (user?.permissions.get(SectionEnum.users)?.edit)
-                  await saveData();
-              }}
-              className={`shadow-lg`}
-            >
+            <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
             </PrimaryButton>
           )

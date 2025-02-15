@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import { useTranslation } from "react-i18next";
+import { LockKeyhole } from "lucide-react";
 export default function ProjectsPage() {
   const { t } = useTranslation();
 
@@ -23,12 +24,15 @@ export default function ProjectsPage() {
           <BreadcrumbSeparator className="rtl:rotate-180" />
           <BreadcrumbItem>
             <BreadcrumbPage className="text-tertiary">
-              {t("users")}
+              {t("projects")}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      ProjectsPage
+      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
+        <LockKeyhole className="text-orange-500 size-[32px]" />
+        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
+      </div>
     </div>
   );
 }

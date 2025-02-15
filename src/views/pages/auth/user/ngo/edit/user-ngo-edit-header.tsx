@@ -6,9 +6,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import { INgoInformation } from "./user-ngo-edit-page";
 
 export interface UserEditHeaderProps {
@@ -16,18 +13,14 @@ export interface UserEditHeaderProps {
   userData: INgoInformation | undefined;
   failed: boolean;
   setUserData: Dispatch<SetStateAction<INgoInformation | undefined>>;
+  hasEdit?: boolean;
+  hasRemove?: boolean;
 }
 
 export default function UserNgoEditHeader(props: UserEditHeaderProps) {
-  const { id, userData, setUserData, failed } = props;
-  const { user } = useUserAuthState();
+  const { id, userData, setUserData, failed, hasEdit, hasRemove } = props;
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
-  );
-  const hasEdit = per ? per?.edit : false;
-  const hasRemove = per ? per?.delete : false;
 
   const onFileUploadChange = async (e: ChangeEvent<HTMLInputElement>) => {
     // Handle execution

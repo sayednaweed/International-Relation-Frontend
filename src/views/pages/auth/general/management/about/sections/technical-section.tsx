@@ -21,7 +21,14 @@ import TechnicalTable from "./parts/technical-table";
 import StaffInputs from "./parts/staff-inputs";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function TechnicalSection() {
+interface TechnicalSectionProps {
+  hasEdit: boolean;
+  hasView: boolean;
+  hasRemove: boolean;
+  hasAdd: boolean;
+}
+export default function TechnicalSection(props: TechnicalSectionProps) {
+  const { hasEdit, hasView, hasRemove, hasAdd } = props;
   const [technical, setTechnical] = useState<IStaff[]>([]);
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
@@ -302,6 +309,8 @@ export default function TechnicalSection() {
               error={error}
               manipulating={manipulating}
               saveData={saveData}
+              hasEdit={hasEdit}
+              hasAdd={hasAdd}
             />
 
             <TechnicalTable
@@ -309,6 +318,9 @@ export default function TechnicalSection() {
               editOnClick={editOnClick}
               staffs={technical}
               loading={loading}
+              hasEdit={hasEdit}
+              hasRemove={hasRemove}
+              hasView={hasView}
             />
           </>
         )}

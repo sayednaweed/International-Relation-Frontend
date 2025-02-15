@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { UserPermission } from "@/database/tables";
-import { CACHE, SectionEnum, StatusEnum } from "@/lib/constants";
+import {
+  CACHE,
+  PermissionEnum,
+  SectionEnum,
+  StatusEnum,
+} from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -245,14 +250,13 @@ export function NgoTable() {
       </TableCell>
     </TableRow>
   );
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
-  );
-  const view = per ? per?.view : false;
-  const remove = per ? per?.delete : false;
-  const edit = per ? per?.edit : false;
-  const add = per ? per?.add : false;
-  const editOnClick = async (ngo: NgoInformation) => {
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.ngo.name
+  ) as UserPermission;
+  const view = per?.view;
+  const hasAdd = per?.sub.get(PermissionEnum.ngo.sub.ngo_add)?.add;
+
+  const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
     if (
       ngo.status_id == StatusEnum.not_logged_in ||
@@ -267,33 +271,10 @@ export function NgoTable() {
       navigate(`/ngo/${ngoId}`);
     }
   };
-  const watchOnClick = async (ngo: NgoInformation) => {
-    const ngoId = ngo.id;
-    if (edit) {
-      if (
-        ngo.status_id == StatusEnum.not_logged_in ||
-        ngo.status_id == StatusEnum.unregistered
-      ) {
-        navigate(`/ngo/profile/edit/${ngoId}`, {
-          state: {
-            data: { edit: true },
-          },
-        });
-      } else {
-        navigate(`/ngo/${ngoId}`);
-      }
-    } else {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("no_perm_desc"),
-      });
-    }
-  };
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
-        {add && (
+        {hasAdd && (
           <NastranModel
             size="lg"
             isDismissable={false}
@@ -515,9 +496,9 @@ export function NgoTable() {
             ngos.filterList.data.map((item: NgoInformation) => (
               <TableRowIcon
                 read={view}
-                remove={remove}
-                edit={edit}
-                onEdit={editOnClick}
+                remove={false}
+                edit={false}
+                onEdit={async () => {}}
                 key={item.name}
                 item={item}
                 onRemove={deleteOnClick}

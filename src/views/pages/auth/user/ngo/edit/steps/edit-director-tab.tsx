@@ -26,7 +26,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-export default function EditDirectorTab() {
+interface EditDirectorTabProps {
+  hasEdit?: boolean;
+  hasRemove?: boolean;
+  hasAdd?: boolean;
+}
+export default function EditDirectorTab(props: EditDirectorTabProps) {
+  // const { hasEdit, hasRemove } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(false);

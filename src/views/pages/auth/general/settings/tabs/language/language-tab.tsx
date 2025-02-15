@@ -105,57 +105,57 @@ export default function LanguageTab() {
   const defaultLabelText = "rtl:text-2xl-rtl ltr:text-lg-ltr rtl:px-1";
   const defaultText = "rtl:text-xl-rtl ltr:text-xl-ltr";
   return (
-    <section className="px-2 pt-2 flex flex-col gap-y-4">
+    <section className="px-2 pt-2">
       <div>
-        <Label className={defaultLabelText}>{t("system_language")}</Label>
+        <Label className={defaultLabelText}>{t("system Language")}</Label>
         <LanguageChanger className="rounded-md !w-1/3" />
       </div>
       <div>
-        <Label className={defaultLabelText}>{t("system_calendar")}</Label>
+        <Label className={defaultLabelText}>{t("System Calendar")}</Label>
         <Select onValueChange={onChangeCalendar} value={calender}>
           <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
-            <SelectValue placeholder={t("select_sys_cal")} />
+            <SelectValue placeholder={t("Select system calendar")} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className={defaultGroupText}>
-              <SelectLabel className="">{t("calendars")}</SelectLabel>
+              <SelectLabel className="">{t("Calendars")}</SelectLabel>
               <SelectItem value={CALENDAR.Gregorian}>
-                {t("gregorian")}
+                {t("Gregorian")}
               </SelectItem>
-              <SelectItem value={CALENDAR.SOLAR}>{t("solar_hijri")}</SelectItem>
-              <SelectItem value={CALENDAR.LUNAR}>{t("lunar_hijri")}</SelectItem>
+              <SelectItem value={CALENDAR.SOLAR}>{t("Solar Hijri")}</SelectItem>
+              <SelectItem value={CALENDAR.LUNAR}>{t("Lunar Hijri")}</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
       <div>
-        <Label className={defaultLabelText}>{t("calendar_locale")}</Label>
+        <Label className={defaultLabelText}>{t("Calendar Locale")}</Label>
         <Select onValueChange={onChangeLocale} value={locale}>
           <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
-            <SelectValue placeholder={t("select_calendar_locale")} />
+            <SelectValue placeholder={t("Select calendar locale")} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className={defaultGroupText}>
-              <SelectLabel>{t("locales")}</SelectLabel>
-              <SelectItem value={CALENDAR.Gregorian}>{t("english")}</SelectItem>
-              <SelectItem value={CALENDAR.SOLAR}>{t("farsi")}</SelectItem>
-              <SelectItem value={CALENDAR.LUNAR}>{t("arabic")}</SelectItem>
+              <SelectLabel>{t("Locales")}</SelectLabel>
+              <SelectItem value={CALENDAR.Gregorian}>{t("English")}</SelectItem>
+              <SelectItem value={CALENDAR.SOLAR}>{t("Farsi")}</SelectItem>
+              <SelectItem value={CALENDAR.LUNAR}>{t("Arabic")}</SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
       </div>
       <div>
-        <Label className={defaultLabelText}>{t("calendar_format")}</Label>
+        <Label className={defaultLabelText}>{t("Calendar Format")}</Label>
         <Select onValueChange={onChangeFormat} value={format}>
           <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
             <SelectValue
               className="text-header2"
-              placeholder={t("select_calendar_format")}
+              placeholder={t("Select calendar format")}
             />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className={defaultGroupText}>
-              <SelectLabel>{t("formats")}</SelectLabel>
+              <SelectLabel>{t("Formats")}</SelectLabel>
               <SelectItem value={CALENDAR_FORMAT.format_1}>
                 {t("format_1")}
               </SelectItem>

@@ -1,5 +1,5 @@
 {
-  "app_name": "نام برنامه",
+  "app_name": "ریاست روابط بین المللی",
   "total": "مجموع",
   "user_today": "کاربر امروز",
   "total_active": "مجموع فعال",
@@ -305,5 +305,8 @@
   "formerly": "قبلا",
   "introduction": "مقدمه",
   "comment": "توضیح",
-  "extend_reg": "تمدید ثبت نام"
+  "extend_reg": "تمدید ثبت نام",
+  "up_register_fo": "آپلود فرم ثبت نام",
+  "under_testing": "بخش قفل است تا زمانی که دیگر مرحله آزمایش تکمیل شود.",
+  "agreement_information": "اطلاعات قرارداد"
 }

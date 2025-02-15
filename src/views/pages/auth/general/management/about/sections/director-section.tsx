@@ -20,7 +20,12 @@ import StaffInputs from "./parts/staff-inputs";
 import { IStaffSingle } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 
-export default function DirectorSection() {
+interface DirectorSectionProps {
+  hasEdit: boolean;
+  hasAdd: boolean;
+}
+export default function DirectorSection(props: DirectorSectionProps) {
+  const { hasEdit, hasAdd } = props;
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState<IStaffSingle>({
@@ -266,6 +271,8 @@ export default function DirectorSection() {
               error={error}
               manipulating={manipulating}
               saveData={saveData}
+              hasEdit={hasEdit}
+              hasAdd={hasAdd}
             />
           </>
         )}

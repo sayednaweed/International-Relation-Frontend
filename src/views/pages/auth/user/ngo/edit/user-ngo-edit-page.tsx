@@ -81,6 +81,9 @@ export default function UserNgoEditPage() {
 
   const selectedTabStyle = `relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
+  const hasEdit = true;
+  const hasAdd = true;
+  const hasRemove = true;
   return (
     <div className="flex flex-col gap-y-4 px-3 mt-2">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
@@ -126,6 +129,8 @@ export default function UserNgoEditPage() {
                 failed={failed}
                 userData={userData}
                 setUserData={setUserData}
+                hasEdit={true}
+                hasRemove={true}
               />
               <TabsTrigger
                 className={`mt-6 rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
@@ -183,7 +188,7 @@ export default function UserNgoEditPage() {
                   isDismissable={false}
                   button={
                     <PrimaryButton className="rtl:text-lg-rtl font-semibold w-[80%] mx-auto mt-4 ltr:text-md-ltr">
-                      {t("extend_reg")}
+                      {t("up_register_fo")}
                     </PrimaryButton>
                   }
                   showDialog={async () => true}
@@ -193,10 +198,14 @@ export default function UserNgoEditPage() {
               )}
             </TabsList>
             <TabsContent className="flex-1 m-0" value="n_i">
-              <EditInformationTab />
+              <EditInformationTab hasEdit={hasEdit} />
             </TabsContent>
             <TabsContent className="flex-1 m-0" value="d_i">
-              <EditDirectorTab />
+              <EditDirectorTab
+                hasEdit={hasEdit}
+                hasRemove={hasRemove}
+                hasAdd={hasAdd}
+              />
             </TabsContent>
             <TabsContent className="flex-1 m-0" value="a_c">
               <EditAgreemenTab />

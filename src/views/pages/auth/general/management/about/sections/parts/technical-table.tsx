@@ -9,9 +9,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useUserAuthState } from "@/context/AuthContextProvider";
-import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
 import { IStaff } from "@/lib/types";
 import { useTranslation } from "react-i18next";
 
@@ -20,18 +17,22 @@ export interface TechnicalTableProps {
   editOnClick: (staff: IStaff) => Promise<void>;
   staffs: IStaff[];
   loading: boolean;
+  hasEdit: boolean;
+  hasRemove: boolean;
+  hasView: boolean;
 }
 
 export default function TechnicalTable(props: TechnicalTableProps) {
-  const { deleteOnClick, editOnClick, staffs, loading } = props;
-  const { user } = useUserAuthState();
+  const {
+    deleteOnClick,
+    editOnClick,
+    staffs,
+    loading,
+    hasEdit,
+    hasRemove,
+    hasView,
+  } = props;
   const { t } = useTranslation();
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.about
-  );
-  const edit = per ? per?.edit : false;
-  const remove = per ? per?.delete : false;
-  const view = per ? per?.view : false;
   const skeleton = (
     <TableRow>
       <TableCell>
@@ -78,9 +79,9 @@ export default function TechnicalTable(props: TechnicalTableProps) {
         ) : (
           staffs.map((item: IStaff) => (
             <TableRowIcon
-              read={view}
-              remove={remove}
-              edit={edit}
+              read={hasView}
+              remove={hasRemove}
+              edit={hasEdit}
               onEdit={editOnClick}
               key={item.id}
               item={item}

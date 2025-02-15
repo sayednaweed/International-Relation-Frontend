@@ -4,7 +4,7 @@ import translationEN from "@/assets/locales/en.json";
 import translationFA from "@/assets/locales/fa.json";
 import translationPS from "@/assets/locales/ps.json";
 import { initReactI18next } from "react-i18next";
-import { loadFont } from "./utils";
+import { getConfiguration, loadFont } from "./utils";
 
 export interface LanguageType {
   code: string;
@@ -50,11 +50,11 @@ const loadLangs = () => {
     // },
   });
 
-  const storedLanguage = localStorage.getItem("language");
+  const conf = getConfiguration();
   let direction = "rtl";
-  if (storedLanguage) {
-    i18n.changeLanguage(storedLanguage);
-    direction = storedLanguage === "en" ? "ltr" : "rtl";
+  if (conf?.language) {
+    i18n.changeLanguage(conf?.language);
+    direction = conf?.language === "en" ? "ltr" : "rtl";
   } else {
     direction = i18n.language === "en" ? "ltr" : "rtl";
   }

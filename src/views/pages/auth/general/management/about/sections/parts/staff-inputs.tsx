@@ -4,9 +4,6 @@ import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabText
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { Mail, Phone } from "lucide-react";
-import { UserPermission } from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import { useTranslation } from "react-i18next";
 
 export interface StaffInputsProps {
@@ -14,20 +11,24 @@ export interface StaffInputsProps {
   userData: any;
   error: Map<string, string>;
   manipulating: boolean;
-  saveData: () => void;
+  saveData: () => Promise<void>;
   inputName: string;
+  hasEdit: boolean;
+  hasAdd: boolean;
 }
 
 export default function StaffInputs(props: StaffInputsProps) {
-  const { setUserData, userData, manipulating, error, saveData, inputName } =
-    props;
-  const { user } = useUserAuthState();
+  const {
+    setUserData,
+    userData,
+    manipulating,
+    error,
+    saveData,
+    inputName,
+    hasEdit,
+    hasAdd,
+  } = props;
   const { t } = useTranslation();
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.about
-  );
-  const edit = per ? per?.edit : false;
-  const add = per ? per?.add : false;
   const handleChange = (e: any) => {
     if (userData) {
       const { name, value } = e.target;
@@ -92,7 +93,7 @@ export default function StaffInputs(props: StaffInputsProps) {
           <Phone className="text-primary-icon size-[18px] pointer-events-none" />
         }
       />
-      {(add || edit) && (
+      {(hasAdd || hasEdit) && (
         <PrimaryButton
           disabled={manipulating}
           onClick={async () => await saveData()}

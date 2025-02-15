@@ -27,6 +27,7 @@ import {
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import { Link } from "react-router";
 import { useTranslation } from "react-i18next";
+import { LockKeyhole } from "lucide-react";
 
 const LogsPage: React.FC = () => {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -72,8 +73,10 @@ const LogsPage: React.FC = () => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <h1 className="p-4"> Comming Soon...</h1>
-      {/* <AuditTable /> */}
+      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
+        <LockKeyhole className="text-orange-500 size-[32px]" />
+        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
+      </div>
       <div className="max-w-4xl mx-auto p-4">
         <h1 className="text-3xl font-bold text-center mb-6">
           User Error Log Viewer

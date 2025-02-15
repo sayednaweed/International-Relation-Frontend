@@ -3,6 +3,7 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { toast } from "@/components/ui/use-toast";
 import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
+import { getConfiguration } from "@/lib/utils";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
@@ -43,9 +44,7 @@ export default function CheckListTab() {
             headers={{
               "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
               "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-              Authorization:
-                "Bearer " +
-                localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+              Authorization: "Bearer " + getConfiguration()?.token,
             }}
             maxSize={1024}
             accept={checklist.acceptable_mimes}

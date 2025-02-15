@@ -4,7 +4,6 @@ import { toast } from "@/components/ui/use-toast";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -12,14 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useUserAuthState } from "@/context/AuthContextProvider";
-import {
-  Agreement,
-  AgreementDocument,
-  NgoStatus,
-  UserPermission,
-} from "@/database/tables";
-import { SectionEnum } from "@/lib/constants";
+import { Agreement, AgreementDocument } from "@/database/tables";
 import { useParams } from "react-router";
 import {
   Collapsible,
@@ -28,25 +20,19 @@ import {
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import CheckListChooser from "@/components/custom-ui/chooser/CheckListChooser";
-import { toLocaleDate } from "@/lib/utils";
+import { getConfiguration, toLocaleDate } from "@/lib/utils";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { FileType } from "@/lib/types";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 
 export default function EditAgreemenTab() {
-  const { user } = useUserAuthState();
   const { t } = useTranslation();
-  let { id } = useParams();
+  const { id } = useParams();
   const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
   const [agreements, setAgreements] = useState<Agreement[]>([]);
-
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.ngo
-  );
-  const _hasEdit = per ? per?.edit : false;
 
   const loadAgreement = async () => {
     if (loading) return;
@@ -77,11 +63,8 @@ export default function EditAgreemenTab() {
     <Card className="h-fit">
       <CardHeader className="space-y-0">
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
-          {t("account_information")}
+          {t("agreement_information")}
         </CardTitle>
-        <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-          {t("update_user_acc_info")}
-        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col">
@@ -211,9 +194,7 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
               headers={{
                 "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
                 "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                Authorization:
-                  "Bearer " +
-                  localStorage.getItem(import.meta.env.VITE_TOKEN_STORAGE_KEY),
+                Authorization: "Bearer " + getConfiguration()?.token,
               }}
               maxSize={1024}
               accept={document.acceptable_mimes}
@@ -226,15 +207,22 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
                 checklist_id: document.checklist_id,
               }}
               onComplete={async (record: any) => {
-                // for (const element of record) {
-                //   const item = element[element.length - 1];
-                // }
+                for (const element of record) {
+                  const checklist = element[element.length - 1];
+                  console.log(checklist, "Naweed");
+                  const updated = documents.map((item) =>
+                    checklist.checklist_id == item.checklist_id
+                      ? checklist
+                      : item
+                  );
+                  setDocuments(updated);
+                }
               }}
-              onStart={async (file: any) => {
-                const updated = documents.map((item) =>
-                  item.checklist_id === file.checklist_id ? file : item
-                );
-                setDocuments(updated);
+              onStart={async (_file: any) => {
+                // const updated = documents.map((item) =>
+                //   item.checklist_id === file.checklist_id ? file : item
+                // );
+                // setDocuments(updated);
               }}
             />
           ))

@@ -11,7 +11,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { User, UserPermission } from "@/database/tables";
-import { CACHE, SectionEnum } from "@/lib/constants";
+import { CACHE, PermissionEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -47,10 +47,10 @@ export function UserTable() {
   const startDate = searchParams.get("st_dt");
   const endDate = searchParams.get("en_dt");
   const filters = {
-    sort: sort == null ? "id" : (sort as UserSort),
+    sort: sort == null ? "created_at" : (sort as UserSort),
     order: order == null ? "desc" : (order as Order),
     search: {
-      column: searchColumn == null ? "name" : (searchColumn as UserSearch),
+      column: searchColumn == null ? "username" : (searchColumn as UserSearch),
       value: searchValue == null ? "" : searchValue,
     },
     date:
@@ -239,17 +239,12 @@ export function UserTable() {
       </TableCell>
     </TableRow>
   );
-  const per: UserPermission | undefined = user?.permissions.get(
-    SectionEnum.users
-  );
-  const view = per ? per?.view : false;
-  const remove = per ? per?.delete : false;
-  const edit = per ? per?.edit : false;
-  const add = per ? per?.add : false;
-  const editOnClick = async (user: User) => {
-    const userId = user.id;
-    navigate(`/users/${userId}`);
-  };
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.users.name
+  ) as UserPermission;
+  const view = per?.view;
+  const add = per?.sub.get(PermissionEnum.users.sub.add)?.add;
+
   const watchOnClick = async (user: User) => {
     const userId = user.id;
     navigate(`/users/${userId}`);
@@ -266,15 +261,7 @@ export function UserTable() {
                 {t("add")}
               </PrimaryButton>
             }
-            showDialog={async () => {
-              if (user?.permissions.get(SectionEnum.users)?.add) return true;
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: t("add_perm_desc"),
-              });
-              return false;
-            }}
+            showDialog={async () => true}
           >
             <AddUser onComplete={addItem} />
           </NastranModel>
@@ -330,7 +317,7 @@ export function UserTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/users?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -343,7 +330,7 @@ export function UserTable() {
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/users?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -356,7 +343,7 @@ export function UserTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/users?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -369,7 +356,7 @@ export function UserTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, selectedDates);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/users?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -474,9 +461,9 @@ export function UserTable() {
             users.filterList.data.map((item: User) => (
               <TableRowIcon
                 read={view}
-                remove={remove}
-                edit={edit}
-                onEdit={editOnClick}
+                remove={false}
+                edit={false}
+                onEdit={async () => {}}
                 key={item.email}
                 item={item}
                 onRemove={deleteOnClick}
@@ -496,7 +483,7 @@ export function UserTable() {
                 </TableCell>
                 <TableCell>
                   <h1 className="truncate">{item?.destination}</h1>
-                  <h1 className="truncate">{item?.job}</h1>
+                  <h1 className="truncate text-primary/90">{item?.job}</h1>
                 </TableCell>
                 <TableCell
                   dir="ltr"
