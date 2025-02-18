@@ -4,7 +4,7 @@ import { Donor, Ngo, User } from "@/database/tables";
 import {
   getConfiguration,
   removeToken,
-  returnPermissions,
+  returnPermissionsMap,
   setToken,
 } from "@/lib/utils";
 import { StatusEnum } from "@/lib/constants";
@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (response.status === 200) {
           const user = response.data.user;
           if (user != null) {
-            user.permissions = returnPermissions(response.data?.permissions);
+            user.permissions = returnPermissionsMap(response.data?.permissions);
           }
           dispatch({ type: "LOGIN", payload: user });
         }
@@ -162,7 +162,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         const user = response.data.user as User;
         if (user != null)
-          user.permissions = returnPermissions(response.data?.permissions);
+          user.permissions = returnPermissionsMap(response.data?.permissions);
         dispatch({ type: "LOGIN", payload: user });
       }
     } catch (error: any) {
@@ -192,7 +192,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         const user = response.data.user as Ngo;
         if (user != null)
-          user.permissions = returnPermissions(response.data?.permissions);
+          user.permissions = returnPermissionsMap(response.data?.permissions);
         dispatch({ type: "LOGIN", payload: user });
       }
     } catch (error: any) {
@@ -221,7 +221,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         const user = response.data.user as User;
         if (user != null)
-          user.permissions = returnPermissions(response.data?.permissions);
+          user.permissions = returnPermissionsMap(response.data?.permissions);
         dispatch({ type: "LOGIN", payload: user });
       }
     } catch (error: any) {

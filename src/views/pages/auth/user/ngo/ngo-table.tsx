@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { UserPermission } from "@/database/tables";
-import {
-  CACHE,
-  PermissionEnum,
-  SectionEnum,
-  StatusEnum,
-} from "@/lib/constants";
+import { CACHE, PermissionEnum, StatusEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -253,8 +248,8 @@ export function NgoTable() {
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.ngo.name
   ) as UserPermission;
-  const view = per?.view;
-  const hasAdd = per?.sub.get(PermissionEnum.ngo.sub.ngo_add)?.add;
+  const hasView = per?.view;
+  const hasAdd = per?.add;
 
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
@@ -495,7 +490,7 @@ export function NgoTable() {
           ) : (
             ngos.filterList.data.map((item: NgoInformation) => (
               <TableRowIcon
-                read={view}
+                read={hasView}
                 remove={false}
                 edit={false}
                 onEdit={async () => {}}

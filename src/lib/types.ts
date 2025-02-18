@@ -7,6 +7,7 @@ import {
   NidType,
   Province,
   SelectUserPermission,
+  SubPermission,
   User,
 } from "@/database/tables";
 import { DateObject } from "react-multi-date-picker";
@@ -132,6 +133,19 @@ export interface Option {
   [key: string]: string | boolean | undefined;
 }
 
+export type IUserPermission = {
+  id: number;
+  edit: boolean;
+  view: boolean;
+  delete: boolean;
+  add: boolean;
+  visible: boolean;
+  permission: string;
+  icon: string;
+  priority: number;
+  sub: SubPermission[];
+  allSelected: boolean;
+};
 // Application
 export type NgoSort = "id" | "name" | "type" | "contact" | "status";
 export type NgoSearch =

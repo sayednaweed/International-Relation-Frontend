@@ -169,7 +169,7 @@ export default function EditNews() {
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.news.name
   ) as UserPermission;
-  const hasEdit = per.sub.get(PermissionEnum.news.sub.operations)?.edit;
+  const hasEdit = per?.edit;
 
   return (
     <div className="flex flex-col gap-y-6 px-3 mt-2">

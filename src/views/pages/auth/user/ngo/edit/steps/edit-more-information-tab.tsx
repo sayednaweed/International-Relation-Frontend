@@ -16,7 +16,7 @@ import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { UserPermission } from "@/database/tables";
-import { PermissionEnum, SectionEnum } from "@/lib/constants";
+import { PermissionEnum } from "@/lib/constants";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
