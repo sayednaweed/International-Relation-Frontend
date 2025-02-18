@@ -144,7 +144,7 @@ export default function JobTab() {
           isDismissable={false}
           button={
             <PrimaryButton className="text-primary-foreground">
-              {t("add job")}
+              {t("add_job")}
             </PrimaryButton>
           }
           showDialog={async () => true}

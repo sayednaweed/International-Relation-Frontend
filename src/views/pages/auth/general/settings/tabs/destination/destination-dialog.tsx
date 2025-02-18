@@ -179,7 +179,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
     <Card className="w-fit min-w-[400px] self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
-          {destination ? t("Edit") : t("Add")}
+          {destination ? t("edit") : t("add")}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col">
@@ -188,12 +188,12 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           dir="ltr"
           className="rtl:text-end"
           required={true}
-          requiredHint={`* ${t("Required")}`}
+          requiredHint={`* ${t("required")}`}
           placeholder={t("translate_en")}
           defaultValue={userData.English}
           type="text"
           name="English"
-          errorMessage={error.get("English")}
+          errorMessage={error.get("english")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -205,7 +205,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
         <CustomInput
           size_="sm"
           required={true}
-          requiredHint={`* ${t("Required")}`}
+          requiredHint={`* ${t("required")}`}
           placeholder={t("translate_fa")}
           defaultValue={userData.Farsi}
           type="text"
@@ -222,7 +222,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
         <CustomInput
           size_="sm"
           required={true}
-          requiredHint={`* ${t("Required")}`}
+          requiredHint={`* ${t("required")}`}
           placeholder={t("translate_ps")}
           defaultValue={userData.Pashto}
           type="text"
@@ -237,15 +237,15 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           }
         />
         <APICombobox
-          placeholderText={t("Search item")}
-          errorText={t("No item")}
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
           onSelect={(selection: any) =>
             setUserData({ ...userData, ["destinationType"]: selection })
           }
           required={true}
-          requiredHint={`* ${t("Required")}`}
+          requiredHint={`* ${t("required")}`}
           selectedItem={userData.destinationType?.name}
-          placeHolder={t("select a type")}
+          placeHolder={t("select_type")}
           errorMessage={error.get("destinationType")}
           apiUrl={"destination-types"}
           mode="single"
@@ -272,7 +272,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           variant="outline"
           onClick={modelOnRequestHide}
         >
-          {t("Cancel")}
+          {t("cancel")}
         </Button>
         <PrimaryButton
           disabled={loading}
@@ -280,7 +280,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           className={`${loading && "opacity-90"}`}
           type="submit"
         >
-          <ButtonSpinner loading={loading}>{t("Save")}</ButtonSpinner>
+          <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
         </PrimaryButton>
       </CardFooter>
     </Card>
