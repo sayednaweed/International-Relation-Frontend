@@ -107,11 +107,11 @@ export default function LanguageTab() {
   return (
     <section className="px-2 pt-2">
       <div>
-        <Label className={defaultLabelText}>{t("system Language")}</Label>
+        <Label className={defaultLabelText}>{t("system_language")}</Label>
         <LanguageChanger className="rounded-md !w-1/3" />
       </div>
       <div>
-        <Label className={defaultLabelText}>{t("System Calendar")}</Label>
+        <Label className={defaultLabelText}>{t("system_calendar")}</Label>
         <Select onValueChange={onChangeCalendar} value={calender}>
           <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
             <SelectValue placeholder={t("Select system calendar")} />

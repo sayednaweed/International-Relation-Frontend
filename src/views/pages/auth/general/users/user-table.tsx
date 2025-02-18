@@ -242,8 +242,8 @@ export function UserTable() {
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.users.name
   ) as UserPermission;
-  const view = per?.view;
-  const add = per?.sub.get(PermissionEnum.users.sub.add)?.add;
+  const hasView = per?.view;
+  const hasAdd = per?.add;
 
   const watchOnClick = async (user: User) => {
     const userId = user.id;
@@ -252,7 +252,7 @@ export function UserTable() {
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
-        {add && (
+        {hasAdd && (
           <NastranModel
             size="lg"
             isDismissable={false}
@@ -460,7 +460,7 @@ export function UserTable() {
           ) : (
             users.filterList.data.map((item: User) => (
               <TableRowIcon
-                read={view}
+                read={hasView}
                 remove={false}
                 edit={false}
                 onEdit={async () => {}}

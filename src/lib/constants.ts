@@ -28,11 +28,9 @@ export const PermissionEnum = {
   users: {
     name: "users",
     sub: {
-      add: 1,
-      delete: 2,
-      user_information: 3,
-      user_password: 4,
-      user_permission: 5,
+      user_information: 1,
+      user_password: 2,
+      user_permission: 3,
     },
   },
   dashboard: { name: "dashboard", sub: {} },
@@ -60,14 +58,11 @@ export const PermissionEnum = {
   },
   news: {
     name: "management/news",
-    sub: {
-      operations: 81,
-    },
+    sub: {},
   },
   ngo: {
     name: "ngo",
     sub: {
-      ngo_add: 51,
       ngo_information: 52,
       ngo_director_information: 53,
       ngo_agreement: 54,

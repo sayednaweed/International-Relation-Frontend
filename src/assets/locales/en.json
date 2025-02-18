@@ -307,5 +307,7 @@
   "extend_reg": "Extend Registration",
   "up_register_fo": "Upload Register Form",
   "under_testing": "Section is Locked Until other testing phase complete.",
-  "agreement_information": "Agreement Information"
+  "agreement_information": "Agreement Information",
+  "representative": "Representative",
+  "add_ngo": "Add NGO"
 }

@@ -1,4 +1,4 @@
-import { AuthSubPermission, UserPermission } from "@/database/tables";
+import { SubPermission, UserPermission } from "@/database/tables";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Configuration } from "./types";
@@ -22,20 +22,23 @@ export function cn(...inputs: ClassValue[]) {
 }
 export const isString = (value: any) => typeof value === "string";
 
-export const returnPermissions = (
+export const returnPermissionsMap = (
   permissions: any
 ): Map<string, UserPermission> => {
   const permissionMap = new Map<string, UserPermission>();
   if (permissions != null || permissions != undefined) {
     for (let i = 0; i < permissions.length; i++) {
       const item: any = permissions[i];
-      const subPermissions = item.sub as AuthSubPermission[];
-      const subMap: Map<number, AuthSubPermission> = new Map(
+      const subPermissions = item.sub as SubPermission[];
+      const subMap: Map<number, SubPermission> = new Map(
         subPermissions.map((subPermission) => [subPermission.id, subPermission])
       );
       const permission: UserPermission = {
         id: item.user_permission_id,
         view: item.view,
+        edit: item.edit,
+        delete: item.delete,
+        add: item.add,
         visible: item.visible,
         icon: item.icon,
         priority: item.priority,
@@ -47,6 +50,7 @@ export const returnPermissions = (
   }
   return permissionMap;
 };
+
 // export const userWithPermissions = (response: any): UserInformation => {
 //   const user = response.data.user as UserInformation;
 //   const permissions = response.data.permission;

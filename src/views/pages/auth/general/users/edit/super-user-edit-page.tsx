@@ -14,12 +14,11 @@ import axiosClient from "@/lib/axois-client";
 import { useEffect, useState } from "react";
 import { UserInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
-import { returnPermissions } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, KeyRound, ShieldBan } from "lucide-react";
 import UserEditHeader from "./user-edit-header";
 import EditUserPermissions from "./steps/edit-user-permissions";
-import { SelectUserPermission, UserPermission } from "@/database/tables";
+import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { PermissionEnum } from "@/lib/constants";
 
@@ -33,15 +32,11 @@ export default function SuperUserEditPage() {
   const [userData, setUserData] = useState<UserInformation | undefined>();
   const loadInformation = async () => {
     try {
-      setFailed(false);
       const response = await axiosClient.get(`user/${id}`);
       if (response.status == 200) {
         const user = response.data.user as UserInformation;
-        user.permission = returnPermissions(response.data.permission) as Map<
-          string,
-          SelectUserPermission
-        >;
         setUserData(user);
+        if (failed) setFailed(false);
       }
     } catch (error: any) {
       toast({
@@ -124,10 +119,14 @@ export default function SuperUserEditPage() {
           </TabsTrigger>
         </TabsList>
 
-        {Array.from(per.sub).map(([key, subPermission]) => {
-          const hasEdit = subPermission.edit == true;
+        {Array.from(per.sub).map(([key, subPermission], index: number) => {
+          const hasEdit = subPermission.edit;
           return key == PermissionEnum.users.sub.user_information ? (
-            <TabsContent className="flex-1 m-0" value={key.toString()}>
+            <TabsContent
+              className="flex-1 m-0"
+              value={key.toString()}
+              key={index}
+            >
               <EditUserInformation
                 id={id}
                 failed={failed}
@@ -138,7 +137,11 @@ export default function SuperUserEditPage() {
               />
             </TabsContent>
           ) : key == PermissionEnum.users.sub.user_password ? (
-            <TabsContent className="flex-1 m-0" value={key.toString()}>
+            <TabsContent
+              className="flex-1 m-0"
+              value={key.toString()}
+              key={index}
+            >
               <EditUserPassword
                 id={id}
                 userData={userData}
@@ -148,15 +151,12 @@ export default function SuperUserEditPage() {
               />
             </TabsContent>
           ) : (
-            <TabsContent className="flex-1 m-0" value={key.toString()}>
-              <EditUserPermissions
-                id={id}
-                userData={userData}
-                setUserData={setUserData}
-                failed={failed}
-                refreshPage={loadInformation}
-                hasEdit={hasEdit}
-              />
+            <TabsContent
+              className="flex-1 m-0"
+              value={key.toString()}
+              key={index}
+            >
+              <EditUserPermissions hasEdit={hasEdit} />
             </TabsContent>
           );
         })}

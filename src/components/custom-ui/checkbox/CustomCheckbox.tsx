@@ -42,7 +42,7 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           </h1>
         )}
         <div
-          className={`flex items-center space-x-2 ${parentClassName} ${
+          className={`flex items-center space-x-4 ${parentClassName} ${
             error && "border-red-400 border"
           }`}
         >
@@ -58,10 +58,10 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
           />
           <label
             htmlFor="terms"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-sm font-medium px-2 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
             {text && (
-              <h1 className="text-start rtl:pr-1 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
+              <h1 className="text-start rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
                 {text}
               </h1>
             )}

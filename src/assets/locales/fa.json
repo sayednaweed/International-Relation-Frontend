@@ -308,5 +308,7 @@
   "extend_reg": "تمدید ثبت نام",
   "up_register_fo": "آپلود فرم ثبت نام",
   "under_testing": "بخش قفل است تا زمانی که دیگر مرحله آزمایش تکمیل شود.",
-  "agreement_information": "اطلاعات قرارداد"
+  "agreement_information": "اطلاعات قرارداد",
+  "representative": "نماینده",
+  "add_ngo": "افزودن موسسه"
 }

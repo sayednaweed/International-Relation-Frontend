@@ -22,10 +22,6 @@ export type Permission = {
 export interface SubPermission {
   id: number;
   name: string;
-  permission: boolean;
-}
-export interface AuthSubPermission {
-  id: number;
   edit: boolean;
   view: boolean;
   delete: boolean;
@@ -33,12 +29,15 @@ export interface AuthSubPermission {
 }
 export type UserPermission = {
   id: number;
+  edit: boolean;
   view: boolean;
+  delete: boolean;
+  add: boolean;
   visible: boolean;
   permission: string;
   icon: string;
   priority: number;
-  sub: Map<number, AuthSubPermission>;
+  sub: Map<number, SubPermission>;
 };
 export type SelectUserPermission = UserPermission & {
   allSelected: boolean;
