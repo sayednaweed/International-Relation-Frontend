@@ -30,7 +30,7 @@ export default function SettingsPage() {
           className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
         >
           <Languages className="size-[16px] ltr:mr-1 rtl:ml-1" />
-          {t("Language")}
+          {t("language")}
         </TabsTrigger>
         <TabsTrigger
           value="job"

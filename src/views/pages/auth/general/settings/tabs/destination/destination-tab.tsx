@@ -151,7 +151,7 @@ export default function DestinationTab() {
           isDismissable={false}
           button={
             <PrimaryButton className="text-primary-foreground">
-              {t("add reference")}
+              {t("add_reference")}
             </PrimaryButton>
           }
           showDialog={async () => true}
