@@ -46,7 +46,7 @@ export default function TechnicalSection() {
       const response = await axiosClient.get("/sliders");
       if (response.status == 200) {
         // 1. Add data to list
-        const slider = response.data.sliders;
+        const slider = response.data.slider;
         setTechnical(slider as SliderProps[]);
       }
     } catch (error: any) {
@@ -238,7 +238,7 @@ export default function TechnicalSection() {
         </CardContent>
       </Card>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 ">
-        {technical.map((item: SliderProps) => (
+        {technical?.map((item: SliderProps) => (
           <Card className="group cursor-pointer relative ">
             <CardContent>
               <CachedImage
