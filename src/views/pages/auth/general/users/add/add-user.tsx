@@ -68,22 +68,20 @@ export default function AddUser(props: AddUserProps) {
     userData: any,
     setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => {
-    let formData = new FormData();
-    formData.append("full_name", userData.full_name);
-    formData.append("username", userData.username);
-    formData.append("email", userData.email);
-    formData.append("password", userData.password);
-    if (userData.contact) formData.append("contact", userData.contact);
-    formData.append("destination", userData.destination.id);
-    formData.append("job", userData.job.id);
-    formData.append("role", userData.role.id);
-    if (userData.status) formData.append("status", userData.status);
-    else formData.append("status", "false");
-    if (!userData.grant) formData.append("grant", "false");
-    else formData.append("grant", userData.grant);
-    formData.append("Permission", JSON.stringify(userData?.Permission));
     try {
-      const response = await axiosClient.post("user/store", formData);
+      const response = await axiosClient.post("user/store", {
+        permissions: userData?.permissions,
+        grant: userData.grant,
+        status: userData.status,
+        role: userData.role.id,
+        job: userData.job.id,
+        destination: userData.destination.id,
+        contact: userData.contact,
+        password: userData.password,
+        email: userData.email,
+        username: userData.username,
+        full_name: userData.full_name,
+      });
       if (response.status == 200) {
         onComplete(response.data.user);
         toast({

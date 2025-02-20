@@ -132,7 +132,7 @@ export default function LanguageTab() {
         <Label className={defaultLabelText}>{t("calendar_locale")}</Label>
         <Select onValueChange={onChangeLocale} value={locale}>
           <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
-            <SelectValue placeholder={t("Select_calendar_locale")} />
+            <SelectValue placeholder={t("select_calendar_locale")} />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup className={defaultGroupText}>

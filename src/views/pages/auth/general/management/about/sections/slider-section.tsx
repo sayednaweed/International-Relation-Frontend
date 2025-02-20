@@ -46,7 +46,7 @@ export default function TechnicalSection() {
       const response = await axiosClient.get("/sliders");
       if (response.status == 200) {
         // 1. Add data to list
-        const slider = response.data.sliders;
+        const slider = response.data.slider;
         setTechnical(slider as SliderProps[]);
       }
     } catch (error: any) {

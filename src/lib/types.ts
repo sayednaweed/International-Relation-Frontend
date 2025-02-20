@@ -146,6 +146,8 @@ export type IUserPermission = {
   sub: SubPermission[];
   allSelected: boolean;
 };
+export type UserAction = "add" | "delete" | "edit" | "view";
+
 // Application
 export type NgoSort = "id" | "name" | "type" | "contact" | "status";
 export type NgoSearch =

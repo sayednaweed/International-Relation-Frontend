@@ -2,250 +2,158 @@ import { useContext, useEffect, useState } from "react";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
-import { Permission } from "@/database/tables";
 import { toast } from "@/components/ui/use-toast";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
+import PermissionSub from "@/components/custom-ui/general/PermissionSub";
+import { IUserPermission, UserAction } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import { PERMISSIONS_OPERATION } from "@/lib/constants";
+import ErrorText from "@/components/custom-ui/text/ErrorText";
 export default function AddUserPermission() {
   const { t } = useTranslation();
   const { userData, setUserData } = useContext(StepperContext);
-  const [items, setItems] = useState<Permission[] | undefined>(undefined);
+  const [failed, setFailed] = useState(false);
   const initialize = async () => {
     try {
       const response = await axiosClient.get(
-        "permissions/" + userData?.role?.id
+        `role-permissions/${userData?.role?.id}`
       );
+
+      const rolePermissions = response.data as IUserPermission[];
       if (response.status == 200) {
-        setItems(response.data);
+        setUserData({ ...userData, permissions: rolePermissions });
+        if (failed) setFailed(false);
       }
     } catch (error: any) {
       console.log(error);
-      setItems([]);
       toast({
         toastType: "ERROR",
         title: t("error"),
         description: error.response.data.message,
       });
+      setFailed(true);
     }
   };
   useEffect(() => {
-    initialize();
+    if (!userData.permissions) initialize();
   }, []);
-  const handleChange = (value: boolean, operation: string, section: string) => {
-    let newList = { ...userData };
-    const permissions = newList["Permission"];
-    if (permissions == undefined) {
-      newList = {
-        ...newList,
-        ["Permission"]: {
-          [section]: { [operation]: value },
-        },
-      };
-    } else {
-      const sect = permissions[section];
-      newList = {
-        ...newList,
-        ["Permission"]: {
-          ...permissions,
-          [section]: { ...sect, [operation]: value },
-        },
-      };
-    }
-    setUserData({ ...newList });
+
+  const mainActions: {
+    [key in UserAction]: (value: boolean, permission: string) => void;
+  } = {
+    add: (value: boolean, permission: string) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) =>
+          perm.permission === permission ? { ...perm, add: value } : perm
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    delete: (value: boolean, permission: string) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) =>
+          perm.permission === permission ? { ...perm, delete: value } : perm
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    edit: (value: boolean, permission: string) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) =>
+          perm.permission === permission ? { ...perm, edit: value } : perm
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    view: (value: boolean, permission: string) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) =>
+          perm.permission === permission ? { ...perm, view: value } : perm
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
   };
-  const selectRow = (selecterName: string, value: boolean, section: string) => {
-    let newList = { ...userData };
-    PERMISSIONS_OPERATION.forEach((operation: string) => {
-      const permissions = newList["Permission"];
-      if (permissions == undefined) {
-        newList = {
-          ...newList,
-          ["Permission"]: {
-            [section]: { [operation]: value },
-          },
-        };
-      } else {
-        const sect = permissions[section];
-        newList = {
-          ...newList,
-          ["Permission"]: {
-            ...permissions,
-            [section]: { ...sect, [operation]: value },
-          },
-        };
-      }
-    });
-    setUserData({ ...newList, [selecterName]: value });
-  };
-  const selectAllRows = (
-    value: boolean,
-    selecterName: string,
-    individualSelecter: string
-  ) => {
-    let newList = { ...userData };
-    items?.forEach((item: Permission, index: number) => {
-      PERMISSIONS_OPERATION.forEach((operation: string) => {
-        const permissions = newList["Permission"];
-        if (permissions == undefined) {
-          newList = {
-            ...newList,
-            ["Permission"]: {
-              [item.name]: { [operation]: value },
-            },
-          };
-        } else {
-          const sect = permissions[item.name];
-          newList = {
-            ...newList,
-            ["Permission"]: {
-              ...permissions,
-              [item.name]: { ...sect, [operation]: value },
-            },
-          };
+  const subActions: {
+    [key in UserAction]: (
+      value: boolean,
+      permission: string,
+      subId: number
+    ) => void;
+  } = {
+    add: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) => {
+          if (perm.permission === permission) {
+            // Update the sub array with the updated SubPermission
+            const updatedSub = perm.sub.map((sub) =>
+              sub.id === subId ? { ...sub, add: value } : sub
+            );
+            return { ...perm, sub: updatedSub }; // Return the updated permission object
+          }
+          return perm; // No change for other permissions
         }
-      });
-      newList = { ...newList, [`${individualSelecter}${index}`]: value };
-    });
-    setUserData({
-      ...newList,
-      [selecterName]: value,
-    });
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    delete: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) => {
+          if (perm.permission === permission) {
+            // Update the sub array with the updated SubPermission
+            const updatedSub = perm.sub.map((sub) =>
+              sub.id === subId ? { ...sub, delete: value } : sub
+            );
+            return { ...perm, sub: updatedSub }; // Return the updated permission object
+          }
+          return perm; // No change for other permissions
+        }
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    edit: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) => {
+          if (perm.permission === permission) {
+            // Update the sub array with the updated SubPermission
+            const updatedSub = perm.sub.map((sub) =>
+              sub.id === subId ? { ...sub, edit: value } : sub
+            );
+            return { ...perm, sub: updatedSub }; // Return the updated permission object
+          }
+          return perm; // No change for other permissions
+        }
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
+    view: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) => {
+          if (perm.permission === permission) {
+            // Update the sub array with the updated SubPermission
+            const updatedSub = perm.sub.map((sub) =>
+              sub.id === subId ? { ...sub, view: value } : sub
+            );
+            return { ...perm, sub: updatedSub }; // Return the updated permission object
+          }
+          return perm; // No change for other permissions
+        }
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
   };
   return (
     <div className="relative overflow-x-auto h-full mt-10">
-      <table className="w-full text-left rtl:text-right">
-        <thead className="rtl:text-2xl-rtl ltr:text-xl-ltr text-primary/80 uppercase bg-secondary">
-          <tr>
-            <th scope="col" className="p-4">
-              <CustomCheckbox
-                className="mx-auto"
-                checked={userData["select_all"]}
-                onCheckedChange={(value: boolean) =>
-                  selectAllRows(value, "select_all", "select_row_")
-                }
-              />
-            </th>
-            <th scope="col" className="text-start py-3">
-              {t("section")}
-            </th>
-            <th scope="col" className="text-start py-3">
-              {t("add")}
-            </th>
-            <th scope="col" className="text-start py-3">
-              {t("view")}
-            </th>
-            <th scope="col" className="text-start py-3">
-              {t("edit")}
-            </th>
-            <th scope="col" className="text-start py-3">
-              {t("delete")}
-            </th>
-          </tr>
-        </thead>
-        <tbody className="relative rtl:text-3xl-rtl ltr:text-lg-ltr">
-          {items == undefined ? (
-            <tr>
-              <td colSpan={8}>
-                <h1 className="pt-32">
-                  <NastranSpinner className=" mx-auto" />
-                </h1>
-              </td>
-            </tr>
-          ) : items.length == 0 ? (
-            <tr>
-              <td
-                colSpan={8}
-                className="text-red-500 text-center font-semibold"
-              >
-                <h1 className="pt-32">{t("allows_user_grant")}</h1>
-              </td>
-            </tr>
-          ) : (
-            items.map((item: Permission, index: number) => {
-              return (
-                <tr className="bg-transparent border-b " key={index}>
-                  <td className="w-4 p-4">
-                    <CustomCheckbox
-                      className="mx-auto"
-                      checked={userData[`select_row_${index}` || ""]}
-                      onCheckedChange={(value: boolean) =>
-                        selectRow(`select_row_${index}`, value, item.name)
-                      }
-                    />
-                  </td>
-                  <th
-                    scope="row"
-                    className="text-start py-4 rtl:text-xl-rtl font-medium text-primary whitespace-nowrap"
-                  >
-                    {t(item.name)}
-                  </th>
-                  <td className="py-4">
-                    <CustomCheckbox
-                      className="ltr:ml-1"
-                      checked={
-                        userData["Permission"] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name]["Add"]
-                      }
-                      onCheckedChange={(value: boolean) =>
-                        handleChange(value, "Add", item.name)
-                      }
-                    />
-                  </td>
-                  <td className="py-4">
-                    <CustomCheckbox
-                      className="ltr:ml-1"
-                      checked={
-                        userData["Permission"] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name]["View"]
-                      }
-                      onCheckedChange={(value: boolean) =>
-                        handleChange(value, "View", item.name)
-                      }
-                    />
-                  </td>
-                  <td className="py-4">
-                    <CustomCheckbox
-                      className="ltr:ml-1"
-                      checked={
-                        userData["Permission"] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name]["Edit"]
-                      }
-                      onCheckedChange={(value: boolean) =>
-                        handleChange(value, "Edit", item.name)
-                      }
-                    />
-                  </td>
-                  <td className="py-4">
-                    <CustomCheckbox
-                      className="ltr:ml-1"
-                      checked={
-                        userData["Permission"] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name] == undefined
-                          ? undefined
-                          : userData["Permission"][item.name]["Delete"]
-                      }
-                      onCheckedChange={(value: boolean) =>
-                        handleChange(value, "Delete", item.name)
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+      <>
+        {failed ? (
+          <ErrorText text={t("error")} />
+        ) : userData.permissions ? (
+          userData.permissions.map((item: IUserPermission, index: number) => (
+            <PermissionSub
+              subActions={subActions}
+              mainActions={mainActions}
+              permission={item}
+              key={index}
+            />
+          ))
+        ) : (
+          <NastranSpinner />
+        )}
+      </>
     </div>
   );
 }

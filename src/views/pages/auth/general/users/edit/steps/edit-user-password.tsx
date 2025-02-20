@@ -15,20 +15,21 @@ import { useTranslation } from "react-i18next";
 import { UserInformation, UserPassword } from "@/lib/types";
 import axiosClient from "@/lib/axois-client";
 import { useUserAuthState } from "@/context/AuthContextProvider";
-import { RoleEnum } from "@/lib/constants";
+import { PermissionEnum, RoleEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
+import { UserPermission } from "@/database/tables";
 export interface EditUserPasswordProps {
   id: string | undefined;
   refreshPage: () => Promise<void>;
   userData: UserInformation | undefined;
   failed: boolean;
-  hasEdit: boolean;
+  permissions: UserPermission;
 }
 
 export function EditUserPassword(props: EditUserPasswordProps) {
-  const { id, userData, failed, refreshPage, hasEdit } = props;
+  const { id, userData, failed, refreshPage, permissions } = props;
   const { user, logoutUser } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
@@ -86,6 +87,10 @@ export function EditUserPassword(props: EditUserPasswordProps) {
       }
     }
   };
+
+  const hasEdit = permissions.sub.get(
+    PermissionEnum.users.sub.user_information
+  )?.edit;
   return (
     <Card>
       <CardHeader className="space-y-0">

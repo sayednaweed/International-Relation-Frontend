@@ -8,27 +8,24 @@ import {
 } from "@/components/ui/card";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ChevronsUpDown, RefreshCcw } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { RefreshCcw } from "lucide-react";
+import { useEffect, useState } from "react";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 import { useParams } from "react-router";
 import { useTranslation } from "react-i18next";
-import { IUserPermission } from "@/lib/types";
+import { IUserPermission, UserAction } from "@/lib/types";
+import PermissionSub from "@/components/custom-ui/general/PermissionSub";
+import { PermissionEnum } from "@/lib/constants";
+import { UserPermission } from "@/database/tables";
 export interface EditUserPermissionsProps {
-  hasEdit: boolean;
+  permissions: UserPermission;
 }
 
 export default function EditUserPermissions(props: EditUserPermissionsProps) {
   const { t } = useTranslation();
-  const { hasEdit } = props;
+  const { permissions } = props;
   let { id } = useParams();
 
   const [loading, setLoading] = useState(false);
@@ -65,11 +62,10 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
       if (saving) return;
       setSaving(true);
       const response = await axiosClient.post(
-        `single/user/update-permission`,
+        `edit/user-permissions`,
         {
-          permission: userData,
+          permissions: userData,
           user_id: id,
-          // subPermissions: subPermissions,
         },
         {
           headers: {
@@ -79,7 +75,7 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
       );
       if (response.status == 200) {
         toast({
-          toastType: "ERROR",
+          toastType: "SUCCESS",
           description: response.data.message,
         });
         if (failed) {
@@ -93,70 +89,9 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
         description: error.response.data.message,
       });
       console.log(error);
-      setFailed(true);
     }
     setSaving(false);
   };
-
-  console.log(hasEdit);
-  return (
-    <Card>
-      <CardHeader className="space-y-0">
-        <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
-          {t("update_account_permissions")}
-        </CardTitle>
-        <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-          {t("update_permis_descrip")}
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {failed ? (
-          <h1>{t("u_are_not_authzed!")}</h1>
-        ) : loading ? (
-          <NastranSpinner />
-        ) : (
-          <div>
-            {userData.map((item, index) => (
-              <PermissionSub
-                setUserData={setUserData}
-                userData={userData}
-                permission={item}
-                key={index}
-              />
-            ))}
-          </div>
-        )}
-      </CardContent>
-      <CardFooter>
-        {failed ? (
-          <PrimaryButton
-            onClick={loadPermissions}
-            className="bg-red-500 hover:bg-red-500/70"
-          >
-            {t("failed_retry")}
-            <RefreshCcw className="ltr:ml-2 rtl:mr-2" />
-          </PrimaryButton>
-        ) : (
-          hasEdit && (
-            <PrimaryButton onClick={savePermission} className={`shadow-md`}>
-              <ButtonSpinner loading={saving}>{t("save")}</ButtonSpinner>
-            </PrimaryButton>
-          )
-        )}
-      </CardFooter>
-    </Card>
-  );
-}
-
-type UserAction = "add" | "delete" | "edit" | "view";
-interface PermissionSubProps {
-  permission: IUserPermission;
-  userData: IUserPermission[];
-  setUserData: Dispatch<SetStateAction<IUserPermission[]>>;
-}
-const PermissionSub = (props: PermissionSubProps) => {
-  const { permission, setUserData, userData } = props;
-  const { t } = useTranslation();
 
   const mainActions: {
     [key in UserAction]: (value: boolean, permission: string) => void;
@@ -246,112 +181,55 @@ const PermissionSub = (props: PermissionSubProps) => {
       setUserData(updatedUserData); // Update the state
     },
   };
+
+  const hasEdit = permissions.sub.get(
+    PermissionEnum.users.sub.user_information
+  )?.edit;
   return (
-    <Collapsible>
-      <CollapsibleTrigger asChild>
-        <PrimaryButton className="w-full mb-2 py-[18px] flex justify-between hover:bg-primary/5 hover:shadow-none hover:text-primary bg-transparent shadow-none border text-primary">
-          {t(permission.permission)}
-          <ChevronsUpDown className="h-4 w-4" />
-          <span className="sr-only">Toggle</span>
-        </PrimaryButton>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="space-y-4 px-3 lg:px-4 py-4 md:py-4 bg-primary/5 pb-4 mb-4 border hover:shadow transition-shadow ease-in-out rounded-xl shadow-sm">
-        <div className="md:flex md:flex-wrap xl:grid md:space-y-2 xl:space-y-0 space-y-3 xl:grid-cols-6 mt-2 items-center border-b pb-3">
-          <h1 className="rtl:text-2xl-rtl w-full xl:w-fit font-bold text-tertiary col-span-2">
-            {t(permission.permission)}
-          </h1>
-          <CustomCheckbox
-            text={t("add")}
-            className="ml-1"
-            checked={permission.add}
-            onCheckedChange={(value: boolean) =>
-              mainActions["add"](value, permission.permission)
-            }
-          />
-          <CustomCheckbox
-            text={t("edit")}
-            className="ml-1"
-            checked={permission.edit}
-            onCheckedChange={(value: boolean) =>
-              mainActions["edit"](value, permission.permission)
-            }
-          />
-          <CustomCheckbox
-            text={t("delete")}
-            className="ml-1"
-            checked={permission.delete}
-            onCheckedChange={(value: boolean) =>
-              mainActions["delete"](value, permission.permission)
-            }
-          />
-          <CustomCheckbox
-            text={t("view")}
-            className="ml-1"
-            checked={permission.view}
-            onCheckedChange={(value: boolean) =>
-              mainActions["view"](value, permission.permission)
-            }
-          />
-        </div>
-        {permission.sub.map((subPermission, index: number) => (
-          <div
-            key={index}
-            className="md:flex md:flex-wrap xl:grid md:space-y-2 xl:space-y-0 space-y-3 xl:grid-cols-6 mt-2 items-center border-b pb-3"
+    <Card>
+      <CardHeader className="space-y-0">
+        <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
+          {t("update_account_permissions")}
+        </CardTitle>
+        <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
+          {t("update_permis_descrip")}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {failed ? (
+          <h1>{t("u_are_not_authzed!")}</h1>
+        ) : loading ? (
+          <NastranSpinner />
+        ) : (
+          <>
+            {userData.map((item, index) => (
+              <PermissionSub
+                subActions={subActions}
+                mainActions={mainActions}
+                permission={item}
+                key={index}
+              />
+            ))}
+          </>
+        )}
+      </CardContent>
+      <CardFooter>
+        {failed ? (
+          <PrimaryButton
+            onClick={loadPermissions}
+            className="bg-red-500 hover:bg-red-500/70"
           >
-            <h1 className="rtl:text-2xl-rtl w-full xl:w-fit font-bold text-tertiary col-span-2">
-              {t(subPermission.name)}
-            </h1>
-            <CustomCheckbox
-              text={t("add")}
-              className="ml-1"
-              checked={subPermission.add}
-              onCheckedChange={(value: boolean) =>
-                subActions["add"](
-                  value,
-                  permission.permission,
-                  subPermission.id
-                )
-              }
-            />
-            <CustomCheckbox
-              text={t("edit")}
-              className="ml-1"
-              checked={subPermission.edit}
-              onCheckedChange={(value: boolean) =>
-                subActions["edit"](
-                  value,
-                  permission.permission,
-                  subPermission.id
-                )
-              }
-            />
-            <CustomCheckbox
-              text={t("delete")}
-              className="ml-1"
-              checked={subPermission.delete}
-              onCheckedChange={(value: boolean) =>
-                subActions["delete"](
-                  value,
-                  permission.permission,
-                  subPermission.id
-                )
-              }
-            />
-            <CustomCheckbox
-              text={t("view")}
-              className="ml-1"
-              checked={subPermission.view}
-              onCheckedChange={(value: boolean) =>
-                subActions["view"](
-                  value,
-                  permission.permission,
-                  subPermission.id
-                )
-              }
-            />
-          </div>
-        ))}
-      </CollapsibleContent>
-    </Collapsible>
+            {t("failed_retry")}
+            <RefreshCcw className="ltr:ml-2 rtl:mr-2" />
+          </PrimaryButton>
+        ) : (
+          hasEdit && (
+            <PrimaryButton onClick={savePermission} className={`shadow-md`}>
+              <ButtonSpinner loading={saving}>{t("save")}</ButtonSpinner>
+            </PrimaryButton>
+          )
+        )}
+      </CardFooter>
+    </Card>
   );
-};
+}

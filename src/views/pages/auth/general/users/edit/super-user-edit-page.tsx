@@ -57,8 +57,42 @@ export default function SuperUserEditPage() {
     PermissionEnum.users.name
   ) as UserPermission;
 
+  const tableList = Array.from(per.sub).map(
+    ([key, _subPermission], index: number) => {
+      return key == PermissionEnum.users.sub.user_information ? (
+        <TabsTrigger
+          key={index}
+          className={`mt-6 rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr ${selectedTabStyle}`}
+          value={key.toString()}
+        >
+          <Database className="size-[18px]" />
+          {t("account_information")}
+        </TabsTrigger>
+      ) : key == PermissionEnum.users.sub.user_password ? (
+        <TabsTrigger
+          key={index}
+          className={`rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr${selectedTabStyle}`}
+          value={key.toString()}
+        >
+          <KeyRound className="size-[18px]" />
+          {t("update_account_password")}
+        </TabsTrigger>
+      ) : (
+        key == PermissionEnum.users.sub.user_permission && (
+          <TabsTrigger
+            key={index}
+            className={`rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr${selectedTabStyle}`}
+            value={key.toString()}
+          >
+            <ShieldBan className="size-[18px]" />
+            {t("update_account_permissions")}
+          </TabsTrigger>
+        )
+      );
+    }
+  );
   return (
-    <div className="flex flex-col gap-y-6 px-3 mt-2">
+    <div className="flex flex-col gap-y-3 px-3 mt-2">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -87,7 +121,7 @@ export default function SuperUserEditPage() {
       <Tabs
         dir={direction}
         defaultValue={PermissionEnum.users.sub.user_information.toString()}
-        className="flex flex-col sm:flex-row gap-x-3 mt-2 gap-y-2 sm:gap-y-0"
+        className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:gap-y-0"
       >
         <TabsList className="min-h-fit sm:min-h-[80vh] overflow-y-auto pb-8 sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
           <UserEditHeader
@@ -96,70 +130,40 @@ export default function SuperUserEditPage() {
             userData={userData}
             setUserData={setUserData}
           />
-          <TabsTrigger
-            className={`mt-6 rtl:text-2xl-rtl ltr:text-2xl-ltr ${selectedTabStyle}`}
-            value={PermissionEnum.users.sub.user_information.toString()}
-          >
-            <Database className="size-[18px]" />
-            {t("account_information")}
-          </TabsTrigger>
-          <TabsTrigger
-            className={`rtl:text-2xl-rtl ltr:text-2xl-ltr${selectedTabStyle}`}
-            value={PermissionEnum.users.sub.user_password.toString()}
-          >
-            <KeyRound className="size-[18px]" />
-            {t("update_account_password")}
-          </TabsTrigger>
-          <TabsTrigger
-            className={`rtl:text-2xl-rtl ltr:text-2xl-ltr${selectedTabStyle}`}
-            value={PermissionEnum.users.sub.user_permission.toString()}
-          >
-            <ShieldBan className="size-[18px]" />
-            {t("update_account_permissions")}
-          </TabsTrigger>
+          {tableList}
         </TabsList>
 
-        {Array.from(per.sub).map(([key, subPermission], index: number) => {
-          const hasEdit = subPermission.edit;
-          return key == PermissionEnum.users.sub.user_information ? (
-            <TabsContent
-              className="flex-1 m-0"
-              value={key.toString()}
-              key={index}
-            >
-              <EditUserInformation
-                id={id}
-                failed={failed}
-                userData={userData}
-                setUserData={setUserData}
-                refreshPage={loadInformation}
-                hasEdit={hasEdit}
-              />
-            </TabsContent>
-          ) : key == PermissionEnum.users.sub.user_password ? (
-            <TabsContent
-              className="flex-1 m-0"
-              value={key.toString()}
-              key={index}
-            >
-              <EditUserPassword
-                id={id}
-                userData={userData}
-                failed={failed}
-                refreshPage={loadInformation}
-                hasEdit={hasEdit}
-              />
-            </TabsContent>
-          ) : (
-            <TabsContent
-              className="flex-1 m-0"
-              value={key.toString()}
-              key={index}
-            >
-              <EditUserPermissions hasEdit={hasEdit} />
-            </TabsContent>
-          );
-        })}
+        <TabsContent
+          className="flex-1 m-0"
+          value={PermissionEnum.users.sub.user_information.toString()}
+        >
+          <EditUserInformation
+            id={id}
+            failed={failed}
+            userData={userData}
+            setUserData={setUserData}
+            refreshPage={loadInformation}
+            permissions={per}
+          />
+        </TabsContent>
+        <TabsContent
+          className="flex-1 m-0"
+          value={PermissionEnum.users.sub.user_password.toString()}
+        >
+          <EditUserPassword
+            id={id}
+            userData={userData}
+            failed={failed}
+            refreshPage={loadInformation}
+            permissions={per}
+          />
+        </TabsContent>
+        <TabsContent
+          className="flex-1 m-0"
+          value={PermissionEnum.users.sub.user_permission.toString()}
+        >
+          <EditUserPermissions permissions={per} />
+        </TabsContent>
       </Tabs>
     </div>
   );

@@ -83,7 +83,7 @@ export type Notifications = {
 export type Job = {
   id: string;
   name: string;
-  createdAt: string;
+  created_at: string;
 };
 export type Gender = {
   id: string;

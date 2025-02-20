@@ -53,7 +53,6 @@ export default function JobTab() {
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: "Error!",
         description: error.response.data.message,
       });
     } finally {
@@ -197,26 +196,26 @@ export default function JobTab() {
               </TableRow>
             </>
           ) : (
-            jobs.filterList.map((department: Job) => (
+            jobs.filterList.map((job: Job, index: number) => (
               <TableRowIcon
                 read={false}
                 remove={true}
                 edit={true}
-                onEdit={async (department: Job) => {
+                onEdit={async (job: Job) => {
                   setSelected({
                     visible: true,
-                    job: department,
+                    job: job,
                   });
                 }}
-                key={department.name}
-                item={department}
+                key={index}
+                item={job}
                 onRemove={remove}
                 onRead={async () => {}}
               >
-                <TableCell className="font-medium">{department.id}</TableCell>
-                <TableCell>{department.name}</TableCell>
+                <TableCell className="font-medium">{job.id}</TableCell>
+                <TableCell>{job.name}</TableCell>
                 <TableCell>
-                  {toLocaleDate(new Date(department.createdAt), state)}
+                  {toLocaleDate(new Date(job.created_at), state)}
                 </TableCell>
               </TableRowIcon>
             ))

@@ -36,7 +36,7 @@ export default function Burger(props: BurgerProps) {
     nastranSidebar!.sidebarbg!.style.display = "block";
   };
   return (
-    <div className={cn("self-center flex-1 px-2 lg:hidden", className)}>
+    <div className={cn("self-center flex-1 px-2 2xl:hidden", className)}>
       <Menu
         onClick={resizeSidebar}
         className="size-[24px] hover:opacity-50 cursor-pointer self-center"

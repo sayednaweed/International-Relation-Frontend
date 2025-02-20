@@ -28,17 +28,17 @@ export default function DestinationDialog(props: DestinationDialogProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
   const [userData, setUserData] = useState<{
-    Farsi: string;
-    English: string;
-    Pashto: string;
-    destinationType: DestinationType | undefined;
-    Color: string;
+    farsi: string;
+    english: string;
+    pashto: string;
+    type: DestinationType | undefined;
+    color: string;
   }>({
-    Farsi: "",
-    English: "",
-    Pashto: "",
-    destinationType: undefined,
-    Color: destination ? "" : "#B4D455",
+    farsi: "",
+    english: "",
+    pashto: "",
+    type: undefined,
+    color: destination ? "" : "#B4D455",
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
@@ -68,19 +68,19 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       const passed = await validate(
         [
           {
-            name: "English",
+            name: "english",
             rules: ["required"],
           },
           {
-            name: "Farsi",
+            name: "farsi",
             rules: ["required"],
           },
           {
-            name: "Pashto",
+            name: "pashto",
             rules: ["required"],
           },
           {
-            name: "destinationType",
+            name: "type",
             rules: ["required"],
           },
         ],
@@ -90,19 +90,26 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       if (!passed) return;
       // 2. Store
       let formData = new FormData();
-      formData.append("english", userData.English);
-      formData.append("farsi", userData.Farsi);
-      formData.append("pashto", userData.Pashto);
-      formData.append("color", userData.Color);
-      if (userData.destinationType)
-        formData.append("destination_type_id", userData.destinationType.id);
+      formData.append("english", userData.english);
+      formData.append("farsi", userData.farsi);
+      formData.append("pashto", userData.pashto);
+      formData.append("color", userData.color);
+      if (userData.type)
+        formData.append("destination_type_id", userData.type.id);
       const response = await axiosClient.post("destination/store", formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        onComplete(response.data.destination);
+        const destination = response.data.destination as Destination;
+        if (userData.type)
+          destination.type = {
+            id: userData.type.id,
+            name: userData.type?.name,
+            created_at: userData.type?.created_at,
+          };
+        onComplete(destination);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -120,19 +127,19 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       const passed = await validate(
         [
           {
-            name: "English",
+            name: "english",
             rules: ["required"],
           },
           {
-            name: "Farsi",
+            name: "farsi",
             rules: ["required"],
           },
           {
-            name: "Pashto",
+            name: "pashto",
             rules: ["required"],
           },
           {
-            name: "destinationType",
+            name: "type",
             rules: ["required"],
           },
         ],
@@ -143,25 +150,26 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       // 2. update
       let formData = new FormData();
       if (destination?.id) formData.append("id", destination.id);
-      formData.append("english", userData.English);
-      formData.append("farsi", userData.Farsi);
-      formData.append("pashto", userData.Pashto);
-      formData.append("color", userData.Color);
-      if (userData.destinationType)
-        formData.append("destination_type_id", userData.destinationType.id);
+      formData.append("english", userData.english);
+      formData.append("farsi", userData.farsi);
+      formData.append("pashto", userData.pashto);
+      formData.append("color", userData.color);
+      if (userData.type)
+        formData.append("destination_type_id", userData.type.id);
       const response = await axiosClient.post(`destination/update`, formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        const des = response.data.destination;
-        des.type = {
-          id: userData.destinationType!.id,
-          name: userData.destinationType!.name,
-          created_at: "",
-        };
-        onComplete(des);
+        const destination = response.data.destination as Destination;
+        if (userData.type)
+          destination.type = {
+            id: userData.type.id,
+            name: userData.type?.name,
+            created_at: userData.type?.created_at,
+          };
+        onComplete(destination);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -190,9 +198,9 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           required={true}
           requiredHint={`* ${t("required")}`}
           placeholder={t("translate_en")}
-          defaultValue={userData.English}
+          defaultValue={userData.english}
           type="text"
-          name="English"
+          name="english"
           errorMessage={error.get("english")}
           onChange={handleChange}
           startContentDark={true}
@@ -207,10 +215,10 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           required={true}
           requiredHint={`* ${t("required")}`}
           placeholder={t("translate_fa")}
-          defaultValue={userData.Farsi}
+          defaultValue={userData.farsi}
           type="text"
-          name="Farsi"
-          errorMessage={error.get("Farsi")}
+          name="farsi"
+          errorMessage={error.get("farsi")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -224,10 +232,10 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           required={true}
           requiredHint={`* ${t("required")}`}
           placeholder={t("translate_ps")}
-          defaultValue={userData.Pashto}
+          defaultValue={userData.pashto}
           type="text"
-          name="Pashto"
-          errorMessage={error.get("Pashto")}
+          name="pashto"
+          errorMessage={error.get("pashto")}
           onChange={handleChange}
           startContentDark={true}
           startContent={
@@ -240,13 +248,13 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
-            setUserData({ ...userData, ["destinationType"]: selection })
+            setUserData({ ...userData, ["type"]: selection })
           }
           required={true}
           requiredHint={`* ${t("required")}`}
-          selectedItem={userData.destinationType?.name}
-          placeHolder={t("select_type")}
-          errorMessage={error.get("destinationType")}
+          selectedItem={userData.type?.name}
+          placeHolder={t("select_a_type")}
+          errorMessage={error.get("type")}
           apiUrl={"destination-types"}
           mode="single"
         />
@@ -255,11 +263,11 @@ export default function DestinationDialog(props: DestinationDialogProps) {
           <ColorPicker
             gradientTitle={t("gradient")}
             solidTitle={t("solid")}
-            background={userData.Color}
+            background={userData.color}
             setBackground={(background: string) =>
               setUserData({
                 ...userData,
-                Color: background,
+                color: background,
               })
             }
             className=" self-start w-fit"

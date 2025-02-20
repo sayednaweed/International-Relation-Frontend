@@ -47,7 +47,11 @@ export default function AddUserAccount() {
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) =>
-          setUserData({ ...userData, ["role"]: selection })
+          setUserData({
+            ...userData,
+            ["role"]: selection,
+            permissions: undefined,
+          })
         }
         required={true}
         lable={t("role")}
