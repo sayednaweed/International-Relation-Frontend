@@ -314,5 +314,6 @@
   "repre_name_english": "نام نماینده به انگلیسی",
   "repre_name_farsi": "نام نماینده به فارسی",
   "repre_name_pashto": "نام نماینده به پشتو",
-  "file_size": "اندازه فایل"
+  "file_size": "اندازه فایل",
+  "file_type": "نوع فایل"
 }

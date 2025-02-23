@@ -22,18 +22,45 @@ import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Option } from "@/lib/types";
+import MultipleSelector from "@/components/custom-ui/select/MultipleSelector";
 
 export interface ChecklistDialogProps {
   onComplete: (checkList: CheckList) => void;
   checklist?: CheckList;
 }
+const defaultExtensions = [
+  {
+    name: "pdf",
+    label: "PDF",
+    frontEndName: ".pdf",
+  },
+  {
+    name: "jpg",
+    label: "JPG",
+    frontEndName: ".jpg",
+  },
+  {
+    name: "png",
+    label: "PNG",
+    frontEndName: ".png",
+  },
+  {
+    name: "jpeg",
+    label: "JPEG",
+    frontEndName: ".jpeg",
+  },
+  {
+    name: "ppt",
+    label: "PPT",
+    frontEndName: ".ppt",
+  },
+  {
+    name: "pptx",
+    label: "PPTX",
+    frontEndName: ".pptx",
+  },
+];
 export default function ChecklistDialog(props: ChecklistDialogProps) {
   const { onComplete, checklist } = props;
   const [loading, setLoading] = useState(false);
@@ -52,6 +79,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       | undefined;
     status: boolean;
     detail: string;
+    extensions: Option[];
   }>({
     farsi: "",
     english: "",
@@ -61,6 +89,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     status: true,
     file_size: 512,
     detail: "",
+    extensions: [],
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
@@ -177,8 +206,9 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     }
   };
 
+  console.log(userData.extensions);
   return (
-    <Card className="w-fit min-w-[400px] self-center my-8 [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
+    <Card className="w-fit min-w-[400px] self-center my-8 [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
           {checklist ? t("edit") : t("add")}
@@ -246,17 +276,25 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
           errorMessage={error.get("file_size")}
           onChange={handleChange}
         />
-        <Select>
-          <SelectTrigger>
-            <SelectValue placeholder="Select items" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="item1">Item 1</SelectItem>
-            <SelectItem value="item2">Item 2</SelectItem>
-            <SelectItem value="item3">Item 3</SelectItem>
-            <SelectItem value="item4">Item 4</SelectItem>
-          </SelectContent>
-        </Select>
+        <MultipleSelector
+          commandProps={{
+            label: "Select frameworks",
+          }}
+          onChange={(option: Option[]) => {
+            setUserData({
+              ...userData,
+              extensions: option,
+            });
+          }}
+          defaultOptions={defaultExtensions as Option[]}
+          label={t("file_type")}
+          errorMessage={error.get("extensions")}
+          selectedOptions={userData.extensions}
+          required={true}
+          requiredHint={`* ${t("required")}`}
+          placeholder={t("select_a")}
+          emptyIndicator={<p className="text-center text-sm">{t("no_item")}</p>}
+        />
         <CustomCheckbox
           checked={userData["status"]}
           onCheckedChange={(value: boolean) =>

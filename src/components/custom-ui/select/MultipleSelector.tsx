@@ -235,6 +235,13 @@ const MultipleSelector = React.forwardRef<
 
             setOptions(items);
           }
+        } else {
+          // Array is passed
+          if (selectedOptions) {
+            setSelected(selectedOptions);
+            const items = transToGroupOption(arrayDefaultOptions, groupBy);
+            setOptions(items);
+          }
         }
       } catch (error: any) {
         console.log(error);
