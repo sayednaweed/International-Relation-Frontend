@@ -66,9 +66,9 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
   const [userData, setUserData] = useState<{
-    farsi: string;
-    english: string;
-    pashto: string;
+    name_farsi: string;
+    name_english: string;
+    name_pashto: string;
     file_size: number;
     optional_lang: string;
     type:
@@ -81,9 +81,9 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     detail: string;
     extensions: Option[];
   }>({
-    farsi: "",
-    english: "",
-    pashto: "",
+    name_english: "",
+    name_farsi: "",
+    name_pashto: "",
     optional_lang: "",
     type: undefined,
     status: true,
@@ -119,15 +119,39 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       const passed = await validate(
         [
           {
-            name: "english",
+            name: "name_english",
             rules: ["required"],
           },
           {
-            name: "farsi",
+            name: "name_farsi",
             rules: ["required"],
           },
           {
-            name: "pashto",
+            name: "name_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "file_size",
+            rules: ["required"],
+          },
+          {
+            name: "optional_lang",
+            rules: ["required"],
+          },
+          {
+            name: "type",
+            rules: ["required"],
+          },
+          {
+            name: "status",
+            rules: ["required"],
+          },
+          {
+            name: "detail",
+            rules: ["required"],
+          },
+          {
+            name: "extensions",
             rules: ["required"],
           },
         ],
@@ -135,18 +159,15 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
         setError
       );
       if (!passed) return;
-      // 2. Store
-      let formData = new FormData();
-      formData.append("english", userData.english);
-      formData.append("farsi", userData.farsi);
-      formData.append("pashto", userData.pashto);
-      const response = await axiosClient.post("checklist/store", formData);
+      const response = await axiosClient.post("checklist/store", {
+        ...userData,
+      });
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        onComplete(response.data.job);
+        onComplete(response.data.checklist);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -164,15 +185,39 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       const passed = await validate(
         [
           {
-            name: "english",
+            name: "name_english",
             rules: ["required"],
           },
           {
-            name: "farsi",
+            name: "name_farsi",
             rules: ["required"],
           },
           {
-            name: "pashto",
+            name: "name_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "file_size",
+            rules: ["required"],
+          },
+          {
+            name: "optional_lang",
+            rules: ["required"],
+          },
+          {
+            name: "type",
+            rules: ["required"],
+          },
+          {
+            name: "status",
+            rules: ["required"],
+          },
+          {
+            name: "detail",
+            rules: ["required"],
+          },
+          {
+            name: "extensions",
             rules: ["required"],
           },
         ],
@@ -183,9 +228,6 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       // 2. update
       let formData = new FormData();
       if (checklist?.id) formData.append("id", checklist.id);
-      formData.append("english", userData.english);
-      formData.append("farsi", userData.farsi);
-      formData.append("pashto", userData.pashto);
       const response = await axiosClient.post(`checklist/update`, formData);
       if (response.status === 200) {
         toast({
@@ -206,9 +248,8 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     }
   };
 
-  console.log(userData.extensions);
   return (
-    <Card className="w-fit min-w-[400px] self-center my-8 [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
+    <Card className="w-full lg:w-1/2 2xl:w-1/3 self-center my-8 [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
           {checklist ? t("edit") : t("add")}

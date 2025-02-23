@@ -255,10 +255,9 @@ const MultipleSelector = React.forwardRef<
     };
     useEffect(() => {
       initialize();
-    }, []);
+    }, [selectedOptions]);
     const [selected, setSelected] = React.useState<Option[]>(value || []);
-    // const val = transToGroupOption(arrayDefaultOptions, groupBy);
-    // console.log(val, "Naweed3333333333");
+
     const [options, setOptions] = React.useState<GroupOption>({
       "": [],
     });
