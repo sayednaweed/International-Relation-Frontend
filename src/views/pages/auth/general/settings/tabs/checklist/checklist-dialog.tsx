@@ -79,7 +79,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       | undefined;
     status: boolean;
     detail: string;
-    extensions: Option[];
+    file_type: Option[];
   }>({
     name_english: "",
     name_farsi: "",
@@ -89,7 +89,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     status: true,
     file_size: 512,
     detail: "",
-    extensions: [],
+    file_type: [],
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
@@ -135,10 +135,6 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
             rules: ["required"],
           },
           {
-            name: "optional_lang",
-            rules: ["required"],
-          },
-          {
             name: "type",
             rules: ["required"],
           },
@@ -147,11 +143,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
             rules: ["required"],
           },
           {
-            name: "detail",
-            rules: ["required"],
-          },
-          {
-            name: "extensions",
+            name: "file_type",
             rules: ["required"],
           },
         ],
@@ -201,10 +193,6 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
             rules: ["required"],
           },
           {
-            name: "optional_lang",
-            rules: ["required"],
-          },
-          {
             name: "type",
             rules: ["required"],
           },
@@ -213,11 +201,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
             rules: ["required"],
           },
           {
-            name: "detail",
-            rules: ["required"],
-          },
-          {
-            name: "extensions",
+            name: "file_type",
             rules: ["required"],
           },
         ],
@@ -226,15 +210,16 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       );
       if (!passed) return;
       // 2. update
-      let formData = new FormData();
-      if (checklist?.id) formData.append("id", checklist.id);
-      const response = await axiosClient.post(`checklist/update`, formData);
+      const response = await axiosClient.post(`checklist/update`, {
+        ...userData,
+        id: checklist?.id,
+      });
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        onComplete(response.data.job);
+        onComplete(response.data.checklist);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -247,6 +232,8 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
       setLoading(false);
     }
   };
+
+  console.log(error);
 
   return (
     <Card className="w-full lg:w-1/2 2xl:w-1/3 self-center my-8 [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
@@ -324,13 +311,13 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
           onChange={(option: Option[]) => {
             setUserData({
               ...userData,
-              extensions: option,
+              file_type: option,
             });
           }}
           defaultOptions={defaultExtensions as Option[]}
           label={t("file_type")}
-          errorMessage={error.get("extensions")}
-          selectedOptions={userData.extensions}
+          errorMessage={error.get("file_type")}
+          selectedOptions={userData.file_type}
           required={true}
           requiredHint={`* ${t("required")}`}
           placeholder={t("select_a")}

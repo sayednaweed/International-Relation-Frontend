@@ -84,7 +84,7 @@ export default function ChecklistTab() {
   const update = (checklist: CheckList) => {
     setChecklists((prevState) => {
       const updatedUnFiltered = prevState.unFilterList.map((item) =>
-        item.id === checklist.id ? { ...item, name: checklist.name } : item
+        item.id === checklist.id ? checklist : item
       );
 
       return {
