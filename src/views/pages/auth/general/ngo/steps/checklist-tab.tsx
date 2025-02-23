@@ -16,7 +16,7 @@ export default function CheckListTab() {
   const [list, setList] = useState<CheckList[]>([]);
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`external/check-list`);
+      const response = await axiosClient.get(`ngo/register/checklist`);
       if (response.status == 200) {
         setList(response.data.checklist);
       }

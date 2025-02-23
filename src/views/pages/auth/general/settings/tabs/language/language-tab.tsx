@@ -103,12 +103,13 @@ export default function LanguageTab() {
   };
   const defaultGroupText = "rtl:[&>*]:text-lg-rtl ltr:[&>*]:text-xl-ltr";
   const defaultLabelText = "rtl:text-2xl-rtl ltr:text-lg-ltr rtl:px-1";
-  const defaultText = "rtl:text-xl-rtl ltr:text-xl-ltr";
+  const defaultText =
+    "rtl:text-xl-rtl ltr:text-xl-ltr bg-card ring-0 focus:ring-0 ";
   return (
-    <section className="px-2 pt-2">
+    <section className="px-2 pt-2 select-none">
       <div>
         <Label className={defaultLabelText}>{t("system_language")}</Label>
-        <LanguageChanger className="rounded-md !w-1/3" />
+        <LanguageChanger className="rounded-md !min-w-[180px]" />
       </div>
       <div>
         <Label className={defaultLabelText}>{t("system_calendar")}</Label>

@@ -11,6 +11,7 @@ import { Check, Database, User as UserIcon, UserRound } from "lucide-react";
 import AddNgoInformation from "./steps/AddNgorInformation";
 import AddNgoAccount from "./steps/AddNgoAccount";
 import { NgoInformation } from "@/lib/types";
+import AddNgoRepresentative from "./steps/AddNgoRepresentative";
 
 export interface AddNgoProps {
   onComplete: (ngo: NgoInformation) => void;
@@ -44,6 +45,9 @@ export default function AddNgo(props: AddNgoProps) {
     formData.append("name_pashto", userData.name_pashto);
     formData.append("name_farsi", userData.name_farsi);
     formData.append("username", userData.username);
+    formData.append("representative_name_english", userData.repre_name_english);
+    formData.append("representative_name_pashto", userData.repre_name_pashto);
+    formData.append("representative_name_farsi", userData.repre_name_farsi);
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
@@ -114,9 +118,9 @@ export default function AddNgo(props: AddNgoProps) {
           {
             component: <AddNgoInformation />,
             validationRules: [
-              { name: "name_english", rules: ["required", "max:128", "min:5"] },
-              { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
-              { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
+              { name: "name_english", rules: ["required", "max:128", "min:3"] },
+              { name: "name_farsi", rules: ["required", "max:128", "min:3"] },
+              { name: "name_pashto", rules: ["required", "max:128", "min:3"] },
               { name: "abbr", rules: ["required"] },
               { name: "type", rules: ["required"] },
               { name: "province", rules: ["required"] },
@@ -127,9 +131,27 @@ export default function AddNgo(props: AddNgoProps) {
             ],
           },
           {
+            component: <AddNgoRepresentative />,
+            validationRules: [
+              {
+                name: "repre_name_english",
+                rules: ["required", "max:128", "min:3"],
+              },
+              {
+                name: "repre_name_farsi",
+                rules: ["required", "max:128", "min:3"],
+              },
+              {
+                name: "repre_name_pashto",
+                rules: ["required", "max:128", "min:3"],
+              },
+            ],
+          },
+
+          {
             component: <AddNgoAccount />,
             validationRules: [
-              { name: "username", rules: ["required", "max:128", "min:5"] },
+              { name: "username", rules: ["required", "max:128", "min:2"] },
               { name: "contact", rules: ["required"] },
               { name: "email", rules: ["required"] },
               { name: "password", rules: ["required", "max:25", "min:8"] },

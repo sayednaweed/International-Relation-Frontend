@@ -18,22 +18,23 @@ import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { Search } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
-import JobDialog from "./job-dialog";
-import { Job } from "@/database/tables";
-export default function JobTab() {
+import { CheckList } from "@/database/tables";
+import ChecklistDialog from "./checklist-dialog";
+import TextStatusButton from "@/components/custom-ui/button/TextStatusButton";
+export default function ChecklistTab() {
   const { t } = useTranslation();
   const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<{
     visible: boolean;
-    job: any;
+    checklist: any;
   }>({
     visible: false,
-    job: undefined,
+    checklist: undefined,
   });
-  const [jobs, setJobs] = useState<{
-    unFilterList: Job[];
-    filterList: Job[];
+  const [checklists, setChecklists] = useState<{
+    unFilterList: CheckList[];
+    filterList: CheckList[];
   }>({
     unFilterList: [],
     filterList: [],
@@ -44,9 +45,9 @@ export default function JobTab() {
       setLoading(true);
 
       // 2. Send data
-      const response = await axiosClient.get(`jobs`);
-      const fetch = response.data as Job[];
-      setJobs({
+      const response = await axiosClient.get(`checklists`);
+      const fetch = response.data as CheckList[];
+      setChecklists({
         unFilterList: fetch,
         filterList: fetch,
       });
@@ -66,24 +67,24 @@ export default function JobTab() {
   const searchOnChange = (e: any) => {
     const { value } = e.target;
     // 1. Filter
-    const filtered = jobs.unFilterList.filter((item: Job) =>
+    const filtered = checklists.unFilterList.filter((item: CheckList) =>
       item.name.toLowerCase().includes(value.toLowerCase())
     );
-    setJobs({
-      ...jobs,
+    setChecklists({
+      ...checklists,
       filterList: filtered,
     });
   };
-  const add = (job: Job) => {
-    setJobs((prev) => ({
-      unFilterList: [job, ...prev.unFilterList],
-      filterList: [job, ...prev.filterList],
+  const add = (checklist: CheckList) => {
+    setChecklists((prev) => ({
+      unFilterList: [checklist, ...prev.unFilterList],
+      filterList: [checklist, ...prev.filterList],
     }));
   };
-  const update = (job: Job) => {
-    setJobs((prevState) => {
+  const update = (checklist: CheckList) => {
+    setChecklists((prevState) => {
       const updatedUnFiltered = prevState.unFilterList.map((item) =>
-        item.id === job.id ? { ...item, name: job.name } : item
+        item.id === checklist.id ? { ...item, name: checklist.name } : item
       );
 
       return {
@@ -93,17 +94,19 @@ export default function JobTab() {
       };
     });
   };
-  const remove = async (job: Job) => {
+  const remove = async (checklist: CheckList) => {
     try {
       // 1. Remove from backend
-      const response = await axiosClient.delete(`job/${job.id}`);
+      const response = await axiosClient.delete(`checklist/${checklist.id}`);
       if (response.status === 200) {
         // 2. Remove from frontend
-        setJobs((prevJobs) => ({
-          unFilterList: prevJobs.unFilterList.filter(
-            (item) => item.id !== job.id
+        setChecklists((prevChecklists) => ({
+          unFilterList: prevChecklists.unFilterList.filter(
+            (item) => item.id !== checklist.id
           ),
-          filterList: prevJobs.filterList.filter((item) => item.id !== job.id),
+          filterList: prevChecklists.filterList.filter(
+            (item) => item.id !== checklist.id
+          ),
         }));
         toast({
           toastType: "SUCCESS",
@@ -125,12 +128,12 @@ export default function JobTab() {
         showDialog={async () => {
           setSelected({
             visible: false,
-            job: undefined,
+            checklist: undefined,
           });
           return true;
         }}
       >
-        <JobDialog job={selected.job} onComplete={update} />
+        <ChecklistDialog checklist={selected.checklist} onComplete={update} />
       </NastranModel>
     ),
     [selected.visible]
@@ -143,12 +146,12 @@ export default function JobTab() {
           isDismissable={false}
           button={
             <PrimaryButton className="text-primary-foreground">
-              {t("add_job")}
+              {t("add")}
             </PrimaryButton>
           }
           showDialog={async () => true}
         >
-          <JobDialog onComplete={add} />
+          <ChecklistDialog onComplete={add} />
         </NastranModel>
         <CustomInput
           size_="lg"
@@ -166,43 +169,75 @@ export default function JobTab() {
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-start">{t("id")}</TableHead>
             <TableHead className="text-start">{t("name")}</TableHead>
+            <TableHead className="text-start">{t("type")}</TableHead>
+            <TableHead className="text-start">{t("status")}</TableHead>
+            <TableHead className="text-start">{t("saved_by")}</TableHead>
             <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-lg-ltr">
           {loading ? (
-            <TableRow>
-              <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-              </TableCell>
-              <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-              </TableCell>
-              <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-              </TableCell>
-            </TableRow>
+            <>
+              <TableRow>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+                <TableCell>
+                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                </TableCell>
+              </TableRow>
+            </>
           ) : (
-            jobs.filterList.map((job: Job, index: number) => (
+            checklists.filterList.map((checklist: CheckList, index: number) => (
               <TableRowIcon
                 read={false}
                 remove={true}
                 edit={true}
-                onEdit={async (job: Job) => {
+                onEdit={async (checklist: CheckList) => {
                   setSelected({
                     visible: true,
-                    job: job,
+                    checklist: checklist,
                   });
                 }}
                 key={index}
-                item={job}
+                item={checklist}
                 onRemove={remove}
                 onRead={async () => {}}
               >
-                <TableCell className="font-medium">{job.id}</TableCell>
-                <TableCell>{job.name}</TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{checklist.name}</TableCell>
                 <TableCell>
-                  {toLocaleDate(new Date(job.created_at), state)}
+                  <TextStatusButton
+                    id={checklist.type_id}
+                    value={checklist.type}
+                  />
+                </TableCell>
+                <TableCell>
+                  <h1
+                    className={
+                      checklist.active == 1 ? " text-green-800" : "text-red-500"
+                    }
+                  >
+                    {checklist.active == 1 ? t("active") : t("in_active")}
+                  </h1>
+                </TableCell>
+                <TableCell className="max-w-[150px] text-[15px] truncate">
+                  {checklist.saved_by}
+                </TableCell>
+                <TableCell>
+                  {toLocaleDate(new Date(checklist.created_at), state)}
                 </TableCell>
               </TableRowIcon>
             ))

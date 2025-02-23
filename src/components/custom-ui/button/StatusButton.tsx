@@ -7,6 +7,7 @@ export interface StatusButtonProps {
 
 export default function StatusButton(props: StatusButtonProps) {
   const { status_id, status } = props;
+
   return (
     <>
       {StatusEnum.active === status_id ? (

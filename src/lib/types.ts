@@ -300,3 +300,15 @@ export interface INgoDirector {
   optional_lang: string;
 }
 //end
+export type ICheckList = {
+  id: string;
+  type: string;
+  type_id: string;
+  name: string;
+  acceptable_extensions: string[];
+  active: number;
+  file_size: string;
+  acceptable_mimes: string[];
+  description: string;
+  created_at: string;
+};

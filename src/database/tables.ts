@@ -207,12 +207,19 @@ export type Ngo = {
   permissions: Map<string, UserPermission>;
   created_at: string;
 };
+
 export type CheckList = {
   id: string;
+  type: string;
+  type_id: number;
   name: string;
   acceptable_extensions: string;
+  active: number;
+  file_size: string;
   acceptable_mimes: string;
   description: string;
+  saved_by: string;
+  created_at: string;
 };
 
 export type Staff = {

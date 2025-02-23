@@ -7,6 +7,7 @@ import DestinationTab from "./tabs/destination/destination-tab";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { UserPermission } from "@/database/tables";
 import { PermissionEnum } from "@/lib/constants";
+import ChecklistTab from "./tabs/checklist/checklist-tab";
 
 export default function SettingsPage() {
   const { user } = useUserAuthState();
@@ -36,15 +37,24 @@ export default function SettingsPage() {
           <Briefcase className="size-[16px] ltr:mr-1 rtl:ml-1" />
           {t("job")}
         </TabsTrigger>
+      ) : key == PermissionEnum.settings.sub.setting_destination ? (
+        <TabsTrigger
+          key={index}
+          value={key.toString()}
+          className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
+        >
+          <MapPinHouse className="size-[16px] ltr:mr-1 rtl:ml-1" />
+          {t("reference")}
+        </TabsTrigger>
       ) : (
-        key == PermissionEnum.settings.sub.setting_destination && (
+        key == PermissionEnum.settings.sub.setting_checklist && (
           <TabsTrigger
             key={index}
             value={key.toString()}
             className="gap-x-1 bg-card shadow rtl:text-2xl-rtl ltr:text-xl-ltr data-[state=active]:bg-primary data-[state=active]:text-tertiary"
           >
             <MapPinHouse className="size-[16px] ltr:mr-1 rtl:ml-1" />
-            {t("reference")}
+            {t("checklist")}
           </TabsTrigger>
         )
       );
@@ -76,6 +86,12 @@ export default function SettingsPage() {
         className="w-full px-4 pt-8"
       >
         <DestinationTab />
+      </TabsContent>
+      <TabsContent
+        value={PermissionEnum.settings.sub.setting_checklist.toString()}
+        className="w-full px-4 pt-8"
+      >
+        <ChecklistTab />
       </TabsContent>
     </Tabs>
   );

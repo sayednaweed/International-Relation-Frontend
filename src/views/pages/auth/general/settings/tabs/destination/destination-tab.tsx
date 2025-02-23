@@ -181,42 +181,23 @@ export default function DestinationTab() {
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-lg-ltr">
           {loading ? (
-            <>
-              <TableRow>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-              </TableRow>
-            </>
+            <TableRow>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+            </TableRow>
           ) : (
             destinations.filterList.map(
               (destination: Destination, index: number) => (
