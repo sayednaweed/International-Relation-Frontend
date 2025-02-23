@@ -1,23 +1,14 @@
-import Card from "@/components/custom-ui/card/Card";
-import {
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-
 import { ChangeEvent, useEffect, useState } from "react";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import CachedImage from "@/components/custom-ui/image/CachedImage";
-import { Pencil, Trash2 } from "lucide-react";
+
 import IconButton from "@/components/custom-ui/button/IconButton";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+
+import { useTranslation } from "react-i18next";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { isFile } from "@/validation/utils";
 
-import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { useTranslation } from "react-i18next";
 type SliderProps = {
   id: string;
   picture: string;
@@ -29,9 +20,10 @@ type PictureProps = {
   imageUrl: string;
   isactive: boolean;
 };
-export default function TechnicalSection() {
+
+export default function SilderSectoin() {
   const { t } = useTranslation();
-  const [technical, setTechnical] = useState<SliderProps[]>([]);
+  const [slider, setSlider] = useState<SliderProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [pictureData, setPictureData] = useState<PictureProps>({
     id: "",
@@ -45,79 +37,53 @@ export default function TechnicalSection() {
       setLoading(true);
       const response = await axiosClient.get("/sliders");
       if (response.status == 200) {
-        // 1. Add data to list
-        const slider = response.data.slider;
-        setTechnical(slider as SliderProps[]);
+        setSlider(response.data.slider as SliderProps[]);
       }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response.data.message,
+        description: error.response?.data?.message || "An error occurred",
       });
-      console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     initialize();
   }, []);
+
   const saveData = async () => {
-    // 2. Store
+    if (!pictureData.picture) return;
+
     const formData = new FormData();
     formData.append("id", pictureData.id);
-    if (pictureData.picture) formData.append("picture", pictureData.picture);
+    formData.append("picture", pictureData.picture);
 
     try {
-      const url = "slider/store";
-      const response = await axiosClient.post(url, formData);
+      const response = await axiosClient.post("slider/store", formData);
       if (response.status == 200) {
-        const slider = response.data.sliders;
-        setTechnical((prev) => [...slider, ...prev]);
-
         setPictureData({
           id: "",
           picture: undefined,
           imageUrl: "",
           isactive: false,
         });
+
         toast({
           toastType: "SUCCESS",
           title: t("success"),
           description: response.data.message,
         });
-      }
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-      console.log(error);
-    } finally {
-    }
-  };
 
-  const deleteOnClick = async (slider: SliderProps) => {
-    try {
-      const response = await axiosClient.delete(`/sliders/${slider.id}`);
-      if (response.status == 200) {
-        const filtered = technical.filter(
-          (item: SliderProps) => slider.id != item.id
-        );
-        setTechnical(filtered);
+        initialize();
       }
-      toast({
-        toastType: "SUCCESS",
-        title: t("success"),
-        description: response.data.message,
-      });
     } catch (error: any) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response.data.message,
+        description: error.response?.data?.message || "An error occurred",
       });
     }
   };
@@ -125,15 +91,6 @@ export default function TechnicalSection() {
   const onFileUploadChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target;
     const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-    if (!fileInput.files) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("No file was chosen"),
-      });
-      return;
-    }
 
     if (!fileInput.files || fileInput.files.length === 0) {
       toast({
@@ -153,7 +110,7 @@ export default function TechnicalSection() {
       });
       return;
     }
-    /** Type validation */
+
     const validTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (!validTypes.includes(file.type)) {
       toast({
@@ -164,102 +121,49 @@ export default function TechnicalSection() {
       return;
     }
 
-    const imageUrl = URL.createObjectURL(file); // Create a temporary URL for the image
-    setPictureData({
-      ...pictureData,
+    const imageUrl = URL.createObjectURL(file);
+    setPictureData((prev) => ({
+      ...prev,
       picture: file,
       imageUrl: imageUrl,
-    });
-    /** Reset file input */
-    if (e.currentTarget) {
-      e.currentTarget.type = "text";
-      e.currentTarget.type = "file"; // Reset to file type
-    }
+    }));
   };
-  return (
-    <>
-      <Card className="w-full self-center bg-card ">
-        <CardHeader className="relative text-start">
-          <CardTitle className="rtl:text-4xl-rtl ltr:text-4xl-ltr text-tertiary text-start">
-            {t("slider")}
-          </CardTitle>
-          <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-            {t("general_desc")}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-y-8 boder-4 border-primary items-center">
-          {loading ? (
-            <NastranSpinner />
-          ) : (
-            <div className=" w-full max-w-[1350px] sm:max-w-[400px] md:max-w-[14000px] bg-primary/5 border-2 border-primary/2 rounded-lg   items-center">
-              <div className="flex flex-col justify-center gap-y-2 ">
-                {isFile(pictureData.picture) ? (
-                  <>
-                    <img
-                      src={pictureData.imageUrl}
-                      className="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-sm"
-                    />
 
-                    <PrimaryButton className="mt-10 " onClick={saveData}>
-                      {t("add")}
-                    </PrimaryButton>
-                  </>
-                ) : (
-                  <>
-                    <CachedImage
-                      src={pictureData.picture}
-                      alt="Avatar"
-                      shimmerClassName="size-[120px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-sm"
-                      className="size-[120px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
-                    />
-                    <IconButton className="hover:bg-primary/20 transition-all text-primary mx-auto">
-                      <label
-                        className={`flex w-fit gap-x-1 items-center cursor-pointer justify-center`}
-                      >
-                        <Pencil className={`size-[13px] pointer-events-none`} />
-                        <h1 className={`rtl:text-lg-rtl ltr:text-md-ltr`}>
-                          {t("choose")}
-                        </h1>
-                        <input
-                          type="file"
-                          className={`block w-0 h-0`}
-                          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                            onFileUploadChange(e);
-                          }}
-                        />
-                      </label>
-                    </IconButton>
-                    <PrimaryButton onClick={saveData}>{t("add")}</PrimaryButton>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 ">
-        {technical.map((item: SliderProps) => (
-          <Card className="group cursor-pointer relative ">
-            <CardContent>
+  useEffect(() => {
+    if (pictureData.picture) {
+      saveData();
+    }
+  }, [pictureData.picture]);
+
+  return (
+    <div className="flex flex-col gap-y-16">
+      <IconButton className="hover:bg-primary/85 bg-primary text-white ml-4 mt-3">
+        <label className="flex w-fit gap-x-1 items-center cursor-pointer justify-center">
+          <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-bold p-1">
+            {t("add_picture")}
+          </h1>
+          <input type="file" className="hidden" onChange={onFileUploadChange} />
+        </label>
+      </IconButton>
+
+      {loading ? (
+        <NastranSpinner />
+      ) : (
+        <div className="grid grid-cols-1 gap-y-10 px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4 2xl:grid-cols-3">
+          {slider.map((item) => (
+            <div
+              key={item.id}
+              className="grid grid-cols-1 gap-y-10 px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4 2xl:grid-cols-3"
+            >
               <CachedImage
-                key={item.id}
                 src={item.picture}
                 alt="Avatar"
-                shimmerClassName="min-w-full h-full object-fill rounded-t"
-                className="w-full h-48 object-cover rounded-lg transition-transform transform scale-100 group-hover:scale-105"
+                className="w-full object-contain rounded-md shadow-lg shadow-primary/70"
               />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                {" "}
-                <Trash2
-                  onClick={async () => await deleteOnClick(item)}
-                  className="text-red-400 size-[18px] transition cursor-pointer hover:text-red-400/70 mt-4"
-                />
-              </div>
-            </CardContent>
-            <CardFooter></CardFooter>
-          </Card>
-        ))}
-      </div>
-    </>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
