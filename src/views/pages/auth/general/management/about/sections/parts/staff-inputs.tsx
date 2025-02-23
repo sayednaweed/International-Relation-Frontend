@@ -36,7 +36,7 @@ export default function StaffInputs(props: StaffInputsProps) {
     }
   };
   return (
-    <section className="flex flex-col gap-y-4">
+    <section className="px-0  flex flex-col gap-y-4">
       <MultiTabTextarea
         optionalKey={"optional_lang"}
         onTabChanged={(key: string, tabName: string) => {
@@ -59,7 +59,7 @@ export default function StaffInputs(props: StaffInputsProps) {
         placeholder={t("detail")}
         rows={3}
         className="rtl:text-xl-rtl rounded-md"
-        tabsClassName="gap-x-5 px-3"
+        tabsClassName="gap-x-5"
       >
         <SingleTab>english</SingleTab>
         <SingleTab>farsi</SingleTab>
