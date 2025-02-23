@@ -37,11 +37,7 @@ export default function JobDialog(props: JobDialogProps) {
     try {
       const response = await axiosClient.get(`job/${job?.id}`);
       if (response.status === 200) {
-        setUserData({
-          farsi: response.data.job.fa,
-          english: response.data.job.en,
-          pashto: response.data.job.ps,
-        });
+        setUserData(response.data);
       }
     } catch (error: any) {
       console.log(error);

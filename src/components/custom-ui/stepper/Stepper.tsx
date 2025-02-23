@@ -114,7 +114,7 @@ export default function Stepper(props: IStepperProps) {
   return (
     <div className={cn("w-full rounded-2xl pb-2", className)}>
       {/* Stepper */}
-      <div className={`${!isCardActive && "mt-4 sm:container"}`}>
+      <div className={`${!isCardActive && "mt-4"} w-full`}>
         <StepperSteps
           isCardActive={isCardActive}
           progressText={progressText}
@@ -123,7 +123,7 @@ export default function Stepper(props: IStepperProps) {
         />
         {/* Display components */}
         <div
-          className={`container overflow-y-auto ${
+          className={`w-full overflow-y-auto ${
             isCardActive
               ? "bg-card px-3 sm:px-7 dark:bg-card-secondary rounded-md border border-primary/10 dark:border-primary/20"
               : "mb-4 mt-12"

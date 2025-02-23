@@ -69,26 +69,26 @@ export default function NastranSidebar() {
       <div
         onClick={resizeSidebar}
         ref={bgSidebarRef}
-        className="absolute z-20 transition-[display] duration-1000 hidden lg:!hidden top-0 left-0 w-screen h-screen bg-primary/25"
+        className="absolute z-20 transition-[display] duration-1000 hidden xl:!hidden top-0 left-0 w-screen h-screen bg-primary/25"
         id="nastran_sidebar--bg"
       />
       <nav
         ref={sidebarRef}
         id="nastran_sidebar"
-        className={`z-20 bg-primary dark:bg-card pb-6 overflow-y-hidden hover:overflow-y-auto dark:text-card-foreground text-primary-foreground overflow-auto absolute lg:relative top-[50%] lg:top-0 ltr:left-[-300px] ltr:lg:!left-0 rtl:lg:!right-0 rtl:right-[-300px] translate-y-[-50%] lg:translate-y-0 rounded-[12px] lg:rounded-none h-[98vh] lg:h-screen w-[240px] dark:border-primary/10`}
+        className={`z-20 bg-primary dark:bg-card pb-6 overflow-y-hidden hover:overflow-y-auto dark:text-card-foreground text-primary-foreground overflow-auto absolute xl:relative top-[50%] xl:top-0 ltr:left-[-300px] ltr:xl:!left-0 rtl:xl:!right-0 rtl:right-[-300px] translate-y-[-50%] xl:translate-y-0 rounded-[12px] xl:rounded-none h-[98vh] xl:h-screen w-[240px] dark:border-primary/10`}
       >
         <X
-          className="size-[18px] lg:hidden text-primary mt-2 ltr:ml-2 rtl:mr-2 cursor-pointer"
+          className="size-[18px] xl:hidden text-primary mt-2 ltr:ml-2 rtl:mr-2 cursor-pointer"
           onClick={resizeSidebar}
         />
         {/* Header */}
-        <div className="flex flex-col items-center gap-y-2 border-b pb-4 border-secondary/20 mb-8 lg:pt-1">
+        <div className="flex flex-col items-center gap-y-2 border-b pb-4 border-secondary/20 mb-8 xl:pt-1">
           <img
             src="http://127.0.0.1:8000/images/app-logo.png"
             className="size-[56px] text-primary/70 max-h-[76px] rounded-lg max-w-[76px]"
           />
 
-          <h1 className="line-clamp-1 ltr:text-xl-ltr rtl:text-3xl-rtl font-semibold text-center">
+          <h1 className="ltr:text-xl-ltr rtl:text-3xl-rtl text-wrap w-[90%] font-semibold text-center">
             {t("app_name")}
           </h1>
         </div>

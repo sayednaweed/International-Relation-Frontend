@@ -169,7 +169,7 @@ function APICombobox(props: IAPIComboboxProps) {
             role="combobox"
             aria-expanded={open}
             className={cn(
-              `w-fit min-w-[260px] bg-card dark:!bg-black/30 min-h-[43px] rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
+              `w-fit min-w-[260px] bg-card dark:bg-card-secondary min-h-[43px] rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
                 error && "border-red-400 border"
               } ${required || lable ? "mt-[20px]" : "mt-2"} ${
                 readonly && "cursor-not-allowed"

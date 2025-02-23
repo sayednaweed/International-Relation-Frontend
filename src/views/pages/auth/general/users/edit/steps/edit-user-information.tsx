@@ -22,16 +22,18 @@ import { UserInformation } from "@/lib/types";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import FakeCombobox from "@/components/custom-ui/combobox/FakeCombobox";
+import { UserPermission } from "@/database/tables";
+import { PermissionEnum } from "@/lib/constants";
 export interface EditUserInformationProps {
   id: string | undefined;
   failed: boolean;
   userData: UserInformation | undefined;
   setUserData: Dispatch<SetStateAction<UserInformation | undefined>>;
   refreshPage: () => Promise<void>;
-  hasEdit: boolean;
+  permissions: UserPermission;
 }
 export default function EditUserInformation(props: EditUserInformationProps) {
-  const { id, failed, userData, setUserData, refreshPage, hasEdit } = props;
+  const { id, failed, userData, setUserData, refreshPage, permissions } = props;
   const [tempUserData, setTempUserData] = useState<UserInformation | undefined>(
     userData
   );
@@ -133,6 +135,9 @@ export default function EditUserInformation(props: EditUserInformationProps) {
     }
   };
 
+  const hasEdit = permissions.sub.get(
+    PermissionEnum.users.sub.user_information
+  )?.edit;
   return (
     <Card>
       <CardHeader className="space-y-0">
@@ -143,13 +148,13 @@ export default function EditUserInformation(props: EditUserInformationProps) {
           {t("update_user_acc_info")}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">
         {failed ? (
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : tempUserData === undefined ? (
           <NastranSpinner />
         ) : (
-          <div className="grid gap-4 w-full sm:w-[70%] md:w-1/2">
+          <>
             <CustomInput
               required={true}
               lable={t("full_name")}
@@ -288,7 +293,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               description={t("allows_user_grant")}
               errorMessage={error.get("grant")}
             />
-          </div>
+          </>
         )}
       </CardContent>
       <CardFooter>

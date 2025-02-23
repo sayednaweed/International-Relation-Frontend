@@ -33,7 +33,7 @@ export default function NastranSpinner(props: INastranSpinnerProps) {
           fill="currentFill"
         />
       </svg>
-      <span className={cn("font-semibold", labelclassname)}>
+      <span className={cn("font-semibold rtl:text-[16px]", labelclassname)}>
         {label ? label : `${t("loading")}...`}
       </span>
     </div>

@@ -50,16 +50,12 @@ const CustomCheckbox = React.forwardRef<HTMLInputElement, CustomCheckboxProps>(
             checked={checked}
             disabled={readOnly}
             className={cn("border-primary/70", className)}
-            id="terms"
             ref={ref}
             onCheckedChange={(value: boolean) => {
               if (!readOnly) onCheckedChange(value);
             }}
           />
-          <label
-            htmlFor="terms"
-            className="text-sm font-medium px-2 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
+          <label className="text-sm font-medium px-2 leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
             {text && (
               <h1 className="text-start rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
                 {text}

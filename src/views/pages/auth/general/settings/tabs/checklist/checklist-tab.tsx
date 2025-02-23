@@ -18,22 +18,23 @@ import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { Search } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
-import { Destination } from "@/database/tables";
-import RoleAndPermissionDialog from "./role-and-permission-dialog";
-export default function RoleAndPermissionTab() {
+import { CheckList } from "@/database/tables";
+import ChecklistDialog from "./checklist-dialog";
+import TextStatusButton from "@/components/custom-ui/button/TextStatusButton";
+export default function ChecklistTab() {
   const { t } = useTranslation();
   const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<{
     visible: boolean;
-    destination: any;
+    checklist: any;
   }>({
     visible: false,
-    destination: undefined,
+    checklist: undefined,
   });
-  const [destinations, setDestinations] = useState<{
-    unFilterList: Destination[];
-    filterList: Destination[];
+  const [checklists, setChecklists] = useState<{
+    unFilterList: CheckList[];
+    filterList: CheckList[];
   }>({
     unFilterList: [],
     filterList: [],
@@ -44,16 +45,15 @@ export default function RoleAndPermissionTab() {
       setLoading(true);
 
       // 2. Send data
-      const response = await axiosClient.get(`destinations`);
-      const fetch = response.data as Destination[];
-      setDestinations({
+      const response = await axiosClient.get(`checklists`);
+      const fetch = response.data as CheckList[];
+      setChecklists({
         unFilterList: fetch,
         filterList: fetch,
       });
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        title: "Error!",
         description: error.response.data.message,
       });
     } finally {
@@ -67,24 +67,24 @@ export default function RoleAndPermissionTab() {
   const searchOnChange = (e: any) => {
     const { value } = e.target;
     // 1. Filter
-    const filtered = destinations.unFilterList.filter((item: Destination) =>
+    const filtered = checklists.unFilterList.filter((item: CheckList) =>
       item.name.toLowerCase().includes(value.toLowerCase())
     );
-    setDestinations({
-      ...destinations,
+    setChecklists({
+      ...checklists,
       filterList: filtered,
     });
   };
-  const add = (destination: Destination) => {
-    setDestinations((prev) => ({
-      unFilterList: [destination, ...prev.unFilterList],
-      filterList: [destination, ...prev.filterList],
+  const add = (checklist: CheckList) => {
+    setChecklists((prev) => ({
+      unFilterList: [checklist, ...prev.unFilterList],
+      filterList: [checklist, ...prev.filterList],
     }));
   };
-  const update = (destination: Destination) => {
-    setDestinations((prevState) => {
+  const update = (checklist: CheckList) => {
+    setChecklists((prevState) => {
       const updatedUnFiltered = prevState.unFilterList.map((item) =>
-        item.id === destination.id ? destination : item
+        item.id === checklist.id ? { ...item, name: checklist.name } : item
       );
 
       return {
@@ -94,20 +94,18 @@ export default function RoleAndPermissionTab() {
       };
     });
   };
-  const remove = async (destination: Destination) => {
+  const remove = async (checklist: CheckList) => {
     try {
       // 1. Remove from backend
-      const response = await axiosClient.delete(
-        `destination/${destination.id}`
-      );
+      const response = await axiosClient.delete(`checklist/${checklist.id}`);
       if (response.status === 200) {
         // 2. Remove from frontend
-        setDestinations((prevDestinations) => ({
-          unFilterList: prevDestinations.unFilterList.filter(
-            (item) => item.id !== destination.id
+        setChecklists((prevChecklists) => ({
+          unFilterList: prevChecklists.unFilterList.filter(
+            (item) => item.id !== checklist.id
           ),
-          filterList: prevDestinations.filterList.filter(
-            (item) => item.id !== destination.id
+          filterList: prevChecklists.filterList.filter(
+            (item) => item.id !== checklist.id
           ),
         }));
         toast({
@@ -130,15 +128,12 @@ export default function RoleAndPermissionTab() {
         showDialog={async () => {
           setSelected({
             visible: false,
-            destination: undefined,
+            checklist: undefined,
           });
           return true;
         }}
       >
-        <RoleAndPermissionDialog
-          destination={selected.destination}
-          onComplete={update}
-        />
+        <ChecklistDialog checklist={selected.checklist} onComplete={update} />
       </NastranModel>
     ),
     [selected.visible]
@@ -151,12 +146,12 @@ export default function RoleAndPermissionTab() {
           isDismissable={false}
           button={
             <PrimaryButton className="text-primary-foreground">
-              {t("add reference")}
+              {t("add")}
             </PrimaryButton>
           }
           showDialog={async () => true}
         >
-          <RoleAndPermissionDialog onComplete={add} />
+          <ChecklistDialog onComplete={add} />
         </NastranModel>
         <CustomInput
           size_="lg"
@@ -174,8 +169,9 @@ export default function RoleAndPermissionTab() {
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-start">{t("id")}</TableHead>
             <TableHead className="text-start">{t("name")}</TableHead>
-            <TableHead className="text-start">{t("color")}</TableHead>
             <TableHead className="text-start">{t("type")}</TableHead>
+            <TableHead className="text-start">{t("status")}</TableHead>
+            <TableHead className="text-start">{t("saved_by")}</TableHead>
             <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
@@ -198,53 +194,50 @@ export default function RoleAndPermissionTab() {
                 <TableCell>
                   <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                 </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
                 <TableCell>
                   <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                 </TableCell>
               </TableRow>
             </>
           ) : (
-            destinations.filterList.map((destination: Destination) => (
+            checklists.filterList.map((checklist: CheckList, index: number) => (
               <TableRowIcon
                 read={false}
                 remove={true}
                 edit={true}
-                onEdit={async (destination: Destination) => {
+                onEdit={async (checklist: CheckList) => {
                   setSelected({
                     visible: true,
-                    destination: destination,
+                    checklist: checklist,
                   });
                 }}
-                key={destination.name}
-                item={destination}
+                key={index}
+                item={checklist}
                 onRemove={remove}
                 onRead={async () => {}}
               >
-                <TableCell className="font-medium">{destination.id}</TableCell>
-                <TableCell>{destination.name}</TableCell>
+                <TableCell className="font-medium">{index + 1}</TableCell>
+                <TableCell>{checklist.name}</TableCell>
                 <TableCell>
-                  <div
-                    className="h-5 w-8 rounded !bg-center !bg-cover transition-all"
-                    style={{ background: destination.color }}
+                  <TextStatusButton
+                    id={checklist.type_id}
+                    value={checklist.type}
                   />
                 </TableCell>
-                <TableCell>{destination?.type?.name}</TableCell>
                 <TableCell>
-                  {toLocaleDate(new Date(destination.created_at), state)}
+                  <h1
+                    className={
+                      checklist.active == 1 ? " text-green-800" : "text-red-500"
+                    }
+                  >
+                    {checklist.active == 1 ? t("active") : t("in_active")}
+                  </h1>
+                </TableCell>
+                <TableCell className="max-w-[150px] text-[15px] truncate">
+                  {checklist.saved_by}
+                </TableCell>
+                <TableCell>
+                  {toLocaleDate(new Date(checklist.created_at), state)}
                 </TableCell>
               </TableRowIcon>
             ))

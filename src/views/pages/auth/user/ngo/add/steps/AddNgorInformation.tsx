@@ -1,6 +1,7 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
+import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
@@ -16,14 +17,14 @@ export default function AddNgoInformation() {
   };
 
   return (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] xl:w-1/3 gap-y-6 pb-12">
       <BorderContainer
         title={t("name")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
       >
-        <MultiTabTextarea
+        <MultiTabInput
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
             setUserData({
@@ -43,14 +44,13 @@ export default function AddNgoInformation() {
           userData={userData}
           errorData={error}
           placeholder={t("content")}
-          rows={3}
           className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0"
           tabsClassName="gap-x-5 px-3"
         >
           <SingleTab>english</SingleTab>
           <SingleTab>farsi</SingleTab>
           <SingleTab>pashto</SingleTab>
-        </MultiTabTextarea>
+        </MultiTabInput>
       </BorderContainer>
 
       <CustomInput

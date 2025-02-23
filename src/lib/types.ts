@@ -146,6 +146,8 @@ export type IUserPermission = {
   sub: SubPermission[];
   allSelected: boolean;
 };
+export type UserAction = "add" | "delete" | "edit" | "view";
+
 // Application
 export type NgoSort = "id" | "name" | "type" | "contact" | "status";
 export type NgoSearch =
@@ -298,3 +300,15 @@ export interface INgoDirector {
   optional_lang: string;
 }
 //end
+export type ICheckList = {
+  id: string;
+  type: string;
+  type_id: string;
+  name: string;
+  acceptable_extensions: string[];
+  active: number;
+  file_size: string;
+  acceptable_mimes: string[];
+  description: string;
+  created_at: string;
+};

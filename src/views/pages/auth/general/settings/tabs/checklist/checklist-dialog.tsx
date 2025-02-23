@@ -11,41 +11,63 @@ import { Button } from "@/components/ui/button";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { useEffect, useState } from "react";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import CustomInput from "@/components/custom-ui/input/CustomInput";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { setServerError, validate } from "@/validation/validation";
-import { Destination, DestinationType } from "@/database/tables";
-import ColorPicker from "@/components/custom-ui/picker/color-picker";
+import { CheckList } from "@/database/tables";
+import BorderContainer from "@/components/custom-ui/container/BorderContainer";
+import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
+import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
+import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
+import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
+import CustomInput from "@/components/custom-ui/input/CustomInput";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export interface DestinationDialogProps {
-  onComplete: (destination: Destination) => void;
-  destination?: Destination;
+export interface ChecklistDialogProps {
+  onComplete: (checkList: CheckList) => void;
+  checklist?: CheckList;
 }
-export default function DestinationDialog(props: DestinationDialogProps) {
-  const { onComplete, destination } = props;
+export default function ChecklistDialog(props: ChecklistDialogProps) {
+  const { onComplete, checklist } = props;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
   const [userData, setUserData] = useState<{
     farsi: string;
     english: string;
     pashto: string;
-    type: DestinationType | undefined;
-    color: string;
+    file_size: number;
+    optional_lang: string;
+    type:
+      | {
+          id: string;
+          name: string;
+        }
+      | undefined;
+    status: boolean;
+    detail: string;
   }>({
     farsi: "",
     english: "",
     pashto: "",
+    optional_lang: "",
     type: undefined,
-    color: destination ? "" : "#B4D455",
+    status: true,
+    file_size: 512,
+    detail: "",
   });
   const { modelOnRequestHide } = useModelOnRequestHide();
   const { t } = useTranslation();
 
   const fetch = async () => {
     try {
-      const response = await axiosClient.get(`destination/${destination?.id}`);
+      const response = await axiosClient.get(`ngo-checklist/${checklist?.id}`);
       if (response.status === 200) {
         setUserData(response.data);
       }
@@ -54,7 +76,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
     }
   };
   useEffect(() => {
-    if (destination) fetch();
+    if (checklist) fetch();
   }, []);
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -79,10 +101,6 @@ export default function DestinationDialog(props: DestinationDialogProps) {
             name: "pashto",
             rules: ["required"],
           },
-          {
-            name: "type",
-            rules: ["required"],
-          },
         ],
         userData,
         setError
@@ -93,23 +111,13 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       formData.append("english", userData.english);
       formData.append("farsi", userData.farsi);
       formData.append("pashto", userData.pashto);
-      formData.append("color", userData.color);
-      if (userData.type)
-        formData.append("destination_type_id", userData.type.id);
-      const response = await axiosClient.post("destination/store", formData);
+      const response = await axiosClient.post("checklist/store", formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        const destination = response.data.destination as Destination;
-        if (userData.type)
-          destination.type = {
-            id: userData.type.id,
-            name: userData.type?.name,
-            created_at: userData.type?.created_at,
-          };
-        onComplete(destination);
+        onComplete(response.data.job);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -138,10 +146,6 @@ export default function DestinationDialog(props: DestinationDialogProps) {
             name: "pashto",
             rules: ["required"],
           },
-          {
-            name: "type",
-            rules: ["required"],
-          },
         ],
         userData,
         setError
@@ -149,27 +153,17 @@ export default function DestinationDialog(props: DestinationDialogProps) {
       if (!passed) return;
       // 2. update
       let formData = new FormData();
-      if (destination?.id) formData.append("id", destination.id);
+      if (checklist?.id) formData.append("id", checklist.id);
       formData.append("english", userData.english);
       formData.append("farsi", userData.farsi);
       formData.append("pashto", userData.pashto);
-      formData.append("color", userData.color);
-      if (userData.type)
-        formData.append("destination_type_id", userData.type.id);
-      const response = await axiosClient.post(`destination/update`, formData);
+      const response = await axiosClient.post(`checklist/update`, formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
           description: response.data.message,
         });
-        const destination = response.data.destination as Destination;
-        if (userData.type)
-          destination.type = {
-            id: userData.type.id,
-            name: userData.type?.name,
-            created_at: userData.type?.created_at,
-          };
-        onComplete(destination);
+        onComplete(response.data.job);
         modelOnRequestHide();
       }
     } catch (error: any) {
@@ -184,95 +178,104 @@ export default function DestinationDialog(props: DestinationDialogProps) {
   };
 
   return (
-    <Card className="w-fit min-w-[400px] self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
+    <Card className="w-fit min-w-[400px] self-center my-8 [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
       <CardHeader className="relative text-start">
         <CardTitle className="rtl:text-4xl-rtl ltr:text-3xl-ltr text-tertiary">
-          {destination ? t("edit") : t("add")}
+          {checklist ? t("edit") : t("add")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col">
-        <CustomInput
-          size_="sm"
-          dir="ltr"
-          className="rtl:text-end"
+      <CardContent className="flex flex-col items-stretch gap-y-4">
+        <BorderContainer
+          title={t("name")}
           required={true}
-          requiredHint={`* ${t("required")}`}
-          placeholder={t("translate_en")}
-          defaultValue={userData.english}
-          type="text"
-          name="english"
-          errorMessage={error.get("english")}
-          onChange={handleChange}
-          startContentDark={true}
-          startContent={
-            <h1 className="font-bold text-primary-foreground text-[11px] mx-auto">
-              {t("en")}
-            </h1>
-          }
-        />
-        <CustomInput
-          size_="sm"
-          required={true}
-          requiredHint={`* ${t("required")}`}
-          placeholder={t("translate_fa")}
-          defaultValue={userData.farsi}
-          type="text"
-          name="farsi"
-          errorMessage={error.get("farsi")}
-          onChange={handleChange}
-          startContentDark={true}
-          startContent={
-            <h1 className="font-bold text-primary-foreground text-[11px] mx-auto">
-              {t("fa")}
-            </h1>
-          }
-        />
-        <CustomInput
-          size_="sm"
-          required={true}
-          requiredHint={`* ${t("required")}`}
-          placeholder={t("translate_ps")}
-          defaultValue={userData.pashto}
-          type="text"
-          name="pashto"
-          errorMessage={error.get("pashto")}
-          onChange={handleChange}
-          startContentDark={true}
-          startContent={
-            <h1 className="font-bold text-primary-foreground text-[11px] mx-auto">
-              {t("ps")}
-            </h1>
-          }
-        />
+          parentClassName="p-t-4 pb-0 px-0"
+          className="grid grid-cols-1 gap-y-3"
+        >
+          <MultiTabInput
+            optionalKey={"optional_lang"}
+            onTabChanged={(key: string, tabName: string) => {
+              setUserData({
+                ...userData,
+                [key]: tabName,
+                optional_lang: tabName,
+              });
+            }}
+            onChanged={(value: string, name: string) => {
+              setUserData({
+                ...userData,
+                [name]: value,
+              });
+            }}
+            name="name"
+            highlightColor="bg-tertiary"
+            userData={userData}
+            errorData={error}
+            placeholder={t("content")}
+            className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0"
+            tabsClassName="gap-x-5 px-3"
+          >
+            <SingleTab>english</SingleTab>
+            <SingleTab>farsi</SingleTab>
+            <SingleTab>pashto</SingleTab>
+          </MultiTabInput>
+        </BorderContainer>
         <APICombobox
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
             setUserData({ ...userData, ["type"]: selection })
           }
+          lable={t("type")}
+          required={true}
+          selectedItem={userData["type"]?.name}
+          placeHolder={t("select_a")}
+          errorMessage={error.get("type")}
+          apiUrl={"ngo/checklist/types"}
+          mode="single"
+          requiredHint={`* ${t("required")}`}
+        />
+        <CustomInput
+          size_="sm"
           required={true}
           requiredHint={`* ${t("required")}`}
-          selectedItem={userData.type?.name}
-          placeHolder={t("select_a_type")}
-          errorMessage={error.get("type")}
-          apiUrl={"destination-types"}
-          mode="single"
+          lable={t("file_size")}
+          placeholder={t("detail")}
+          defaultValue={userData["file_size"]}
+          type="number"
+          name="file_size"
+          errorMessage={error.get("file_size")}
+          onChange={handleChange}
         />
-        <div className="flex flex-col mt-3">
-          <label className="w-fit capitalize font-semibold">{t("color")}</label>
-          <ColorPicker
-            gradientTitle={t("gradient")}
-            solidTitle={t("solid")}
-            background={userData.color}
-            setBackground={(background: string) =>
-              setUserData({
-                ...userData,
-                color: background,
-              })
-            }
-            className=" self-start w-fit"
-          />
-        </div>
+        <Select>
+          <SelectTrigger>
+            <SelectValue placeholder="Select items" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="item1">Item 1</SelectItem>
+            <SelectItem value="item2">Item 2</SelectItem>
+            <SelectItem value="item3">Item 3</SelectItem>
+            <SelectItem value="item4">Item 4</SelectItem>
+          </SelectContent>
+        </Select>
+        <CustomCheckbox
+          checked={userData["status"]}
+          onCheckedChange={(value: boolean) =>
+            setUserData({ ...userData, status: value })
+          }
+          parentClassName="rounded-md py-[12px] gap-x-1 bg-card border px-[10px]"
+          text={t("status")}
+          required={true}
+          requiredHint={`* ${t("required")}`}
+          errorMessage={error.get("status")}
+        />
+        <CustomTextarea
+          defaultValue={userData["detail"]}
+          errorMessage={error.get("detail")}
+          onChange={handleChange}
+          name="detail"
+          placeholder={t("detail")}
+          rows={5}
+        />
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button
@@ -284,7 +287,7 @@ export default function DestinationDialog(props: DestinationDialogProps) {
         </Button>
         <PrimaryButton
           disabled={loading}
-          onClick={destination ? update : store}
+          onClick={checklist ? update : store}
           className={`${loading && "opacity-90"}`}
           type="submit"
         >

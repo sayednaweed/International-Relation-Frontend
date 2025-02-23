@@ -181,73 +181,58 @@ export default function DestinationTab() {
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-lg-ltr">
           {loading ? (
-            <>
-              <TableRow>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-                <TableCell>
-                  <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-                </TableCell>
-              </TableRow>
-            </>
+            <TableRow>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+              <TableCell>
+                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+              </TableCell>
+            </TableRow>
           ) : (
-            destinations.filterList.map((destination: Destination) => (
-              <TableRowIcon
-                read={false}
-                remove={true}
-                edit={true}
-                onEdit={async (destination: Destination) => {
-                  setSelected({
-                    visible: true,
-                    destination: destination,
-                  });
-                }}
-                key={destination.name}
-                item={destination}
-                onRemove={remove}
-                onRead={async () => {}}
-              >
-                <TableCell className="font-medium">{destination.id}</TableCell>
-                <TableCell>{destination.name}</TableCell>
-                <TableCell>
-                  <div
-                    className="h-5 w-8 rounded !bg-center !bg-cover transition-all"
-                    style={{ background: destination.color }}
-                  />
-                </TableCell>
-                <TableCell>{destination?.type?.name}</TableCell>
-                <TableCell>
-                  {toLocaleDate(new Date(destination.created_at), state)}
-                </TableCell>
-              </TableRowIcon>
-            ))
+            destinations.filterList.map(
+              (destination: Destination, index: number) => (
+                <TableRowIcon
+                  read={false}
+                  remove={true}
+                  edit={true}
+                  onEdit={async (destination: Destination) => {
+                    setSelected({
+                      visible: true,
+                      destination: destination,
+                    });
+                  }}
+                  key={index}
+                  item={destination}
+                  onRemove={remove}
+                  onRead={async () => {}}
+                >
+                  <TableCell className="font-medium">
+                    {destination.id}
+                  </TableCell>
+                  <TableCell>{destination.name}</TableCell>
+                  <TableCell>
+                    <div
+                      className="h-5 w-8 rounded !bg-center !bg-cover transition-all"
+                      style={{ background: destination.color }}
+                    />
+                  </TableCell>
+                  <TableCell>{destination?.type?.name}</TableCell>
+                  <TableCell>
+                    {toLocaleDate(new Date(destination.created_at), state)}
+                  </TableCell>
+                </TableRowIcon>
+              )
+            )
           )}
         </TableBody>
       </Table>
