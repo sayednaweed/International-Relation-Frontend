@@ -42,6 +42,7 @@ export const PermissionEnum = {
       setting_job: 22,
       setting_destination: 23,
       setting_checklist: 24,
+      setting_news_type: 25,
     },
   },
   logs: { name: "logs", sub: {} },

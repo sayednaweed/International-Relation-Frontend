@@ -209,7 +209,6 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
               onComplete={async (record: any) => {
                 for (const element of record) {
                   const checklist = element[element.length - 1];
-                  console.log(checklist, "Naweed");
                   const updated = documents.map((item) =>
                     checklist.checklist_id == item.checklist_id
                       ? checklist
