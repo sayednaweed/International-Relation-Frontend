@@ -40,7 +40,7 @@ function StepperControl(props: IStepperControlProps) {
     <div
       className={`${
         isCardActive &&
-        "mt-[3px] rounded-md bg-card dark:bg-card-secondary py-4 border border-primary/10 dark:border-primary/20"
+        "mt-[3px] rounded-md bg-card py-4 border border-primary/10 dark:border-primary/20"
       } flex flex-wrap gap-x-1 gap-y-4 justify-around mb-4 text-[13px]`}
     >
       {/* Back Button */}

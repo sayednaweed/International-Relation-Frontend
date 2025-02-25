@@ -155,7 +155,7 @@ function StepperSteps(props: IStepperProps) {
     <div
       className={`${
         isCardActive
-          ? "bg-card dark:bg-card-secondary mb-[3px] h-[132px] border border-primary/10 dark:border-primary/20 rounded-md"
+          ? "bg-card mb-[3px] h-[132px] border border-primary/10 dark:border-primary/20 rounded-md"
           : "mx-4"
       } p-4 flex justify-between items-start`}
     >

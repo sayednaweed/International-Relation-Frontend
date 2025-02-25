@@ -315,5 +315,6 @@
   "repre_name_farsi": "Representative name in Farsi",
   "repre_name_pashto": "Representative name in Pashto",
   "file_size": "File Size",
-  "file_type": "File Type"
+  "file_type": "File Type",
+  "letter_of_intro": "Letter of introduction"
 }

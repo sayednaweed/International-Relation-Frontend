@@ -10,7 +10,7 @@ export default function MoreInformationTab() {
   const { userData, setUserData, error } = useContext(StepperContext);
 
   return (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full gap-y-6 pb-12">
       <BorderContainer
         title={t("vision")}
         required={true}

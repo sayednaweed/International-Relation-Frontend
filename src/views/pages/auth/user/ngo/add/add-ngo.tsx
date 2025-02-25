@@ -45,9 +45,10 @@ export default function AddNgo(props: AddNgoProps) {
     formData.append("name_pashto", userData.name_pashto);
     formData.append("name_farsi", userData.name_farsi);
     formData.append("username", userData.username);
-    formData.append("representative_name_english", userData.repre_name_english);
-    formData.append("representative_name_pashto", userData.repre_name_pashto);
-    formData.append("representative_name_farsi", userData.repre_name_farsi);
+    formData.append("full_name_english", userData.repre_name_english);
+    formData.append("full_name_pashto", userData.repre_name_pashto);
+    formData.append("full_name_farsi", userData.repre_name_farsi);
+    formData.append("pending_id", userData.letter_of_intro.pending_id);
     try {
       const response = await axiosClient.post("ngo/store", formData);
       if (response.status == 200) {
@@ -145,9 +146,12 @@ export default function AddNgo(props: AddNgoProps) {
                 name: "repre_name_pashto",
                 rules: ["required", "max:128", "min:3"],
               },
+              {
+                name: "letter_of_intro",
+                rules: ["required"],
+              },
             ],
           },
-
           {
             component: <AddNgoAccount />,
             validationRules: [
