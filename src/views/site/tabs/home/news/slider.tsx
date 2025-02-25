@@ -11,7 +11,6 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
-import { useParams } from "react-router";
 
 interface SliderProps {
   id: number;
@@ -20,7 +19,7 @@ interface SliderProps {
 
 function SliderSection() {
   const { t, i18n } = useTranslation();
-  let { id } = useParams();
+
   const [failed, setFailed] = useState(false);
   const [slider, setSlider] = useState<SliderProps[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
