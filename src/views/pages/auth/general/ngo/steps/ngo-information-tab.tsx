@@ -9,6 +9,7 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { toast } from "@/components/ui/use-toast";
 import axiosClient from "@/lib/axois-client";
+import { TaskTypeEnum } from "@/lib/constants";
 import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
@@ -22,7 +23,7 @@ export default function NgoInformationTab() {
 
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get(`ngoInit/${id}`);
+      const response = await axiosClient.get(`ngo/start/register/form/${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
 
@@ -90,7 +91,10 @@ export default function NgoInformationTab() {
           });
         }
       }}
-      url={"ngos/personalDetail/destory/" + id}
+      params={{
+        task_type: TaskTypeEnum.ngo_registeration,
+      }}
+      url={"destroy/ngo/task/content/" + id}
     />
   ) : userData?.allowed ? (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[600px] gap-y-6 pb-12">

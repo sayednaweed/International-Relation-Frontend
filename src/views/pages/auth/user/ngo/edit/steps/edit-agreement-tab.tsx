@@ -11,7 +11,11 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { Agreement, AgreementDocument } from "@/database/tables";
+import {
+  Agreement,
+  AgreementDocument,
+  UserPermission,
+} from "@/database/tables";
 import { useParams } from "react-router";
 import {
   Collapsible,
@@ -25,8 +29,13 @@ import { useGlobalState } from "@/context/GlobalStateContext";
 import { FileType } from "@/lib/types";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
+import { PermissionEnum } from "@/lib/constants";
 
-export default function EditAgreemenTab() {
+interface EditAgreemenTabProps {
+  permissions: UserPermission;
+}
+export default function EditAgreemenTab(props: EditAgreemenTabProps) {
+  const { permissions } = props;
   const { t } = useTranslation();
   const { id } = useParams();
   const [state] = useGlobalState();
@@ -59,6 +68,8 @@ export default function EditAgreemenTab() {
     loadAgreement();
   }, []);
 
+  const information = permissions.sub.get(PermissionEnum.ngo.sub.ngo_agreement);
+  const hasEdit = information?.edit;
   return (
     <Card className="h-fit">
       <CardHeader className="space-y-0">
@@ -80,6 +91,7 @@ export default function EditAgreemenTab() {
               agreements.map((agreement: Agreement, index: number) => (
                 <AgreementDocumentComponent
                   ngo_id={id}
+                  hasEdit={hasEdit}
                   index={index}
                   key={index}
                   state={state}
@@ -117,10 +129,11 @@ export interface AgreementProps {
   index: number;
   state: any;
   ngo_id: string | undefined;
+  hasEdit?: boolean;
 }
 
 const AgreementDocumentComponent = (props: AgreementProps) => {
-  const { agreement, index, state, ngo_id } = props;
+  const { agreement, index, state, ngo_id, hasEdit } = props;
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -186,6 +199,7 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
         ) : (
           documents.map((document: AgreementDocument, index: number) => (
             <CheckListChooser
+              hasEdit={hasEdit}
               number={`${index + 1}`}
               key={index}
               url={`${
@@ -198,7 +212,7 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
               }}
               maxSize={1024}
               accept={document.acceptable_mimes}
-              name={document.name}
+              name={document.checklist_name}
               defaultFile={document as FileType}
               validTypes={["image/png", "image/jpeg", "image/gif"]}
               uploadParam={{

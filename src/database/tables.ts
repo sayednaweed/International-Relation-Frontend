@@ -148,7 +148,7 @@ export type NgoStatus = {
   id: string;
   ngo_id: string;
   status_type_id: string;
-  is_active: string;
+  is_active: number;
   name: string;
   comment: string;
   created_at: string;
@@ -237,7 +237,19 @@ export type Agreement = {
 export interface AgreementDocument extends FileType {
   document_id: string;
   checklist_id: string;
+  checklist_name: string;
   acceptable_extensions: string;
   acceptable_mimes: string;
   description: string;
+}
+export interface Representor {
+  id: 3;
+  is_active: number;
+  created_at: string;
+  full_name: string;
+  saved_by: string;
+  agreement_id: string;
+  agreement_no: string;
+  start_date: string | null;
+  end_date: string | null;
 }

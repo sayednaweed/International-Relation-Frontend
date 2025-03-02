@@ -11,16 +11,16 @@ import { useEffect, useState } from "react";
 import { setServerError, validate } from "@/validation/validation";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import { StaffEnum } from "@/lib/constants";
+import { PermissionEnum, StaffEnum } from "@/lib/constants";
 import StaffInputs from "./parts/staff-inputs";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import { UserPermission } from "@/database/tables";
 
 interface OfficeSectionProps {
-  hasEdit: boolean;
-  hasAdd: boolean;
+  permission: UserPermission;
 }
 export default function OfficeSection(props: OfficeSectionProps) {
-  const { hasEdit, hasAdd } = props;
+  const { permission } = props;
 
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
@@ -154,6 +154,9 @@ export default function OfficeSection(props: OfficeSectionProps) {
       setManipulating(false);
     }
   };
+
+  const hasEdit = permission.sub.get(PermissionEnum.about.sub.technical)?.edit;
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.technical)?.add;
 
   return (
     <Card className="w-full self-center bg-card">

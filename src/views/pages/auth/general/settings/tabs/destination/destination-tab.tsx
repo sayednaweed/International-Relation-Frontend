@@ -18,9 +18,14 @@ import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { Search } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
-import { Destination } from "@/database/tables";
+import { Destination, UserPermission } from "@/database/tables";
 import DestinationDialog from "./destination-dialog";
-export default function DestinationTab() {
+import { PermissionEnum } from "@/lib/constants";
+interface DestinationTabProps {
+  permissions: UserPermission;
+}
+export default function DestinationTab(props: DestinationTabProps) {
+  const { permissions } = props;
   const { t } = useTranslation();
   const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
@@ -143,21 +148,30 @@ export default function DestinationTab() {
     ),
     [selected.visible]
   );
+  const destination = permissions.sub.get(
+    PermissionEnum.settings.sub.setting_destination
+  );
+  const hasEdit = destination?.edit;
+  const hasAdd = destination?.add;
+  const hasDelete = destination?.delete;
+  const hasView = destination?.view;
   return (
     <div className="relative">
       <div className="rounded-md bg-card p-2 flex gap-x-4 items-baseline mt-4">
-        <NastranModel
-          size="lg"
-          isDismissable={false}
-          button={
-            <PrimaryButton className="text-primary-foreground">
-              {t("add_reference")}
-            </PrimaryButton>
-          }
-          showDialog={async () => true}
-        >
-          <DestinationDialog onComplete={add} />
-        </NastranModel>
+        {hasAdd && (
+          <NastranModel
+            size="lg"
+            isDismissable={false}
+            button={
+              <PrimaryButton className="text-primary-foreground">
+                {t("add_reference")}
+              </PrimaryButton>
+            }
+            showDialog={async () => true}
+          >
+            <DestinationDialog onComplete={add} />
+          </NastranModel>
+        )}
         <CustomInput
           size_="lg"
           placeholder={`${t("search")}...`}
@@ -202,9 +216,9 @@ export default function DestinationTab() {
             destinations.filterList.map(
               (destination: Destination, index: number) => (
                 <TableRowIcon
-                  read={false}
-                  remove={true}
-                  edit={true}
+                  read={hasView}
+                  remove={hasDelete}
+                  edit={hasEdit}
                   onEdit={async (destination: Destination) => {
                     setSelected({
                       visible: true,

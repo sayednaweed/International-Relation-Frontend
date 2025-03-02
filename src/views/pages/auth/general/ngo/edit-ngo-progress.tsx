@@ -6,7 +6,6 @@ import { Dispatch, SetStateAction } from "react";
 import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 import { Check, Database, Grip, NotebookPen, UserRound } from "lucide-react";
 import NgoInformationTab from "./steps/ngo-information-tab";
-import { setServerError } from "@/validation/validation";
 import DirectorInformationTab from "./steps/director-information-tab";
 import MoreInformationTab from "./steps/more-information-tab";
 import {
@@ -22,7 +21,7 @@ import CheckListTab from "./steps/checklist-tab";
 import { isString } from "@/lib/utils";
 import { ServerError } from "@/components/custom-ui/errors/ServerError";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
-import { RoleEnum } from "@/lib/constants";
+import { RoleEnum, TaskTypeEnum } from "@/lib/constants";
 
 export default function EditNgoProgress() {
   const { t } = useTranslation();
@@ -30,13 +29,10 @@ export default function EditNgoProgress() {
   const navigate = useNavigate();
   const { user } = useGeneralAuthState();
 
-  const SaveContent = async (
-    formData: FormData,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
-  ) => {
+  const SaveContent = async (formData: FormData) => {
     try {
       const response = await axiosClient.post(
-        `store/ngo/register-task/${id}`,
+        `store/task/with/content/${id}`,
         formData
       );
       if (response.status == 200) {
@@ -48,7 +44,6 @@ export default function EditNgoProgress() {
         title: t("error"),
         description: error.response.data.message,
       });
-      setServerError(error.response.data.errors, setError);
       console.log(error);
     }
     return false;
@@ -138,7 +133,7 @@ export default function EditNgoProgress() {
   const onSaveClose = async (
     userData: any,
     currentStep: number,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
+    onlySave: boolean
   ) => {
     const content = {
       ...userData, // shallow copy of the userData object
@@ -150,9 +145,10 @@ export default function EditNgoProgress() {
     let formData = new FormData();
     formData.append("contents", JSON.stringify(content));
     formData.append("step", currentStep.toString());
+    formData.append("task_type", TaskTypeEnum.ngo_registeration.toString());
     if (id) formData.append("id", id.toString());
-    await SaveContent(formData, setError);
-    gotoNgos();
+    await SaveContent(formData);
+    if (!onlySave) gotoNgos();
   };
   const gotoNgos = async () => navigate("/ngo", { replace: true });
   return (
@@ -320,7 +316,7 @@ export default function EditNgoProgress() {
             ],
           },
           {
-            component: <CheckListTab />,
+            component: <CheckListTab onSaveClose={onSaveClose} />,
             validationRules: [],
           },
           {
@@ -338,7 +334,9 @@ export default function EditNgoProgress() {
         ]}
         beforeStepSuccess={beforeStepSuccess}
         stepsCompleted={stepsCompleted}
-        onSaveClose={onSaveClose}
+        onSaveClose={(userData: any, currentStep: number) =>
+          onSaveClose(userData, currentStep, false)
+        }
         onSaveCloseText={t("save_close")}
       />
     </div>

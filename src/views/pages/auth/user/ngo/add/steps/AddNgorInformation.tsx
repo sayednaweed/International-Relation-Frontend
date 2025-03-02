@@ -17,7 +17,7 @@ export default function AddNgoInformation() {
   };
 
   return (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] xl:w-1/3 gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full lg:w-[60%] gap-y-6 pb-12">
       <BorderContainer
         title={t("name")}
         required={true}

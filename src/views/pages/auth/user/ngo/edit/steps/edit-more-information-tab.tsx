@@ -12,7 +12,6 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { UserPermission } from "@/database/tables";
@@ -23,39 +22,33 @@ import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import { ValidateItem } from "@/validation/types";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 interface EditNgoInformationProps {
-  introduction_english: string;
   vision_english: string;
   mission_english: string;
   general_objes_english: string;
   objes_in_afg_english: string;
-  introduction_farsi: string;
   vision_farsi: string;
   mission_farsi: string;
   general_objes_farsi: string;
   objes_in_afg_farsi: string;
-  introduction_pashto: string;
   vision_pashto: string;
   mission_pashto: string;
   general_objes_pashto: string;
   objes_in_afg_pashto: string;
   optional_lang: string;
 }
-export default function EditMoreInformationTab() {
-  const { user } = useUserAuthState();
+interface EditMoreInformationTabProps {
+  permissions: UserPermission;
+}
+export default function EditMoreInformationTab(
+  props: EditMoreInformationTabProps
+) {
+  const { permissions } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
   const [ngoData, setNgoData] = useState<EditNgoInformationProps>();
-
-  const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
-  ) as UserPermission;
-
-  const hasEdit = per.sub.get(
-    PermissionEnum.ngo.sub.ngo_more_information
-  )?.edit;
 
   const loadInformation = async () => {
     try {
@@ -136,6 +129,10 @@ export default function EditMoreInformationTab() {
     }
   };
 
+  const information = permissions.sub.get(
+    PermissionEnum.ngo.sub.ngo_more_information
+  );
+  const hasEdit = information?.edit;
   return (
     <Card>
       <CardHeader className="space-y-0">
@@ -173,6 +170,7 @@ export default function EditMoreInformationTab() {
                 }}
                 name="vision"
                 rows={8}
+                readOnly={!hasEdit}
                 highlightColor="bg-tertiary"
                 userData={ngoData}
                 errorData={error}
@@ -207,6 +205,7 @@ export default function EditMoreInformationTab() {
                     [name]: value,
                   });
                 }}
+                readOnly={!hasEdit}
                 name="mission"
                 highlightColor="bg-tertiary"
                 userData={ngoData}
@@ -243,6 +242,7 @@ export default function EditMoreInformationTab() {
                     [name]: value,
                   });
                 }}
+                readOnly={!hasEdit}
                 name="general_objes"
                 highlightColor="bg-tertiary"
                 userData={ngoData}
@@ -279,6 +279,7 @@ export default function EditMoreInformationTab() {
                     [name]: value,
                   });
                 }}
+                readOnly={!hasEdit}
                 name="objes_in_afg"
                 highlightColor="bg-tertiary"
                 userData={ngoData}

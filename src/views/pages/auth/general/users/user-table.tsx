@@ -168,7 +168,6 @@ export function UserTable() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
   const [state] = useGlobalState();
 
   const addItem = (user: User) => {

@@ -28,9 +28,10 @@ import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 export interface EditDirectorDialogProps {
   onComplete: (director: IDirector) => void;
   director?: IDirector;
+  hasEdit?: boolean;
 }
 export default function EditDirectorDialog(props: EditDirectorDialogProps) {
-  const { onComplete, director } = props;
+  const { onComplete, director, hasEdit } = props;
   const [loading, setLoading] = useState(false);
   const [storing, setStoring] = useState(false);
   const [error, setError] = useState(new Map<string, string>());
@@ -80,22 +81,22 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
     const url = director ? "ngo/director/update" : "ngo/director/store";
     const idToPass = director ? director.id : id;
     try {
-      if (loading) return;
+      if (storing) return;
       setStoring(true);
       // 1. Validate form
       const passed = await validate(
         [
           {
             name: "name_english",
-            rules: ["required", "max:128", "min:5"],
+            rules: ["required", "max:128", "min:3"],
           },
           {
             name: "name_farsi",
-            rules: ["required", "max:128", "min:5"],
+            rules: ["required", "max:128", "min:3"],
           },
           {
             name: "name_pashto",
-            rules: ["required", "max:128", "min:5"],
+            rules: ["required", "max:128", "min:3"],
           },
           {
             name: "surname_english",
@@ -194,7 +195,7 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
       {loading ? (
         <NastranSpinner className=" mx-auto" />
       ) : (
-        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] gap-y-6 pb-12">
           <BorderContainer
             title={t("name")}
             required={true}
@@ -444,14 +445,16 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
         >
           {t("cancel")}
         </Button>
-        <PrimaryButton
-          disabled={storing || loading}
-          onClick={addOrUpdate}
-          className={`${storing && "opacity-90"}`}
-          type="submit"
-        >
-          <ButtonSpinner loading={storing}>{t("save")}</ButtonSpinner>
-        </PrimaryButton>
+        {hasEdit && (
+          <PrimaryButton
+            disabled={storing || loading}
+            onClick={addOrUpdate}
+            className={`${storing && "opacity-90"}`}
+            type="submit"
+          >
+            <ButtonSpinner loading={storing}>{t("save")}</ButtonSpinner>
+          </PrimaryButton>
+        )}
       </CardFooter>
     </Card>
   );

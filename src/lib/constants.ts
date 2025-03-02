@@ -24,6 +24,20 @@ export const RoleEnum = {
   ngo: 5,
   donor: 6,
 };
+export const TaskTypeEnum = {
+  ngo_registeration: 1,
+};
+export const ChecklistEnum = {
+  NgoDirectorNid: 1,
+  NgoDirectorProfile: 2,
+  director_work_permit: 3,
+  ngo_representor_letter: 4,
+  ministry_of_economy_work_permit: 5,
+  articles_of_association: 6,
+  ngo_register_form_en: 8,
+  ngo_register_form_ps: 9,
+  ngo_register_form_fa: 10,
+};
 export const PermissionEnum = {
   users: {
     name: "users",
@@ -54,7 +68,7 @@ export const PermissionEnum = {
       director: 71,
       manager: 72,
       office: 73,
-      slider: 74,
+      pic: 74,
       technical: 75,
     },
   },

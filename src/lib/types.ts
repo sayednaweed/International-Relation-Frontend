@@ -1,5 +1,6 @@
 import {
   Audit,
+  CheckList,
   Country,
   District,
   Gender,
@@ -273,7 +274,7 @@ export interface FileType {
 }
 export interface IDirector {
   id: string;
-  is_active: string;
+  is_active: number;
   name: string;
   surname: string;
   contact: string;
@@ -298,6 +299,16 @@ export interface INgoDirector {
   establishment_date: DateObject | undefined;
   is_active: boolean;
   optional_lang: string;
+}
+
+export interface INgoRepresentor {
+  repre_name_english: string;
+  repre_name_farsi: string;
+  repre_name_pashto: string;
+  letter_of_intro: any;
+  is_active: boolean;
+  optional_lang: string;
+  checklist: CheckList;
 }
 //end
 export type ICheckList = {

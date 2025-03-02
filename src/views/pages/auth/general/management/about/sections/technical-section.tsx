@@ -12,7 +12,7 @@ import { IStaff, IStaffSingle } from "@/lib/types";
 import { setServerError, validate } from "@/validation/validation";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import { StaffEnum } from "@/lib/constants";
+import { PermissionEnum, StaffEnum } from "@/lib/constants";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { Pencil } from "lucide-react";
 import IconButton from "@/components/custom-ui/button/IconButton";
@@ -20,15 +20,13 @@ import { isFile } from "@/validation/utils";
 import TechnicalTable from "./parts/technical-table";
 import StaffInputs from "./parts/staff-inputs";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import { UserPermission } from "@/database/tables";
 
 interface TechnicalSectionProps {
-  hasEdit: boolean;
-  hasView: boolean;
-  hasRemove: boolean;
-  hasAdd: boolean;
+  permission: UserPermission;
 }
 export default function TechnicalSection(props: TechnicalSectionProps) {
-  const { hasEdit, hasView, hasRemove, hasAdd } = props;
+  const { permission } = props;
   const [technical, setTechnical] = useState<IStaff[]>([]);
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
@@ -254,6 +252,13 @@ export default function TechnicalSection(props: TechnicalSectionProps) {
       e.currentTarget.type = "file"; // Reset to file type
     }
   };
+  const hasEdit = permission.sub.get(PermissionEnum.about.sub.technical)?.edit;
+  const hasRemove = permission.sub.get(
+    PermissionEnum.about.sub.technical
+  )?.delete;
+  const hasView = permission.sub.get(PermissionEnum.about.sub.technical)?.view;
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.technical)?.add;
+
   return (
     <Card className="w-full self-center bg-card">
       <CardHeader className="relative text-start">

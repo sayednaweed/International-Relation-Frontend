@@ -9,15 +9,22 @@ import {
 } from "@/components/ui/breadcrumb";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import axiosClient from "@/lib/axois-client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NgoInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, Database, Grip, NotebookPen, UserRound } from "lucide-react";
+import {
+  Activity,
+  Database,
+  Grip,
+  NotebookPen,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
 import UserNgoEditHeader from "./user-ngo-edit-header";
 import EditDirectorTab from "./steps/edit-director-tab";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
-import { StatusEnum } from "@/lib/constants";
+import { PermissionEnum, StatusEnum } from "@/lib/constants";
 import EditAgreemenTab from "./steps/edit-agreement-tab";
 import EditMoreInformationTab from "./steps/edit-more-information-tab";
 import EditInformationTab from "./steps/edit-information-tab";
@@ -25,12 +32,16 @@ import EditStatusTab from "./steps/edit-status-tab";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import AddNgo from "../add/add-ngo";
+import { UserPermission } from "@/database/tables";
+import { useUserAuthState } from "@/context/AuthContextProvider";
+import EditRepresentativeTab from "./steps/edit-representative-tab";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
   registerFormSubmitted: boolean;
 }
 export default function UserNgoEditPage() {
+  const { user } = useUserAuthState();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   let { id } = useParams();
@@ -81,9 +92,72 @@ export default function UserNgoEditPage() {
 
   const selectedTabStyle = `relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
-  const hasEdit = true;
-  const hasAdd = true;
-  const hasRemove = true;
+  const per: UserPermission = user?.permissions.get(
+    PermissionEnum.ngo.name
+  ) as UserPermission;
+  const tableList = useMemo(
+    () =>
+      Array.from(per.sub).map(([key, _subPermission], index: number) => {
+        return key == PermissionEnum.ngo.sub.ngo_information ? (
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <Database className="size-[18px]" />
+            {t("ngo_information")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_director_information ? (
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <UserRound className="size-[18px]" />
+            {t("director_information")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_agreement ? (
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <NotebookPen className="size-[18px]" />
+            {t("agreement_checklist")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_more_information ? (
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <Grip className="size-[18px]" />
+            {t("more_information")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_status ? (
+          <TabsTrigger
+            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <Activity className="size-[18px]" />
+            {t("status")}
+          </TabsTrigger>
+        ) : (
+          key == PermissionEnum.ngo.sub.ngo_representative && (
+            <TabsTrigger
+              className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+              key={index}
+              value={key.toString()}
+            >
+              <UsersRound className="size-[18px]" />
+              {t("representative")}
+            </TabsTrigger>
+          )
+        );
+      }),
+    []
+  );
   return (
     <div className="flex flex-col gap-y-4 px-3 mt-2">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
@@ -113,7 +187,7 @@ export default function UserNgoEditPage() {
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue="n_i"
+        defaultValue={PermissionEnum.ngo.sub.ngo_director_information.toString()}
         className="flex flex-col md:flex-row gap-x-3 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
@@ -132,41 +206,7 @@ export default function UserNgoEditPage() {
                 hasEdit={true}
                 hasRemove={true}
               />
-              <TabsTrigger
-                className={`mt-6 rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="n_i"
-              >
-                <Database className="size-[18px]" />
-                {t("ngo_information")}
-              </TabsTrigger>
-              <TabsTrigger
-                className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="d_i"
-              >
-                <UserRound className="size-[18px]" />
-                {t("director_information")}
-              </TabsTrigger>
-              <TabsTrigger
-                className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="a_c"
-              >
-                <NotebookPen className="size-[18px]" />
-                {t("agreement_checklist")}
-              </TabsTrigger>
-              <TabsTrigger
-                className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="m_i"
-              >
-                <Grip className="size-[18px]" />
-                {t("more_information")}
-              </TabsTrigger>
-              <TabsTrigger
-                className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
-                value="s_i"
-              >
-                <Activity className="size-[18px]" />
-                {t("status")}
-              </TabsTrigger>
+              {tableList}
 
               {userData?.ngoInformation?.registration_expired && (
                 <NastranModel
@@ -197,24 +237,41 @@ export default function UserNgoEditPage() {
                 </NastranModel>
               )}
             </TabsList>
-            <TabsContent className="flex-1 m-0" value="n_i">
-              <EditInformationTab hasEdit={hasEdit} />
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_information.toString()}
+            >
+              <EditInformationTab permissions={per} />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="d_i">
-              <EditDirectorTab
-                hasEdit={hasEdit}
-                hasRemove={hasRemove}
-                hasAdd={hasAdd}
-              />
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_director_information.toString()}
+            >
+              <EditDirectorTab permissions={per} />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="a_c">
-              <EditAgreemenTab />
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_agreement.toString()}
+            >
+              <EditAgreemenTab permissions={per} />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="m_i">
-              <EditMoreInformationTab />
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_more_information.toString()}
+            >
+              <EditMoreInformationTab permissions={per} />
             </TabsContent>
-            <TabsContent className="flex-1 m-0" value="s_i">
-              <EditStatusTab />
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_status.toString()}
+            >
+              <EditStatusTab permissions={per} />
+            </TabsContent>
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_representative.toString()}
+            >
+              <EditRepresentativeTab permissions={per} />
             </TabsContent>
           </>
         )}

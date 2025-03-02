@@ -3,6 +3,7 @@ import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
+import { ChecklistEnum, TaskTypeEnum } from "@/lib/constants";
 import { FileType } from "@/lib/types";
 import { getConfiguration } from "@/lib/utils";
 import { useContext } from "react";
@@ -12,7 +13,7 @@ export default function AddNgoRepresentative() {
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
   return (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] xl:w-1/3 gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full xl:w-1/3 gap-y-6 pb-12">
       <BorderContainer
         title={t("representative")}
         required={true}
@@ -50,14 +51,15 @@ export default function AddNgoRepresentative() {
       <BorderContainer
         title={t("letter_of_intro")}
         required={true}
-        parentClassName="p-t-4 pb-0 px-0"
+        parentClassName="p-t-4 pb-0 px-0 "
         className="grid grid-cols-1 gap-y-3 px-2"
       >
         <CheckListChooser
           number={undefined}
+          hasEdit={true}
           url={`${
             import.meta.env.VITE_API_BASE_URL
-          }/api/v1/ngo/representor/file/upload`}
+          }/api/v1/single/checklist/file/upload`}
           headers={{
             "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
             "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
@@ -68,6 +70,10 @@ export default function AddNgoRepresentative() {
           name={t("letter_of_intro")}
           defaultFile={userData.letter_of_intro as FileType}
           validTypes={["image/png", "image/jpeg", "application/pdf"]}
+          uploadParam={{
+            checklist_id: ChecklistEnum.ngo_representor_letter,
+            task_type: TaskTypeEnum.ngo_registeration,
+          }}
           onComplete={async (record: any) => {
             for (const element of record) {
               const checklist = element[element.length - 1];

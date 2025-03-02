@@ -5,9 +5,9 @@ import NastranSpinner from "../spinner/NastranSpinner";
 import { TableRow } from "@/components/ui/table";
 
 interface TableRowIconProps extends React.HTMLAttributes<HTMLTableRowElement> {
-  read: boolean;
-  remove: boolean;
-  edit: boolean;
+  read?: boolean;
+  remove?: boolean;
+  edit?: boolean;
   onRemove: (item: any) => Promise<void>;
   onEdit: (item: any) => Promise<void>;
   onRead: (item: any) => Promise<void>;
@@ -26,7 +26,9 @@ const TableRowIcon = React.forwardRef<HTMLTableRowElement, TableRowIconProps>(
         className={cn(`${showAction && "!bg-primary/10"} relative`, className)}
         {...props}
         ref={ref}
-        onMouseEnter={() => setShowAction(true)}
+        onMouseEnter={() => {
+          if (read || edit || remove) setShowAction(true);
+        }}
         onMouseLeave={() => setShowAction(false)}
       >
         {children}

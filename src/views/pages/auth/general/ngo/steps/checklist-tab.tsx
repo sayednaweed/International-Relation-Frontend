@@ -4,13 +4,22 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { toast } from "@/components/ui/use-toast";
 import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
-import { CountryEnum } from "@/lib/constants";
+import { CountryEnum, TaskTypeEnum } from "@/lib/constants";
 import { getConfiguration } from "@/lib/utils";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 
-export default function CheckListTab() {
+interface CheckListTabProps {
+  onSaveClose: (
+    userData: any,
+    currentStep: number,
+    onlySave: boolean
+  ) => Promise<void>;
+}
+
+export default function CheckListTab(props: CheckListTabProps) {
+  const { onSaveClose } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const { userData, setUserData } = useContext(StepperContext);
@@ -44,11 +53,12 @@ export default function CheckListTab() {
         list.map((checklist: CheckList, index: number) => {
           return (
             <CheckListChooser
+              hasEdit={true}
               number={`${index + 1}`}
               key={checklist.id}
               url={`${
                 import.meta.env.VITE_API_BASE_URL
-              }/api/v1/ngo/file/upload`}
+              }/api/v1/checklist/file/upload`}
               headers={{
                 "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
                 "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
@@ -62,8 +72,10 @@ export default function CheckListTab() {
               uploadParam={{
                 checklist_id: checklist.id,
                 ngo_id: id,
+                task_type: TaskTypeEnum.ngo_registeration,
               }}
               onComplete={async (record: any) => {
+                // 1. Update userData
                 for (const element of record) {
                   const item = element[element.length - 1];
                   const checklistMap: Map<string, any> = userData.checklistMap;
@@ -73,6 +85,9 @@ export default function CheckListTab() {
                     checklistMap: checklistMap,
                   });
                 }
+                // 2. Save userData for any file inconsistency
+                // When new file added and save is not called old file data will show
+                onSaveClose(userData, 4, true);
               }}
               onStart={async (file: File) => {
                 const checklistMap: Map<string, any> = userData.checklistMap;

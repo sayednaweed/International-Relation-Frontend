@@ -7,26 +7,23 @@ export interface StatusButtonProps {
 
 export default function StatusButton(props: StatusButtonProps) {
   const { status_id, status } = props;
+  const style =
+    StatusEnum.active === status_id
+      ? "border-green-500"
+      : StatusEnum.blocked === status_id
+      ? "border-red-500"
+      : StatusEnum.not_logged_in === status_id
+      ? "border-slate-400"
+      : "border-orange-500";
 
   return (
-    <>
-      {StatusEnum.active === status_id ? (
-        <h1 className="truncate text-center rtl:text-md-rtl ltr:px-2 ltr:text-md-ltr bg-green-500 rtl:px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-          {status}
-        </h1>
-      ) : StatusEnum.blocked === status_id ? (
-        <h1 className="truncate text-center rtl:text-md-rtl ltr:px-2 ltr:text-md-ltr bg-red-500 rtl:px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-          {status}
-        </h1>
-      ) : StatusEnum.not_logged_in === status_id ? (
-        <h1 className="truncate text-center rtl:text-md-rtl ltr:px-2 ltr:text-md-ltr bg-slate-400 rtl:px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-          {status}
-        </h1>
-      ) : (
-        <h1 className="truncate text-center rtl:text-md-rtl ltr:px-2 ltr:text-md-ltr bg-orange-500 rtl:px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
-          {status}
-        </h1>
-      )}
-    </>
+    <div
+      className={`border-[1px] min-w-fit rtl:text-xl-rtl rtl:font-medium w-fit flex items-center gap-x-2 ltr:py-1 rtl:py-[2px] px-[8px] rounded-full ${style}`}
+    >
+      <div
+        className={`size-[12px] min-h-[12px] min-w-[12px] rounded-full border-[3px] ${style}`}
+      />
+      <h1 className="text-nowrap">{status}</h1>
+    </div>
   );
 }

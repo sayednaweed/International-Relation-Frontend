@@ -19,8 +19,13 @@ import { Search } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import JobDialog from "./job-dialog";
-import { Job } from "@/database/tables";
-export default function JobTab() {
+import { Job, UserPermission } from "@/database/tables";
+import { PermissionEnum } from "@/lib/constants";
+interface JobTabProps {
+  permissions: UserPermission;
+}
+export default function JobTab(props: JobTabProps) {
+  const { permissions } = props;
   const { t } = useTranslation();
   const [state] = useGlobalState();
   const [loading, setLoading] = useState(false);
@@ -135,21 +140,29 @@ export default function JobTab() {
     ),
     [selected.visible]
   );
+  const job = permissions.sub.get(PermissionEnum.settings.sub.setting_job);
+  const hasEdit = job?.edit;
+  const hasAdd = job?.add;
+  const hasDelete = job?.delete;
+  const hasView = job?.view;
   return (
     <div className="relative">
       <div className="rounded-md bg-card p-2 flex gap-x-4 items-baseline mt-4">
-        <NastranModel
-          size="lg"
-          isDismissable={false}
-          button={
-            <PrimaryButton className="text-primary-foreground">
-              {t("add_job")}
-            </PrimaryButton>
-          }
-          showDialog={async () => true}
-        >
-          <JobDialog onComplete={add} />
-        </NastranModel>
+        {hasAdd && (
+          <NastranModel
+            size="lg"
+            isDismissable={false}
+            button={
+              <PrimaryButton className="text-primary-foreground">
+                {t("add_job")}
+              </PrimaryButton>
+            }
+            showDialog={async () => true}
+          >
+            <JobDialog onComplete={add} />
+          </NastranModel>
+        )}
+
         <CustomInput
           size_="lg"
           placeholder={`${t("search")}...`}
@@ -185,9 +198,9 @@ export default function JobTab() {
           ) : (
             jobs.filterList.map((job: Job, index: number) => (
               <TableRowIcon
-                read={false}
-                remove={true}
-                edit={true}
+                read={hasView}
+                remove={hasDelete}
+                edit={hasEdit}
                 onEdit={async (job: Job) => {
                   setSelected({
                     visible: true,

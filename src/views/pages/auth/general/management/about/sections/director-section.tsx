@@ -11,7 +11,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { setServerError, validate } from "@/validation/validation";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import { StaffEnum } from "@/lib/constants";
+import { PermissionEnum, StaffEnum } from "@/lib/constants";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { Pencil } from "lucide-react";
 import IconButton from "@/components/custom-ui/button/IconButton";
@@ -19,13 +19,13 @@ import { isFile } from "@/validation/utils";
 import StaffInputs from "./parts/staff-inputs";
 import { IStaffSingle } from "@/lib/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import { UserPermission } from "@/database/tables";
 
 interface DirectorSectionProps {
-  hasEdit: boolean;
-  hasAdd: boolean;
+  permission: UserPermission;
 }
 export default function DirectorSection(props: DirectorSectionProps) {
-  const { hasEdit, hasAdd } = props;
+  const { permission } = props;
   const [loading, setLoading] = useState(false);
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState<IStaffSingle>({
@@ -216,6 +216,9 @@ export default function DirectorSection(props: DirectorSectionProps) {
       e.currentTarget.type = "file"; // Reset to file type
     }
   };
+  const hasEdit = permission.sub.get(PermissionEnum.about.sub.technical)?.edit;
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.technical)?.add;
+
   return (
     <Card className="w-full self-center bg-card">
       <CardHeader className="relative text-start">

@@ -29,9 +29,7 @@ export default function ConfirmationDialog(props: ConfirmationDialogProps) {
     try {
       if (loading) return;
       setLoading(true);
-      const response = await axiosClient.post(url, {
-        params: params,
-      });
+      const response = await axiosClient.post(url, params);
       if (response.status === 200) {
         onComplete(true, response);
       }

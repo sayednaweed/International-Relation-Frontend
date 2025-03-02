@@ -27,11 +27,7 @@ export interface IStepperProps {
     userData: any[],
     setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => Promise<boolean>;
-  onSaveClose?: (
-    userData: any,
-    currentStep: number,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
-  ) => Promise<void>;
+  onSaveClose?: (userData: any, currentStep: number) => Promise<void>;
   onSaveCloseText?: string;
   className?: string;
   size?: StepperSize;
@@ -170,7 +166,7 @@ export default function Stepper(props: IStepperProps) {
           steps={steps}
           onSaveCloseText={onSaveCloseText}
           onSaveClose={async () => {
-            if (onSaveClose) await onSaveClose(userData, currentStep, setError);
+            if (onSaveClose) await onSaveClose(userData, currentStep);
           }}
         />
       )}

@@ -78,7 +78,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
         const status = response.data.status;
         const ngoStatus = {
           id: status.ngo_status_id as string,
-          is_active: status.is_active as string,
+          is_active: status.is_active,
           created_at: status.created_at as string,
           ngo_id: id as string,
           comment: userData.comment as string,
@@ -114,7 +114,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
       {storing ? (
         <NastranSpinner className=" mx-auto" />
       ) : (
-        <CardContent className="flex flex-col mt-10 w-full lg:w-1/2 gap-y-6 pb-12">
+        <CardContent className="flex flex-col mt-10 w-full md:w-[60%] gap-y-6 pb-12">
           <APICombobox
             requiredHint={`* ${t("required")}`}
             placeholderText={t("search_item")}

@@ -17,7 +17,7 @@ export interface CheckListProps
   number?: string;
   parentClassName?: string;
   errorMessage?: string;
-  defaultFile: File | FileType;
+  defaultFile?: File | FileType;
   maxSize: number;
   validTypes: string[];
   disabled?: boolean;
@@ -27,6 +27,7 @@ export interface CheckListProps
   url: string;
   uploadParam?: any;
   headers: any;
+  hasEdit?: boolean;
 }
 
 const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
@@ -42,6 +43,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       number,
       accept,
       className,
+      hasEdit,
     } = props;
     const { t } = useTranslation();
     const [uploaded, setUploaded] = useState(false);
@@ -90,51 +92,53 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
             )
           )}
         </li>
-        <li
-          className="flex sm:justify-end col-span-full sm:col-span-1"
-          ref={downloadRef}
-        >
-          <ChunkedUploady
-            withCredentials={true}
-            method="POST"
-            destination={{
-              url: url,
-              headers: headers,
-              params: uploadParam,
-            }}
-            chunkSize={1400000}
-            inputFieldName={"file"}
-            accept={accept}
+        {hasEdit && (
+          <li
+            className="flex sm:justify-end col-span-full sm:col-span-1"
+            ref={downloadRef}
           >
-            <div className="flex items-center gap-x-4">
-              <UploadButton text="">
-                <label className="flex flex-col items-center justify-center h-full py-3 transition-opacity duration-150 cursor-pointer hover:opacity-80">
-                  <CloudUpload className="size-[30px] bg-primary text-primary-foreground rounded-full p-[4px]" />
-                  <strong className="text-sm font-medium text-primary-text">
-                    {t("select_a_file")}
-                  </strong>
-                </label>
-              </UploadButton>
+            <ChunkedUploady
+              withCredentials={true}
+              method="POST"
+              destination={{
+                url: url,
+                headers: headers,
+                params: uploadParam,
+              }}
+              chunkSize={1400000}
+              inputFieldName={"file"}
+              accept={accept}
+            >
+              <div className="flex items-center gap-x-4">
+                <UploadButton text="">
+                  <label className="flex flex-col items-center justify-center h-full py-3 transition-opacity duration-150 cursor-pointer hover:opacity-80">
+                    <CloudUpload className="size-[30px] bg-primary text-primary-foreground rounded-full p-[4px]" />
+                    <strong className="text-sm font-medium text-primary-text">
+                      {t("select_a_file")}
+                    </strong>
+                  </label>
+                </UploadButton>
 
-              <SimpleProgressBar
-                onStart={async (file: File) => {
-                  onStart(file);
-                }}
-                onFailed={async (failed: boolean) => {
-                  if (failed) {
-                    setUploaded(false);
-                  }
-                }}
-                onComplete={async (response: any) => {
-                  setUploaded(true);
-                  await onComplete(response);
-                }}
-                failedMessage={t("failed_to_upld")}
-                cancelText={t("cancel")}
-              />
-            </div>
-          </ChunkedUploady>
-        </li>
+                <SimpleProgressBar
+                  onStart={async (file: File) => {
+                    onStart(file);
+                  }}
+                  onFailed={async (failed: boolean) => {
+                    if (failed) {
+                      setUploaded(false);
+                    }
+                  }}
+                  onComplete={async (response: any) => {
+                    setUploaded(true);
+                    await onComplete(response);
+                  }}
+                  failedMessage={t("failed_to_upld")}
+                  cancelText={t("cancel")}
+                />
+              </div>
+            </ChunkedUploady>
+          </li>
+        )}
       </ul>
     );
   }

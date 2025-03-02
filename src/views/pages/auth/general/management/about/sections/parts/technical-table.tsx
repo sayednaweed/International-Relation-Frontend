@@ -17,9 +17,9 @@ export interface TechnicalTableProps {
   editOnClick: (staff: IStaff) => Promise<void>;
   staffs: IStaff[];
   loading: boolean;
-  hasEdit: boolean;
-  hasRemove: boolean;
-  hasView: boolean;
+  hasEdit?: boolean;
+  hasRemove?: boolean;
+  hasView?: boolean;
 }
 
 export default function TechnicalTable(props: TechnicalTableProps) {

@@ -79,19 +79,19 @@ export default function SettingsPage() {
         value={PermissionEnum.settings.sub.setting_job.toString()}
         className="w-full px-4 pt-8"
       >
-        <JobTab />
+        <JobTab permissions={per} />
       </TabsContent>
       <TabsContent
         value={PermissionEnum.settings.sub.setting_destination.toString()}
         className="w-full px-4 pt-8"
       >
-        <DestinationTab />
+        <DestinationTab permissions={per} />
       </TabsContent>
       <TabsContent
         value={PermissionEnum.settings.sub.setting_checklist.toString()}
         className="w-full px-4 pt-8"
       >
-        <ChecklistTab />
+        <ChecklistTab permissions={per} />
       </TabsContent>
     </Tabs>
   );

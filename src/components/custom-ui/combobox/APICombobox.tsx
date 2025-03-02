@@ -202,7 +202,6 @@ function APICombobox(props: IAPIComboboxProps) {
                 <NastranSpinner
                   labelclassname="text-[13px]"
                   className="size-[24px]"
-                  label="Fetching"
                 />
               ) : (
                 errorText

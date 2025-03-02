@@ -13,8 +13,8 @@ export interface StaffInputsProps {
   manipulating: boolean;
   saveData: () => Promise<void>;
   inputName: string;
-  hasEdit: boolean;
-  hasAdd: boolean;
+  hasEdit?: boolean;
+  hasAdd?: boolean;
 }
 
 export default function StaffInputs(props: StaffInputsProps) {
