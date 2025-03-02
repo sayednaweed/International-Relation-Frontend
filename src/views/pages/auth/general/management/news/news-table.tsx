@@ -416,7 +416,7 @@ export default function NewsTable() {
           newsList.filterList.data.map((news: News) => (
             <Card
               key={news.id}
-              className="shadow-xl max-h-[600px] w-[300px] md:w-[320px]"
+              className="shadow-lg max-h-[600px] w-[300px] md:w-[320px] hover:shadow-xl transition-shadow"
             >
               <CardContent className="p-0  h-[200px] sm:h-[200px]">
                 <CachedImage

@@ -125,7 +125,7 @@ export default function Stepper(props: IStepperProps) {
         <div
           className={`w-full overflow-y-auto ${
             isCardActive
-              ? "bg-card px-3 sm:px-7 dark:bg-card-secondary rounded-md border border-primary/10 dark:border-primary/20"
+              ? "bg-card px-3 sm:px-7 rounded-md border border-primary/10 dark:border-primary/20"
               : "mb-4 mt-12"
           } ${
             size === "wrap-height"

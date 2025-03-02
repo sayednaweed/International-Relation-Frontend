@@ -9,11 +9,12 @@ import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import SimpleProgressBar from "./SimpleProgressBar";
 import { FileType } from "@/lib/types";
+import { cn } from "@/lib/utils";
 export interface CheckListProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   requiredHint?: string;
   name: string;
-  number: string;
+  number?: string;
   parentClassName?: string;
   errorMessage?: string;
   defaultFile: File | FileType;
@@ -40,6 +41,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       name,
       number,
       accept,
+      className,
     } = props;
     const { t } = useTranslation();
     const [uploaded, setUploaded] = useState(false);
@@ -51,8 +53,13 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       }
     };
     return (
-      <ul className="gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_1fr_1fr] items-center">
-        <li className="font-bold text-[15px]">{number}.</li>
+      <ul
+        className={cn(
+          "gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_1fr_1fr] items-center",
+          className
+        )}
+      >
+        {number && <li className="font-bold text-[15px]">{number}.</li>}
         <li className="rtl:text-md-rtl ltr:text-lg-ltr font-semibold">
           {name}
         </li>

@@ -234,27 +234,27 @@ export default function EditNgoProgress() {
             validationRules: [
               {
                 name: "director_name_english",
-                rules: ["required", "max:128", "min:5"],
+                rules: ["required", "max:128", "min:3"],
               },
               {
                 name: "director_name_farsi",
-                rules: ["required", "max:128", "min:5"],
+                rules: ["required", "max:128", "min:3"],
               },
               {
                 name: "director_name_pashto",
-                rules: ["required", "max:128", "min:5"],
+                rules: ["required", "max:128", "min:3"],
               },
               {
                 name: "surname_english",
-                rules: ["required", "max:128", "min:3"],
+                rules: ["required", "max:128", "min:2"],
               },
               {
                 name: "surname_pashto",
-                rules: ["required", "max:128", "min:3"],
+                rules: ["required", "max:128", "min:2"],
               },
               {
                 name: "surname_farsi",
-                rules: ["required", "max:128", "min:3"],
+                rules: ["required", "max:128", "min:2"],
               },
               {
                 name: "director_contact",
