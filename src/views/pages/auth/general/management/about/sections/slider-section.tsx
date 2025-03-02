@@ -149,21 +149,18 @@ export default function SilderSectoin() {
         <NastranSpinner />
       ) : (
         <div className="grid grid-cols-1 gap-y-10 px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4 2xl:grid-cols-3">
-          {slider.map((item) => {
-            console.log(item.picture, "undefined"); // Add this for debugging
-            return (
-              <div
-                key={item.id}
-                className=" grid grid-cols-1 gap-y-10 px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4 2xl:grid-cols-3"
-              >
-                <CachedImage
-                  src={item.picture}
-                  alt="Avatar"
-                  className="w-full object-contain rounded-md shadow-lg shadow-primary/70"
-                />
-              </div>
-            );
-          })}
+          {slider.map((item) => (
+            <div
+              key={item.id}
+              className="grid grid-cols-1 gap-y-10 px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4 2xl:grid-cols-3"
+            >
+              <CachedImage
+                src={item.picture}
+                alt="Avatar"
+                className="w-full object-contain rounded-md shadow-lg shadow-primary/70"
+              />
+            </div>
+          ))}
         </div>
       )}
     </div>

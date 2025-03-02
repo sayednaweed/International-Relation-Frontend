@@ -1,3 +1,5 @@
+import Auth from "./news/auth";
+
 import NewSection from "./news/news-section";
 import SliderSection from "./news/slider";
 
@@ -6,6 +8,7 @@ export default function HomePage() {
     <div>
       <SliderSection />
       <NewSection />
+      <Auth />
     </div>
   );
 }
