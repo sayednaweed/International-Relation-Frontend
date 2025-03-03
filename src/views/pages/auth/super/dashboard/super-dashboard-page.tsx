@@ -150,27 +150,8 @@ export default function SuperDashboardPage() {
       {/* Charts */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Area Charts  */}
-        <AreaChartOne />
-        <AreaChartTow />
-        <AreaChartThree />
-        <AreaChartFour />
-        <AreaChartFive />
         <AreaChartSix />
-        <AreaChartSeven />
-        <AreaChartEight />
-        <AreaChartNine />
-        <AreaChartTen />
-        <AreaChartEleven />
-
         {/**Bar Charts */}
-        <BarChartOne />
-        <BarChartTwo />
-        <BarChartThree />
-        <BarChartFour />
-        <BarChartFive />
-        <BarChartSix />
-        <BarChartSeven />
-        <BarChartEight />
         <BarChartNine />
 
         {/**Pie Charts */}
