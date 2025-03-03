@@ -79,7 +79,7 @@ export default function EditAgreemenTab(props: EditAgreemenTabProps) {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col">
-          <div className="flex items-center bg-secondary p-2 rounded-t-md shadow-sm rtl:text-xl-rtl font-bold text-primary/80">
+          <div className="flex items-center bg-secondary p-2 rounded-t-md shadow-sm rtl:text-xl-rtl ltr:text-lg-ltr font-bold text-primary/60">
             <div className="max-w-[30px] w-[30px] text-[15px]">#</div>
             <div className="max-w-[140px] w-[140px]">{t("start_date")}</div>
             <div className="max-w-[140px] w-[140px]">{t("end_date")}</div>
@@ -166,12 +166,12 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
   };
   return (
     <Collapsible key={agreement.id}>
-      <div className="flex items-center p-2">
+      <div className="flex items-center p-2 rtl:text-xl-rtl ltr:text-2xl-ltr">
         <h1 className="max-w-[30px] w-[30px]">{index + 1}</h1>
-        <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
+        <h1 className="font-semibold max-w-[140px] w-[140px]">
           {toLocaleDate(new Date(agreement.start_date), state)}
         </h1>
-        <h1 className="text-sm font-semibold max-w-[140px] w-[140px]">
+        <h1 className="font-semibold max-w-[140px] w-[140px]">
           {toLocaleDate(new Date(agreement.end_date), state)}
         </h1>
         <CollapsibleTrigger asChild>

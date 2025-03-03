@@ -15,11 +15,14 @@ import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Activity,
+  CloudDownload,
+  CloudUpload,
   Database,
   Grip,
   NotebookPen,
   UserRound,
   UsersRound,
+  Zap,
 } from "lucide-react";
 import UserNgoEditHeader from "./user-ngo-edit-header";
 import EditDirectorTab from "./steps/edit-director-tab";
@@ -29,12 +32,12 @@ import EditAgreemenTab from "./steps/edit-agreement-tab";
 import EditMoreInformationTab from "./steps/edit-more-information-tab";
 import EditInformationTab from "./steps/edit-information-tab";
 import EditStatusTab from "./steps/edit-status-tab";
-import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import AddNgo from "../add/add-ngo";
 import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
+import IconButton from "@/components/custom-ui/button/IconButton";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
@@ -158,8 +161,44 @@ export default function UserNgoEditPage() {
       }),
     []
   );
+  const download = async () => {
+    // 1. Create token
+    try {
+      const response = await axiosClient.get(
+        `ngo/generate/registeration/${id}`,
+        {
+          responseType: "blob", // Important to handle the binary data (PDF)
+          onDownloadProgress: (_progressEvent) => {
+            // Calculate download progress percentage
+          },
+        }
+      );
+      if (response.status == 200) {
+        // Create a URL for the file blob
+        const file = new Blob([response.data], {
+          type: ".zip",
+        });
+        // const file = new Blob([response.data], { type: "application/pdf" });
+        const fileURL = window.URL.createObjectURL(file);
+
+        const link = document.createElement("a");
+        link.href = fileURL;
+        link.download = "register-form";
+        link.click();
+
+        // Clean up the URL object after download
+        window.URL.revokeObjectURL(fileURL);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        description: error.response.data.message,
+      });
+      console.log(error);
+    }
+  };
   return (
-    <div className="flex flex-col gap-y-4 px-3 mt-2">
+    <div className="flex flex-col gap-y-2 px-3 mt-2">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -187,7 +226,7 @@ export default function UserNgoEditPage() {
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue={PermissionEnum.ngo.sub.ngo_director_information.toString()}
+        defaultValue={PermissionEnum.ngo.sub.ngo_information.toString()}
         className="flex flex-col md:flex-row gap-x-3 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
@@ -213,9 +252,16 @@ export default function UserNgoEditPage() {
                   size="lg"
                   isDismissable={false}
                   button={
-                    <PrimaryButton className="rtl:text-lg-rtl font-semibold w-[80%] mx-auto mt-4 ltr:text-md-ltr">
-                      {t("extend_reg")}
-                    </PrimaryButton>
+                    <IconButton className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2">
+                      <Zap
+                        className={`size-[18px] pointer-events-none justify-self-end`}
+                      />
+                      <h1
+                        className={`rtl:text-lg-rtl ltr:text-xl-ltr justify-self-start text-start font-semibold`}
+                      >
+                        {t("extend_reg")}
+                      </h1>
+                    </IconButton>
                   }
                   showDialog={async () => true}
                 >
@@ -227,15 +273,35 @@ export default function UserNgoEditPage() {
                   size="lg"
                   isDismissable={false}
                   button={
-                    <PrimaryButton className="rtl:text-lg-rtl font-semibold w-[80%] mx-auto mt-4 ltr:text-md-ltr">
-                      {t("up_register_fo")}
-                    </PrimaryButton>
+                    <IconButton className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2">
+                      <CloudUpload
+                        className={`size-[18px] pointer-events-none justify-self-end`}
+                      />
+                      <h1
+                        className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
+                      >
+                        {t("up_register_fo")}
+                      </h1>
+                    </IconButton>
                   }
                   showDialog={async () => true}
                 >
                   <AddNgo onComplete={() => {}} />
                 </NastranModel>
               )}
+              <IconButton
+                onClick={download}
+                className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
+              >
+                <CloudDownload
+                  className={`size-[18px] pointer-events-none justify-self-end`}
+                />
+                <h1
+                  className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
+                >
+                  {t("download_r_form")}
+                </h1>
+              </IconButton>
             </TabsList>
             <TabsContent
               className="flex-1 m-0"
