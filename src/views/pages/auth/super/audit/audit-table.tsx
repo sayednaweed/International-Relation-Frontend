@@ -17,7 +17,10 @@ import axiosClient from "@/lib/axois-client";
 
 import Pagination from "@/components/custom-ui/table/Pagination";
 import { toLocaleDate } from "@/lib/utils";
-
+import { Search } from "lucide-react";
+import CustomInput from "@/components/custom-ui/input/CustomInput";
+import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
+import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import {
   AuditFilter,
   AuditFilterBy,
@@ -31,7 +34,7 @@ import { CACHE } from "@/lib/constants";
 
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
-  const { getComponentCache } = useCacheDB();
+  const { updateComponentCache, getComponentCache } = useCacheDB();
 
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
@@ -39,7 +42,7 @@ export function AuditTable() {
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
   const filterBy = searchParams.get("filterBy");
-  const [filters] = useState<AuditFilter>({
+  const [filters, setFilters] = useState<AuditFilter>({
     sort: sort ? (sort as AuditSort) : "id",
     order: order ? (order as Order) : "asc",
     filterBy: {
@@ -188,6 +191,58 @@ export function AuditTable() {
   );
   return (
     <>
+      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-2">
+        <CustomInput
+          size_="lg"
+          placeholder={`${t(filters.search.column)}...`}
+          parentClassName="sm:flex-1 col-span-3"
+          type="text"
+          ref={searchRef}
+          startContent={
+            <Search className="size-[18px] mx-auto rtl:mr-[4px] text-primary pointer-events-none" />
+          }
+          endContent={
+            <SecondaryButton
+              onClick={async () => {
+                if (searchRef.current != undefined) {
+                  const newfilter = {
+                    ...filters,
+                    search: {
+                      column: filters.search.column,
+                      value: searchRef.current.value,
+                    },
+                  };
+
+                  await initialize(newfilter);
+                  setFilters(newfilter);
+                }
+              }}
+              className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
+            >
+              {t("search")}
+            </SecondaryButton>
+          }
+        />
+        <CustomSelect
+          paginationKey={CACHE.AUDIT_TABLE_PAGINATION_COUNT}
+          options={[
+            { value: "10", label: "10" },
+            { value: "20", label: "20" },
+            { value: "50", label: "50" },
+          ]}
+          className="w-fit sm:self-baseline"
+          updateCache={updateComponentCache}
+          getCache={async () =>
+            await getComponentCache(CACHE.AUDIT_TABLE_PAGINATION_COUNT)
+          }
+          placeholder={`${t("select")}...`}
+          emptyPlaceholder={t("No options found")}
+          rangePlaceholder={t("count")}
+          onChange={async (value: string) => {
+            loadList(parseInt(value), filters);
+          }}
+        />
+      </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
