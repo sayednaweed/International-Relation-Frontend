@@ -30,14 +30,14 @@ export default function MainHeader() {
         ref={headerRef}
         className={`bg-fourth dark:bg-transparent dark:shadow-none dark:border-b dark:border-slate-700 h-[90px] xxl:h-fit px-3 pt-3 pb-12 xxl:pb-3 sm:px-6 md:px-12 shadow-md select-none overflow-hidden text-white`}
       >
-        <header className="grid grid-cols-2 gap-y-4 xxl:flex xxl:justify-between">
+        <header className="grid grid-cols-2 gap-y-8 sm:gap-y-4 xxl:flex xxl:justify-between">
           <div className="flex items-center justify-end gap-3 justify-self-start">
             <img
-              className="h-16"
+              className="xxl:h-16 h-12"
               src="http://127.0.0.1:8000/images/app-logo.png"
               alt="logo"
             />
-            <h1 className="font-bold rtl:text-4xl-rtl text-white">
+            <h1 className="font-bold ltr:text-lg-ltr ltr:sm:text-2xl-ltr rtl:text-xl-rtl rtl:sm:text-4xl-rtl text-white">
               {t("app_name")}
             </h1>
           </div>

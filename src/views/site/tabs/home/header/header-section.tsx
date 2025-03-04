@@ -1,54 +1,47 @@
-// import { useTranslation } from "react-i18next";
-// import { Link, Outlet, useLocation } from "react-router";
+import { useEffect, useState } from "react";
+import axiosClient from "@/lib/axois-client";
+import { toast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
+import { Slider } from "@/database/tables";
+import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
+import Carousel from "@/components/custom-ui/carousel/Carousel";
 
-// export default function HeaderSection() {
-//   const location = useLocation();
-//   const activeTab = location.pathname;
-//   const { t } = useTranslation();
+function HeaderSection() {
+  const { t } = useTranslation();
 
-//   return (
-//     <section>
-//       <header className="flex flex-row items-center justify-center text-primary-foreground bg-tertiary w-full h-16 gap-10">
-//         <div className="flex items-center mr-auto">
-//           <img
-//             className="h-10"
-//             src="../src/views/site/img/logo.png"
-//             alt="logo"
-//           />
-//           <h1 className="font-bold text-xl text-white ml-4">
-//             International Relation Directorate
-//           </h1>
-//         </div>
-//         <Link
-//           to="/Main Page"
-//           className={`${
-//             (activeTab.startsWith("/archives") || activeTab.length == 1) &&
-//             "border-b"
-//           }`}
-//         >
-//           {t("Main Page")}
-//         </Link>
-//         <Link
-//           to="/News"
-//           className={`${activeTab.startsWith("/news") && "border-b"}`}
-//         >
-//           {t("News")}
-//         </Link>
-//         <Link
-//           to="/NGO List"
-//           className={`${activeTab.startsWith("/ngo list") && "border-b"}`}
-//         >
-//           {t("NGO List")}
-//         </Link>
-//         <Link
-//           to="/Information"
-//           className={`${activeTab.startsWith("/information") && "border-b"}`}
-//         >
-//           {t("Information")}
-//         </Link>
-//       </header>
+  const [images, setImages] = useState<Slider[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-//       <Outlet />
-//     </section>
-//   );
-// }
+  const initialize = async () => {
+    try {
+      const response = await axiosClient.get(`public/sliders`);
+      if (response.status == 200) {
+        setImages(response.data);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  return (
+    <div className="px-2 flex justify-center sm:px-6 xl:px-16 mt-2 sm:mt-6 h-[200px] xxl:h-[350px] lg:h-[400px] xl:h-[420px]">
+      {loading ? (
+        <Shimmer className="relative w-full h-full rounded-md overflow-hidden" />
+      ) : (
+        <Carousel images={images} />
+      )}
+    </div>
+  );
+}
+
+export default HeaderSection;

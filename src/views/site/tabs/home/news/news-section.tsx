@@ -34,12 +34,10 @@ function NewSection() {
   };
 
   return (
-    <div>
-      <div className="flex justify-center py-4">
-        <h1 className=" text-center py-6 ltr:text-4xl-ltr border-b-2 border-primary/10 font-bold w-[1000px] ">
-          News
-        </h1>
-      </div>
+    <div className="my-16">
+      <h1 className="text-center text-tertiary py-2 rtl:text-[24px] ltr:text-4xl-ltr border-b border-primary/10 font-bold">
+        {t("news")}
+      </h1>
       <div className="flex flex-wrap py-8 px-4 gap-6 justify-evenly">
         {loading ? (
           <NastranSpinner />

@@ -253,3 +253,11 @@ export interface Representor {
   start_date: string | null;
   end_date: string | null;
 }
+export interface Slider {
+  id: string;
+  name: string;
+  path: string;
+  is_active: string;
+  saved_by: string;
+  size: string;
+}

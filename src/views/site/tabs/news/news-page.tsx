@@ -19,6 +19,14 @@ import Pagination from "@/components/custom-ui/table/Pagination";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import axiosClient from "@/lib/axois-client";
 import { PublicNews } from "@/components/custom-ui/card/PublicNews";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 
 function NewsPage() {
   const navigate = useNavigate();
@@ -164,6 +172,19 @@ function NewsPage() {
 
   return (
     <div className="px-4 pb-2">
+      <Breadcrumb className="bg-card mt-3 w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <AnimHomeIcon />
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="rtl:rotate-180" />
+          <BreadcrumbItem>
+            <BreadcrumbPage className="text-tertiary font-semibold">
+              {t("news")}
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex flex-col sm:items-baseline items-center justify-center sm:flex-row rounded-md gap-2 flex-1 px-2 py-2 mt-4">
         <CustomInput
           size_="lg"
