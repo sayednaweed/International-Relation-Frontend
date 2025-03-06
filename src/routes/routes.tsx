@@ -49,6 +49,7 @@ import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
 import EditNgoProgress from "@/views/pages/auth/general/ngo/edit-ngo-progress";
 import ErrorLayout from "@/views/layout/error-layout";
 import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
+import ApprovalPage from "@/views/pages/auth/general/approval/approval-page";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -239,6 +240,16 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
               />
             }
           />
+          <Route
+            path="approval"
+            element={
+              <ProtectedRoute
+                element={<ApprovalPage />}
+                routeName="approval"
+                permissions={permissions}
+              />
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -344,6 +355,16 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="ngo/:id"
+            element={
+              <ProtectedRoute
+                element={<UserNgoEditPage />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="ngo/profile/edit/:id"
             element={
               <ProtectedRoute
@@ -389,6 +410,26 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
               <ProtectedRoute
                 element={<AboutManagementPage />}
                 routeName="management/about"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="approval"
+            element={
+              <ProtectedRoute
+                element={<ApprovalPage />}
+                routeName="approval"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="donor"
+            element={
+              <ProtectedRoute
+                element={<UserDonorPage />}
+                routeName="donor"
                 permissions={permissions}
               />
             }
@@ -526,6 +567,26 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
               <ProtectedRoute
                 element={<AboutManagementPage />}
                 routeName="management/about"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="approval"
+            element={
+              <ProtectedRoute
+                element={<ApprovalPage />}
+                routeName="approval"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="donor"
+            element={
+              <ProtectedRoute
+                element={<UserDonorPage />}
+                routeName="donor"
                 permissions={permissions}
               />
             }

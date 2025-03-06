@@ -18,15 +18,13 @@ import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 import { useParams } from "react-router";
 
-export interface UploadRegisterFormProps {}
-
-export default function UploadRegisterForm(props: UploadRegisterFormProps) {
+export default function UploadRegisterForm() {
   const { t } = useTranslation();
   let { id } = useParams();
   const [userData, setUserData] = useState<any>([]);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isSaving, _setIsSaving] = useState<boolean>(false);
   const [selected, setSelected] = useState<string | undefined>(undefined);
-  const [error, setError] = useState<Map<string, string>>(new Map());
+  const [error, _setError] = useState<Map<string, string>>(new Map());
   const [forms, setForms] = useState<string[]>([]);
 
   const init = async () => {

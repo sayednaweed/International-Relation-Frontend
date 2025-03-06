@@ -233,8 +233,6 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
     }
   };
 
-  console.log(error);
-
   return (
     <Card className="w-full lg:w-1/2 2xl:w-1/3 self-center my-8 [backdrop-filter:blur(20px)] bg-card dark:bg-card-secondary">
       <CardHeader className="relative text-start">
