@@ -63,7 +63,7 @@ const ChunkFileUploader = React.forwardRef<
             ) : (
               <CloudUpload className="size-[30px] bg-primary text-primary-foreground rounded-full p-[4px]" />
             )}
-            <strong className="text-sm font-medium text-primary-text">
+            <strong className=" ltr:text-lg-ltr rtl:text-lg-rtl font-medium text-primary-text">
               {t("select_a_file")}
             </strong>
           </label>

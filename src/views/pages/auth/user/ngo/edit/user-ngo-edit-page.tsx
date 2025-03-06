@@ -16,7 +16,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Activity,
   CloudDownload,
-  CloudUpload,
   Database,
   Grip,
   NotebookPen,
@@ -38,6 +37,7 @@ import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
 import IconButton from "@/components/custom-ui/button/IconButton";
+import UploadRegisterForm from "./parts/upload-register-form";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
@@ -55,7 +55,6 @@ export default function UserNgoEditPage() {
   );
   const loadInformation = async () => {
     try {
-      setFailed(false);
       const response = await axiosClient.get(`ngo/header-info/${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo as NgoInformation;
@@ -183,7 +182,7 @@ export default function UserNgoEditPage() {
 
         const link = document.createElement("a");
         link.href = fileURL;
-        link.download = "register-form";
+        link.download = "register-form.zip";
         link.click();
 
         // Clean up the URL object after download
@@ -269,39 +268,23 @@ export default function UserNgoEditPage() {
                 </NastranModel>
               )}
               {userData?.registerFormSubmitted && (
-                <NastranModel
-                  size="lg"
-                  isDismissable={false}
-                  button={
-                    <IconButton className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2">
-                      <CloudUpload
-                        className={`size-[18px] pointer-events-none justify-self-end`}
-                      />
-                      <h1
-                        className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
-                      >
-                        {t("up_register_fo")}
-                      </h1>
-                    </IconButton>
-                  }
-                  showDialog={async () => true}
-                >
-                  <AddNgo onComplete={() => {}} />
-                </NastranModel>
+                <>
+                  <UploadRegisterForm />
+                  <IconButton
+                    onClick={download}
+                    className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
+                  >
+                    <CloudDownload
+                      className={`size-[18px] pointer-events-none justify-self-end`}
+                    />
+                    <h1
+                      className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
+                    >
+                      {t("download_r_form")}
+                    </h1>
+                  </IconButton>
+                </>
               )}
-              <IconButton
-                onClick={download}
-                className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
-              >
-                <CloudDownload
-                  className={`size-[18px] pointer-events-none justify-self-end`}
-                />
-                <h1
-                  className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
-                >
-                  {t("download_r_form")}
-                </h1>
-              </IconButton>
             </TabsList>
             <TabsContent
               className="flex-1 m-0"

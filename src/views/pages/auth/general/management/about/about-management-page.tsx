@@ -96,7 +96,7 @@ export default function AboutManagementPage() {
       </Breadcrumb>
       <Tabs
         dir={direction}
-        defaultValue={PermissionEnum.about.sub.technical.toString()}
+        defaultValue={PermissionEnum.about.sub.director.toString()}
         className="flex flex-col items-center"
       >
         <TabsList className="px-0 pb-1 h-fit  flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">

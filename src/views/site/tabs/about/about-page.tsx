@@ -7,9 +7,24 @@ import Director from "./sections/director-secion";
 import Manager from "./sections/manager-section";
 import { useTranslation } from "react-i18next";
 import { SendHorizonal } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { toast } from "@/components/ui/use-toast";
+import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 
 export default function AboutPage() {
   const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  const onFormSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    if (loading) setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // 2 seconds delay
+    toast({
+      toastType: "SUCCESS",
+      title: t("success"),
+    });
+    setLoading(false);
+  };
   return (
     <>
       <iframe
@@ -17,9 +32,6 @@ export default function AboutPage() {
         width="100%"
         height="100%"
         className="h-[600px]"
-        onLoadStart={() => {
-          console.log("asas");
-        }}
       ></iframe>
 
       <div className="mx-3 sm:w-[90%] px-3 sm:px-12 mb-28 -mt-[64px] dark:bg-card-secondary rounded-lg shadow-md bg-card/80 backdrop-blur-md space-y-24 pb-16 sm:mx-auto">
@@ -34,7 +46,10 @@ export default function AboutPage() {
         </div>
 
         {/* Form */}
-        <form className="flex flex-col mx-auto sm:w-[70%] gap-y-4 lg:w-[50%] xl:w-[40%]">
+        <form
+          onSubmit={onFormSubmit}
+          className="flex flex-col mx-auto sm:w-[70%] gap-y-4 lg:w-[50%] xl:w-[40%]"
+        >
           <CustomInput
             lable={t("name")}
             id="name"
@@ -74,11 +89,11 @@ export default function AboutPage() {
           <CustomTextarea id="message" placeholder={t("content")} />
 
           <PrimaryButton
-            className="mt-8 px-3 uppercase self-center"
             type="submit"
+            className={`shadow-lg mt-8 px-3 uppercase self-center`}
           >
+            <ButtonSpinner loading={loading}>{t("submit")}</ButtonSpinner>
             <SendHorizonal />
-            {t("submit")}
           </PrimaryButton>
         </form>
       </div>
