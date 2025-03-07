@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Activity,
   CloudDownload,
+  CloudUpload,
   Database,
   Grip,
   NotebookPen,
@@ -37,7 +38,7 @@ import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
 import IconButton from "@/components/custom-ui/button/IconButton";
-import UploadRegisterForm from "./parts/upload-register-form";
+import UploadRegisterFormDailog from "./parts/upload-register-form-Dailog";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
@@ -246,7 +247,7 @@ export default function UserNgoEditPage() {
               />
               {tableList}
 
-              {userData?.ngoInformation?.registration_expired && (
+              {userData?.ngoInformation?.registration_expired ? (
                 <NastranModel
                   size="lg"
                   isDismissable={false}
@@ -266,10 +267,27 @@ export default function UserNgoEditPage() {
                 >
                   <AddNgo onComplete={() => {}} />
                 </NastranModel>
-              )}
-              {userData?.registerFormSubmitted && (
+              ) : (
                 <>
-                  <UploadRegisterForm />
+                  <NastranModel
+                    size="lg"
+                    isDismissable={false}
+                    button={
+                      <IconButton className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2">
+                        <CloudUpload
+                          className={`size-[18px] pointer-events-none justify-self-end`}
+                        />
+                        <h1
+                          className={`rtl:text-lg-rtl ltr:text-xl-ltr justify-self-start text-start font-semibold`}
+                        >
+                          {t("up_register_fo")}
+                        </h1>
+                      </IconButton>
+                    }
+                    showDialog={async () => true}
+                  >
+                    <UploadRegisterFormDailog onComplete={() => {}} />
+                  </NastranModel>
                   <IconButton
                     onClick={download}
                     className="hover:bg-primary/5 gap-x-4 mx-auto grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
