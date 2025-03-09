@@ -31,6 +31,7 @@ import {
 } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { CACHE } from "@/lib/constants";
+import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -189,6 +190,13 @@ export function AuditTable() {
       </TableCell>
     </TableRow>
   );
+  const view = true;
+  const deleteOnClick = (item: any) => {
+    return item;
+  };
+  const watchOnClick = (item: any) => {
+    return item;
+  };
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
@@ -246,50 +254,160 @@ export function AuditTable() {
       <Table className="bg-card rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-start">{t("id")}</TableHead>
-            <TableHead className="text-start">{t("user_id")}</TableHead>
-            <TableHead className="text-start">{t("user")}</TableHead>
+            <TableHead className="text-start">{t("username")}</TableHead>
+            <TableHead className="text-start">{t("colum")}</TableHead>
+            <TableHead className="text-start">{t("role")}</TableHead>
             <TableHead className="text-start">{t("action")}</TableHead>
             <TableHead className="text-start">{t("table")}</TableHead>
-            <TableHead className="text-start">{t("ip_address")}</TableHead>
-            <TableHead className="text-start">{t("browser")}</TableHead>
             <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          {loading ? (
+          {/* {loading ? (
             <>
               {skeleton}
               {skeleton}
               {skeleton}
             </>
-          ) : (
-            audits.filterList.data.map((item: Audit) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.user_id}</TableCell>
-                <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
-                  {item.user}
-                </TableCell>
-                <TableCell>
-                  <h1 className="truncate">{item.action}</h1>
-                </TableCell>
-                <TableCell
-                  dir="ltr"
-                  className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
-                >
-                  {item.table}
-                </TableCell>
-                <TableCell dir="ltr" className="rtl:text-end">
-                  {item.ip_address}
-                </TableCell>
-                <TableCell>{item.user_agent}</TableCell>
-                <TableCell>
-                  {toLocaleDate(new Date(item.created_at), state)}
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+          ) : ( */}
+          <>
+            <TableRowIcon
+              read={view}
+              remove={false}
+              edit={false}
+              onEdit={async () => {}}
+              key={""}
+              item={""}
+              onRemove={deleteOnClick}
+              onRead={watchOnClick}
+            >
+              <TableCell>Ahmad</TableCell>
+              <TableCell>permission</TableCell>
+              <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+                Admin
+              </TableCell>
+              <TableCell>
+                <h1 className="truncate">delete</h1>
+              </TableCell>
+              <TableCell
+                dir="ltr"
+                className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
+              >
+                permission
+              </TableCell>
+
+              <TableCell>2025/3/2</TableCell>
+            </TableRowIcon>
+          </>
+          <TableRowIcon
+            read={view}
+            remove={false}
+            edit={false}
+            onEdit={async () => {}}
+            key={""}
+            item={""}
+            onRemove={deleteOnClick}
+            onRead={watchOnClick}
+          >
+            <TableCell>Naweed</TableCell>
+            <TableCell>name</TableCell>
+            <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+              SuperAdmin
+            </TableCell>
+            <TableCell>
+              <h1 className="truncate">Edite</h1>
+            </TableCell>
+            <TableCell
+              dir="ltr"
+              className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
+            >
+              user
+            </TableCell>
+
+            <TableCell>2025/2/24</TableCell>
+          </TableRowIcon>
+          <TableRowIcon
+            read={view}
+            remove={false}
+            edit={false}
+            onEdit={async () => {}}
+            key={""}
+            item={""}
+            onRemove={deleteOnClick}
+            onRead={watchOnClick}
+          >
+            <TableCell>Imran</TableCell>
+            <TableCell>edit</TableCell>
+            <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+              Debuger
+            </TableCell>
+            <TableCell>
+              <h1 className="truncate">Creat</h1>
+            </TableCell>
+            <TableCell
+              dir="ltr"
+              className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
+            >
+              ngo
+            </TableCell>
+
+            <TableCell>2025/4/23</TableCell>
+          </TableRowIcon>
+          <TableRowIcon
+            read={view}
+            remove={false}
+            edit={false}
+            onEdit={async () => {}}
+            key={""}
+            item={""}
+            onRemove={deleteOnClick}
+            onRead={watchOnClick}
+          >
+            <TableCell>Jalal</TableCell>
+            <TableCell>view</TableCell>
+            <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+              Guest
+            </TableCell>
+            <TableCell>
+              <h1 className="truncate">update</h1>
+            </TableCell>
+            <TableCell
+              dir="ltr"
+              className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
+            >
+              Donor
+            </TableCell>
+
+            <TableCell>2025/23/2</TableCell>
+          </TableRowIcon>{" "}
+          <TableRowIcon
+            read={view}
+            remove={false}
+            edit={false}
+            onEdit={async () => {}}
+            key={""}
+            item={""}
+            onRemove={deleteOnClick}
+            onRead={watchOnClick}
+          >
+            <TableCell>Ahmad</TableCell>
+            <TableCell>update</TableCell>
+            <TableCell className="rtl:text-md-rtl truncate px-1 py-0">
+              Admin
+            </TableCell>
+            <TableCell>
+              <h1 className="truncate">delete</h1>
+            </TableCell>
+            <TableCell
+              dir="ltr"
+              className="rtl:text-md-rtl truncate rtl:text-end px-0 py-0"
+            >
+              permission
+            </TableCell>
+
+            <TableCell>2025/3/2</TableCell>
+          </TableRowIcon>
+          {/* // )} */}
         </TableBody>
       </Table>
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
