@@ -37,7 +37,7 @@ const Carousel: React.FC<CarouselProps> = ({
   }, [autoPlayInterval]);
 
   return (
-    <div className="relative w-full shadow-lg shadow-primary/50 h-full rounded-md overflow-hidden">
+    <div className="relative w-full shadow shadow-primary/30 h-full rounded-md overflow-hidden">
       <div className="relative h-full">
         {/* Image Slider */}
         <CachedImage

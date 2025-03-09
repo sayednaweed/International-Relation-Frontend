@@ -90,13 +90,13 @@ export const PermissionEnum = {
   donor: { name: "donor", sub: {} },
 };
 export const StatusEnum = {
-  active: 1,
-  blocked: 2,
-  unregistered: 3,
-  not_logged_in: 4,
-  in_progress: 5,
-  register_form_submitted: 6,
+  register_form_not_completed: 1,
+  register_form_completed: 2,
+  signed_register_form_submitted: 3,
+  registered: 4,
+  blocked: 5,
 };
+
 export const StaffEnum = {
   manager: 1,
   director: 2,

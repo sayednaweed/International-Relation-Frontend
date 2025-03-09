@@ -26,7 +26,6 @@ export default function OfficeSection(props: OfficeSectionProps) {
   const [manipulating, setManipulating] = useState(false);
   const [userData, setUserData] = useState({
     id: "",
-    picture: undefined,
     address_english: "",
     address_farsi: "",
     address_pashto: "",
@@ -118,22 +117,20 @@ export default function OfficeSection(props: OfficeSectionProps) {
     formData.append("contact", userData.contact);
     formData.append("email", userData.email);
     formData.append("staff_type_id", StaffEnum.manager.toString());
-    if (userData.picture) formData.append("picture", userData.picture);
 
     try {
       const url = userData.editable ? "office/update" : "office/store";
       const response = await axiosClient.post(url, formData);
       if (response.status == 200) {
-        const staff = response.data.staff;
+        const office = response.data.office;
         setUserData({
-          id: staff.id,
-          picture: staff.picture,
-          address_english: staff.name_english,
-          address_farsi: staff.name_farsi,
-          address_pashto: staff.name_pashto,
-          contact: staff.contact,
-          email: staff.email,
-          optional_lang: "",
+          id: office.id,
+          address_english: office.address_english,
+          address_farsi: office.address_farsi,
+          address_pashto: office.address_pashto,
+          contact: office.contact,
+          email: office.email,
+          optional_lang: userData.optional_lang,
           editable: true,
         });
         toast({

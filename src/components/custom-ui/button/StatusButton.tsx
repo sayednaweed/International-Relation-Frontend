@@ -8,11 +8,11 @@ export interface StatusButtonProps {
 export default function StatusButton(props: StatusButtonProps) {
   const { status_id, status } = props;
   const style =
-    StatusEnum.active === status_id
+    StatusEnum.registered === status_id
       ? "border-green-500"
       : StatusEnum.blocked === status_id
       ? "border-red-500"
-      : StatusEnum.not_logged_in === status_id
+      : StatusEnum.register_form_not_completed === status_id
       ? "border-slate-400"
       : "border-orange-500";
 

@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -52,7 +51,7 @@ export default function UploadRegisterFormDailog(
   const loadInformation = async () => {
     try {
       const response = await axiosClient.get(
-        "ngo/missing/register/signed/form"
+        "ngo/register/signed/form/checklist"
       );
       if (response.status == 200) {
         setList(response.data.checklist);
@@ -71,21 +70,23 @@ export default function UploadRegisterFormDailog(
   }, []);
   const store = async () => {
     try {
+      const content = {
+        checklistMap: Array.from(userData.checklistMap),
+        start_date: userData.start_date?.toDate()?.toISOString(),
+        end_date: userData.end_date?.toDate()?.toISOString(),
+      };
+
       if (loading) return;
       setLoading(true);
       // 1. Validate form
       const passed = await validate(
         [
           {
-            name: "english",
+            name: "start_date",
             rules: ["required"],
           },
           {
-            name: "farsi",
-            rules: ["required"],
-          },
-          {
-            name: "pashto",
+            name: "end_date",
             rules: ["required"],
           },
         ],
@@ -95,7 +96,12 @@ export default function UploadRegisterFormDailog(
       if (!passed) return;
       // 2. Store
       let formData = new FormData();
-      const response = await axiosClient.post("job/store", formData);
+      if (id) formData.append("ngo_id", id.toString());
+      formData.append("content", JSON.stringify(content));
+      const response = await axiosClient.post(
+        "ngo/store/signed/register/form",
+        formData
+      );
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
@@ -105,6 +111,10 @@ export default function UploadRegisterFormDailog(
         modelOnRequestHide();
       }
     } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        description: error.response.data.message,
+      });
       setServerError(error.response.data.errors, setError);
       console.log(error);
     } finally {
@@ -206,7 +216,7 @@ export default function UploadRegisterFormDailog(
           <NastranSpinner />
         )}
       </CardContent>
-      <CardFooter className="flex justify-between">
+      <CardFooter className="flex justify-between pt-20">
         <Button
           className="rtl:text-xl-rtl ltr:text-lg-ltr"
           variant="outline"

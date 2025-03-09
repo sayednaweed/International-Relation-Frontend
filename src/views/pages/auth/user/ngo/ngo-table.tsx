@@ -240,9 +240,6 @@ export function NgoTable() {
       <TableCell>
         <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] w-full rounded-sm" />
-      </TableCell>
     </TableRow>
   );
   const per: UserPermission = user?.permissions.get(
@@ -253,10 +250,7 @@ export function NgoTable() {
 
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    if (
-      ngo.status_id == StatusEnum.not_logged_in ||
-      ngo.status_id == StatusEnum.unregistered
-    ) {
+    if (ngo.status_id == StatusEnum.register_form_not_completed) {
       navigate(`/ngo/profile/edit/${ngoId}`, {
         state: {
           data: { edit: true },
@@ -380,11 +374,6 @@ export function NgoTable() {
               }}
               filtersShowData={{
                 sort: [
-                  {
-                    name: "id",
-                    translate: t("id"),
-                    onClick: () => {},
-                  },
                   { name: "name", translate: t("name"), onClick: () => {} },
                   {
                     name: "type",
@@ -415,11 +404,6 @@ export function NgoTable() {
                   },
                 ],
                 search: [
-                  {
-                    name: "id",
-                    translate: t("id"),
-                    onClick: () => {},
-                  },
                   {
                     name: "registration_no",
                     translate: t("registration_no"),
@@ -472,7 +456,6 @@ export function NgoTable() {
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
             <TableHead className="text-center w-[60px]">{t("pic")}</TableHead>
-            <TableHead className="text-start">{t("id")}</TableHead>
             <TableHead className="text-start">{t("registration_no")}</TableHead>
             <TableHead className="text-start">{t("name")}</TableHead>
             <TableHead className="text-start">{t("type")}</TableHead>
@@ -508,7 +491,6 @@ export function NgoTable() {
                     className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
                   />
                 </TableCell>
-                <TableCell className="truncate">{item.id}</TableCell>
                 <TableCell className="truncate rtl:text-md-rtl">
                   {item.registration_no}
                 </TableCell>

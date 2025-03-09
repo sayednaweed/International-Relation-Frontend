@@ -22,6 +22,7 @@ import { isString } from "@/lib/utils";
 import { ServerError } from "@/components/custom-ui/errors/ServerError";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { RoleEnum, TaskTypeEnum } from "@/lib/constants";
+import { setServerError } from "@/validation/validation";
 
 export default function EditNgoProgress() {
   const { t } = useTranslation();
@@ -89,7 +90,7 @@ export default function EditNgoProgress() {
 
   const stepsCompleted = async (
     userData: any,
-    _setError: Dispatch<SetStateAction<Map<string, string>>>
+    setError: Dispatch<SetStateAction<Map<string, string>>>
   ) => {
     let formData = new FormData();
     try {
@@ -125,6 +126,8 @@ export default function EditNgoProgress() {
         description: <ServerError errors={error.response.data.errors} />,
         duration: 9000 * 10,
       });
+      setServerError(error.response.data.errors, setError);
+
       return false;
     }
     return true;

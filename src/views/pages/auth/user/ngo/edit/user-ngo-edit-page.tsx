@@ -61,11 +61,8 @@ export default function UserNgoEditPage() {
         const ngo = response.data.ngo as NgoInformation;
         // Do not allow until register form is submitted
         const registerFormSubmitted =
-          ngo.status_id == StatusEnum.register_form_submitted;
-        if (
-          ngo.status_id == StatusEnum.not_logged_in ||
-          ngo.status_id == StatusEnum.unregistered
-        ) {
+          ngo.status_id == StatusEnum.register_form_completed;
+        if (ngo.status_id == StatusEnum.register_form_not_completed) {
           navigate(`/ngo/profile/edit/${id}`, {
             state: {
               data: { edit: true },
@@ -247,7 +244,7 @@ export default function UserNgoEditPage() {
               />
               {tableList}
 
-              {userData?.ngoInformation?.registration_expired ? (
+              {userData?.ngoInformation?.registration_expired && (
                 <NastranModel
                   size="lg"
                   isDismissable={false}
@@ -267,7 +264,9 @@ export default function UserNgoEditPage() {
                 >
                   <AddNgo onComplete={() => {}} />
                 </NastranModel>
-              ) : (
+              )}
+              {userData.ngoInformation.status_id ==
+                StatusEnum.register_form_completed && (
                 <>
                   <NastranModel
                     size="lg"
@@ -286,7 +285,17 @@ export default function UserNgoEditPage() {
                     }
                     showDialog={async () => true}
                   >
-                    <UploadRegisterFormDailog onComplete={() => {}} />
+                    <UploadRegisterFormDailog
+                      onComplete={() => {
+                        const ngoInformation = userData.ngoInformation;
+                        ngoInformation.status_id =
+                          StatusEnum.signed_register_form_submitted;
+                        setUserData({
+                          ...userData,
+                          ngoInformation: ngoInformation,
+                        });
+                      }}
+                    />
                   </NastranModel>
                   <IconButton
                     onClick={download}

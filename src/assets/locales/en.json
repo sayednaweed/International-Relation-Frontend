@@ -320,5 +320,8 @@
   "agreement_nu": "Agreement Number",
   "download_r_form": "Download Register Form",
   "approval": "Aproval",
-  "approval_des": "Once Your document is approved or rejected by our staff you will be informed."
+  "approval_des": "Once Your document is approved or rejected by our staff you will be informed.",
+  "address_english": "Address English",
+  "address_pashto": "Address Pashto",
+  "address_farsi": "Address Farsi"
 }
