@@ -6,7 +6,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LockKeyhole } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 
@@ -30,10 +32,37 @@ export default function ApprovalPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
-        <LockKeyhole className="text-orange-500 size-[32px]" />
-        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
-      </div>
+      <Card className="shadow-md max-h-[600px] w-[400px] md:w-[420px] hover:shadow-lg transition-shadow">
+        <CardContent className="mt-3 h-[200px] sm:h-[200px] gap-4 ">
+          <div>
+            <span className="font-medium text-primary/80">comment: </span>{" "}
+            <div className="flex flex-row gap-10 mt-0.5 ">
+              <p className="text-primary/40">
+                {" "}
+                hello bro i am herehello bro i am herehello bro i am herehello
+                bro i am herehello bro i am here{" "}
+              </p>
+              <span className="text-primary/40">2025/3/4 </span>
+            </div>
+          </div>
+
+          <div className="flex flex-row mt-6">
+            <span className="font-medium text-primary/80">requester: </span>
+            <p className="text-primary/40">Ali Ahmad Jalali </p>
+          </div>
+          <div className="flex flex-row gap-4">
+            <span className="font-medium text-red-400">action: </span>
+            <p className="text-primary/40">form submission for ngo </p>
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <div className="flex flex-row gap-4">
+            <Button className="bg-tertiary ">Accept</Button>
+            <Button className="bg-tertiary">Reject</Button>
+            <Button>more</Button>
+          </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }
