@@ -217,8 +217,8 @@ export default function ManagerSection(props: ManagerSectionProps) {
       e.currentTarget.type = "file"; // Reset to file type
     }
   };
-  const hasEdit = permission.sub.get(PermissionEnum.about.sub.technical)?.edit;
-  const hasAdd = permission.sub.get(PermissionEnum.about.sub.technical)?.add;
+  const hasEdit = permission.sub.get(PermissionEnum.about.sub.manager)?.edit;
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.manager)?.add;
 
   return (
     <Card className="w-full self-center bg-card">

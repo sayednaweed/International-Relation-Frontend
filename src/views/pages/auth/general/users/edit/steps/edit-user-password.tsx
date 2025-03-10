@@ -16,10 +16,11 @@ import { UserInformation, UserPassword } from "@/lib/types";
 import axiosClient from "@/lib/axois-client";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { PermissionEnum, RoleEnum } from "@/lib/constants";
-import { setServerError } from "@/validation/validation";
+import { setServerError, validate } from "@/validation/validation";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { UserPermission } from "@/database/tables";
+import { ValidateItem } from "@/validation/types";
 export interface EditUserPasswordProps {
   id: string | undefined;
   refreshPage: () => Promise<void>;
@@ -47,8 +48,30 @@ export function EditUserPassword(props: EditUserPasswordProps) {
     setPasswordData({ ...passwordData, [name]: value });
   };
   const saveData = async () => {
-    if (id != undefined && !loading) {
+    if (id != undefined) {
       setLoading(true);
+      // 1. Validate form
+      const rules: ValidateItem[] = [
+        {
+          name: "new_password",
+          rules: ["required", "min:8", "max:45"],
+        },
+        {
+          name: "confirm_password",
+          rules: ["required", "min:8", "max:45"],
+        },
+      ];
+      if (user.role.role != RoleEnum.super) {
+        rules.push({
+          name: "old_password",
+          rules: ["required", "min:8", "max:45"],
+        });
+      }
+      const passed = await validate(rules, passwordData, setError);
+      if (!passed) {
+        setLoading(false);
+        return;
+      }
       const formData = new FormData();
       formData.append("id", id);
       formData.append("new_password", passwordData.new_password);
@@ -175,6 +198,7 @@ export function EditUserPassword(props: EditUserPasswordProps) {
           userData &&
           hasEdit && (
             <PrimaryButton
+              disabled={loading}
               onClick={async () => {
                 await saveData();
               }}

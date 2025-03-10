@@ -120,6 +120,14 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
       );
       setUserData(updatedUserData);
     },
+    singleRow: (value: boolean, permission: string) => {
+      const updatedUserData = userData.map((perm) =>
+        perm.permission === permission
+          ? { ...perm, add: value, edit: value, delete: value, view: value }
+          : perm
+      );
+      setUserData(updatedUserData);
+    },
   };
   const subActions: {
     [key in UserAction]: (
@@ -180,6 +188,21 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
       });
       setUserData(updatedUserData); // Update the state
     },
+    singleRow: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.map((perm) => {
+        if (perm.permission === permission) {
+          // Update the sub array with the updated SubPermission
+          const updatedSub = perm.sub.map((sub) =>
+            sub.id === subId
+              ? { ...sub, add: value, edit: value, delete: value, view: value }
+              : sub
+          );
+          return { ...perm, sub: updatedSub }; // Return the updated permission object
+        }
+        return perm; // No change for other permissions
+      });
+      setUserData(updatedUserData); // Update the state
+    },
   };
 
   const hasEdit = permissions.sub.get(
@@ -223,8 +246,13 @@ export default function EditUserPermissions(props: EditUserPermissionsProps) {
             <RefreshCcw className="ltr:ml-2 rtl:mr-2" />
           </PrimaryButton>
         ) : (
-          hasEdit && (
-            <PrimaryButton onClick={savePermission} className={`shadow-md`}>
+          hasEdit &&
+          !loading && (
+            <PrimaryButton
+              disabled={saving}
+              onClick={savePermission}
+              className={`shadow-md`}
+            >
               <ButtonSpinner loading={saving}>{t("save")}</ButtonSpinner>
             </PrimaryButton>
           )

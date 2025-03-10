@@ -67,6 +67,15 @@ export default function AddUserPermission() {
       );
       setUserData({ ...userData, permissions: updatedUserData });
     },
+    singleRow: (value: boolean, permission: string) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) =>
+          perm.permission === permission
+            ? { ...perm, add: value, edit: value, delete: value, view: value }
+            : perm
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
   };
   const subActions: {
     [key in UserAction]: (
@@ -135,25 +144,46 @@ export default function AddUserPermission() {
       );
       setUserData({ ...userData, permissions: updatedUserData });
     },
+    singleRow: (value: boolean, permission: string, subId: number) => {
+      const updatedUserData = userData.permissions.map(
+        (perm: IUserPermission) => {
+          if (perm.permission === permission) {
+            // Update the sub array with the updated SubPermission
+            const updatedSub = perm.sub.map((sub) =>
+              sub.id === subId
+                ? {
+                    ...sub,
+                    add: value,
+                    edit: value,
+                    delete: value,
+                    view: value,
+                  }
+                : sub
+            );
+            return { ...perm, sub: updatedSub }; // Return the updated permission object
+          }
+          return perm; // No change for other permissions
+        }
+      );
+      setUserData({ ...userData, permissions: updatedUserData });
+    },
   };
   return (
-    <div className="relative overflow-x-auto h-full mt-10">
-      <>
-        {failed ? (
-          <ErrorText text={t("error")} />
-        ) : userData.permissions ? (
-          userData.permissions.map((item: IUserPermission, index: number) => (
-            <PermissionSub
-              subActions={subActions}
-              mainActions={mainActions}
-              permission={item}
-              key={index}
-            />
-          ))
-        ) : (
-          <NastranSpinner />
-        )}
-      </>
-    </div>
+    <>
+      {failed ? (
+        <ErrorText text={t("error")} />
+      ) : userData.permissions ? (
+        userData.permissions.map((item: IUserPermission, index: number) => (
+          <PermissionSub
+            subActions={subActions}
+            mainActions={mainActions}
+            permission={item}
+            key={index}
+          />
+        ))
+      ) : (
+        <NastranSpinner />
+      )}
+    </>
   );
 }

@@ -52,7 +52,7 @@ export default function SuperUserEditPage() {
     loadInformation();
   }, []);
 
-  const selectedTabStyle = `relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
+  const selectedTabStyle = `rtl:text-xl-rtl ltr:text-lg-ltr relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.users.name
   ) as UserPermission;
@@ -62,7 +62,7 @@ export default function SuperUserEditPage() {
       return key == PermissionEnum.users.sub.user_information ? (
         <TabsTrigger
           key={index}
-          className={`mt-6 rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr ${selectedTabStyle}`}
+          className={`${selectedTabStyle}`}
           value={key.toString()}
         >
           <Database className="size-[18px]" />
@@ -71,7 +71,7 @@ export default function SuperUserEditPage() {
       ) : key == PermissionEnum.users.sub.user_password ? (
         <TabsTrigger
           key={index}
-          className={`rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr${selectedTabStyle}`}
+          className={`${selectedTabStyle}`}
           value={key.toString()}
         >
           <KeyRound className="size-[18px]" />
@@ -81,7 +81,7 @@ export default function SuperUserEditPage() {
         key == PermissionEnum.users.sub.user_permission && (
           <TabsTrigger
             key={index}
-            className={`rtl:text-2xl-rtl min-w-fit ltr:text-2xl-ltr${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             value={key.toString()}
           >
             <ShieldBan className="size-[18px]" />
@@ -92,7 +92,7 @@ export default function SuperUserEditPage() {
     }
   );
   return (
-    <div className="flex flex-col gap-y-3 px-3 mt-2">
+    <div className="flex flex-col gap-y-3 px-3 mt-2 overflow-x-auto pb-bottom">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -123,7 +123,7 @@ export default function SuperUserEditPage() {
         defaultValue={PermissionEnum.users.sub.user_information.toString()}
         className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:gap-y-0"
       >
-        <TabsList className="min-h-fit sm:min-h-[80vh] overflow-y-auto pb-8 sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
+        <TabsList className="pb-4 min-h-fit sm:min-h-[80vh] h-fit sm:min-w-[300px] gap-y-4 items-start justify-start flex flex-wrap flex-col bg-card border">
           <UserEditHeader
             id={id}
             failed={failed}

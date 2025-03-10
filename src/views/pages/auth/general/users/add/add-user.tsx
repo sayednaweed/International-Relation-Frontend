@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction } from "react";
 import { setServerError } from "@/validation/validation";
 import { User } from "@/database/tables";
 import { Check, Database, ShieldBan, User as UserIcon } from "lucide-react";
+import { checkStrength, passwordStrengthScore } from "@/validation/utils";
 
 export interface AddUserProps {
   onComplete: (user: User) => void;
@@ -71,8 +72,8 @@ export default function AddUser(props: AddUserProps) {
     try {
       const response = await axiosClient.post("user/store", {
         permissions: userData?.permissions,
-        grant: userData.grant,
-        status: userData.status,
+        grant: userData.grant == true,
+        status: userData.status == true,
         role: userData.role.id,
         job: userData.job.id,
         destination: userData.destination.id,
@@ -122,7 +123,7 @@ export default function AddUser(props: AddUserProps) {
           pending: t("pending"),
           step: t("step"),
         }}
-        loadingText={t("loading")}
+        loadingText={t("store_infor")}
         backText={t("back")}
         nextText={t("next")}
         confirmText={t("confirm")}
@@ -158,7 +159,17 @@ export default function AddUser(props: AddUserProps) {
           {
             component: <AddUserAccount />,
             validationRules: [
-              { name: "password", rules: ["required", "max:25", "min:8"] },
+              {
+                name: "password",
+                rules: [
+                  (value: any) => {
+                    const strength = checkStrength(value, t);
+                    const score = passwordStrengthScore(strength);
+                    if (score === 4) return true;
+                    return false;
+                  },
+                ],
+              },
               { name: "role", rules: ["required"] },
             ],
           },

@@ -6,13 +6,13 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LockKeyhole } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
+import ApprovalTab from "./tabs/approval-tab";
 
 export default function ApprovalPage() {
   const { t } = useTranslation();
-
   return (
     <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
       <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
@@ -30,10 +30,28 @@ export default function ApprovalPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
-        <LockKeyhole className="text-orange-500 size-[32px]" />
-        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
-      </div>
+      <Tabs className="mt-8 border rounded-lg p-2 h-full" defaultValue="user">
+        <TabsList className="overflow-x-auto overflow-y-hidden w-full justify-start">
+          <TabsTrigger value="user" className="rtl:flex-row-reverse">
+            {t("user")}
+          </TabsTrigger>
+          <TabsTrigger value="ngo" className="rtl:flex-row-reverse">
+            {t("ngo")}
+          </TabsTrigger>
+          <TabsTrigger value="donor" className="rtl:flex-row-reverse">
+            {t("donor")}
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value="user">
+          <ApprovalTab title="user" />
+        </TabsContent>
+        <TabsContent value="ngo">
+          <ApprovalTab title="ngo" />
+        </TabsContent>
+        <TabsContent value="donor">
+          <ApprovalTab title="donor" />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

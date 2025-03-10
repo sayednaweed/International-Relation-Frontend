@@ -148,7 +148,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
           {t("update_user_acc_info")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">
+      <CardContent className="flex flex-col gap-x-4 gap-y-6 w-full xl:w-1/2">
         {failed ? (
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : tempUserData === undefined ? (
@@ -247,7 +247,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               apiUrl={"jobs"}
               mode="single"
             />
-            {/* 
+
             <APICombobox
               placeholderText={t("search_item")}
               errorText={t("no_item")}
@@ -263,7 +263,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
               apiUrl={"roles"}
               mode="single"
               translate={true}
-            /> */}
+            />
             <FakeCombobox
               icon={
                 <CalendarDays className="size-[16px] text-tertiary absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
@@ -308,7 +308,11 @@ export default function EditUserInformation(props: EditUserInformationProps) {
         ) : (
           tempUserData &&
           hasEdit && (
-            <PrimaryButton onClick={saveData} className={`shadow-lg`}>
+            <PrimaryButton
+              disabled={loading}
+              onClick={saveData}
+              className={`shadow-lg`}
+            >
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
             </PrimaryButton>
           )

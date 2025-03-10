@@ -1,7 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { cn, isString } from "@/lib/utils";
+import { checkStrength, passwordStrengthScore } from "@/validation/utils";
 import { Check, X } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 export type NastranInputSize = "sm" | "md" | "lg" | undefined;
 
@@ -35,27 +36,14 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
       ...rest
     } = props;
     const error = errorMessage != undefined;
-    const [password, setPassword] = useState(defaultValue);
     const { t } = useTranslation();
-
-    const checkStrength = (pass: string) => {
-      const requirements = [
-        { regex: /.{8,}/, text: t("at_lea_8_char") },
-        { regex: /[0-9]/, text: t("at_lea_1_num") },
-        { regex: /[a-z]/, text: t("at_lea_1_lowcas_lett") },
-        { regex: /[A-Z]/, text: t("at_lea_1_upcas_lett") },
-      ];
-
-      return requirements.map((req) => ({
-        met: req.regex.test(pass),
-        text: req.text,
-      }));
-    };
-
-    const strength = checkStrength(isString(password) ? password : "");
+    const strength = checkStrength(
+      isString(defaultValue) ? defaultValue : "",
+      t
+    );
 
     const strengthScore = useMemo(() => {
-      return strength.filter((req) => req.met).length;
+      return passwordStrengthScore(strength);
     }, [strength]);
 
     const getStrengthColor = (score: number) => {
@@ -113,11 +101,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
 
           <Input
             onChange={(e: any) => {
-              const { value } = e.target;
-              setPassword(value);
               if (onChange) onChange(e);
             }}
-            defaultValue={defaultValue}
+            value={defaultValue}
             ref={ref}
             style={{
               height: "50px",

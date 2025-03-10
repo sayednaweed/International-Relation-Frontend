@@ -25,7 +25,7 @@ export function Toaster() {
           <Toast
             key={id}
             {...props}
-            className={`grid gap-1 h-fit ltr:text-lg-ltr rtl:text-xl-rtl fixed rtl:left-4 ltr:right-4 bottom-5 p-4 w-[250px] sm:min-w-[400px] mx-4 max-w-[400px] ${
+            className={`grid gap-1 h-fit ltr:text-lg-ltr rtl:text-xl-rtl fixed rtl:left-4 ltr:right-4 bottom-5 p-4 w-[250px] xxl:w-[400px] xl:w-[500px] mx-4 max-w-[500px] ${
               toastType == "ERROR" ? "bg-red-400" : "bg-green-400"
             }`}
           >

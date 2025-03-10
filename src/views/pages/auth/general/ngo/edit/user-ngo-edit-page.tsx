@@ -90,7 +90,7 @@ export default function UserNgoEditPage() {
     loadInformation();
   }, []);
 
-  const selectedTabStyle = `relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
+  const selectedTabStyle = `rtl:text-xl-rtl ltr:text-lg-ltr relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.ngo.name
@@ -100,7 +100,7 @@ export default function UserNgoEditPage() {
       Array.from(per.sub).map(([key, _subPermission], index: number) => {
         return key == PermissionEnum.ngo.sub.ngo_information ? (
           <TabsTrigger
-            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
@@ -109,7 +109,7 @@ export default function UserNgoEditPage() {
           </TabsTrigger>
         ) : key == PermissionEnum.ngo.sub.ngo_director_information ? (
           <TabsTrigger
-            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
@@ -118,7 +118,7 @@ export default function UserNgoEditPage() {
           </TabsTrigger>
         ) : key == PermissionEnum.ngo.sub.ngo_agreement ? (
           <TabsTrigger
-            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
@@ -127,7 +127,7 @@ export default function UserNgoEditPage() {
           </TabsTrigger>
         ) : key == PermissionEnum.ngo.sub.ngo_more_information ? (
           <TabsTrigger
-            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
@@ -136,7 +136,7 @@ export default function UserNgoEditPage() {
           </TabsTrigger>
         ) : key == PermissionEnum.ngo.sub.ngo_status ? (
           <TabsTrigger
-            className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+            className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
@@ -146,7 +146,7 @@ export default function UserNgoEditPage() {
         ) : (
           key == PermissionEnum.ngo.sub.ngo_representative && (
             <TabsTrigger
-              className={`rtl:text-xl-rtl ltr:text-lg-ltr ${selectedTabStyle}`}
+              className={`${selectedTabStyle}`}
               key={index}
               value={key.toString()}
             >
@@ -195,7 +195,7 @@ export default function UserNgoEditPage() {
     }
   };
   return (
-    <div className="flex flex-col gap-y-2 px-3 mt-2">
+    <div className="flex flex-col gap-y-2 px-3 mt-2 pb-bottom">
       <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
         <BreadcrumbList>
           <BreadcrumbItem>

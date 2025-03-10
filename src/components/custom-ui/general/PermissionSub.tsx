@@ -17,12 +17,14 @@ export interface PermissionSubProps {
     add: (value: boolean, permission: string) => void;
     edit: (value: boolean, permission: string) => void;
     delete: (value: boolean, permission: string) => void;
+    singleRow: (value: boolean, permission: string) => void;
   };
   subActions: {
     view: (value: boolean, permission: string, subId: number) => void;
     add: (value: boolean, permission: string, subId: number) => void;
     edit: (value: boolean, permission: string, subId: number) => void;
     delete: (value: boolean, permission: string, subId: number) => void;
+    singleRow: (value: boolean, permission: string, subId: number) => void;
   };
 }
 const PermissionSub = (props: PermissionSubProps) => {
@@ -39,9 +41,17 @@ const PermissionSub = (props: PermissionSubProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-4 px-3 lg:px-4 py-4 md:py-4 bg-primary/5 pb-4 mb-4 border hover:shadow transition-shadow ease-in-out rounded-xl shadow-sm">
         <div className="md:flex md:flex-wrap xl:grid md:space-y-2 xl:space-y-0 space-y-3 xl:grid-cols-6 mt-2 items-center border-b pb-3">
-          <h1 className="rtl:text-2xl-rtl w-full xl:w-fit text-start font-bold text-tertiary col-span-2">
-            {t(permission.permission)}
-          </h1>
+          <div className="col-span-2 w-full xl:w-fit flex items-center gap-x-2">
+            <h1 className="rtl:text-2xl-rtl ltr:text-xl-ltr text-start font-bold text-tertiary">
+              {t(permission.permission)}
+            </h1>
+            <CustomCheckbox
+              checked={permission.add}
+              onCheckedChange={(value: boolean) =>
+                mainActions["singleRow"](value, permission.permission)
+              }
+            />
+          </div>
           <CustomCheckbox
             text={t("add")}
             className="ml-1"
@@ -82,9 +92,21 @@ const PermissionSub = (props: PermissionSubProps) => {
               !permission.view && "pointer-events-none opacity-60"
             }`}
           >
-            <h1 className="rtl:text-2xl-rtl w-full xl:w-fit text-start font-bold text-tertiary col-span-2">
-              {t(subPermission.name)}
-            </h1>
+            <div className="col-span-2 w-full xl:w-fit flex items-center gap-x-2">
+              <h1 className="rtl:text-2xl-rtl ltr:text-xl-ltr text-start font-bold text-tertiary">
+                {t(subPermission.name)}
+              </h1>
+              <CustomCheckbox
+                checked={subPermission.add}
+                onCheckedChange={(value: boolean) =>
+                  subActions["singleRow"](
+                    value,
+                    permission.permission,
+                    subPermission.id
+                  )
+                }
+              />
+            </div>
             <CustomCheckbox
               text={t("add")}
               className="ml-1"

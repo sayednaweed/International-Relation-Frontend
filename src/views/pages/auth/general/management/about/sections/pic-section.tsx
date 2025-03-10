@@ -5,11 +5,16 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { useTranslation } from "react-i18next";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import ChunkFileUploader from "@/components/custom-ui/chooser/ChunkFileUploader";
-import { Slider } from "@/database/tables";
+import { Slider, UserPermission } from "@/database/tables";
 import { getConfiguration } from "@/lib/utils";
 import { CloudDownload, Trash2, X } from "lucide-react";
+import { PermissionEnum } from "@/lib/constants";
 
-export default function PicSection() {
+interface PicSectionProps {
+  permission: UserPermission;
+}
+export default function PicSection(props: PicSectionProps) {
+  const { permission } = props;
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<Slider[]>([]);
@@ -44,40 +49,48 @@ export default function PicSection() {
     initialize();
   }, []);
 
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.pic)?.add;
+  const hasDelete = permission.sub.get(PermissionEnum.about.sub.pic)?.delete;
+
   return (
     <div className="flex flex-col items-center gap-y-16">
-      <ChunkFileUploader
-        className="border-2 border-tertiary mx-auto w-fit px-16 py-4 rounded-lg border-dashed"
-        name={""}
-        accept=".jpeg,.jpg,.png"
-        inputFieldName="file"
-        maxSize={0}
-        validTypes={[]}
-        onComplete={async (record: any) => {
-          for (const element of record) {
-            const newImage = element[element.length - 1] as Slider;
-            setImages([newImage, ...images]);
-          }
-        }}
-        onStart={async (_file: File) => {}}
-        url={`${import.meta.env.VITE_API_BASE_URL}/api/v1/slider/store`}
-        headers={{
-          "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-          "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-          Authorization: "Bearer " + getConfiguration()?.token,
-        }}
-      />
+      {hasAdd && (
+        <ChunkFileUploader
+          className="border-2 border-tertiary mx-auto w-fit px-16 py-4 rounded-lg border-dashed"
+          name={""}
+          accept=".jpeg,.jpg,.png"
+          inputFieldName="file"
+          maxSize={0}
+          validTypes={[]}
+          onComplete={async (record: any) => {
+            for (const element of record) {
+              const newImage = element[element.length - 1] as Slider;
+              setImages([newImage, ...images]);
+            }
+          }}
+          onStart={async (_file: File) => {}}
+          url={`${import.meta.env.VITE_API_BASE_URL}/api/v1/slider/store`}
+          headers={{
+            "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+            "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+            Authorization: "Bearer " + getConfiguration()?.token,
+          }}
+        />
+      )}
+
       {loading ? (
         <NastranSpinner />
       ) : (
         <div className="columns-1 md:columns-3 xl:columns-4 gap-7">
-          {images.map((item: Slider) => (
+          {images.map((item: Slider, index: number) => (
             <Image
               openModal={openModal}
               item={item}
+              key={index}
               setImages={setImages}
               images={images}
               t={t}
+              hasDelete={hasDelete}
             />
           ))}
         </div>
@@ -108,9 +121,10 @@ interface ImageProps {
   setImages: Dispatch<SetStateAction<Slider[]>>;
   images: Slider[];
   t: any;
+  hasDelete?: boolean;
 }
 const Image = (props: ImageProps) => {
-  const { item, openModal, setImages, images, t } = props;
+  const { item, openModal, setImages, images, t, hasDelete } = props;
   const [loading, setLoading] = useState(false);
 
   const deletePicture = async (id: string) => {
@@ -150,10 +164,13 @@ const Image = (props: ImageProps) => {
       />
       <div className="absolute justify-end items-center gap-3 bottom-0 rounded-b-lg bg-primary/50 w-full flex py-1 px-4">
         <CloudDownload className="size-[22px] text-primary-foreground/80 cursor-pointer transition-colors duration-300 hover:text-primary-foreground" />
-        <Trash2
-          onClick={() => deletePicture(item.id)}
-          className="size-[20px] text-red-400 hover:text-red-500 cursor-pointer transition-colors duration-300"
-        />
+
+        {hasDelete && (
+          <Trash2
+            onClick={() => deletePicture(item.id)}
+            className="size-[20px] text-red-400 hover:text-red-500 cursor-pointer transition-colors duration-300"
+          />
+        )}
       </div>
     </div>
   );

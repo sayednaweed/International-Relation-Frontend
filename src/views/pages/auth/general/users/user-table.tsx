@@ -243,6 +243,7 @@ export function UserTable() {
   ) as UserPermission;
   const hasView = per?.view;
   const hasAdd = per?.add;
+  const hasDelete = per?.delete;
 
   const watchOnClick = async (user: User) => {
     const userId = user.id;
@@ -460,7 +461,7 @@ export function UserTable() {
             users.filterList.data.map((item: User) => (
               <TableRowIcon
                 read={hasView}
-                remove={false}
+                remove={hasDelete}
                 edit={false}
                 onEdit={async () => {}}
                 key={item.email}

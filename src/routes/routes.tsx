@@ -16,8 +16,6 @@ import Unauthorized from "@/views/pages/error/unauthorized";
 import GuestLayout from "@/views/layout/guest-layout";
 import AuthLayout from "@/views/layout/auth-layout";
 import UserDashboardPage from "@/views/pages/auth/user/dashboard/user-dashboard-page";
-import UserReportsPage from "@/views/pages/auth/user/reports/user-reports-page";
-import SuperReportsPage from "@/views/pages/auth/general/reports/super-reports-page";
 import SuperUserPage from "@/views/pages/auth/general/users/super-user-page";
 import DebuggerDashboardPage from "@/views/pages/auth/debugger/dashboard/debugger-dashboard-page";
 import NgosPage from "@/views/site/tabs/ngos/ngos-page";
@@ -28,14 +26,11 @@ import DonorReportsPage from "@/views/pages/auth/donor/reports/donor-reports-pag
 import NgoDashboardPage from "@/views/pages/auth/ngo/dashboard/ngo-dashboard-page";
 import NgoProjectsPage from "@/views/pages/auth/ngo/projects/ngo-projects-page";
 import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
-import UserNgoPage from "@/views/pages/auth/user/ngo/user-ngo-page";
 import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import SuperDashboardPage from "@/views/pages/auth/super/dashboard/super-dashboard-page";
 import AdminDashboardPage from "@/views/pages/auth/admin/dashboard/admin-dashboard-page";
 import DonorProjectsPage from "@/views/pages/auth/donor/projects/donor-projects-page";
-import UserDonorPage from "@/views/pages/auth/user/donor/user-donor-page";
 import NewsManagementPage from "@/views/pages/auth/general/management/news/news-management-page";
-import UserNgoEditPage from "@/views/pages/auth/user/ngo/edit/user-ngo-edit-page";
 import UserLoginPage from "@/views/pages/guest/users/user-login-page";
 import DonorLoginPage from "@/views/pages/guest/donor/donor-login-page";
 import NgoLoginPage from "@/views/pages/guest/ngo/ngo-login-page";
@@ -46,10 +41,14 @@ import LoginPage from "@/views/pages/guest/login-page";
 import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news";
 import AboutManagementPage from "@/views/pages/auth/general/management/about/about-management-page";
 import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
-import EditNgoProgress from "@/views/pages/auth/general/ngo/edit-ngo-progress";
 import ErrorLayout from "@/views/layout/error-layout";
 import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
 import ApprovalPage from "@/views/pages/auth/general/approval/approval-page";
+import SuperReportsPage from "@/views/pages/auth/general/reports/super-reports-page";
+import NgoPage from "@/views/pages/auth/general/ngo/ngo-page";
+import UserNgoEditPage from "@/views/pages/auth/general/ngo/edit/user-ngo-edit-page";
+import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-submit";
+import DonorPage from "@/views/pages/auth/general/donor/donor-page";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -164,7 +163,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             path="ngo"
             element={
               <ProtectedRoute
-                element={<UserNgoPage />}
+                element={<NgoPage />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -184,7 +183,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             path="ngo/profile/edit/:id"
             element={
               <ProtectedRoute
-                element={<EditNgoProgress />}
+                element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -194,7 +193,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             path="donor"
             element={
               <ProtectedRoute
-                element={<UserDonorPage />}
+                element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
               />
@@ -348,7 +347,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             path="ngo"
             element={
               <ProtectedRoute
-                element={<UserNgoPage />}
+                element={<NgoPage />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -368,7 +367,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             path="ngo/profile/edit/:id"
             element={
               <ProtectedRoute
-                element={<EditNgoProgress />}
+                element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -428,7 +427,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             path="donor"
             element={
               <ProtectedRoute
-                element={<UserDonorPage />}
+                element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
               />
@@ -494,7 +493,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             path="reports"
             element={
               <ProtectedRoute
-                element={<UserReportsPage />}
+                element={<SuperReportsPage />}
                 routeName="reports"
                 permissions={permissions}
               />
@@ -515,7 +514,17 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             path="ngo"
             element={
               <ProtectedRoute
-                element={<UserNgoPage />}
+                element={<NgoPage />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/:id"
+            element={
+              <ProtectedRoute
+                element={<UserNgoEditPage />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -525,7 +534,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             path="ngo/profile/edit/:id"
             element={
               <ProtectedRoute
-                element={<EditNgoProgress />}
+                element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -585,7 +594,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             path="donor"
             element={
               <ProtectedRoute
-                element={<UserDonorPage />}
+                element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
               />

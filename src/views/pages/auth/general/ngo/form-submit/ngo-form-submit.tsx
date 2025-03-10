@@ -24,7 +24,7 @@ import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { RoleEnum, TaskTypeEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
 
-export default function EditNgoProgress() {
+export default function NgoFormSubmit() {
   const { t } = useTranslation();
   let { id } = useParams();
   const navigate = useNavigate();

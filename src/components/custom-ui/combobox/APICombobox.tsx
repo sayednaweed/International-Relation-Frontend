@@ -156,20 +156,20 @@ function APICombobox(props: IAPIComboboxProps) {
     setOpen(false);
   };
   return (
-    <div className={`self-start relative`}>
+    <div className={`self-start relative w-full`}>
       <Popover
         open={open}
         onOpenChange={(selection: any) => {
           if (!readonly) setOpen(selection);
         }}
       >
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild className="w-full">
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
             className={cn(
-              `w-fit min-w-[260px] bg-card dark:bg-card-secondary min-h-[43px] rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
+              `min-w-[260px] w-full h-fit py-3 bg-card text-wrap text-start dark:bg-card-secondary rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
                 error && "border-red-400 border"
               } ${required || lable ? "mt-[20px]" : "mt-2"} ${
                 readonly && "cursor-not-allowed"
@@ -191,7 +191,7 @@ function APICombobox(props: IAPIComboboxProps) {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="p-0 z-50 rtl:text-xl-rtl ltr:text-lg-ltr">
+        <PopoverContent className="p-0 z-50 rtl:text-xl-rtl ltr:text-lg-ltr ">
           <Command>
             <CommandInput
               placeholder={placeholderText}

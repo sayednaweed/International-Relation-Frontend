@@ -152,8 +152,8 @@ export default function OfficeSection(props: OfficeSectionProps) {
     }
   };
 
-  const hasEdit = permission.sub.get(PermissionEnum.about.sub.technical)?.edit;
-  const hasAdd = permission.sub.get(PermissionEnum.about.sub.technical)?.add;
+  const hasEdit = permission.sub.get(PermissionEnum.about.sub.office)?.edit;
+  const hasAdd = permission.sub.get(PermissionEnum.about.sub.office)?.add;
 
   return (
     <Card className="w-full self-center bg-card">

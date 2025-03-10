@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { Separator } from "@/components/ui/separator";
 import { useTranslation } from "react-i18next";
@@ -7,9 +7,12 @@ import NetworkSvg from "../image/NetworkSvg";
 import { X } from "lucide-react";
 import { SectionEnum } from "@/lib/constants";
 
-export default function NastranSidebar() {
+function NastranSidebar() {
   const { t, i18n } = useTranslation();
   const { user } = useGeneralAuthState();
+  let initialItemRef = useRef<HTMLDivElement | null>(null); // Store the reference to the selected item
+  const selectedItemRef = useRef<HTMLElement | null>(null); // Store the reference to the selected item
+
   const direction = i18n.dir();
   const sidebarRef = useRef<HTMLDivElement>(null);
   const bgSidebarRef = useRef<HTMLDivElement>(null);
@@ -21,6 +24,34 @@ export default function NastranSidebar() {
   const navigateTo = (path: string) => {
     // resizeSidebar();
     navigate(path, { replace: true });
+  };
+  const handleItemClick = (
+    path: string,
+    event: React.MouseEvent<HTMLElement>
+  ) => {
+    const selectedStyles: string[] = [
+      "bg-blue-500/30",
+      "text-tertiary",
+      "font-semibold",
+      "ltr:text-lg-ltr",
+      "rtl:text-3xl-rtl",
+    ];
+    const unselectedStyles: string[] = ["rtl:text-xl-rtl", "ltr:text-md-ltr"];
+    // Deselect the previous item (if any)
+    if (initialItemRef.current) {
+      initialItemRef.current.classList.remove(...selectedStyles);
+      initialItemRef.current.classList.add(...unselectedStyles);
+      initialItemRef.current = null;
+    }
+    if (selectedItemRef.current) {
+      selectedItemRef.current.classList.remove(...selectedStyles);
+    }
+
+    // Mark the current item as selected
+    selectedItemRef.current = event.currentTarget; // Update the ref to the clicked item
+    selectedItemRef.current.classList.add(...selectedStyles);
+    // Navigate to the new path
+    navigateTo(path);
   };
 
   useEffect(() => {
@@ -40,11 +71,13 @@ export default function NastranSidebar() {
 
         items.push(
           <div
-            onClick={() => navigateTo(path)}
-            className={`flex gap-x-3 cursor-pointer items-center py-[8px] mx-2 rounded-[8px] ${
+            // onClick={() => navigateTo(path)}
+            ref={isActive ? initialItemRef : undefined}
+            onClick={(event) => handleItemClick(path, event)}
+            className={`flex gap-x-3 cursor-pointer items-center py-[8px] hover:opacity-75 mx-2 rounded-[8px] ${
               isActive
                 ? " bg-blue-500/30 text-tertiary font-semibold ltr:text-lg-ltr rtl:text-3xl-rtl"
-                : "hover:opacity-75 rtl:text-xl-rtl ltr:text-md-ltr"
+                : "rtl:text-xl-rtl ltr:text-md-ltr"
             }`}
             key={key}
           >
@@ -55,7 +88,7 @@ export default function NastranSidebar() {
       }
       setData(items);
     }
-  }, [location.pathname, i18n.language]);
+  }, [i18n.language]);
   const resizeSidebar = () => {
     if (direction == "ltr") {
       sidebarRef.current!.style.left = "-300px";
@@ -98,3 +131,4 @@ export default function NastranSidebar() {
     </>
   );
 }
+export default memo(NastranSidebar);

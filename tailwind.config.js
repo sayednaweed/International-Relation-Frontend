@@ -40,6 +40,9 @@ module.exports = {
       screens: {
         xxl: "500px",
       },
+      spacing: {
+        bottom: "3rem", // Adding a custom padding value
+      },
       colors: {
         tertiary: "var(--tertiary)",
         fourth: "var(--fourth)",

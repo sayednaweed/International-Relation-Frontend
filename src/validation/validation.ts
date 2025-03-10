@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { ValidateItem, ValidationRule } from "./types";
 import { t } from "i18next";
-import { isFile } from "./utils";
+import { isFile, isValidationFunction } from "./utils";
 import { isString } from "@/lib/utils";
 
 export const validate = async (
@@ -15,7 +15,12 @@ export const validate = async (
     const value: string = vData[item.name];
     for (let index = 0; index < item.rules.length; index++) {
       const rule: ValidationRule = item.rules[index];
-      if (rule == "required") {
+      if (isValidationFunction(rule)) {
+        const passed = rule(value);
+        if (!passed)
+          errMap.set(item.name, `${t(item.name)} ${t("is_required")}`);
+        break;
+      } else if (rule == "required") {
         // 1. If value is object return hence has a value
         if (Array.isArray(value)) {
           if (value.length == 0) {
@@ -41,26 +46,28 @@ export const validate = async (
           break;
         }
       }
-      const parts = rule.split(":");
-      const length: number = parseInt(parts[1]);
-      if ("max" == parts[0]) {
-        if (value.length > length) {
-          errMap.set(
-            item.name,
-            `${t(item.name)} ${t("is_more_than")} ${length} ${t("character")}`
-          );
-          // Allow one validation per loop to eliminate to much Rerender
-          break;
+      if (isString(rule)) {
+        const parts = rule.split(":");
+        const length: number = parseInt(parts[1]);
+        if ("max" == parts[0]) {
+          if (value.length > length) {
+            errMap.set(
+              item.name,
+              `${t(item.name)} ${t("is_more_than")} ${length} ${t("character")}`
+            );
+            // Allow one validation per loop to eliminate to much Rerender
+            break;
+          }
         }
-      }
-      if ("min" == parts[0]) {
-        if (value.length < length) {
-          errMap.set(
-            item.name,
-            `${t(item.name)} ${t("is_less_than")} ${length} ${t("character")}`
-          );
-          // Allow one validation per loop to eliminate to much Rerender
-          break;
+        if ("min" == parts[0]) {
+          if (value.length < length) {
+            errMap.set(
+              item.name,
+              `${t(item.name)} ${t("is_less_than")} ${length} ${t("character")}`
+            );
+            // Allow one validation per loop to eliminate to much Rerender
+            break;
+          }
         }
       }
     }

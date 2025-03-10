@@ -63,7 +63,7 @@ export default function SettingsPage() {
   return (
     <Tabs
       dir={direction}
-      defaultValue={PermissionEnum.settings.sub.setting_language.toString()}
+      defaultValue={per.sub.values().next().value?.id.toString()}
       className="flex flex-col items-center"
     >
       <TabsList className="px-0 pb-1 h-fit mt-2 flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">

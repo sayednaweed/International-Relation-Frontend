@@ -10,6 +10,7 @@ export const SectionEnum = {
   news: "management/news",
   ngo: "ngo",
   donor: "donor",
+  aproval: "aproval",
 };
 export const LanguageEnum = {
   english: "english",

@@ -77,6 +77,7 @@ export default function AboutManagementPage() {
       }),
     []
   );
+
   return (
     <div className="px-2 pt-2 flex flex-col relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr ">
       <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
@@ -96,7 +97,7 @@ export default function AboutManagementPage() {
       </Breadcrumb>
       <Tabs
         dir={direction}
-        defaultValue={PermissionEnum.about.sub.director.toString()}
+        defaultValue={per.sub.values().next().value?.id.toString()}
         className="flex flex-col items-center"
       >
         <TabsList className="px-0 pb-1 h-fit  flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">
@@ -124,7 +125,7 @@ export default function AboutManagementPage() {
           value={PermissionEnum.about.sub.pic.toString()}
           className="w-full px-4 pt-8"
         >
-          <PicSection />
+          <PicSection permission={per} />
         </TabsContent>
         <TabsContent
           value={PermissionEnum.about.sub.office.toString()}

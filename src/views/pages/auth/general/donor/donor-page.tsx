@@ -9,7 +9,7 @@ import { Link } from "react-router";
 import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import { useTranslation } from "react-i18next";
 import { LockKeyhole } from "lucide-react";
-export default function UserDonorPage() {
+export default function DonorPage() {
   const { t } = useTranslation();
 
   return (

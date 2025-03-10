@@ -13,7 +13,7 @@ export default function AddUserInformation() {
     setUserData({ ...userData, [name]: value });
   };
   return (
-    <div className="flex flex-col mt-10 w-full sm:w-[86%] md:w-[60%] lg:w-[400px] gap-y-6 pb-12 mx-auto">
+    <div className="flex flex-col mt-10 w-full lg:w-[60%] 2xl:w-1/3 gap-y-6 pb-12">
       <CustomInput
         required={true}
         lable={t("full_name")}

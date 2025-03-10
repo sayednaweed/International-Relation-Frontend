@@ -169,7 +169,7 @@
   "count": "Count",
   "is_registered_before": "is registered before in system",
   "admin": "Admin",
-  "full_name": "full_name",
+  "full_name": "Full name",
   "debugger": "Debugger",
   "pashto": "Pashto",
   "home": "Home",
@@ -323,5 +323,6 @@
   "approval_des": "Once Your document is approved or rejected by our staff you will be informed.",
   "address_english": "Address English",
   "address_pashto": "Address Pashto",
-  "address_farsi": "Address Farsi"
+  "address_farsi": "Address Farsi",
+  "news_type": "News Type"
 }
