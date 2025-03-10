@@ -261,3 +261,18 @@ export interface Slider {
   saved_by: string;
   size: string;
 }
+export interface Approval {
+  id: string;
+  request_comment: string;
+  request_date: string;
+  respond_comment: string;
+  respond_date: string;
+  approved: number;
+  requester_id: string;
+  requester_name: string;
+  responder_id: string;
+  responder_name: string;
+  notifier_type_id: string;
+  notifier_type: string;
+  created_at: string;
+}

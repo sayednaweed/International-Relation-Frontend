@@ -324,5 +324,11 @@
   "address_english": "آدرس انگلیسی",
   "address_pashto": "آدرس پشتو",
   "address_farsi": "آدرس فارسی",
-  "news_type": "نوع خبر"
+  "news_type": "نوع خبر",
+  "approved": "تایید شده",
+  "reject": "رد",
+  "rejected": "رد شده",
+  "request_comment": "درخواست نظر",
+  "request_date": "تاریخ درخواست",
+  "event": "رویداد"
 }

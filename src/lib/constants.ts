@@ -89,6 +89,14 @@ export const PermissionEnum = {
     },
   },
   donor: { name: "donor", sub: {} },
+  approval: {
+    name: "approval",
+    sub: {
+      user: 31,
+      ngo: 32,
+      donor: 33,
+    },
+  },
 };
 export const StatusEnum = {
   register_form_not_completed: 1,

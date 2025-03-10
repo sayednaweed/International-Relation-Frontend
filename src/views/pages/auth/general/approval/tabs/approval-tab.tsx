@@ -3,52 +3,47 @@ import { useTranslation } from "react-i18next";
 import StepTab from "./step-tab";
 
 export interface DonorApprovalPageProps {
-  title: string;
+  pendingUrl: string;
+  approvedUrl: string;
+  rejectedUrl: string;
 }
 
 export default function ApprovalTab(props: DonorApprovalPageProps) {
-  const { title } = props;
+  const { pendingUrl, approvedUrl, rejectedUrl } = props;
   const { t } = useTranslation();
 
   return (
     <div className="px-4">
-      <h1>{title}</h1>
-      <Tabs className="border p-2" defaultValue="pending">
+      <Tabs className="border rounded-lg p-2" defaultValue="pending">
         <TabsList className="overflow-x-auto overflow-y-hidden w-full gap-x-2 justify-start">
           <TabsTrigger
             value="pending"
-            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none ${
-              1 === 1 && "border-tertiary border-b-[2px]"
-            }`}
+            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none data-[state=active]:border-tertiary data-[state=active]:border-b-[2px] transition-[border] ease-out`}
           >
             {t("pending")}
           </TabsTrigger>
           <TabsTrigger
             value="approved"
-            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none ${
-              2 === 2 && "border-tertiary border-b-[2px]"
-            }`}
+            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none data-[state=active]:border-tertiary data-[state=active]:border-b-[2px] transition-[border] ease-out`}
           >
             {t("approved")}
           </TabsTrigger>
 
           <TabsTrigger
             value="rejected"
-            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none ${
-              3 === 3 && "border-tertiary border-b-[2px]"
-            }`}
+            className={`rtl:flex-row-reverse rounded-br-none rounded-bl-none data-[state=active]:border-tertiary data-[state=active]:border-b-[2px] transition-[border] ease-out`}
           >
             {t("rejected")}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="pending" className="overflow-y-auto">
-          <StepTab title="pending" />
+          <StepTab url={pendingUrl} />
         </TabsContent>
         <TabsContent value="approved">
-          <StepTab title="approved" />
+          <StepTab url={approvedUrl} />
         </TabsContent>
         <TabsContent value="rejected">
-          <StepTab title="rejected" />
+          <StepTab url={rejectedUrl} />
         </TabsContent>
       </Tabs>
     </div>

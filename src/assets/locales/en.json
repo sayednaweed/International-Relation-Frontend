@@ -324,5 +324,11 @@
   "address_english": "Address English",
   "address_pashto": "Address Pashto",
   "address_farsi": "Address Farsi",
-  "news_type": "News Type"
+  "news_type": "News Type",
+  "approved": "Approved",
+  "reject": "Reject",
+  "rejected": "Rejected",
+  "request_comment": "Request comment",
+  "request_date": "Request date",
+  "event": "Event"
 }
