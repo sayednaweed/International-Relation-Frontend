@@ -330,5 +330,8 @@
   "rejected": "رد شده",
   "request_comment": "درخواست نظر",
   "request_date": "تاریخ درخواست",
-  "event": "رویداد"
+  "event": "رویداد",
+  "documents": "اسناد",
+  "requester": "درخواست کننده",
+  "approve": "تایید"
 }

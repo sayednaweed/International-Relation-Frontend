@@ -45,7 +45,7 @@ const CustomTextarea = React.forwardRef<
           ref={ref}
           className={cn(
             `focus-visible:ring-0 rtl:text-lg-rtl ltr:text-lg-ltr dark:!bg-black/30 ${
-              errorMessage && "border-red-400 border"
+              errorMessage && "border-red-400 border "
             } ${props.readOnly && "cursor-not-allowed"}`,
             className
           )}

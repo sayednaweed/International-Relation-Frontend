@@ -14,7 +14,7 @@ const SecondaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
         ref={ref}
         size="sm"
         className={cn(
-          `bg-tertiary hover:shadow-sm shadow-lg transition-shadow duration-200 ease-in-out hover:bg-tertiary rounded-md text-[12px] font-semibold w-fit text-white px-6 py-2`,
+          `bg-tertiary hover:shadow-sm shadow-lg transition-shadow duration-200 ease-in-out hover:bg-tertiary rounded-md text-[12px] font-semibold w-fit text-white`,
           className
         )}
       >

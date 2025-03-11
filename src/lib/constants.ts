@@ -39,6 +39,11 @@ export const ChecklistEnum = {
   ngo_register_form_ps: 9,
   ngo_register_form_fa: 10,
 };
+export const ApprovalTypeEnum = {
+  pending: 1,
+  approved: 2,
+  rejected: 3,
+};
 export const PermissionEnum = {
   users: {
     name: "users",
@@ -178,5 +183,6 @@ export const CACHE = {
   NGO_LIST_TABLE_PAGINATION_COUNT: "NGO_LIST_TABLE",
   NEWS_TABLE_PAGINATION_COUNT: "NEWS_TABLE",
   NEWS_PUB_TABLE_PAGINATION_COUNT: "NEWS_PUB_TABLE",
+  APPROVAL_TABLE_PAGINATION_COUNT: "APPROVAL_TABLE",
   SYSTEM_CALENDAR: "SYSTEM_CALENDAR",
 };

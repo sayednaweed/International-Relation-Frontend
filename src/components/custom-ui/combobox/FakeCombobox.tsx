@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export interface FakeComboboxProps {
   title: string;
   selected: string;
-  icon: any;
+  icon?: any;
   className?: string;
 }
 

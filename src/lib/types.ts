@@ -1,4 +1,5 @@
 import {
+  Approval,
   Audit,
   CheckList,
   Country,
@@ -197,6 +198,14 @@ export interface NewsPaginationData {
   perPage: number;
   currentPage: number;
   totalItems: number;
+}
+export type ApprovalSearch = "requester" | "id";
+export interface ApprovalPaginationData {
+  data: Approval[];
+  last_page: number;
+  per_page: number;
+  current_page: number;
+  total_items: number;
 }
 export type NgoInformation = {
   id: string;

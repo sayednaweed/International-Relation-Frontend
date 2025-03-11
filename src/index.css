@@ -94,7 +94,6 @@ body *:after ::-webkit-scrollbar {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: var(--tertiary);
-  border-radius: 2px;
 }
 
 /* Handle on hover */
@@ -108,9 +107,10 @@ body *:after {
   margin: 0;
   padding: 0;
 }
-
-#nastran_sidebar::-webkit-scrollbar-track {
-  margin: 20px;
+.custom-track-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 body {
   overflow: hidden;

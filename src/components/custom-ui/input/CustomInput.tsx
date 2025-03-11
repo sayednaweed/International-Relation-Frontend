@@ -76,7 +76,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, InputProps>(
               height: "50px",
             }}
             className={cn(
-              `focus-visible:ring-0 bg-card dark:!bg-black/30 focus-visible:border-primary/30 focus-visible:ring-offset-0 ${
+              `focus-visible:ring-0 bg-card dark:bg-black/30 focus-visible:border-primary/30 focus-visible:ring-offset-0 ${
                 startContent
                   ? "rtl:pr-[42px] ltr:ps-[42px]"
                   : "rtl:pr-[12px] ltr:ps-[12px]"

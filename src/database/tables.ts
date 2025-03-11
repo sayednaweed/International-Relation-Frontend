@@ -267,12 +267,13 @@ export interface Approval {
   request_date: string;
   respond_comment: string;
   respond_date: string;
-  approved: number;
+  approval_type_id: string;
+  approval_type: string;
   requester_id: string;
-  requester_name: string;
+  requester: string;
   responder_id: string;
   responder_name: string;
   notifier_type_id: string;
   notifier_type: string;
-  created_at: string;
+  document_count: string;
 }

@@ -330,5 +330,11 @@
   "rejected": "Rejected",
   "request_comment": "Request comment",
   "request_date": "Request date",
-  "event": "Event"
+  "event": "Event",
+  "documents": "Documents",
+  "requester": "Requester",
+  "approve": "Approve",
+  "respond_date": "Respond Date",
+  "responder": "Responder",
+  "responder_comment": "Responder comment"
 }

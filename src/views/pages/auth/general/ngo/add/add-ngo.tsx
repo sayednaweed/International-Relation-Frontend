@@ -12,6 +12,7 @@ import AddNgoInformation from "./steps/AddNgorInformation";
 import AddNgoAccount from "./steps/AddNgoAccount";
 import { NgoInformation } from "@/lib/types";
 import AddNgoRepresentative from "./steps/AddNgoRepresentative";
+import { checkStrength, passwordStrengthScore } from "@/validation/utils";
 
 export interface AddNgoProps {
   onComplete: (ngo: NgoInformation) => void;
@@ -158,7 +159,17 @@ export default function AddNgo(props: AddNgoProps) {
               { name: "username", rules: ["required", "max:128", "min:2"] },
               { name: "contact", rules: ["required"] },
               { name: "email", rules: ["required"] },
-              { name: "password", rules: ["required", "max:25", "min:8"] },
+              {
+                name: "password",
+                rules: [
+                  (value: any) => {
+                    const strength = checkStrength(value, t);
+                    const score = passwordStrengthScore(strength);
+                    if (score === 4) return true;
+                    return false;
+                  },
+                ],
+              },
             ],
           },
           {
