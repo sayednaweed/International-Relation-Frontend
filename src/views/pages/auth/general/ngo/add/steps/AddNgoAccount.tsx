@@ -16,7 +16,7 @@ export default function AddNgoAccount() {
     setUserData({ ...userData, [name]: value });
   };
   return (
-    <div className="flex flex-col mt-10 w-full lg:w-[60%] 2xl:w-1/3 gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full lg:w-[60%] gap-y-6 pb-12">
       <CustomInput
         size_="sm"
         dir="ltr"

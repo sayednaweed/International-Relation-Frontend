@@ -109,6 +109,8 @@ export const StatusEnum = {
   signed_register_form_submitted: 3,
   registered: 4,
   blocked: 5,
+  registration_expired: 6,
+  registration_extended: 7,
 };
 
 export const StaffEnum = {

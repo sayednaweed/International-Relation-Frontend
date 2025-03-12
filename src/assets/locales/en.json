@@ -336,5 +336,6 @@
   "approve": "Approve",
   "respond_date": "Respond Date",
   "responder": "Responder",
-  "responder_comment": "Responder comment"
+  "responder_comment": "Responder comment",
+  "change_dir": "Change Director"
 }

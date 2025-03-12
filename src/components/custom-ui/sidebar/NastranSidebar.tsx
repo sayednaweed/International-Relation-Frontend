@@ -107,6 +107,7 @@ function NastranSidebar() {
       />
       <nav
         ref={sidebarRef}
+        id="nastran_sidebar"
         className={`custom-track-scrollbar z-20 bg-primary dark:bg-card pb-6 overflow-y-hidden hover:overflow-y-auto dark:text-card-foreground text-primary-foreground overflow-auto absolute xl:relative top-[50%] xl:top-0 ltr:left-[-300px] ltr:xl:!left-0 rtl:xl:!right-0 rtl:right-[-300px] translate-y-[-50%] xl:translate-y-0 rounded-[12px] xl:rounded-none h-[98vh] xl:h-screen w-[240px] dark:border-primary/10`}
       >
         <X

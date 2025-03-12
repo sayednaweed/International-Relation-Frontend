@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 export interface FakeComboboxProps {
   title: string;
-  selected: string;
+  selected?: string;
   icon?: any;
   className?: string;
 }

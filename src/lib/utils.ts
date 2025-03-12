@@ -234,3 +234,7 @@ export const setToken = (data: { token: string; type: string }) => {
     type: data.type,
   });
 };
+
+export const byteTokb = (size: number) => {
+  return Math.round(size / 1024) + " KB";
+};

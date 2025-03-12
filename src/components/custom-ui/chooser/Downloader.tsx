@@ -4,6 +4,7 @@ import axios from "axios";
 import { CloudDownload } from "lucide-react";
 import { useState } from "react";
 import { FileType } from "@/lib/types";
+import IconButton from "../button/IconButton";
 
 interface DownloaderProps {
   downloadText: string;
@@ -75,10 +76,10 @@ const Downloader = (props: DownloaderProps) => {
     }
   };
   return (
-    <>
+    <div className="flex flex-col items-center">
       <label
         onClick={download}
-        className="flex flex-col items-center justify-center h-full py-3 transition-opacity duration-150 cursor-pointer hover:opacity-80"
+        className="flex flex-col items-center justify-center h-full transition-opacity duration-150 cursor-pointer hover:opacity-80"
       >
         <CloudDownload className="size-[30px] bg-tertiary text-primary-foreground rounded-full p-[4px]" />
         <strong className="ltr:text-md-ltr rtl:text-lg-rtl font-medium text-primary-text">
@@ -86,7 +87,7 @@ const Downloader = (props: DownloaderProps) => {
         </strong>
       </label>
       {isDownloading && (
-        <>
+        <div>
           <div className="relative mx-[4px] mb-[6px] w-[50px] h-[50px]">
             {/* Background Circle */}
             <svg
@@ -127,15 +128,16 @@ const Downloader = (props: DownloaderProps) => {
               {downloadProgress}%
             </div>
           </div>
-          <h1
+
+          <IconButton
+            className="hover:bg-red-400/30 mx-auto py-1 px-2 rtl:text-lg-rtl ltr:text-md-ltr transition-all border-red-400/40 text-red-400"
             onClick={cancelDownload}
-            className="rtl:text-[14px] ltr:text-[12px] font-semibold shadow-lg cursor-pointer hover:shadow bg-red-500 px-1 rounded-md text-white "
           >
             {cancelText}
-          </h1>
-        </>
+          </IconButton>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

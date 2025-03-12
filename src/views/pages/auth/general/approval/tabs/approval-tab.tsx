@@ -19,7 +19,7 @@ export default function ApprovalTab(props: DonorApprovalPageProps) {
   return (
     <Tabs
       dir={direction}
-      className="border-t rounded-lg p-0 h-full"
+      className="border-t rounded-lg p-0 h-full space-y-0"
       defaultValue="pending"
     >
       <TabsList className="overflow-x-auto overflow-y-hidden bg-card w-full justify-start p-0 m-0 rounded-none">
@@ -34,7 +34,7 @@ export default function ApprovalTab(props: DonorApprovalPageProps) {
           {t("rejected")}
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="pending" className="overflow-y-auto">
+      <TabsContent value="pending">
         <StepTab url={pendingUrl} />
       </TabsContent>
       <TabsContent value="approved">

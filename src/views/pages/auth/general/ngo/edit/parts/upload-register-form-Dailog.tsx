@@ -42,11 +42,13 @@ export default function UploadRegisterFormDailog(
   const [userData, setUserData] = useState<{
     start_date: DateObject;
     end_date: DateObject;
+    request_comment: string;
     checklistMap: Map<string, any>;
   }>({
     start_date: new DateObject(),
     end_date: new DateObject(),
     checklistMap: new Map(),
+    request_comment: "",
   });
 
   const loadInformation = async () => {
@@ -75,6 +77,7 @@ export default function UploadRegisterFormDailog(
         checklistMap: Array.from(userData.checklistMap),
         start_date: userData.start_date?.toDate()?.toISOString(),
         end_date: userData.end_date?.toDate()?.toISOString(),
+        request_comment: userData.request_comment,
       };
 
       if (loading) return;
@@ -208,7 +211,17 @@ export default function UploadRegisterFormDailog(
               className="py-3 w-full"
               errorMessage={error.get("end_date")}
             />
-            {/* <CustomTextarea/> */}
+            <CustomTextarea
+              lable={t("request_comment")}
+              rows={5}
+              maxLength={300}
+              placeholder={`${t("detail")}...`}
+              defaultValue={userData.request_comment}
+              onChange={(e: any) => {
+                const { value } = e.target;
+                setUserData({ ...userData, request_comment: value });
+              }}
+            />
             <div className="rtl:text-xl-rtl ltr:text-lg-ltr border rounded-lg py-1 px-2 w-fit bg-primary/5 items-center text-start flex gap-x-2">
               <BookOpenText className="size-[20px] text-primary/90" />
               {t("approval_des")}
@@ -218,7 +231,7 @@ export default function UploadRegisterFormDailog(
           <NastranSpinner />
         )}
       </CardContent>
-      <CardFooter className="flex justify-between pt-20">
+      <CardFooter className="flex justify-between">
         <Button
           className="rtl:text-xl-rtl ltr:text-lg-ltr"
           variant="outline"

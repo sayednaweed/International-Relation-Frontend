@@ -1,12 +1,14 @@
 import { StatusEnum } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export interface StatusButtonProps {
-  status_id: number;
-  status: string;
+  status_id?: number;
+  status?: string;
+  className?: string;
 }
 
 export default function StatusButton(props: StatusButtonProps) {
-  const { status_id, status } = props;
+  const { status_id, status, className } = props;
   const style =
     StatusEnum.registered === status_id
       ? "border-green-500"
@@ -18,7 +20,10 @@ export default function StatusButton(props: StatusButtonProps) {
 
   return (
     <div
-      className={`border-[1px] min-w-fit rtl:text-xl-rtl rtl:font-medium w-fit flex items-center gap-x-2 ltr:py-1 rtl:py-[2px] px-[8px] rounded-full ${style}`}
+      className={cn(
+        `border-[1px] min-w-fit rtl:text-xl-rtl rtl:font-medium w-fit flex items-center gap-x-2 ltr:py-1 rtl:py-[2px] px-[8px] rounded-full ${style}`,
+        className
+      )}
     >
       <div
         className={`size-[12px] min-h-[12px] min-w-[12px] rounded-full border-[3px] ${style}`}

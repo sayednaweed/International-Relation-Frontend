@@ -333,5 +333,9 @@
   "event": "رویداد",
   "documents": "اسناد",
   "requester": "درخواست کننده",
-  "approve": "تایید"
+  "approve": "تایید",
+  "respond_date": "تاریخ پاسخگویی",
+  "responder": "پاسخگو",
+  "responder_comment": "نظر پاسخگو",
+  "change_dir": "تغییر رئیس"
 }

@@ -13,7 +13,7 @@ export default function AddNgoRepresentative() {
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
   return (
-    <div className="flex flex-col mt-10 w-full xl:w-1/3 gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full lg:w-[60%] gap-y-6 pb-12">
       <BorderContainer
         title={t("representative")}
         required={true}
