@@ -3,16 +3,18 @@ import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMulti
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { Button } from "@/components/ui/button";
-import { User } from "@/database/tables";
+
 import { Users } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 
 type Users = { label: string; value: string };
+type Colums = { label: string; value: string };
 
 type AuditDataProps = {
   users: Users;
+  colums: Colums;
 };
 
 const userTypeOptions = [
@@ -40,26 +42,24 @@ export default function AuditDropdown() {
   const { userData, setUserData, error } = useContext(StepperContext);
   const [auditData, setAuditData] = useState<AuditDataProps>({
     users: { label: "", value: "" },
+    colums: { label: "", value: "" },
   });
 
-  const [users, setUsers] = useState<{ label: string; value: string }[]>([]);
-
   return (
-    <div className="flex justify-center gap-4 items-baseline">
+    <div className="flex gap-4  items-baseline ">
       <CustomSelect
-        className="w-[180px]"
+        className="w-full"
         placeholder={t("select_userType")}
         paginationKey=""
         emptyPlaceholder=""
         rangePlaceholder=""
         options={userTypeOptions}
-        onChange={(value: string) => {
-          setUsers([]);
-        }}
+        onChange={(value: string) => {}}
         updateCache={async () => {}}
         getCache={async () => []}
       />
       <APICombobox
+        className="w-full"
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) => {}}
@@ -69,25 +69,24 @@ export default function AuditDropdown() {
         errorMessage={error.get("users")}
         apiUrl={"users"}
         mode="single"
-        className="w-[180px]"
       />
 
       <CustomSelect
-        className="w-[180px]"
+        className="w-full"
         placeholder={t("select_event")}
         paginationKey=""
         emptyPlaceholder=""
         rangePlaceholder=""
         options={EventOptions}
         onChange={(value: string) => {
-          setAuditData((prev) => ({ ...prev, event: value, table: "" }));
+          setAuditData((prev) => ({ ...prev, event: value }));
         }}
         updateCache={async () => {}}
         getCache={async () => []}
       />
 
       <CustomSelect
-        className="w-[180px]"
+        className="w-full"
         placeholder={t("select_table")}
         paginationKey=""
         emptyPlaceholder=""
@@ -99,7 +98,18 @@ export default function AuditDropdown() {
         updateCache={async () => {}}
         getCache={async () => []}
       />
-
+      <APICombobox
+        className="w-full"
+        placeholderText={t("search_item")}
+        errorText={t("no_item")}
+        onSelect={(selection: any) => {}}
+        required={true}
+        selectedItem={auditData["colums"]?.label}
+        placeHolder={t("select_colum")}
+        errorMessage={error.get("colum")}
+        apiUrl={"users"}
+        mode="single"
+      />
       <CustomMultiDatePicker
         dateOnComplete={(selectedDates: DateObject[]) => {
           console.log("Selected Dates:", selectedDates);
