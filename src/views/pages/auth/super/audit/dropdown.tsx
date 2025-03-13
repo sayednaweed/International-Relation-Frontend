@@ -46,7 +46,7 @@ export default function AuditDropdown() {
   });
 
   return (
-    <div className="flex gap-4  items-baseline ">
+    <div className="flex gap-4  items-baseline  ">
       <CustomSelect
         className="w-full"
         placeholder={t("select_userType")}
@@ -59,7 +59,7 @@ export default function AuditDropdown() {
         getCache={async () => []}
       />
       <APICombobox
-        className="w-full"
+        className="w-full  py-2 mt-6"
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) => {}}
@@ -72,7 +72,7 @@ export default function AuditDropdown() {
       />
 
       <CustomSelect
-        className="w-full"
+        className="w-full "
         placeholder={t("select_event")}
         paginationKey=""
         emptyPlaceholder=""
@@ -92,14 +92,12 @@ export default function AuditDropdown() {
         emptyPlaceholder=""
         rangePlaceholder=""
         options={TableOptions}
-        onChange={(value: string) => {
-          setAuditData((prev) => ({ ...prev, table: value }));
-        }}
+        onChange={(value: string) => {}}
         updateCache={async () => {}}
         getCache={async () => []}
       />
       <APICombobox
-        className="w-full"
+        className="w-full py-2 mt-6"
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) => {}}
