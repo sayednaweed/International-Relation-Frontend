@@ -147,7 +147,7 @@ export default function EditDirectorTab(props: EditDirectorTabProps) {
                 className="py-8"
                 button={
                   <PrimaryButton className="text-primary-foreground">
-                    {t("add")}
+                    {t("change_dir")}
                   </PrimaryButton>
                 }
                 showDialog={async () => true}

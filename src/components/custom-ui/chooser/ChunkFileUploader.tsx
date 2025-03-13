@@ -10,8 +10,6 @@ export interface ChunkFileUploaderProps
   requiredHint?: string;
   parentClassName?: string;
   errorMessage?: string;
-  maxSize: number;
-  validTypes: string[];
   disabled?: boolean;
   downloadParam?: { path: string; fileName: string };
   onComplete: (record: any) => Promise<void>;
@@ -21,6 +19,8 @@ export interface ChunkFileUploaderProps
   headers: any;
   icon?: any;
   inputFieldName: string;
+  onFailed: (failed: boolean, response: any) => Promise<void>;
+  validateBeforeUpload: (file: File) => boolean;
 }
 
 const ChunkFileUploader = React.forwardRef<
@@ -37,6 +37,8 @@ const ChunkFileUploader = React.forwardRef<
     inputFieldName,
     accept,
     className,
+    onFailed,
+    validateBeforeUpload,
   } = props;
   const { t } = useTranslation();
   return (
@@ -73,15 +75,13 @@ const ChunkFileUploader = React.forwardRef<
           onStart={async (file: File) => {
             onStart(file);
           }}
-          onFailed={async (failed: boolean) => {
-            if (failed) {
-            }
-          }}
+          onFailed={onFailed}
           onComplete={async (response: any) => {
             await onComplete(response);
           }}
-          failedMessage={t("failed_to_upld")}
           cancelText={t("cancel")}
+          failedText={t("failed")}
+          validateBeforeUpload={validateBeforeUpload}
         />
       </>
     </ChunkedUploady>

@@ -1,4 +1,5 @@
 import {
+  AgreementDocument,
   Approval,
   Audit,
   CheckList,
@@ -220,7 +221,6 @@ export type NgoInformation = {
   email: string;
   contact: string;
   username: string;
-  registration_expired: boolean;
   created_at: string;
 };
 
@@ -279,7 +279,7 @@ export interface FileType {
   path: string;
   name: string;
   extension: string;
-  size: string;
+  size: number;
 }
 export interface IDirector {
   id: string;
@@ -332,3 +332,21 @@ export type ICheckList = {
   description: string;
   created_at: string;
 };
+
+export interface IApproval {
+  id: string;
+  requester_id: string;
+  requester_name: string;
+  request_date: string;
+  start_date: string;
+  end_date: string;
+  request_comment: string;
+  responder_id?: string;
+  responder?: string;
+  respond_date?: string;
+  respond_comment?: string;
+  notifier_type_id: number;
+  notifier_type: string;
+  approval_documents: AgreementDocument[];
+  completed: number;
+}

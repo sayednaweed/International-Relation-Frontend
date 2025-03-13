@@ -11,11 +11,7 @@ import {
 import { useTranslation } from "react-i18next";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
-import {
-  Agreement,
-  AgreementDocument,
-  UserPermission,
-} from "@/database/tables";
+import { Agreement, AgreementDocument } from "@/database/tables";
 import { useParams } from "react-router";
 import {
   Collapsible,
@@ -23,19 +19,13 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import CheckListChooser from "@/components/custom-ui/chooser/CheckListChooser";
-import { getConfiguration, toLocaleDate } from "@/lib/utils";
+import { toLocaleDate } from "@/lib/utils";
 import { useGlobalState } from "@/context/GlobalStateContext";
-import { FileType } from "@/lib/types";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { PermissionEnum } from "@/lib/constants";
+import CheckListDownloader from "@/components/custom-ui/chooser/CheckListDownloader";
 
-interface EditAgreemenTabProps {
-  permissions: UserPermission;
-}
-export default function EditAgreemenTab(props: EditAgreemenTabProps) {
-  const { permissions } = props;
+export default function EditAgreemenTab() {
   const { t } = useTranslation();
   const { id } = useParams();
   const [state] = useGlobalState();
@@ -68,8 +58,6 @@ export default function EditAgreemenTab(props: EditAgreemenTabProps) {
     loadAgreement();
   }, []);
 
-  const information = permissions.sub.get(PermissionEnum.ngo.sub.ngo_agreement);
-  const hasEdit = information?.edit;
   return (
     <Card className="h-fit">
       <CardHeader className="space-y-0">
@@ -91,7 +79,6 @@ export default function EditAgreemenTab(props: EditAgreemenTabProps) {
               agreements.map((agreement: Agreement, index: number) => (
                 <AgreementDocumentComponent
                   ngo_id={id}
-                  hasEdit={hasEdit}
                   index={index}
                   key={index}
                   state={state}
@@ -129,11 +116,10 @@ export interface AgreementProps {
   index: number;
   state: any;
   ngo_id: string | undefined;
-  hasEdit?: boolean;
 }
 
 const AgreementDocumentComponent = (props: AgreementProps) => {
-  const { agreement, index, state, ngo_id, hasEdit } = props;
+  const { agreement, index, state, ngo_id } = props;
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -164,6 +150,7 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
     }
     setLoading(false);
   };
+
   return (
     <Collapsible key={agreement.id}>
       <div className="flex items-center p-2 rtl:text-xl-rtl ltr:text-2xl-ltr">
@@ -198,45 +185,11 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
           </h1>
         ) : (
           documents.map((document: AgreementDocument, index: number) => (
-            <CheckListChooser
-              hasEdit={hasEdit}
-              number={`${index + 1}`}
+            <CheckListDownloader
               key={index}
-              url={`${
-                import.meta.env.VITE_API_BASE_URL
-              }/api/v1/ngo/checklist/file/upload`}
-              headers={{
-                "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-                "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                Authorization: "Bearer " + getConfiguration()?.token,
-              }}
-              maxSize={1024}
-              accept={document.acceptable_mimes}
-              name={document.checklist_name}
-              defaultFile={document as FileType}
-              validTypes={["image/png", "image/jpeg", "image/gif"]}
-              uploadParam={{
-                ngo_id: ngo_id,
-                document_id: document.document_id,
-                checklist_id: document.checklist_id,
-              }}
-              onComplete={async (record: any) => {
-                for (const element of record) {
-                  const checklist = element[element.length - 1];
-                  const updated = documents.map((item) =>
-                    checklist.checklist_id == item.checklist_id
-                      ? checklist
-                      : item
-                  );
-                  setDocuments(updated);
-                }
-              }}
-              onStart={async (_file: any) => {
-                // const updated = documents.map((item) =>
-                //   item.checklist_id === file.checklist_id ? file : item
-                // );
-                // setDocuments(updated);
-              }}
+              document={document}
+              index={index}
+              checklist_name={document.checklist_name}
             />
           ))
         )}

@@ -16,8 +16,6 @@ export interface CheckListProps
   parentClassName?: string;
   errorMessage?: string;
   defaultFile?: File | FileType;
-  maxSize: number;
-  validTypes: string[];
   disabled?: boolean;
   downloadParam?: { path: string; fileName: string };
   onComplete: (record: any) => Promise<void>;
@@ -26,6 +24,8 @@ export interface CheckListProps
   uploadParam?: any;
   headers: any;
   hasEdit?: boolean;
+  onFailed: (failed: boolean, response: any) => void;
+  validateBeforeUpload: (file: File) => boolean;
 }
 
 const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
@@ -42,6 +42,8 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
       accept,
       className,
       hasEdit,
+      onFailed,
+      validateBeforeUpload,
     } = props;
     const { t } = useTranslation();
     const [uploaded, setUploaded] = useState(false);
@@ -55,30 +57,26 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
     return (
       <ul
         className={cn(
-          "gap-x-2 grid w-full grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_1fr_1fr] items-center",
+          "grid grid-cols-1 gap-y-1 sm:grid-cols-[auto_1fr_1fr_auto] gap-x-6 border-t pt-1",
           className
         )}
       >
-        {number && <li className="font-bold text-[15px]">{number}.</li>}
-        <li className="rtl:text-md-rtl ltr:text-lg-ltr font-semibold">
+        {number && <li className="text-[14px] font-semibold">{number}.</li>}
+        <li className="ltr:text-md-ltr rtl:text-md-rtl font-semibold">
           {name}
         </li>
-        <li className="flex items-center justify-end gap-x-4 px-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
+        <li className="grid grid-cols-[auto_1fr_1fr] items-start gap-x-2 rtl:text-lg-rtl ltr:text-lg-ltr font-semibold">
           {uploaded || defaultFile?.name ? (
             <Check className="size-[22px] text-green-500 rounded-sm" />
           ) : (
-            <X className="size-[24px] text-red-500 rounded-full p-[2px]" />
+            <X className="size-[24px] text-red-500 rounded-full" />
           )}
           {isFile(defaultFile) ? (
-            <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden text-end">
-              {defaultFile?.name}
-            </h1>
+            <h1 className="text-[14px]">{defaultFile?.name}</h1>
           ) : (
             defaultFile?.name && (
               <>
-                <h1 className="text-[15px] font-normal max-w-36 text-ellipsis overflow-hidden text-end">
-                  {defaultFile?.name}
-                </h1>
+                <h1 className="text-[14px] font-normal">{defaultFile?.name}</h1>
                 <Downloader
                   cancelText={t("cancel")}
                   filetoDownload={defaultFile}
@@ -91,10 +89,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
           )}
         </li>
         {hasEdit && (
-          <li
-            className="flex sm:justify-end col-span-full sm:col-span-1"
-            ref={downloadRef}
-          >
+          <li className="flex justify-start" ref={downloadRef}>
             <ChunkedUploady
               withCredentials={true}
               method="POST"
@@ -103,15 +98,15 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
                 headers: headers,
                 params: uploadParam,
               }}
-              chunkSize={1400000}
+              chunkSize={500000}
               inputFieldName={"file"}
               accept={accept}
             >
-              <div className="flex items-center gap-x-4">
+              <div className="grid grid-cols-1 items-start gap-y-1">
                 <UploadButton text="">
-                  <label className="flex flex-col items-center justify-center h-full py-3 transition-opacity duration-150 cursor-pointer hover:opacity-80">
+                  <label className="flex flex-col items-center justify-center h-full transition-opacity duration-150 cursor-pointer hover:opacity-80">
                     <CloudUpload className="size-[30px] bg-primary text-primary-foreground rounded-full p-[4px]" />
-                    <strong className="ltr:text-lg-ltr rtl:text-xl-rtl font-medium text-primary-text">
+                    <strong className="ltr:text-md-ltr rtl:text-lg-rtl font-medium text-primary-text">
                       {t("select_a_file")}
                     </strong>
                   </label>
@@ -121,8 +116,9 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
                   onStart={async (file: File) => {
                     onStart(file);
                   }}
-                  onFailed={async (failed: boolean) => {
+                  onFailed={async (failed: boolean, response: any) => {
                     if (failed) {
+                      onFailed(failed, response);
                       setUploaded(false);
                     }
                   }}
@@ -130,8 +126,9 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
                     setUploaded(true);
                     await onComplete(response);
                   }}
-                  failedMessage={t("failed_to_upld")}
                   cancelText={t("cancel")}
+                  failedText={t("failed")}
+                  validateBeforeUpload={validateBeforeUpload}
                 />
               </div>
             </ChunkedUploady>

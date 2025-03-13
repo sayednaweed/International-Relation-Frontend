@@ -5,7 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { CountryEnum, TaskTypeEnum } from "@/lib/constants";
-import { getConfiguration } from "@/lib/utils";
+import { getConfiguration, validateFile } from "@/lib/utils";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
@@ -64,11 +64,10 @@ export default function CheckListTab(props: CheckListTabProps) {
                 "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
                 Authorization: "Bearer " + getConfiguration()?.token,
               }}
-              maxSize={1024}
               accept={checklist.acceptable_mimes}
               name={checklist.name}
               defaultFile={userData.checklistMap.get(checklist.id)}
-              validTypes={["image/png", "image/jpeg", "image/gif"]}
+              // validTypes={["image/png", "image/jpeg", "image/gif"]}
               uploadParam={{
                 checklist_id: checklist.id,
                 ngo_id: id,
@@ -89,13 +88,35 @@ export default function CheckListTab(props: CheckListTabProps) {
                 // When new file added and save is not called old file data will show
                 onSaveClose(userData, 4, true);
               }}
-              onStart={async (file: File) => {
-                const checklistMap: Map<string, any> = userData.checklistMap;
-                checklistMap.set(checklist.id, file);
-                setUserData({
-                  ...userData,
-                  checklistMap: checklistMap,
-                });
+              onFailed={async (failed: boolean, response: any) => {
+                if (failed) {
+                  if (response) {
+                    toast({
+                      toastType: "ERROR",
+                      description: response.data.message,
+                    });
+                    const checklistMap: Map<string, any> =
+                      userData.checklistMap;
+                    checklistMap.delete(checklist.id);
+                    setUserData({
+                      ...userData,
+                      checklistMap: checklistMap,
+                    });
+                  }
+                }
+              }}
+              onStart={async (_file: File) => {}}
+              validateBeforeUpload={function (file: File): boolean {
+                const maxFileSize = checklist.file_size * 1024; // 2MB
+                const validTypes: string[] =
+                  checklist.acceptable_mimes.split(",");
+                const resultFile = validateFile(
+                  file,
+                  Math.round(maxFileSize),
+                  validTypes,
+                  t
+                );
+                return resultFile ? true : false;
               }}
             />
           );

@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { TaskTypeEnum } from "@/lib/constants";
-import { getConfiguration } from "@/lib/utils";
+import { getConfiguration, validateFile } from "@/lib/utils";
 import { setServerError, validate } from "@/validation/validation";
 import { BookOpenText } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -42,11 +42,13 @@ export default function UploadRegisterFormDailog(
   const [userData, setUserData] = useState<{
     start_date: DateObject;
     end_date: DateObject;
+    request_comment: string;
     checklistMap: Map<string, any>;
   }>({
     start_date: new DateObject(),
     end_date: new DateObject(),
     checklistMap: new Map(),
+    request_comment: "",
   });
 
   const loadInformation = async () => {
@@ -75,6 +77,7 @@ export default function UploadRegisterFormDailog(
         checklistMap: Array.from(userData.checklistMap),
         start_date: userData.start_date?.toDate()?.toISOString(),
         end_date: userData.end_date?.toDate()?.toISOString(),
+        request_comment: userData.request_comment,
       };
 
       if (loading) return;
@@ -147,11 +150,9 @@ export default function UploadRegisterFormDailog(
                     "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
                     Authorization: "Bearer " + getConfiguration()?.token,
                   }}
-                  maxSize={1024}
                   accept={checklist.acceptable_mimes}
                   name={checklist.name}
                   defaultFile={userData.checklistMap.get(checklist.id)}
-                  validTypes={["image/png", "image/jpeg", "image/gif"]}
                   uploadParam={{
                     checklist_id: checklist.id,
                     ngo_id: id,
@@ -170,14 +171,35 @@ export default function UploadRegisterFormDailog(
                       });
                     }
                   }}
-                  onStart={async (file: File) => {
-                    const checklistMap: Map<string, any> =
-                      userData.checklistMap;
-                    checklistMap.set(checklist.id, file);
-                    setUserData({
-                      ...userData,
-                      checklistMap: checklistMap,
-                    });
+                  onFailed={async (failed: boolean, response: any) => {
+                    if (failed) {
+                      if (response) {
+                        toast({
+                          toastType: "ERROR",
+                          description: response.data.message,
+                        });
+                        const checklistMap: Map<string, any> =
+                          userData.checklistMap;
+                        checklistMap.delete(checklist.id);
+                        setUserData({
+                          ...userData,
+                          checklistMap: checklistMap,
+                        });
+                      }
+                    }
+                  }}
+                  onStart={async (_file: File) => {}}
+                  validateBeforeUpload={function (file: File): boolean {
+                    const maxFileSize = checklist.file_size * 1024; // 2MB
+                    const validTypes: string[] =
+                      checklist.acceptable_mimes.split(",");
+                    const resultFile = validateFile(
+                      file,
+                      Math.round(maxFileSize),
+                      validTypes,
+                      t
+                    );
+                    return resultFile ? true : false;
                   }}
                 />
               );
@@ -208,7 +230,17 @@ export default function UploadRegisterFormDailog(
               className="py-3 w-full"
               errorMessage={error.get("end_date")}
             />
-            {/* <CustomTextarea/> */}
+            <CustomTextarea
+              lable={t("request_comment")}
+              rows={5}
+              maxLength={300}
+              placeholder={`${t("detail")}...`}
+              defaultValue={userData.request_comment}
+              onChange={(e: any) => {
+                const { value } = e.target;
+                setUserData({ ...userData, request_comment: value });
+              }}
+            />
             <div className="rtl:text-xl-rtl ltr:text-lg-ltr border rounded-lg py-1 px-2 w-fit bg-primary/5 items-center text-start flex gap-x-2">
               <BookOpenText className="size-[20px] text-primary/90" />
               {t("approval_des")}
@@ -218,7 +250,7 @@ export default function UploadRegisterFormDailog(
           <NastranSpinner />
         )}
       </CardContent>
-      <CardFooter className="flex justify-between pt-20">
+      <CardFooter className="flex justify-between">
         <Button
           className="rtl:text-xl-rtl ltr:text-lg-ltr"
           variant="outline"

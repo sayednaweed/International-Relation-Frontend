@@ -16,6 +16,7 @@ import gregorian from "react-date-object/calendars/gregorian";
 import arabic from "react-date-object/calendars/arabic";
 import persian from "react-date-object/calendars/persian";
 import { DateObject } from "react-multi-date-picker";
+import { toast } from "@/components/ui/use-toast";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -233,4 +234,35 @@ export const setToken = (data: { token: string; type: string }) => {
     token: data.token,
     type: data.type,
   });
+};
+
+export const byteTokb = (size: number) => {
+  return Math.round(size / 1024) + " KB";
+};
+
+export const validateFile = (
+  file: File,
+  maxFileSize: number,
+  validTypes: string[],
+  t: any
+): File | undefined => {
+  if (file.size >= maxFileSize) {
+    toast({
+      toastType: "ERROR",
+      title: t("error"),
+      description: t("file_size_must_less") + maxFileSize / 1024 + "kb",
+    });
+    return;
+  }
+  /** Type validation */
+  if (!validTypes.includes(file.type)) {
+    toast({
+      toastType: "ERROR",
+      title: t("error"),
+      description: t("ples_sel_vali_file") + validTypes.join(", "),
+    });
+    return;
+  }
+
+  return file;
 };

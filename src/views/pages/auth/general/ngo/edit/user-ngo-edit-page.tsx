@@ -244,7 +244,8 @@ export default function UserNgoEditPage() {
               />
               {tableList}
 
-              {userData?.ngoInformation?.registration_expired && (
+              {userData?.ngoInformation.status_id ==
+                StatusEnum.registration_expired && (
                 <NastranModel
                   size="lg"
                   isDismissable={false}
@@ -329,7 +330,7 @@ export default function UserNgoEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_agreement.toString()}
             >
-              <EditAgreemenTab permissions={per} />
+              <EditAgreemenTab />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"

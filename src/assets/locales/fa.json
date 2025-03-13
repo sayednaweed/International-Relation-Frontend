@@ -92,11 +92,8 @@
   "update_user_acc_info": "اطلاعات حساب کاربری را به روز کنید",
   "u_are_not_authzed!": "شما مجاز نیستید!",
   "save": "ذخیره",
-  "no_file_was_chosen": "هیچ فایلی انتخاب نشد",
-  "files_list_is_empty": "لیست فایل ها خالی است",
-  "img_size_shou_less": "اندازه تصویر باید کمتر از",
-  "ples_sel_vali_img_file ": "(jpg، png، jpeg)  لطفاً یک فایل تصویری معتبر انتخاب کنید.",
-  "no_img_selected!": "هیچ تصویری انتخاب نشده ",
+  "file_size_must_less": "اندازه فایل باید کمتر باشد از: ",
+  "ples_sel_vali_file": "نوع فایل باید به صورت ذیل باشد: ",
   "choose": "انتخاب کنید",
   "failed_retry": "تلاش مجدد",
   "update_account_password": "رمز عبور حساب را به روز کنید",
@@ -333,5 +330,10 @@
   "event": "رویداد",
   "documents": "اسناد",
   "requester": "درخواست کننده",
-  "approve": "تایید"
+  "approve": "تایید",
+  "respond_date": "تاریخ پاسخگویی",
+  "responder": "پاسخگو",
+  "responder_comment": "نظر پاسخگو",
+  "change_dir": "تغییر رئیس",
+  "failed": "ناکام"
 }

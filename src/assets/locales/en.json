@@ -92,11 +92,8 @@
   "update_user_acc_info": "Update user account information",
   "u_are_not_authzed!": "You are not authorized!",
   "save": "Save",
-  "no_file_was_chosen": "No file was chosen",
-  "files_list_is_empty": "Files list is empty",
-  "img_size_shou_less": "Image size should be less then",
-  "ples_sel_vali_img_file ": "Select a valid image file (jpg، png، jpeg).",
-  "no_img_selected!": "No image selected",
+  "file_size_must_less": "File size must be less than: ",
+  "ples_sel_vali_file": "The file type must be as follows: ",
   "choose": "Choose",
   "failed_retry": "Retry",
   "update_account_password": "Update account password",
@@ -336,5 +333,7 @@
   "approve": "Approve",
   "respond_date": "Respond Date",
   "responder": "Responder",
-  "responder_comment": "Responder comment"
+  "responder_comment": "Responder comment",
+  "change_dir": "Change Director",
+  "failed": "Failed"
 }

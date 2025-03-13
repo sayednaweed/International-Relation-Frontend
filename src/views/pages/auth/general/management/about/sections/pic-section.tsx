@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import ChunkFileUploader from "@/components/custom-ui/chooser/ChunkFileUploader";
 import { Slider, UserPermission } from "@/database/tables";
-import { getConfiguration } from "@/lib/utils";
+import { getConfiguration, validateFile } from "@/lib/utils";
 import { CloudDownload, Trash2, X } from "lucide-react";
 import { PermissionEnum } from "@/lib/constants";
 
@@ -60,8 +60,6 @@ export default function PicSection(props: PicSectionProps) {
           name={""}
           accept=".jpeg,.jpg,.png"
           inputFieldName="file"
-          maxSize={0}
-          validTypes={[]}
           onComplete={async (record: any) => {
             for (const element of record) {
               const newImage = element[element.length - 1] as Slider;
@@ -74,6 +72,32 @@ export default function PicSection(props: PicSectionProps) {
             "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
             "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
             Authorization: "Bearer " + getConfiguration()?.token,
+          }}
+          onFailed={async (failed: boolean, response: any) => {
+            if (failed) {
+              if (response) {
+                toast({
+                  toastType: "ERROR",
+                  description: response.data.message,
+                });
+              }
+            }
+          }}
+          validateBeforeUpload={function (file: File): boolean {
+            const maxFileSize = 2 * 1024 * 1024; // 2MB
+            const validTypes: string[] = [
+              "image/jpeg",
+              "image/png",
+              "image/jpg",
+            ];
+
+            const resultFile = validateFile(
+              file,
+              Math.round(maxFileSize),
+              validTypes,
+              t
+            );
+            return resultFile ? true : false;
           }}
         />
       )}

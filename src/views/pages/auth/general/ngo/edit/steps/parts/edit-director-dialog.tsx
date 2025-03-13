@@ -23,7 +23,6 @@ import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 
 export interface EditDirectorDialogProps {
   onComplete: (director: IDirector) => void;
@@ -425,16 +424,6 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
               </MultiTabTextarea>
             )}
           </BorderContainer>
-          <CustomCheckbox
-            checked={userData.is_active}
-            onCheckedChange={(value: boolean) =>
-              setUserData({ ...userData, is_active: value })
-            }
-            parentClassName="rounded-md py-[12px] gap-x-1 bg-card border px-[10px]"
-            text={t("active")}
-            description={t("allows_user_grant")}
-            errorMessage={error.get("is_active")}
-          />
         </CardContent>
       )}
       <CardFooter className="flex justify-between">

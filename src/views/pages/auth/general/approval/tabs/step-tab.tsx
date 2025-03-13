@@ -22,9 +22,10 @@ import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { ApprovalPaginationData, ApprovalSearch } from "@/lib/types";
 import { toLocaleDate } from "@/lib/utils";
 import { ListFilter, Repeat2, Search } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ViewApprovalDailog from "./view-approval-Dailog";
+import StatusButton from "@/components/custom-ui/button/StatusButton";
 export interface ApprovedStepTabProps {
   url: string;
 }
@@ -108,7 +109,10 @@ export default function StepTab(props: ApprovedStepTabProps) {
   const viewApprovalDialog = viewDetails.view && (
     <ViewApprovalDailog
       approval_id={viewDetails.approval_id}
-      onComplete={() => {}}
+      onComplete={(id: string) => {
+        const updatedList = list.data.filter((item: Approval) => item.id != id);
+        setList({ ...list, data: updatedList });
+      }}
       onClose={() => setViewDetails({ ...viewDetails, view: false })}
     />
   );
@@ -116,7 +120,7 @@ export default function StepTab(props: ApprovedStepTabProps) {
   return (
     <>
       {viewApprovalDialog}
-      <div className="flex flex-col sm:items-baseline items-center justify-start sm:flex-row rounded-md gap-2 flex-1 px-2">
+      <div className="flex flex-col mb-1 sm:items-baseline items-start justify-start sm:flex-row rounded-md gap-2 flex-1">
         <CustomInput
           size_="lg"
           placeholder={`${t(filters.search.column)}...`}
@@ -266,7 +270,10 @@ export default function StepTab(props: ApprovedStepTabProps) {
                   {toLocaleDate(new Date(approval.request_date), state)}
                 </TableCell>
                 <TableCell className=" text-nowrap">
-                  {approval.notifier_type}
+                  <StatusButton
+                    status_id={approval.notifier_type_id}
+                    status={approval.notifier_type}
+                  />
                 </TableCell>
                 <TableCell>{approval.document_count}</TableCell>
               </TableRowIcon>

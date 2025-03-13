@@ -199,7 +199,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
         </div>
       )}
 
-      <h1 className="text-primary uppercase font-semibold rtl:text-2xl-rtl ltr:text-4xl-ltr max-w-64 truncate">
+      <h1 className="text-primary uppercase font-semibold line-clamp-2 text-wrap rtl:text-2xl-rtl ltr:text-4xl-ltr max-w-64 truncate">
         {userData?.ngoInformation?.username}
       </h1>
       <h1 className="leading-6 rtl:text-sm-rtl ltr:text-2xl-ltr max-w-64 truncate">
