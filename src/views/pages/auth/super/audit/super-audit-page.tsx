@@ -9,6 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
 import { AuditTable } from "./audit-table";
+import AuditDropdown from "./dropdown";
 
 export default function SuperAuditPage() {
   const { t } = useTranslation();
@@ -30,6 +31,7 @@ export default function SuperAuditPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
+      <AuditDropdown />
       <AuditTable />
     </div>
   );
