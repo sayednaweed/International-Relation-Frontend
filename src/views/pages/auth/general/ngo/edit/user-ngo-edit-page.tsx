@@ -33,7 +33,6 @@ import EditMoreInformationTab from "./steps/edit-more-information-tab";
 import EditInformationTab from "./steps/edit-information-tab";
 import EditStatusTab from "./steps/edit-status-tab";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
-import AddNgo from "../add/add-ngo";
 import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
@@ -246,25 +245,19 @@ export default function UserNgoEditPage() {
 
               {userData?.ngoInformation.status_id ==
                 StatusEnum.registration_expired && (
-                <NastranModel
-                  size="lg"
-                  isDismissable={false}
-                  button={
-                    <IconButton className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2">
-                      <Zap
-                        className={`size-[18px] pointer-events-none justify-self-end`}
-                      />
-                      <h1
-                        className={`rtl:text-lg-rtl ltr:text-xl-ltr justify-self-start text-start font-semibold`}
-                      >
-                        {t("extend_reg")}
-                      </h1>
-                    </IconButton>
-                  }
-                  showDialog={async () => true}
+                <IconButton
+                  onClick={() => navigate(`/ngo/register/extend/${id}`)}
+                  className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
                 >
-                  <AddNgo onComplete={() => {}} />
-                </NastranModel>
+                  <Zap
+                    className={`size-[18px] pointer-events-none justify-self-end`}
+                  />
+                  <h1
+                    className={`rtl:text-lg-rtl ltr:text-xl-ltr justify-self-start text-start font-semibold`}
+                  >
+                    {t("extend_reg")}
+                  </h1>
+                </IconButton>
               )}
               {userData.ngoInformation.status_id ==
                 StatusEnum.register_form_completed && (

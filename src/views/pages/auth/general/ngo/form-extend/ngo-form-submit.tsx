@@ -24,7 +24,7 @@ import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { RoleEnum, TaskTypeEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
 
-export default function NgoFormSubmit() {
+export default function NgoFormExtend() {
   const { t } = useTranslation();
   let { id } = useParams();
   const navigate = useNavigate();
@@ -55,6 +55,36 @@ export default function NgoFormSubmit() {
     _setError: Dispatch<SetStateAction<Map<string, string>>>,
     _backClicked: boolean
   ) => {
+    // if (!backClicked) {
+    //   const content = {
+    //     ...userData, // shallow copy of the userData object
+    //     checklistMap: Array.from(userData.checklistMap),
+    //     establishment_date: !isString(userData.establishment_date)
+    //       ? userData.establishment_date?.toDate()?.toISOString()
+    //       : userData.establishment_date,
+    //   };
+    //   if (currentStep == 1) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     if (id) formData.append("id", id.toString());
+    //     formData.append("step", currentStep.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 2) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 3) {
+    //     let formData = new FormData();
+    //     // Step.1
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   }
+    // } else return true;
+    // return false;
     return true;
   };
 

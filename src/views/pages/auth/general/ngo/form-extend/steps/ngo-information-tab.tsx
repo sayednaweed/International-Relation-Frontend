@@ -23,7 +23,7 @@ export default function NgoInformationTab() {
 
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get(`ngo/start/register/form/${id}`);
+      const response = await axiosClient.get(`ngo/start/extend/form/${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
         let content = response.data.content;

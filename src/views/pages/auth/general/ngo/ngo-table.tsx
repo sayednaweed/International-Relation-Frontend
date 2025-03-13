@@ -251,11 +251,7 @@ export function NgoTable() {
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
     if (ngo.status_id == StatusEnum.register_form_not_completed) {
-      navigate(`/ngo/profile/edit/${ngoId}`, {
-        state: {
-          data: { edit: true },
-        },
-      });
+      navigate(`/ngo/profile/edit/${ngoId}`);
     } else {
       navigate(`/ngo/${ngoId}`);
     }
