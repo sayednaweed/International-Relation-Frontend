@@ -82,7 +82,7 @@ const Downloader = (props: DownloaderProps) => {
         className="flex flex-col items-center justify-center h-full transition-opacity duration-150 cursor-pointer hover:opacity-80"
       >
         <CloudDownload className="size-[30px] bg-tertiary text-primary-foreground rounded-full p-[4px]" />
-        <strong className="ltr:text-md-ltr rtl:text-lg-rtl font-medium text-primary-text">
+        <strong className="ltr:text-md-ltr rtl:text-[17px] font-medium text-primary-text">
           {downloadText}
         </strong>
       </label>
@@ -130,7 +130,7 @@ const Downloader = (props: DownloaderProps) => {
           </div>
 
           <IconButton
-            className="hover:bg-red-400/30 mx-auto py-1 px-2 rtl:text-lg-rtl ltr:text-md-ltr transition-all border-red-400/40 text-red-400"
+            className="hover:bg-red-400/30 mx-auto py-[2px] px-2 rtl:text-lg-rtl ltr:text-md-ltr transition-all border-red-400/40 text-red-400"
             onClick={cancelDownload}
           >
             {cancelText}

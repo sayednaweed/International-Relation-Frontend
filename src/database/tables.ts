@@ -215,7 +215,7 @@ export type CheckList = {
   name: string;
   acceptable_extensions: string;
   active: number;
-  file_size: string;
+  file_size: number;
   acceptable_mimes: string;
   description: string;
   saved_by: string;

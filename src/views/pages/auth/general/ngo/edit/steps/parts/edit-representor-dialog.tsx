@@ -21,7 +21,7 @@ import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { Representor } from "@/database/tables";
-import { getConfiguration } from "@/lib/utils";
+import { getConfiguration, validateFile } from "@/lib/utils";
 import CheckListChooser from "@/components/custom-ui/chooser/CheckListChooser";
 import { ChecklistEnum, TaskTypeEnum } from "@/lib/constants";
 import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
@@ -209,11 +209,8 @@ export default function EditRepresentorDialog(
                     "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
                     Authorization: "Bearer " + getConfiguration()?.token,
                   }}
-                  maxSize={parseInt(userData.checklist.file_size)}
-                  accept={userData.checklist.acceptable_mimes}
                   name={t("letter_of_intro")}
                   defaultFile={userData.letter_of_intro as FileType}
-                  validTypes={["image/png", "image/jpeg", "application/pdf"]}
                   uploadParam={{
                     checklist_id: ChecklistEnum.ngo_representor_letter,
                     task_type: TaskTypeEnum.ngo_registeration,
@@ -227,11 +224,32 @@ export default function EditRepresentorDialog(
                       });
                     }
                   }}
-                  onStart={async (_file: any) => {
-                    // const updated = documents.map((item) =>
-                    //   item.checklist_id === file.checklist_id ? file : item
-                    // );
-                    // setDocuments(updated);
+                  onStart={async (_file: any) => {}}
+                  onFailed={async (failed: boolean, response: any) => {
+                    if (failed) {
+                      if (response) {
+                        toast({
+                          toastType: "ERROR",
+                          description: response.data.message,
+                        });
+                        setUserData({
+                          ...userData,
+                          letter_of_intro: undefined,
+                        });
+                      }
+                    }
+                  }}
+                  validateBeforeUpload={function (file: File): boolean {
+                    const maxFileSize = userData.checklist.file_size * 1024;
+                    const validTypes: string[] =
+                      userData.checklist.acceptable_mimes.split(",");
+                    const resultFile = validateFile(
+                      file,
+                      Math.round(maxFileSize),
+                      validTypes,
+                      t
+                    );
+                    return resultFile ? true : false;
                   }}
                 />
                 {error.get("letter_of_intro") && (

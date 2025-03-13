@@ -33,32 +33,33 @@ const defaultExtensions = [
   {
     name: "pdf",
     label: "PDF",
-    frontEndName: ".pdf",
+    frontEndName: "application/pdf",
   },
   {
     name: "jpg",
     label: "JPG",
-    frontEndName: ".jpg",
+    frontEndName: "image/jpg",
   },
   {
     name: "png",
     label: "PNG",
-    frontEndName: ".png",
+    frontEndName: "image/png",
   },
   {
     name: "jpeg",
     label: "JPEG",
-    frontEndName: ".jpeg",
+    frontEndName: "image/jpeg",
   },
   {
     name: "ppt",
     label: "PPT",
-    frontEndName: ".ppt",
+    frontEndName: "application/vnd.ms-powerpoint",
   },
   {
     name: "pptx",
     label: "PPTX",
-    frontEndName: ".pptx",
+    frontEndName:
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   },
 ];
 export default function ChecklistDialog(props: ChecklistDialogProps) {

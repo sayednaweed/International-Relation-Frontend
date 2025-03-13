@@ -22,8 +22,10 @@ export default function CheckListDownloader(props: CheckListDownloaderProps) {
       )}
       key={index}
     >
-      <h1 className="text-[15px] font-semibold">{index + 1}.</h1>
-      <h1 className=" ltr:text-md-ltr font-semibold">{checklist_name}</h1>
+      <h1 className="text-[14px] font-semibold">{index + 1}.</h1>
+      <h1 className="ltr:text-md-ltr rtl:text-md-rtl font-semibold">
+        {checklist_name}
+      </h1>
       <Downloader
         key={index}
         cancelText={t("cancel")}

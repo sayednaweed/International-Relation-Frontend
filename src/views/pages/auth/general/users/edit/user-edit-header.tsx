@@ -7,6 +7,7 @@ import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { UserInformation } from "@/lib/types";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
+import { validateFile } from "@/lib/utils";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
@@ -21,88 +22,64 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
   const [loading, setLoading] = useState<boolean>(false);
 
   const onFileUploadChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    // Handle execution
-    if (loading) return;
-    //
-    setLoading(true);
-
-    const fileInput = e.target;
     const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-    if (!fileInput.files) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("no_file_was_chosen"),
-      });
-      return;
-    }
-
+    const validTypes: string[] = ["image/jpeg", "image/png", "image/jpg"];
+    const fileInput = e.target;
     if (!fileInput.files || fileInput.files.length === 0) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("files_list_is_empty"),
-      });
       return;
     }
 
-    const file = fileInput.files[0];
-    if (file.size >= maxFileSize) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("img_size_shou_less_2MB"),
-      });
-      return;
-    }
-    /** Type validation */
-    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (!validTypes.includes(file.type)) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("ples_sel_vali_img_file"),
-      });
-      return;
-    }
-
-    // Update profile
-    const formData = new FormData();
-    if (id !== undefined) formData.append("id", id);
-    formData.append("profile", file);
-    try {
-      const response = await axiosClient.post("user/update-profile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (response.status == 200 && userData) {
-        // Change logged in user data
-        setUserData({
-          ...userData,
-          profile: response.data.profile,
-        });
+    const checkFile = fileInput.files[0] as File;
+    const file = validateFile(
+      checkFile,
+      Math.round(maxFileSize),
+      validTypes,
+      t
+    );
+    if (file) {
+      if (loading) return;
+      setLoading(true);
+      // Upload data
+      const formData = new FormData();
+      if (id !== undefined) formData.append("id", id);
+      formData.append("profile", file);
+      try {
+        const response = await axiosClient.post(
+          "user/update-profile",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (response.status == 200 && userData) {
+          // Change logged in user data
+          setUserData({
+            ...userData,
+            profile: response.data.profile,
+          });
+          toast({
+            toastType: "SUCCESS",
+            title: t("success"),
+            description: response.data.message,
+          });
+        }
+      } catch (error: any) {
         toast({
-          toastType: "SUCCESS",
-          title: t("success"),
-          description: response.data.message,
+          toastType: "ERROR",
+          title: t("error"),
+          description: error.response.data.message,
         });
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-    /** Reset file input */
-    if (e.currentTarget) {
-      e.currentTarget.type = "text";
-      e.currentTarget.type = "file"; // Reset to file type
+      /** Reset file input */
+      if (e.currentTarget) {
+        e.currentTarget.type = "text";
+        e.currentTarget.type = "file"; // Reset to file type
+      }
     }
   };
   const deleteProfilePicture = async () => {
@@ -170,6 +147,7 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
               </h1>
               <input
                 type="file"
+                accept=".jpg, .png, .jpeg"
                 className={`block w-0 h-0`}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   onFileUploadChange(e);
