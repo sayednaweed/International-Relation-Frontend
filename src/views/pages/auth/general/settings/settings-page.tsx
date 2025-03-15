@@ -8,6 +8,12 @@ import { useUserAuthState } from "@/context/AuthContextProvider";
 import { UserPermission } from "@/database/tables";
 import { PermissionEnum } from "@/lib/constants";
 import ChecklistTab from "./tabs/checklist/checklist-tab";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
 export default function SettingsPage() {
   const { user } = useUserAuthState();
@@ -61,38 +67,45 @@ export default function SettingsPage() {
     }
   );
   return (
-    <Tabs
-      dir={direction}
-      defaultValue={per.sub.values().next().value?.id.toString()}
-      className="flex flex-col items-center"
-    >
-      <TabsList className="px-0 pb-1 h-fit mt-2 flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">
-        {tableList}
-      </TabsList>
-      <TabsContent
-        value={PermissionEnum.settings.sub.setting_language.toString()}
-        className="overflow-y-auto self-start w-1/2"
+    <>
+      <Breadcrumb className="mx-2 mt-2">
+        <BreadcrumbHome />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{t("settings")}</BreadcrumbItem>
+      </Breadcrumb>
+      <Tabs
+        dir={direction}
+        defaultValue={per.sub.values().next().value?.id.toString()}
+        className="flex flex-col items-center"
       >
-        <LanguageTab />
-      </TabsContent>
-      <TabsContent
-        value={PermissionEnum.settings.sub.setting_job.toString()}
-        className="w-full px-4 pt-8"
-      >
-        <JobTab permissions={per} />
-      </TabsContent>
-      <TabsContent
-        value={PermissionEnum.settings.sub.setting_destination.toString()}
-        className="w-full px-4 pt-8"
-      >
-        <DestinationTab permissions={per} />
-      </TabsContent>
-      <TabsContent
-        value={PermissionEnum.settings.sub.setting_checklist.toString()}
-        className="w-full px-4 pt-8"
-      >
-        <ChecklistTab permissions={per} />
-      </TabsContent>
-    </Tabs>
+        <TabsList className="px-0 pb-1 h-fit mt-2 flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">
+          {tableList}
+        </TabsList>
+        <TabsContent
+          value={PermissionEnum.settings.sub.setting_language.toString()}
+          className="overflow-y-auto self-start w-1/2"
+        >
+          <LanguageTab />
+        </TabsContent>
+        <TabsContent
+          value={PermissionEnum.settings.sub.setting_job.toString()}
+          className="w-full px-4 pt-8"
+        >
+          <JobTab permissions={per} />
+        </TabsContent>
+        <TabsContent
+          value={PermissionEnum.settings.sub.setting_destination.toString()}
+          className="w-full px-4 pt-8"
+        >
+          <DestinationTab permissions={per} />
+        </TabsContent>
+        <TabsContent
+          value={PermissionEnum.settings.sub.setting_checklist.toString()}
+          className="w-full px-4 pt-8"
+        >
+          <ChecklistTab permissions={per} />
+        </TabsContent>
+      </Tabs>
+    </>
   );
 }

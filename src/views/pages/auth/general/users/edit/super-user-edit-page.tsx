@@ -1,13 +1,5 @@
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import EditUserInformation from "./steps/edit-user-information";
 import { EditUserPassword } from "./steps/edit-user-password";
 import axiosClient from "@/lib/axois-client";
@@ -21,10 +13,18 @@ import EditUserPermissions from "./steps/edit-user-permissions";
 import { UserPermission } from "@/database/tables";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import { PermissionEnum } from "@/lib/constants";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
 export default function SuperUserEditPage() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   const { t, i18n } = useTranslation();
   let { id } = useParams();
   const direction = i18n.dir();
@@ -93,29 +93,14 @@ export default function SuperUserEditPage() {
   );
   return (
     <div className="flex flex-col gap-y-3 px-3 mt-2 overflow-x-auto pb-bottom">
-      <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon className=" text-primary" />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem
-            onClick={() => navigate("/users", { replace: true })}
-            className="cursor-pointer"
-          >
-            <BreadcrumbPage className="text-primary/75">
-              {t("users")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              {userData?.username}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem onClick={handleGoBack}>{t("users")}</BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem onClick={handleGoBack}>
+          {userData?.username}
+        </BreadcrumbItem>
       </Breadcrumb>
       {/* Cards */}
       <Tabs

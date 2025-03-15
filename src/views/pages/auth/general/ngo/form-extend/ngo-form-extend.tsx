@@ -3,9 +3,10 @@ import Stepper from "@/components/custom-ui/stepper/Stepper";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Database, Grip, NotebookPen, UserRound } from "lucide-react";
-import NgoInformationTab from "./steps/ngo-information-tab";
+import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
+import { Check, Database, Grip, NotebookPen, UserRound } from "lucide-react";
 import MoreInformationTab from "./steps/more-information-tab";
+
 import { useNavigate, useParams } from "react-router";
 import CheckListTab from "./steps/checklist-tab";
 import { isString } from "@/lib/utils";
@@ -13,8 +14,9 @@ import { ServerError } from "@/components/custom-ui/errors/ServerError";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { RoleEnum, StatusEnum, TaskTypeEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
+import NgoInformationTab from "../form-submit/steps/ngo-information-tab";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import DirectorInformationSubmitTab from "./steps/director-information-submit-tab";
+import DirectorInformationExtendTab from "./steps/director-information-extend-tab";
 import {
   Breadcrumb,
   BreadcrumbHome,
@@ -22,18 +24,20 @@ import {
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
-export default function NgoFormSubmit() {
+export default function NgoFormExtend() {
   const { t } = useTranslation();
   let { id } = useParams();
   const navigate = useNavigate();
   const { user } = useGeneralAuthState();
   const [allowed, setAllowed] = useState(false);
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   const fetchData = async () => {
     try {
       const response = await axiosClient.get(`ngo/status/${id}`);
       if (response.status == 200) {
         const data = response.data;
-        if (data.status_type_id == StatusEnum.register_form_not_completed) {
+        if (data.status_type_id == StatusEnum.registration_expired) {
           setAllowed(true);
         } else {
           navigate("/unauthorized", { replace: true });
@@ -52,7 +56,6 @@ export default function NgoFormSubmit() {
   useEffect(() => {
     fetchData();
   }, []);
-
   const SaveContent = async (formData: FormData) => {
     try {
       const response = await axiosClient.post(
@@ -78,6 +81,36 @@ export default function NgoFormSubmit() {
     _setError: Dispatch<SetStateAction<Map<string, string>>>,
     _backClicked: boolean
   ) => {
+    // if (!backClicked) {
+    //   const content = {
+    //     ...userData, // shallow copy of the userData object
+    //     checklistMap: Array.from(userData.checklistMap),
+    //     establishment_date: !isString(userData.establishment_date)
+    //       ? userData.establishment_date?.toDate()?.toISOString()
+    //       : userData.establishment_date,
+    //   };
+    //   if (currentStep == 1) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     if (id) formData.append("id", id.toString());
+    //     formData.append("step", currentStep.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 2) {
+    //     let formData = new FormData();
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   } else if (currentStep == 3) {
+    //     let formData = new FormData();
+    //     // Step.1
+    //     formData.append("contents", JSON.stringify(content));
+    //     formData.append("step", currentStep.toString());
+    //     if (id) formData.append("id", id.toString());
+    //     return await SaveContent(formData, setError);
+    //   }
+    // } else return true;
+    // return false;
     return true;
   };
 
@@ -144,11 +177,9 @@ export default function NgoFormSubmit() {
     formData.append("task_type", TaskTypeEnum.ngo_registeration.toString());
     if (id) formData.append("id", id.toString());
     await SaveContent(formData);
-    if (!onlySave) handleGoBack();
+    if (!onlySave) gotoNgos();
   };
-  const handleGoBack = () => navigate(-1);
-  const handleGoHome = () => navigate("/dashboard", { replace: true });
-
+  const gotoNgos = async () => navigate("/ngo", { replace: true });
   return (
     <div className="p-2">
       {allowed ? (
@@ -189,14 +220,15 @@ export default function NgoFormSubmit() {
                 description: t("checklist"),
                 icon: <NotebookPen className="size-[16px]" />,
               },
+              {
+                description: t("complete"),
+                icon: <Check className="size-[16px]" />,
+              },
             ]}
             components={[
               {
                 component: (
-                  <NgoInformationTab
-                    type="register"
-                    fetchUrl={"ngo/start/register/form/"}
-                  />
+                  <NgoInformationTab type="extend" fetchUrl={"ngo/details/"} />
                 ),
                 validationRules: [
                   {
@@ -235,75 +267,83 @@ export default function NgoFormSubmit() {
                 ],
               },
               {
-                component: <DirectorInformationSubmitTab />,
+                component: <DirectorInformationExtendTab />,
                 validationRules: [
                   {
+                    name: "new_director",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "prev_dire",
+                    rules: ["requiredIf:new_director:false"],
+                  },
+                  {
                     name: "director_name_english",
-                    rules: ["required", "max:128", "min:3"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:3"],
                   },
                   {
                     name: "director_name_farsi",
-                    rules: ["required", "max:128", "min:3"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:3"],
                   },
                   {
                     name: "director_name_pashto",
-                    rules: ["required", "max:128", "min:3"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:3"],
                   },
                   {
                     name: "surname_english",
-                    rules: ["required", "max:128", "min:2"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:2"],
                   },
                   {
                     name: "surname_pashto",
-                    rules: ["required", "max:128", "min:2"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:2"],
                   },
                   {
                     name: "surname_farsi",
-                    rules: ["required", "max:128", "min:2"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:2"],
                   },
                   {
                     name: "director_contact",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "director_email",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "gender",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "nationality",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "identity_type",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "nid",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "director_province",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "director_dis",
-                    rules: ["required"],
+                    rules: ["requiredIf:new_director:true"],
                   },
                   {
                     name: "director_area_english",
-                    rules: ["required", "max:128", "min:5"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:5"],
                   },
                   {
                     name: "director_area_farsi",
-                    rules: ["required", "max:128", "min:5"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:5"],
                   },
                   {
                     name: "director_area_pashto",
-                    rules: ["required", "max:128", "min:5"],
+                    rules: ["requiredIf:new_director:true", "max:128", "min:5"],
                   },
                 ],
               },
@@ -343,6 +383,18 @@ export default function NgoFormSubmit() {
                 component: <CheckListTab onSaveClose={onSaveClose} />,
                 validationRules: [],
               },
+              {
+                component: (
+                  <CompleteStep
+                    successText={t("congratulation")}
+                    closeText={t("close")}
+                    againText={t("again")}
+                    closeModel={() => {}}
+                    description={t("account_created")}
+                  />
+                ),
+                validationRules: [],
+              },
             ]}
             beforeStepSuccess={beforeStepSuccess}
             stepsCompleted={stepsCompleted}
@@ -353,7 +405,7 @@ export default function NgoFormSubmit() {
           />
         </>
       ) : (
-        <NastranSpinner />
+        <NastranSpinner className="mt-16" />
       )}
     </div>
   );

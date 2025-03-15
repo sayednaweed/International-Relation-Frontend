@@ -1,13 +1,4 @@
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-
-import { Link, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { useEffect, useState } from "react";
@@ -20,6 +11,12 @@ import { PriorityEnum } from "@/lib/constants";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { RefreshCcw } from "lucide-react";
 import { toLocaleDate } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 const ViewNewsItem = () => {
   const { t, i18n } = useTranslation();
   const [news, setNews] = useState<News | undefined>(undefined);
@@ -27,6 +24,7 @@ const ViewNewsItem = () => {
   const [state] = useGlobalState();
   let { id } = useParams();
 
+  const navigate = useNavigate();
   const initialize = async () => {
     try {
       // 1. Organize date
@@ -50,24 +48,15 @@ const ViewNewsItem = () => {
   useEffect(() => {
     initialize();
   }, [i18n.language]);
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
+
   return (
     <div className="px-2 pt-2 pb-20 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
-      <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/home" replace={true}>
-              <AnimHomeIcon />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              <Link to="/news" replace={true}>
-                {t("news")}
-              </Link>
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem onClick={handleGoBack}>{t("news")}</BreadcrumbItem>
       </Breadcrumb>
       {failed ? (
         <PrimaryButton

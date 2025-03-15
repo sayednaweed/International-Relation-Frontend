@@ -21,18 +21,8 @@ import { CACHE } from "@/lib/constants";
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate, useSearchParams } from "react-router";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-
-import { Link } from "react-router";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import Pagination from "@/components/custom-ui/table/Pagination";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import { DateObject } from "react-multi-date-picker";
 import { ListFilter, Search } from "lucide-react";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
@@ -40,6 +30,12 @@ import CustomInput from "@/components/custom-ui/input/CustomInput";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import StatusButton from "@/components/custom-ui/button/StatusButton";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
 function NgosPage() {
   const navigate = useNavigate();
@@ -159,24 +155,15 @@ function NgosPage() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   return (
     <>
-      <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
-        <Breadcrumb className="bg-card dark:bg-card-secondary w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <Link to="/dashboard">
-                <AnimHomeIcon />
-              </Link>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator className="rtl:rotate-180" />
-            <BreadcrumbItem>
-              <BreadcrumbPage className="text-tertiary">
-                {t("ngos")}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
+      <div className="px-3 pt-3 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
+        <Breadcrumb>
+          <BreadcrumbHome onClick={handleGoHome} />
+          <BreadcrumbSeparator />
+          <BreadcrumbItem onClick={handleGoBack}>{t("ngos")}</BreadcrumbItem>
         </Breadcrumb>
 
         <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:bg-card-secondary gap-2 flex-1 px-2 py-2 mt-4">

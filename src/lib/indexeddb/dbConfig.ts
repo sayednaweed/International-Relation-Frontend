@@ -6,5 +6,4 @@ export interface DBConfig {
 
 export const dbConfigs: { [key: string]: DBConfig } = {
   appCache: { name: "appCache", version: 1 },
-  // cmpdb: { name: "cmpdb", version: 1 },
 };

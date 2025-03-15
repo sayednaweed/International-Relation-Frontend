@@ -49,6 +49,7 @@ import NgoPage from "@/views/pages/auth/general/ngo/ngo-page";
 import UserNgoEditPage from "@/views/pages/auth/general/ngo/edit/user-ngo-edit-page";
 import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-submit";
 import DonorPage from "@/views/pages/auth/general/donor/donor-page";
+import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;
@@ -184,6 +185,16 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
             element={
               <ProtectedRoute
                 element={<NgoFormSubmit />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/register/extend/:id"
+            element={
+              <ProtectedRoute
+                element={<NgoFormExtend />}
                 routeName="ngo"
                 permissions={permissions}
               />
@@ -374,6 +385,16 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
             }
           />
           <Route
+            path="ngo/register/extend/:id"
+            element={
+              <ProtectedRoute
+                element={<NgoFormExtend />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
             path="projects"
             element={
               <ProtectedRoute
@@ -535,6 +556,16 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
             element={
               <ProtectedRoute
                 element={<NgoFormSubmit />}
+                routeName="ngo"
+                permissions={permissions}
+              />
+            }
+          />
+          <Route
+            path="ngo/register/extend/:id"
+            element={
+              <ProtectedRoute
+                element={<NgoFormExtend />}
                 routeName="ngo"
                 permissions={permissions}
               />
