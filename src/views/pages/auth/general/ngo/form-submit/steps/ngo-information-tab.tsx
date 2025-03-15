@@ -15,7 +15,12 @@ import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 import { useNavigate, useParams } from "react-router";
 
-export default function NgoInformationTab() {
+interface NgoInformationTabProps {
+  fetchUrl: string;
+  type: "extend" | "register";
+}
+export default function NgoInformationTab(props: NgoInformationTabProps) {
+  const { fetchUrl, type } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const navigate = useNavigate();
@@ -23,13 +28,22 @@ export default function NgoInformationTab() {
 
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get(`ngo/start/register/form/${id}`);
+      const response = await axiosClient.get(`${fetchUrl}${id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
         let content = response.data.content;
         // Ask if user wants to resume prevoius operation
         if (content) {
           content = JSON.parse(content);
+          if (!content?.new_director) {
+            if (type == "extend") {
+              content.new_director = false;
+              content.show_new_director = true;
+            } else {
+              content.new_director = true;
+              content.show_new_director = false;
+            }
+          }
           setUserData({
             ...content,
             allowed: true,
@@ -44,12 +58,20 @@ export default function NgoInformationTab() {
           });
         } else {
           // no data is stored
+          if (type == "extend") {
+            ngo.new_director = false;
+            ngo.show_new_director = true;
+          } else {
+            ngo.new_director = true;
+            ngo.show_new_director = false;
+          }
           setUserData({
             ...userData,
             allowed: true,
             shouldContinue: true,
             checklistMap: new Map<string, any>(),
             ...ngo,
+            new_director: false,
           });
         }
       }

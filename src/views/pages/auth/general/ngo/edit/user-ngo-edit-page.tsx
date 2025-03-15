@@ -1,13 +1,5 @@
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import axiosClient from "@/lib/axois-client";
 import { useEffect, useMemo, useState } from "react";
 import { NgoInformation } from "@/lib/types";
@@ -38,6 +30,12 @@ import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
 import IconButton from "@/components/custom-ui/button/IconButton";
 import UploadRegisterFormDailog from "./parts/upload-register-form-Dailog";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
@@ -46,6 +44,8 @@ export interface INgoInformation {
 export default function UserNgoEditPage() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   const { t, i18n } = useTranslation();
   let { id } = useParams();
   const direction = i18n.dir();
@@ -195,29 +195,12 @@ export default function UserNgoEditPage() {
   };
   return (
     <div className="flex flex-col gap-y-2 px-3 mt-2 pb-bottom">
-      <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon className=" text-primary" />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem
-            onClick={() => navigate("/ngo", { replace: true })}
-            className="cursor-pointer"
-          >
-            <BreadcrumbPage className="text-primary/75">
-              {t("ngo")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              {userData?.ngoInformation?.username}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem onClick={handleGoBack}>{t("ngos")}</BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{userData?.ngoInformation?.username}</BreadcrumbItem>
       </Breadcrumb>
       {/* Cards */}
       <Tabs

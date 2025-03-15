@@ -49,7 +49,7 @@ import NgoPage from "@/views/pages/auth/general/ngo/ngo-page";
 import UserNgoEditPage from "@/views/pages/auth/general/ngo/edit/user-ngo-edit-page";
 import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-submit";
 import DonorPage from "@/views/pages/auth/general/donor/donor-page";
-import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-submit";
+import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
 
 export const getSuperRouter = (user: User | Ngo | Donor) => {
   const permissions: Map<string, UserPermission> = user.permissions;

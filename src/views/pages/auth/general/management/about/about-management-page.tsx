@@ -1,14 +1,6 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TechnicalSection from "./sections/technical-section";
-import { Link } from "react-router";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import DirectorSection from "./sections/director-section";
 import ManagerSection from "./sections/manager-section";
@@ -18,11 +10,19 @@ import { UserPermission } from "@/database/tables";
 import { PermissionEnum } from "@/lib/constants";
 import { useMemo } from "react";
 import PicSection from "./sections/pic-section";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
 export default function AboutManagementPage() {
   const { user } = useUserAuthState();
   const { t, i18n } = useTranslation();
   const direction = i18n.dir();
+  const navigate = useNavigate();
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
 
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.about.name
@@ -80,20 +80,10 @@ export default function AboutManagementPage() {
 
   return (
     <div className="px-2 pt-2 flex flex-col relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr ">
-      <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              {t("management/about")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{t("management/about")}</BreadcrumbItem>
       </Breadcrumb>
       <Tabs
         dir={direction}

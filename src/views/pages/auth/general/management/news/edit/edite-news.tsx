@@ -1,3 +1,9 @@
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
 import FileChooser, {
@@ -6,18 +12,10 @@ import FileChooser, {
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import {
   Card,
   CardContent,
@@ -37,7 +35,7 @@ import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
-import { Link, useNavigate, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 interface IEditNews {
   id: string;
   title_english: string;
@@ -66,6 +64,7 @@ interface IEditNews {
 export default function EditNews() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   const { t } = useTranslation();
   let { id } = useParams();
   const [failed, setFailed] = useState(false);
@@ -173,23 +172,10 @@ export default function EditNews() {
 
   return (
     <div className="flex flex-col gap-y-6 px-3 mt-2">
-      <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr bg-card w-fit py-1 px-3 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon className=" text-primary" />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem
-            onClick={() => navigate("/management/news", { replace: true })}
-            className="cursor-pointer"
-          >
-            <BreadcrumbPage className="text-tertiary">
-              {t("news")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{t("news")}</BreadcrumbItem>
       </Breadcrumb>
       <Card>
         <CardHeader className="space-y-0">

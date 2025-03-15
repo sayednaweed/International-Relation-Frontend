@@ -1,33 +1,22 @@
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Link } from "react-router";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { LockKeyhole } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 export default function ProjectsPage() {
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   return (
     <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
-      <Breadcrumb className="bg-card w-fit py-1 ltr:ps-3 ltr:pe-8 rtl:pe-3 rtl:ps-8 rounded-md border">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-tertiary">
-              {t("projects")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{t("projects")}</BreadcrumbItem>
       </Breadcrumb>
       <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
         <LockKeyhole className="text-orange-500 size-[32px]" />

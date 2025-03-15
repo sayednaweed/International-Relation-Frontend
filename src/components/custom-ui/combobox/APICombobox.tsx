@@ -20,6 +20,7 @@ import { toast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import axiosClient from "@/lib/axois-client";
 import { useTranslation } from "react-i18next";
+import useCacheDB from "@/lib/indexeddb/useCacheDB";
 
 export interface FetchApi {
   url: string;
@@ -51,6 +52,7 @@ export interface IAPIComboboxProps {
   errorText: string;
   placeholderText: string;
   translate?: boolean;
+  cacheData?: boolean;
 }
 
 function APICombobox(props: IAPIComboboxProps) {
@@ -70,12 +72,14 @@ function APICombobox(props: IAPIComboboxProps) {
     lable,
     placeholderText,
     translate,
+    cacheData = true,
   } = props;
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Array<ComboboxItem>>([]);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(selectedItem);
   const { t } = useTranslation();
+  const { getApiCache, updateApiCache } = useCacheDB();
 
   const updateSelect = () => {
     if (selectedItem) {
@@ -93,11 +97,24 @@ function APICombobox(props: IAPIComboboxProps) {
   const initialize = async () => {
     try {
       if (!readonly && apiUrl) {
+        // 1. Check IndexedDB, if present set Items
+        const content = (await getApiCache(apiUrl)) as any;
+        if (content && cacheData) {
+          setItems(content);
+          updateSelect();
+          setLoading(false);
+          return;
+        }
+        // 2. Fetch data
         const response = await axiosClient.get(apiUrl, {
           params: params,
         });
+        // 3. Store in IndexedDB
         if (response.status == 200) {
-          setItems(response.data);
+          const data = response.data;
+          if (cacheData)
+            updateApiCache({ key: apiUrl, data: data, expireAt: 10 });
+          setItems(data);
           updateSelect(); // Update selection once items are fetched
         }
       }

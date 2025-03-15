@@ -335,5 +335,8 @@
   "responder": "Responder",
   "responder_comment": "Responder comment",
   "change_dir": "Change Director",
-  "failed": "Failed"
+  "failed": "Failed",
+  "extend": "Extend",
+  "new_director": "New director",
+  "prev_dire": "Previous director"
 }

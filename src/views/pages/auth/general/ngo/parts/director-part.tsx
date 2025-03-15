@@ -8,17 +8,16 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function DirectorInformationTab() {
-  const { t } = useTranslation();
+export function DirectorPart() {
   const { userData, setUserData, error } = useContext(StepperContext);
 
-  // The passed state
+  const { t } = useTranslation();
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
   return (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
+    <>
       <BorderContainer
         title={t("director_name")}
         required={true}
@@ -185,7 +184,10 @@ export default function DirectorInformationTab() {
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
-            setUserData({ ...userData, ["director_province"]: selection })
+            setUserData({
+              ...userData,
+              ["director_province"]: selection,
+            })
           }
           lable={t("province")}
           required={true}
@@ -248,6 +250,6 @@ export default function DirectorInformationTab() {
           </MultiTabTextarea>
         )}
       </BorderContainer>
-    </div>
+    </>
   );
 }

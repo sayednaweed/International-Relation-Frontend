@@ -335,5 +335,8 @@
   "responder": "پاسخگو",
   "responder_comment": "نظر پاسخگو",
   "change_dir": "تغییر رئیس",
-  "failed": "ناکام"
+  "failed": "ناکام",
+  "extend": "تمدید",
+  "new_director": "رئیس جدید",
+  "prev_dire": "رئیس قبلی"
 }

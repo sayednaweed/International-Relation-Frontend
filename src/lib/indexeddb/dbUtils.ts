@@ -3,6 +3,7 @@ import { DBConfig, dbConfigs } from "./dbConfig"; // Adjust the path as needed
 const storeConfigs = [
   { name: "cmp", keyPath: "key", autoIncrement: true },
   { name: "chat", keyPath: "key", autoIncrement: true },
+  { name: "api", keyPath: "key", autoIncrement: true },
 ];
 const openDatabase = (config: DBConfig): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -91,6 +92,26 @@ export const getNativeItem = async (
 
     request.onsuccess = () => {
       resolve(request.result);
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
+  });
+};
+export const removeNativeItem = async (
+  dbName: string,
+  storeName: string,
+  key: IDBValidKey
+): Promise<void> => {
+  const db = await getDB(dbName);
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(storeName, "readwrite");
+    const store = transaction.objectStore(storeName);
+    const request = store.delete(key); // Delete item by key
+
+    request.onsuccess = () => {
+      resolve();
     };
 
     request.onerror = () => {

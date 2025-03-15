@@ -82,7 +82,7 @@ export default function AddNgoInformation() {
         mode="single"
       />
       <BorderContainer
-        title={t("address")}
+        title={t("head_office_add")}
         required={true}
         parentClassName="mt-3"
         className="flex flex-col items-start gap-y-3"
@@ -152,19 +152,6 @@ export default function AddNgoInformation() {
             <SingleTab>farsi</SingleTab>
             <SingleTab>pashto</SingleTab>
           </MultiTabTextarea>
-          // <CustomInput
-          //   required={true}
-          //   requiredHint={`* ${t("required")}`}
-          //   size_="sm"
-          //   lable={t("area")}
-          //   name="area"
-          //   defaultValue={userData["area"]}
-          //   placeholder={t("area")}
-          //   type="text"
-          //   parentClassName="w-full"
-          //   errorMessage={error.get("area")}
-          //   onBlur={handleChange}
-          // />
         )}
       </BorderContainer>
     </div>

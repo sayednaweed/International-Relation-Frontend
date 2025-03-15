@@ -1,39 +1,27 @@
 import { useTranslation } from "react-i18next";
+
+import { useDonorAuthState } from "@/context/AuthContextProvider";
 import {
   Breadcrumb,
+  BreadcrumbHome,
   BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import AnimHomeIcon from "@/components/custom-ui/icons/AnimHomeIcon";
-import { useDonorAuthState } from "@/context/AuthContextProvider";
-import { Link } from "react-router";
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import { useNavigate } from "react-router";
 
 export default function DonorProfilePage() {
   const { user } = useDonorAuthState();
   const { t } = useTranslation();
-
+  const navigate = useNavigate();
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
   return (
     <div className="flex flex-col gap-y-6 px-3 mt-2">
-      <Breadcrumb className="rtl:text-2xl-rtl ltr:text-xl-ltr">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <Link to="/dashboard">
-              <AnimHomeIcon className=" text-primary" />
-            </Link>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-primary/75">
-              {t("profile")}
-            </BreadcrumbPage>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator className="rtl:rotate-180" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>{user?.username}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
+      <Breadcrumb>
+        <BreadcrumbHome onClick={handleGoHome} />
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{t("profile")}</BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>{user?.username}</BreadcrumbItem>
       </Breadcrumb>
       {/* Cards */}
       DonorProfilePage

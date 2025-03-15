@@ -45,7 +45,6 @@ interface EditNgoInformation {
   type: NgoType;
   contact: string;
   email: string;
-  place_of_establishment: Country;
   moe_registration_no: string;
   country: Country;
   province: Province;
@@ -104,7 +103,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
       { name: "contact", rules: ["required"] },
       { name: "email", rules: ["required"] },
       { name: "moe_registration_no", rules: ["required"] },
-      { name: "place_of_establishment", rules: ["required"] },
+      { name: "country", rules: ["required"] },
       { name: "establishment_date", rules: ["required"] },
       { name: "province", rules: ["required"] },
       { name: "district", rules: ["required"] },
@@ -307,14 +306,14 @@ export default function EditInformationTab(props: EditInformationTabProps) {
                 onSelect={(selection: any) =>
                   setNgoData({
                     ...ngoData,
-                    ["place_of_establishment"]: selection,
+                    ["country"]: selection,
                   })
                 }
-                lable={t("place_of_establishment")}
+                lable={t("country")}
                 required={true}
-                selectedItem={ngoData["place_of_establishment"]?.name}
+                selectedItem={ngoData["country"]?.name}
                 placeHolder={t("select_a")}
-                errorMessage={error.get("place_of_establishment")}
+                errorMessage={error.get("country")}
                 apiUrl={"countries"}
                 mode="single"
                 readonly={!hasEdit}
