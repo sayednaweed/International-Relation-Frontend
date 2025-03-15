@@ -12,7 +12,7 @@ const Breadcrumb = React.forwardRef<HTMLDivElement, BreadcrumbProps>(
         ref={ref}
         {...rest}
         className={cn(
-          "rounded-md px-5 h-fit items-center shadow shadow-primary/15 bg-card w-fit flex gap-x-4",
+          "rounded-sm px-5 h-fit items-center shadow shadow-primary/15 bg-card w-fit flex gap-x-4",
           className
         )}
       >

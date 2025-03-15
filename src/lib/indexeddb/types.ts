@@ -5,5 +5,6 @@ export interface NameAndID {
 export interface NameAndIDCache {
   key: IDBValidKey;
   data: NameAndID[];
+  lang: string;
   expireAt: number;
 }

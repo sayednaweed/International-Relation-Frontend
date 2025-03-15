@@ -78,7 +78,8 @@ function APICombobox(props: IAPIComboboxProps) {
   const [items, setItems] = useState<Array<ComboboxItem>>([]);
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(selectedItem);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language;
   const { getApiCache, updateApiCache } = useCacheDB();
 
   const updateSelect = () => {
@@ -98,7 +99,7 @@ function APICombobox(props: IAPIComboboxProps) {
     try {
       if (!readonly && apiUrl) {
         // 1. Check IndexedDB, if present set Items
-        const content = (await getApiCache(apiUrl)) as any;
+        const content = (await getApiCache(apiUrl, lang)) as any;
         if (content && cacheData) {
           setItems(content);
           updateSelect();
@@ -113,7 +114,12 @@ function APICombobox(props: IAPIComboboxProps) {
         if (response.status == 200) {
           const data = response.data;
           if (cacheData)
-            updateApiCache({ key: apiUrl, data: data, expireAt: 10 });
+            updateApiCache({
+              key: apiUrl,
+              data: data,
+              expireAt: 10,
+              lang: lang,
+            });
           setItems(data);
           updateSelect(); // Update selection once items are fetched
         }

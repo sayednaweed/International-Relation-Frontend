@@ -41,13 +41,14 @@ const useCacheDB = () => {
   };
 
   const getApiCache = async (
-    key: IDBValidKey
+    key: IDBValidKey,
+    lang: string
   ): Promise<NameAndID[] | undefined> => {
     try {
       const data = await getNativeItem("appCache", "api", key);
       if (data) {
         const cached = data as NameAndIDCache;
-        if (dateExpired(cached.expireAt)) {
+        if (dateExpired(cached.expireAt) || lang != cached.lang) {
           await removeNativeItem("appCache", "api", key);
           return undefined;
         }
@@ -70,6 +71,7 @@ const useCacheDB = () => {
         key: data.key,
         data: content,
         expireAt: expireAt,
+        lang: data.lang,
       });
     } catch (error) {
       console.error("updateApiCache Error: ", error);
