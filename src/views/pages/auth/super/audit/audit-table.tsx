@@ -10,7 +10,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { Audit } from "@/database/tables";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
@@ -31,11 +31,47 @@ import {
 } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { CACHE } from "@/lib/constants";
+import APICombobox from "@/components/custom-ui/combobox/APICombobox";
+import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
+
+import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
+import { DateObject } from "react-multi-date-picker";
+import { Button } from "@/components/ui/button";
 
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
+  type Users = { label: string; value: string };
+  type Colums = { label: string; value: string };
+  const { userData, setUserData, error } = useContext(StepperContext);
+  const [auditData, setAuditData] = useState<AuditDataProps>({
+    users: { label: "", value: "" },
+    colums: { label: "", value: "" },
+  });
+  type AuditDataProps = {
+    users: Users;
+    colums: Colums;
+  };
 
+  const userTypeOptions = [
+    { label: "User", value: "user" },
+    { label: "NGO", value: "ngo" },
+    { label: "Director", value: "director" },
+    { label: "Donor", value: "donor" },
+  ];
+  const EventOptions = [
+    { label: "Created", value: "created" },
+    { label: "Updated", value: "updated" },
+    { label: "Deleted", value: "deleted" },
+  ];
+  const TableOptions = [
+    { label: "Permission", value: "permission" },
+    { label: "Ngo", value: "ngo" },
+    { label: "User", value: "user" },
+    { label: "Donor", value: "donor" },
+    { label: "Audit", value: "audit" },
+    { label: "User", value: "user" },
+  ];
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
   const search = searchParams.get("search");
@@ -191,11 +227,81 @@ export function AuditTable() {
   );
   return (
     <>
-      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card gap-2 flex-1 px-2 py-2 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 gap-y-0 items-center  ">
+        <CustomSelect
+          className="w-full"
+          placeholder={t("select_userType")}
+          paginationKey=""
+          emptyPlaceholder=""
+          rangePlaceholder=""
+          options={userTypeOptions}
+          onChange={(value: string) => {}}
+          updateCache={async () => {}}
+          getCache={async () => []}
+        />
+        <APICombobox
+          className="w-full py-2 mb-5"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {}}
+          required={true}
+          selectedItem={auditData["users"]?.label}
+          placeHolder={t("select_user")}
+          errorMessage={error.get("users")}
+          apiUrl={"users"}
+          mode="single"
+        />
+        <CustomSelect
+          className="w-full"
+          placeholder={t("select_event")}
+          paginationKey=""
+          emptyPlaceholder=""
+          rangePlaceholder=""
+          options={EventOptions}
+          onChange={(value: string) => {
+            setAuditData((prev) => ({ ...prev, event: value }));
+          }}
+          updateCache={async () => {}}
+          getCache={async () => []}
+        />
+        <CustomSelect
+          className="w-full"
+          placeholder={t("select_table")}
+          paginationKey=""
+          emptyPlaceholder=""
+          rangePlaceholder=""
+          options={TableOptions}
+          onChange={(value: string) => {}}
+          updateCache={async () => {}}
+          getCache={async () => []}
+        />
+        <APICombobox
+          className="w-full py-2"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {}}
+          required={true}
+          selectedItem={auditData["colums"]?.label}
+          placeHolder={t("select_colum")}
+          errorMessage={error.get("colum")}
+          apiUrl={"users"}
+          mode="single"
+        />
+        <CustomMultiDatePicker
+          dateOnComplete={(selectedDates: DateObject[]) => {
+            console.log("Selected Dates:", selectedDates);
+          }}
+          value={[]}
+          className="w-full py-2 mt-5"
+        />
+      </div>
+      <div className="flex justify-center">
+        {" "}
         <CustomInput
+          className=" "
           size_="lg"
           placeholder={`${t(filters.search.column)}...`}
-          parentClassName="sm:flex-1 col-span-3"
+          parentClassName="sm:flex-1"
           type="text"
           ref={searchRef}
           startContent={
@@ -212,7 +318,6 @@ export function AuditTable() {
                       value: searchRef.current.value,
                     },
                   };
-
                   await initialize(newfilter);
                   setFilters(newfilter);
                 }
@@ -223,41 +328,48 @@ export function AuditTable() {
             </SecondaryButton>
           }
         />
-        <CustomSelect
-          paginationKey={CACHE.AUDIT_TABLE_PAGINATION_COUNT}
-          options={[
-            { value: "10", label: "10" },
-            { value: "20", label: "20" },
-            { value: "50", label: "50" },
-          ]}
-          className="w-fit sm:self-baseline"
-          updateCache={updateComponentCache}
-          getCache={async () =>
-            await getComponentCache(CACHE.AUDIT_TABLE_PAGINATION_COUNT)
-          }
-          placeholder={`${t("select")}...`}
-          emptyPlaceholder={t("No options found")}
-          rangePlaceholder={t("count")}
-          onChange={async (value: string) => {
-            loadList(parseInt(value), filters);
-          }}
-        />
+      </div>
+      <div className="flex justify-center mb-2">
+        <Button className=" mt-4 bg-tertiary w-24 ">Apply</Button>
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-start">{t("id")}</TableHead>
-            <TableHead className="text-start">{t("user_id")}</TableHead>
             <TableHead className="text-start">{t("user")}</TableHead>
-            <TableHead className="text-start">{t("action")}</TableHead>
             <TableHead className="text-start">{t("table")}</TableHead>
-            <TableHead className="text-start">{t("ip_address")}</TableHead>
-            <TableHead className="text-start">{t("browser")}</TableHead>
+            <TableHead className="text-start">{t("event")}</TableHead>
             <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          {loading ? (
+          <TableRow
+          // read={() => {}}
+          // remove={async () => {}}
+          // edit={false}
+          // onEdit={async () => {}}
+          // key={""}
+          // item={""}
+          // onRemove={() => deleteOnClick}
+          // onRead={watchOnClick}
+          >
+            <TableCell>Ahmad</TableCell>
+            <TableCell>permission</TableCell>
+            <TableCell>created</TableCell>
+            <TableCell>2025/2/1</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Naweed</TableCell>
+            <TableCell>Ngo</TableCell>
+            <TableCell>Deleted</TableCell>
+            <TableCell>2025/2/2</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Waheed</TableCell>
+            <TableCell>permission</TableCell>
+            <TableCell>created</TableCell>
+            <TableCell>2025/2/1</TableCell>
+          </TableRow>
+          {/* {loading ? (
             <>
               {skeleton}
               {skeleton}
@@ -289,7 +401,7 @@ export function AuditTable() {
                 </TableCell>
               </TableRow>
             ))
-          )}
+          )} */}
         </TableBody>
       </Table>
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">

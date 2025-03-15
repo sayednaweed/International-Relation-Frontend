@@ -31,7 +31,6 @@ export default function SuperAuditPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <AuditDropdown />
       <AuditTable />
     </div>
   );
