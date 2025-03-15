@@ -227,7 +227,7 @@ export function AuditTable() {
   );
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 gap-y-0 items-center  ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2 gap-y-0 items-center  ">
         <CustomSelect
           className="w-full"
           placeholder={t("select_userType")}
@@ -276,7 +276,7 @@ export function AuditTable() {
           getCache={async () => []}
         />
         <APICombobox
-          className="w-full py-2"
+          className="w-full py-2 mb-5"
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) => {}}
@@ -292,45 +292,46 @@ export function AuditTable() {
             console.log("Selected Dates:", selectedDates);
           }}
           value={[]}
-          className="w-full py-2 mt-5"
+          className="w-full py-2 "
         />
       </div>
-      <div className="flex justify-center">
-        {" "}
-        <CustomInput
-          className=" "
-          size_="lg"
-          placeholder={`${t(filters.search.column)}...`}
-          parentClassName="sm:flex-1"
-          type="text"
-          ref={searchRef}
-          startContent={
-            <Search className="size-[18px] mx-auto rtl:mr-[4px] text-primary pointer-events-none" />
-          }
-          endContent={
-            <SecondaryButton
-              onClick={async () => {
-                if (searchRef.current != undefined) {
-                  const newfilter = {
-                    ...filters,
-                    search: {
-                      column: filters.search.column,
-                      value: searchRef.current.value,
-                    },
-                  };
-                  await initialize(newfilter);
-                  setFilters(newfilter);
-                }
-              }}
-              className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
-            >
-              {t("search")}
-            </SecondaryButton>
-          }
-        />
+      <div className="flex justify-center w-full ">
+        <div className=" w-[320px] sm:w-[450px] lg:w-[550px]  ">
+          <CustomInput
+            size_="lg"
+            placeholder={`${t(filters.search.column)}...`}
+            parentClassName="sm:flex-1"
+            type="text"
+            ref={searchRef}
+            startContent={
+              <Search className="size-[18px] mx-auto rtl:mr-[4px] text-primary pointer-events-none" />
+            }
+            endContent={
+              <SecondaryButton
+                onClick={async () => {
+                  if (searchRef.current != undefined) {
+                    const newfilter = {
+                      ...filters,
+                      search: {
+                        column: filters.search.column,
+                        value: searchRef.current.value,
+                      },
+                    };
+                    await initialize(newfilter);
+                    setFilters(newfilter);
+                  }
+                }}
+                className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
+              >
+                {t("search")}
+              </SecondaryButton>
+            }
+          />
+        </div>
       </div>
+
       <div className="flex justify-center mb-2">
-        <Button className=" mt-4 bg-tertiary w-24 ">Apply</Button>
+        <Button className=" mt-4 bg-tertiary w-24 ">{t("apply")}</Button>
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
