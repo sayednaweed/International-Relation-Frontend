@@ -8,7 +8,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 
-
 export default function SuperAuditPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();

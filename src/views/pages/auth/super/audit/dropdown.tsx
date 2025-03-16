@@ -5,7 +5,7 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { Button } from "@/components/ui/button";
 
 import { Users } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 

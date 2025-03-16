@@ -59,7 +59,7 @@ const BreadcrumbItem = React.forwardRef<HTMLDivElement, BreadcrumbItemProps>(
         ref={ref}
         {...rest}
         className={cn(
-          "text-primary/70 rtl:pt-[2px] hover:text-primary cursor-pointer transition-colors duration-200 font-medium rtl:text-xl-rtl ltr:text-[14px]",
+          "text-primary/70 rtl:pt-[2px] hover:text-primary capitalize cursor-pointer transition-colors duration-200 font-medium rtl:text-xl-rtl ltr:text-[14px]",
           className
         )}
       >

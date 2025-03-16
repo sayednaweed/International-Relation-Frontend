@@ -78,7 +78,7 @@ export default function ViewApprovalDailog(props: ViewApprovalDailogprops) {
 
   return (
     <div className="fixed left-0 top-0 flex justify-center items-center [backdrop-filter:blur(10px)] z-50 h-screen w-screen">
-      <Card className="w-[90%] custom-track-scrollbar relative h-fit max-h-[90%] pb-4 self-center overflow-y-auto [backdrop-filter:blur(20px)] bg-card">
+      <Card className="w-[90%] scrollbar-track-margin-y relative h-fit max-h-[90%] pb-4 self-center overflow-y-auto [backdrop-filter:blur(20px)] bg-card">
         {loading ? (
           <NastranSpinner className="mt-4" />
         ) : (

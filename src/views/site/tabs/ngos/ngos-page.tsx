@@ -156,7 +156,7 @@ function NgosPage() {
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
   const handleGoBack = () => navigate(-1);
-  const handleGoHome = () => navigate("/dashboard", { replace: true });
+  const handleGoHome = () => navigate("/home", { replace: true });
   return (
     <>
       <div className="px-3 pt-3 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">

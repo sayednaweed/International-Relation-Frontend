@@ -107,9 +107,12 @@ body *:after {
   margin: 0;
   padding: 0;
 }
-.custom-track-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+.scrollbar-track-margin-y::-webkit-scrollbar-track {
   margin-top: 10px;
+  margin-bottom: 10px;
+}
+.nastran_sidebar--scrollbar::-webkit-scrollbar-track {
+  margin-top: -7px;
   margin-bottom: 10px;
 }
 body {

@@ -167,7 +167,7 @@ function NewsPage() {
     const newsId = news.id;
     navigate(`/news/${newsId}`);
   };
-  const handleGoHome = () => navigate("/dashboard", { replace: true });
+  const handleGoHome = () => navigate("/home", { replace: true });
 
   return (
     <div className="px-3 pt-3 pb-2">

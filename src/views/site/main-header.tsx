@@ -1,6 +1,6 @@
 import NavLink from "@/components/custom-ui/navbar/NavLink";
 import { AlignJustify } from "lucide-react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router";
 const addresses = ["home", "ngos", "news", "about"];
@@ -8,7 +8,7 @@ const addresses = ["home", "ngos", "news", "about"];
 export default function MainHeader() {
   const location = useLocation();
   const headerRef = useRef<HTMLHeadingElement>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const collapse = () => {
     if (headerRef.current) {
       if (headerRef.current?.clientHeight === 90)
@@ -23,7 +23,18 @@ export default function MainHeader() {
   const [activeLink, setActiveLink] = useState(link);
 
   const setLink = (link: string) => setActiveLink(link);
-
+  const sidebarComponents: JSX.Element[] = useMemo(() => {
+    return addresses.map((item, index) => (
+      <NavLink
+        to={`/${item}`}
+        key={index}
+        time={index + 3}
+        title={item}
+        setLink={setLink}
+        activeLink={activeLink}
+      />
+    ));
+  }, [location.pathname, i18n.language]);
   return (
     <>
       <header
@@ -46,16 +57,7 @@ export default function MainHeader() {
             className="size-[28px] place-self-center justify-self-end cursor-pointer xxl:invisible"
           />
           <div className="flex flex-col col-span-2 border-t xxl:border-none pt-8 xxl:pt-0 xxl:flex-row xxl:gap-x-6 gap-y-2 items-center rtl:text-xl-rtl">
-            {addresses.map((item, index) => (
-              <NavLink
-                to={`/${item}`}
-                key={index}
-                time={index + 3}
-                title={item}
-                setLink={setLink}
-                activeLink={activeLink}
-              />
-            ))}
+            {sidebarComponents}
           </div>
         </header>
       </header>
