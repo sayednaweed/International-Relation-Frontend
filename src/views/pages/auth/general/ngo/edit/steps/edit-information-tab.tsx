@@ -54,9 +54,10 @@ interface EditNgoInformation {
 }
 interface EditInformationTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditInformationTab(props: EditInformationTabProps) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
@@ -350,8 +351,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
                 selectedItem={ngoData["province"]?.name}
                 placeHolder={t("select_a")}
                 errorMessage={error.get("province")}
-                apiUrl={"provinces"}
-                params={{ country_id: 1 }}
+                apiUrl={"provinces/" + 1}
                 mode="single"
                 readonly={!hasEdit}
               />
@@ -367,8 +367,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
                   selectedItem={ngoData["district"]?.name}
                   placeHolder={t("select_a")}
                   errorMessage={error.get("district")}
-                  apiUrl={"districts"}
-                  params={{ province_id: ngoData?.province?.id }}
+                  apiUrl={"districts/" + ngoData?.province?.id}
                   mode="single"
                   key={ngoData?.province?.id}
                   readonly={!hasEdit}
@@ -422,6 +421,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
           </PrimaryButton>
         ) : (
           ngoData &&
+          !registerationExpired &&
           hasEdit && (
             <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>

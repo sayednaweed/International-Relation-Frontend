@@ -38,11 +38,12 @@ interface EditNgoInformationProps {
 }
 interface EditMoreInformationTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditMoreInformationTab(
   props: EditMoreInformationTabProps
 ) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
@@ -140,13 +141,13 @@ export default function EditMoreInformationTab(
           {t("more_information")}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid gap-x-4 gap-y-6 w-full">
         {failed ? (
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : ngoData === undefined ? (
           <NastranSpinner />
         ) : (
-          <div className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">
+          <>
             <BorderContainer
               title={t("vision")}
               required={true}
@@ -294,7 +295,7 @@ export default function EditMoreInformationTab(
                 <SingleTab>pashto</SingleTab>
               </MultiTabTextarea>
             </BorderContainer>
-          </div>
+          </>
         )}
       </CardContent>
       <CardFooter>
@@ -308,6 +309,7 @@ export default function EditMoreInformationTab(
           </PrimaryButton>
         ) : (
           ngoData &&
+          !registerationExpired &&
           hasEdit && (
             <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>

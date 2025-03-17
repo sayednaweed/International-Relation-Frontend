@@ -20,6 +20,7 @@ export default function DirectorInformationExtendTab() {
     const { name, value } = e.target;
     setUserData({ ...userData, [name]: value });
   };
+  console.log(userData);
 
   return (
     <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[400px] gap-y-6 pb-12">
@@ -212,8 +213,7 @@ export default function DirectorInformationExtendTab() {
               selectedItem={userData["director_province"]?.name}
               placeHolder={t("select_a")}
               errorMessage={error.get("director_province")}
-              apiUrl={"provinces"}
-              params={{ country_id: 1 }}
+              apiUrl={"provinces/" + 1}
               mode="single"
             />
             {userData.director_province && (
@@ -228,8 +228,7 @@ export default function DirectorInformationExtendTab() {
                 selectedItem={userData["director_dis"]?.name}
                 placeHolder={t("select_a")}
                 errorMessage={error.get("director_dis")}
-                apiUrl={"districts"}
-                params={{ province_id: userData?.province?.id }}
+                apiUrl={"districts/" + userData?.province?.id}
                 mode="single"
                 key={userData?.province?.id}
               />
@@ -279,7 +278,7 @@ export default function DirectorInformationExtendTab() {
           lable={t("prev_dire")}
           required={true}
           selectedItem={userData["prev_dire"]?.name}
-          placeHolder={t("select_a")}
+          placeHolder={t("select")}
           errorMessage={error.get("prev_dire")}
           apiUrl={`ngo/directors/name/${id}`}
           mode="single"

@@ -338,5 +338,8 @@
   "failed": "Failed",
   "extend": "Extend",
   "new_director": "New director",
-  "prev_dire": "Previous director"
+  "prev_dire": "Previous director",
+  "prev_rep": "Previous Representative",
+  "new_represent": "New Representative",
+  "check_auth": "Checking Authorization"
 }

@@ -27,6 +27,7 @@ export const RoleEnum = {
 };
 export const TaskTypeEnum = {
   ngo_registeration: 1,
+  ngo_agreement_extend: 3,
 };
 export const ChecklistEnum = {
   NgoDirectorNid: 1,

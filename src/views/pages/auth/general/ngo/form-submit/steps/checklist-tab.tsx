@@ -16,20 +16,29 @@ interface CheckListTabProps {
     currentStep: number,
     onlySave: boolean
   ) => Promise<void>;
+  type: "extend" | "register";
 }
 
 export default function CheckListTab(props: CheckListTabProps) {
-  const { onSaveClose } = props;
+  const { onSaveClose, type } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const { userData, setUserData } = useContext(StepperContext);
   const [list, setList] = useState<CheckList[] | undefined>(undefined);
   const loadInformation = async () => {
     try {
-      const url =
-        userData.nationality.id == CountryEnum.afghanistan
-          ? "ngo/register/checklist"
-          : "ngo/register/abroad/director-checklist";
+      let url = "";
+      if (type == "extend") {
+        url =
+          userData.prev_dire.country_id == CountryEnum.afghanistan
+            ? "ngo/extend/checklist"
+            : "ngo/extend/abroad/director-checklist";
+      } else {
+        url =
+          userData.nationality.id == CountryEnum.afghanistan
+            ? "ngo/register/checklist"
+            : "ngo/register/abroad/director-checklist";
+      }
       const response = await axiosClient.get(url);
       if (response.status == 200) {
         setList(response.data.checklist);
@@ -38,7 +47,7 @@ export default function CheckListTab(props: CheckListTabProps) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: error.response.data.message,
+        // description: error.response.data.message,
       });
       console.log(error);
     }
@@ -71,7 +80,10 @@ export default function CheckListTab(props: CheckListTabProps) {
               uploadParam={{
                 checklist_id: checklist.id,
                 ngo_id: id,
-                task_type: TaskTypeEnum.ngo_registeration,
+                task_type:
+                  type == "register"
+                    ? TaskTypeEnum.ngo_registeration
+                    : TaskTypeEnum.ngo_agreement_extend,
               }}
               onComplete={async (record: any) => {
                 // 1. Update userData

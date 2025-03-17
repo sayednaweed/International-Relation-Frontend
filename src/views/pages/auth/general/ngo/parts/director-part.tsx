@@ -194,8 +194,7 @@ export function DirectorPart() {
           selectedItem={userData["director_province"]?.name}
           placeHolder={t("select_a")}
           errorMessage={error.get("director_province")}
-          apiUrl={"provinces"}
-          params={{ country_id: 1 }}
+          apiUrl={"provinces/" + 1}
           mode="single"
         />
         {userData.director_province && (
@@ -210,8 +209,7 @@ export function DirectorPart() {
             selectedItem={userData["director_dis"]?.name}
             placeHolder={t("select_a")}
             errorMessage={error.get("director_dis")}
-            apiUrl={"districts"}
-            params={{ province_id: userData?.province?.id }}
+            apiUrl={"districts/" + userData?.province?.id}
             mode="single"
             key={userData?.province?.id}
           />

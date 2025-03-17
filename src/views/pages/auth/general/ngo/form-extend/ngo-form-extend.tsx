@@ -3,12 +3,16 @@ import Stepper from "@/components/custom-ui/stepper/Stepper";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
-import { Check, Database, Grip, NotebookPen, UserRound } from "lucide-react";
-import MoreInformationTab from "./steps/more-information-tab";
+import {
+  Check,
+  Database,
+  Grip,
+  NotebookPen,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
 
 import { useNavigate, useParams } from "react-router";
-import CheckListTab from "./steps/checklist-tab";
 import { isString } from "@/lib/utils";
 import { ServerError } from "@/components/custom-ui/errors/ServerError";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
@@ -23,6 +27,10 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import RepresenterExtendTab from "./steps/representer-extend";
+import MoreInformationTab from "../form-submit/steps/more-information-tab";
+import CheckListTab from "../form-submit/steps/checklist-tab";
+import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 
 export default function NgoFormExtend() {
   const { t } = useTranslation();
@@ -81,36 +89,6 @@ export default function NgoFormExtend() {
     _setError: Dispatch<SetStateAction<Map<string, string>>>,
     _backClicked: boolean
   ) => {
-    // if (!backClicked) {
-    //   const content = {
-    //     ...userData, // shallow copy of the userData object
-    //     checklistMap: Array.from(userData.checklistMap),
-    //     establishment_date: !isString(userData.establishment_date)
-    //       ? userData.establishment_date?.toDate()?.toISOString()
-    //       : userData.establishment_date,
-    //   };
-    //   if (currentStep == 1) {
-    //     let formData = new FormData();
-    //     formData.append("contents", JSON.stringify(content));
-    //     if (id) formData.append("id", id.toString());
-    //     formData.append("step", currentStep.toString());
-    //     return await SaveContent(formData, setError);
-    //   } else if (currentStep == 2) {
-    //     let formData = new FormData();
-    //     formData.append("contents", JSON.stringify(content));
-    //     formData.append("step", currentStep.toString());
-    //     if (id) formData.append("id", id.toString());
-    //     return await SaveContent(formData, setError);
-    //   } else if (currentStep == 3) {
-    //     let formData = new FormData();
-    //     // Step.1
-    //     formData.append("contents", JSON.stringify(content));
-    //     formData.append("step", currentStep.toString());
-    //     if (id) formData.append("id", id.toString());
-    //     return await SaveContent(formData, setError);
-    //   }
-    // } else return true;
-    // return false;
     return true;
   };
 
@@ -137,12 +115,6 @@ export default function NgoFormExtend() {
       );
 
       if (response.status == 200) {
-        if (user.role.role == RoleEnum.ngo) {
-          // Incase of ngo
-          navigate("/dashboard", { replace: true });
-        } else {
-          navigate("/ngo", { replace: true });
-        }
         return true;
       }
     } catch (error: any) {
@@ -177,9 +149,17 @@ export default function NgoFormExtend() {
     formData.append("task_type", TaskTypeEnum.ngo_registeration.toString());
     if (id) formData.append("id", id.toString());
     await SaveContent(formData);
-    if (!onlySave) gotoNgos();
+    if (!onlySave) onClose();
   };
-  const gotoNgos = async () => navigate("/ngo", { replace: true });
+  const onClose = () => {
+    if (user.role.role == RoleEnum.ngo) {
+      // Incase of ngo
+      navigate("/dashboard", { replace: true });
+    } else {
+      // Back to ngo information
+      navigate(-1);
+    }
+  };
   return (
     <div className="p-2">
       {allowed ? (
@@ -213,6 +193,10 @@ export default function NgoFormExtend() {
                 icon: <UserRound className="size-[16px]" />,
               },
               {
+                description: t("representative"),
+                icon: <UsersRound className="size-[16px]" />,
+              },
+              {
                 description: t("more_information"),
                 icon: <Grip className="size-[16px]" />,
               },
@@ -228,7 +212,10 @@ export default function NgoFormExtend() {
             components={[
               {
                 component: (
-                  <NgoInformationTab type="extend" fetchUrl={"ngo/details/"} />
+                  <NgoInformationTab
+                    type="extend"
+                    fetchUrl={"ngo/start/extend/form/"}
+                  />
                 ),
                 validationRules: [
                   {
@@ -348,7 +335,46 @@ export default function NgoFormExtend() {
                 ],
               },
               {
-                component: <MoreInformationTab />,
+                component: <RepresenterExtendTab />,
+                validationRules: [
+                  {
+                    name: "new_represent",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "prev_rep",
+                    rules: ["requiredIf:new_represent:false"],
+                  },
+                  {
+                    name: "repre_name_english",
+                    rules: [
+                      "requiredIf:new_represent:true",
+                      "max:128",
+                      "min:3",
+                    ],
+                  },
+                  {
+                    name: "repre_name_pashto",
+                    rules: [
+                      "requiredIf:new_represent:true",
+                      "max:128",
+                      "min:3",
+                    ],
+                  },
+                  {
+                    name: "repre_name_farsi",
+                    rules: [
+                      "requiredIf:new_represent:true",
+                      "max:128",
+                      "min:3",
+                    ],
+                  },
+                ],
+              },
+              {
+                component: (
+                  <MoreInformationTab url={`ngo/more-information/${id}`} />
+                ),
                 validationRules: [
                   { name: "vision_english", rules: ["required", "min:10"] },
                   { name: "vision_farsi", rules: ["required", "min:10"] },
@@ -380,7 +406,9 @@ export default function NgoFormExtend() {
                 ],
               },
               {
-                component: <CheckListTab onSaveClose={onSaveClose} />,
+                component: (
+                  <CheckListTab onSaveClose={onSaveClose} type="extend" />
+                ),
                 validationRules: [],
               },
               {
@@ -389,8 +417,8 @@ export default function NgoFormExtend() {
                     successText={t("congratulation")}
                     closeText={t("close")}
                     againText={t("again")}
-                    closeModel={() => {}}
-                    description={t("account_created")}
+                    closeModel={onClose}
+                    description={t("user_acc_crea")}
                   />
                 ),
                 validationRules: [],
@@ -405,7 +433,7 @@ export default function NgoFormExtend() {
           />
         </>
       ) : (
-        <NastranSpinner className="mt-16" />
+        <NastranSpinner label={t("check_auth")} className="mt-16" />
       )}
     </div>
   );

@@ -32,11 +32,12 @@ import { useGlobalState } from "@/context/GlobalStateContext";
 import { toLocaleDate } from "@/lib/utils";
 interface EditRepresentativeTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditRepresentativeTab(
   props: EditRepresentativeTabProps
 ) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const [state] = useGlobalState();
   const { t } = useTranslation();
   let { id } = useParams();
@@ -144,7 +145,7 @@ export default function EditRepresentativeTab(
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : (
           <>
-            {hasAdd && (
+            {!registerationExpired && hasAdd && (
               <NastranModel
                 size="lg"
                 isDismissable={false}

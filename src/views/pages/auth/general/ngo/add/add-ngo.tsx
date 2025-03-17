@@ -94,7 +94,7 @@ export default function AddNgo(props: AddNgoProps) {
           pending: t("pending"),
           step: t("step"),
         }}
-        loadingText={t("loading")}
+        loadingText={t("store_infor")}
         backText={t("back")}
         nextText={t("next")}
         confirmText={t("confirm")}

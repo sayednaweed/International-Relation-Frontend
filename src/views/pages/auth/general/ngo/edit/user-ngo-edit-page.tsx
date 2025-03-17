@@ -193,6 +193,9 @@ export default function UserNgoEditPage() {
       console.log(error);
     }
   };
+
+  const registerationExpired: boolean =
+    userData?.ngoInformation.status_id == StatusEnum.registration_expired;
   return (
     <div className="flex flex-col gap-y-2 px-3 mt-2 pb-bottom">
       <Breadcrumb>
@@ -226,8 +229,7 @@ export default function UserNgoEditPage() {
               />
               {tableList}
 
-              {userData?.ngoInformation.status_id ==
-                StatusEnum.registration_expired && (
+              {registerationExpired && (
                 <IconButton
                   onClick={() => navigate(`/ngo/register/extend/${id}`)}
                   className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
@@ -294,13 +296,19 @@ export default function UserNgoEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_information.toString()}
             >
-              <EditInformationTab permissions={per} />
+              <EditInformationTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_director_information.toString()}
             >
-              <EditDirectorTab permissions={per} />
+              <EditDirectorTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
@@ -312,19 +320,28 @@ export default function UserNgoEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_more_information.toString()}
             >
-              <EditMoreInformationTab permissions={per} />
+              <EditMoreInformationTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_status.toString()}
             >
-              <EditStatusTab permissions={per} />
+              <EditStatusTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_representative.toString()}
             >
-              <EditRepresentativeTab permissions={per} />
+              <EditRepresentativeTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
           </>
         )}

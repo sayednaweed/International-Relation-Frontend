@@ -32,9 +32,10 @@ import { PermissionEnum } from "@/lib/constants";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 interface EditStatusTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditStatusTab(props: EditStatusTabProps) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const { t } = useTranslation();
   const { id } = useParams();
   const [state] = useGlobalState();
@@ -92,7 +93,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : (
           <>
-            {hasEdit && (
+            {!registerationExpired && hasEdit && (
               <NastranModel
                 size="lg"
                 isDismissable={false}

@@ -1,15 +1,48 @@
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
-import { useContext } from "react";
+import { toast } from "@/components/ui/use-toast";
+import axiosClient from "@/lib/axois-client";
+import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function MoreInformationTab() {
+interface MoreInformationTabProps {
+  url?: string;
+}
+export default function MoreInformationTab(props: MoreInformationTabProps) {
+  const { url } = props;
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
+  const [loading, setLoading] = useState(false);
+  const loadInformation = async () => {
+    if (url) {
+      try {
+        setLoading(true);
+        const response = await axiosClient.get(url);
+        if (response.status == 200) {
+          const ngo = response.data.ngo;
+          if (ngo) setUserData({ ...userData, ...ngo });
+        }
+      } catch (error: any) {
+        toast({
+          toastType: "ERROR",
+          title: t("error"),
+          description: error.response.data.message,
+        });
+        console.log(error);
+      }
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    loadInformation();
+  }, []);
 
-  return (
+  return loading ? (
+    <NastranSpinner />
+  ) : (
     <div className="flex flex-col mt-10 w-full gap-y-6 pb-12">
       <BorderContainer
         title={t("vision")}

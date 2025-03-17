@@ -338,5 +338,8 @@
   "failed": "ناکام",
   "extend": "تمدید",
   "new_director": "رئیس جدید",
-  "prev_dire": "رئیس قبلی"
+  "prev_dire": "رئیس قبلی",
+  "prev_rep": "نماینده قبلی",
+  "new_represent": "نماینده جدید",
+  "check_auth": "بررسی مجوز"
 }

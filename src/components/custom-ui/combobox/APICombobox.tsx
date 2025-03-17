@@ -45,7 +45,7 @@ export interface IAPIComboboxProps {
   errorMessage?: string;
   mode: ComboboxMode;
   className?: string;
-  params?: any;
+  // params?: any;
   required?: boolean;
   requiredHint?: string;
   lable?: string;
@@ -66,7 +66,7 @@ function APICombobox(props: IAPIComboboxProps) {
     readonly,
     className,
     required,
-    params,
+    // params,
     requiredHint,
     errorText,
     lable,
@@ -107,9 +107,12 @@ function APICombobox(props: IAPIComboboxProps) {
           return;
         }
         // 2. Fetch data
-        const response = await axiosClient.get(apiUrl, {
-          params: params,
-        });
+        const response = await axiosClient.get(
+          apiUrl
+          //    {
+          //   params: params,
+          // }
+        );
         // 3. Store in IndexedDB
         if (response.status == 200) {
           const data = response.data;
