@@ -17,7 +17,7 @@ import axiosClient from "@/lib/axois-client";
 
 import Pagination from "@/components/custom-ui/table/Pagination";
 import { toLocaleDate } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
@@ -37,6 +37,10 @@ import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMulti
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { DateObject } from "react-multi-date-picker";
 import { Button } from "@/components/ui/button";
+import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
+import UserDetails from "./user-details";
+import NastranModel from "@/components/custom-ui/model/NastranModel";
+import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -44,6 +48,7 @@ export function AuditTable() {
   type Users = { label: string; value: string };
   type Colums = { label: string; value: string };
   const { userData, setUserData, error } = useContext(StepperContext);
+  const [isactive, setIsActive] = useState(false);
   const [auditData, setAuditData] = useState<AuditDataProps>({
     users: { label: "", value: "" },
     colums: { label: "", value: "" },
@@ -225,6 +230,7 @@ export function AuditTable() {
       </TableCell>
     </TableRow>
   );
+
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2 gap-y-0 items-center  ">
@@ -333,30 +339,40 @@ export function AuditTable() {
       <div className="flex justify-center mb-2">
         <Button className=" mt-4 bg-tertiary w-24 ">{t("apply")}</Button>
       </div>
+
+      <div className="sm:px-4 col-span-3 flex-1 self-start sm:self-baseline flex justify-end items-center"></div>
       <Table className="bg-card rounded-md my-[2px] py-8">
-        <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="text-start">{t("user")}</TableHead>
-            <TableHead className="text-start">{t("table")}</TableHead>
-            <TableHead className="text-start">{t("event")}</TableHead>
-            <TableHead className="text-start">{t("date")}</TableHead>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-start">User</TableHead>
+            <TableHead className="text-start">Table</TableHead>
+            <TableHead className="text-start">Event</TableHead>
+            <TableHead className="text-start">Date</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          <TableRow
-          // read={() => {}}
-          // remove={async () => {}}
-          // edit={false}
-          // onEdit={async () => {}}
-          // key={""}
-          // item={""}
-          // onRemove={() => deleteOnClick}
-          // onRead={watchOnClick}
-          >
+        <TableBody>
+          <TableRow>
             <TableCell>Ahmad</TableCell>
-            <TableCell>permission</TableCell>
-            <TableCell>created</TableCell>
+            <TableCell>Permission</TableCell>
+            <TableCell>Created</TableCell>
             <TableCell>2025/2/1</TableCell>
+            <TableCell>
+              <NastranModel
+                size="lg"
+                isDismissable={false}
+                button={
+                  <SecondaryButton
+                    className=" px-8 bg-primary/50 hover:bg-primary/80 rounded-full"
+                    type="button"
+                  >
+                    <Eye className="text-primary-foreground size-[18px] transition" />
+                  </SecondaryButton>
+                }
+                showDialog={async () => true}
+              >
+                <UserDetails />
+              </NastranModel>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Naweed</TableCell>
@@ -364,12 +380,7 @@ export function AuditTable() {
             <TableCell>Deleted</TableCell>
             <TableCell>2025/2/2</TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>Waheed</TableCell>
-            <TableCell>permission</TableCell>
-            <TableCell>created</TableCell>
-            <TableCell>2025/2/1</TableCell>
-          </TableRow>
+
           {/* {loading ? (
             <>
               {skeleton}
@@ -405,6 +416,7 @@ export function AuditTable() {
           )} */}
         </TableBody>
       </Table>
+
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
