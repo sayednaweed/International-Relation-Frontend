@@ -1,17 +1,17 @@
 import { useTranslation } from "react-i18next";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import EditProfileInformation from "./steps/edit-profile-information";
-import { EditProfilePassword } from "./steps/edit-profile-password";
 import { useNavigate } from "react-router";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Database, KeyRound } from "lucide-react";
-import ProfileHeader from "./profile-header";
 import {
   Breadcrumb,
   BreadcrumbHome,
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import UserProfileHeader from "./user-profile-header";
+import { EditProfilePassword } from "../general/edit-profile-password";
 
 export default function UsersProfilePage() {
   const { user } = useUserAuthState();
@@ -20,14 +20,10 @@ export default function UsersProfilePage() {
   const navigate = useNavigate();
   const handleGoHome = () => navigate("/dashboard", { replace: true });
 
-  const selectedTabStyle = `after:duration-500 data-[state=active]:after:opacity-100 after:opacity-0 data-[state=active]:after:translate-x-0
-                            ltr:after:translate-x-[-20px] rtl:after:translate-x-[20px] after:transition-[transform,opacity] data-[state=active]:after:content-[""] data-[state=active]:after:absolute ltr:after:rotate-180 data-[state=active]:after:top-0 data-[state=active]:after:w-0 data-[state=active]:after:h-full rtl:data-[state=active]:after:left-[-17px]  ltr:data-[state=active]:after:right-[-17px] 
-                      data-[state=active]:after:border-b-[19px] data-[state=active]:after:border-b-transparent 
-                      data-[state=active]:after:border-t-[18px] data-[state=active]:after:border-t-transparent 
-                     data-[state=active]:after:border-r-[19px] data-[state=active]:after:border-r-tertiary relative
-                     w-[95%] ltr:py-2 rtl:py-[5px] bg-card-foreground/5 data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3 justify-start`;
+  const selectedTabStyle = `rtl:text-xl-rtl ltr:text-lg-ltr relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
+
   return (
-    <div className="flex flex-col gap-y-6 px-3 mt-2">
+    <div className="flex flex-col gap-y-3 px-3 pb-12 mt-2">
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />
@@ -39,10 +35,10 @@ export default function UsersProfilePage() {
       <Tabs
         dir={direction}
         defaultValue="Account"
-        className="flex flex-col sm:flex-row gap-x-3 mt-2 gap-y-2 sm:gap-y-0"
+        className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:gap-y-0"
       >
-        <TabsList className="min-h-fit sm:min-h-[80vh] overflow-y-auto pb-8 sm:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
-          <ProfileHeader />
+        <TabsList className="sm:min-h-[550px] h-fit pb-8 min-w-[300px] md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
+          <UserProfileHeader />
           <TabsTrigger
             className={`mt-6 rtl:text-2xl-rtl ltr:text-2xl-ltr  ${selectedTabStyle}`}
             value="Account"
@@ -62,7 +58,7 @@ export default function UsersProfilePage() {
           <EditProfileInformation />
         </TabsContent>
         <TabsContent className="flex-1 m-0" value="password">
-          <EditProfilePassword />
+          <EditProfilePassword url="profile/change-password" />
         </TabsContent>
       </Tabs>
     </div>

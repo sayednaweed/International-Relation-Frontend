@@ -44,6 +44,15 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
               content.show_new_director = false;
             }
           }
+          if (!content?.new_represent) {
+            if (type == "extend") {
+              content.new_represent = false;
+              content.show_new_representer = true;
+            } else {
+              content.new_represent = true;
+              content.show_new_representer = false;
+            }
+          }
           setUserData({
             ...content,
             allowed: true,
@@ -58,20 +67,16 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           });
         } else {
           // no data is stored
-          if (type == "extend") {
-            ngo.new_director = false;
-            ngo.show_new_director = true;
-          } else {
-            ngo.new_director = true;
-            ngo.show_new_director = false;
-          }
+          ngo.new_director = false;
+          ngo.show_new_director = true;
+          ngo.new_represent = false;
+          ngo.show_new_representer = true;
           setUserData({
             ...userData,
             allowed: true,
             shouldContinue: true,
             checklistMap: new Map<string, any>(),
             ...ngo,
-            new_director: false,
           });
         }
       }
@@ -246,6 +251,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           errorMessage={error.get("country")}
           apiUrl={"countries"}
           mode="single"
+          readonly={type == "extend"}
         />
         <CustomDatePicker
           placeholder={t("select_a_date")}
@@ -258,6 +264,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           }}
           className="py-3 w-full"
           errorMessage={error.get("establishment_date")}
+          readonly={type == "extend"}
         />
       </BorderContainer>
 
@@ -278,8 +285,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           selectedItem={userData["province"]?.name}
           placeHolder={t("select_a")}
           errorMessage={error.get("province")}
-          apiUrl={"provinces"}
-          params={{ country_id: 1 }}
+          apiUrl={"provinces/" + 1}
           mode="single"
         />
         {userData.province && (
@@ -294,8 +300,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
             selectedItem={userData["district"]?.name}
             placeHolder={t("select_a")}
             errorMessage={error.get("district")}
-            apiUrl={"districts"}
-            params={{ province_id: userData?.province?.id }}
+            apiUrl={"districts/" + userData?.province?.id}
             mode="single"
             key={userData?.province?.id}
           />

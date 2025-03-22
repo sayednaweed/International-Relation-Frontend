@@ -184,7 +184,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       response = await axiosClient.post("auth-ngo", formData);
       if (response.status == 200) {
         if (rememberMe) {
-          setToken(response.data.token);
           setToken({
             token: response.data.token,
             type: "ngo",

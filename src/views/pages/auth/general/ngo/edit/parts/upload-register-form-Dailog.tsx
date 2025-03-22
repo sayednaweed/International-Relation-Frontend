@@ -150,7 +150,7 @@ export default function UploadRegisterFormDailog(
                     "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
                     Authorization: "Bearer " + getConfiguration()?.token,
                   }}
-                  accept={checklist.acceptable_mimes}
+                  accept={checklist.accept}
                   name={checklist.name}
                   defaultFile={userData.checklistMap.get(checklist.id)}
                   uploadParam={{

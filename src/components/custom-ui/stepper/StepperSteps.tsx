@@ -116,7 +116,7 @@ function StepperSteps(props: IStepperProps) {
           >
             {step.description}
           </div>
-          <h1 className="rtl:text-sm-rtl ltr:text-[10px] absolute rtl:top-9 ltr:top-9 text-primary/80 font-bold">
+          <h1 className="rtl:text-[13px] ltr:text-[10px] absolute rtl:top-9 ltr:top-9 text-primary/80 font-bold">
             {`${progressText.step} ${index + 1}`}
           </h1>
           <div

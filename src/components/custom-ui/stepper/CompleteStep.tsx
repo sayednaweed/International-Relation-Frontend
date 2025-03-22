@@ -7,7 +7,7 @@ export interface ICompleteStepProps {
   description: string;
   successText: string;
   closeText: string;
-  againText: string;
+  againText?: string;
   closeModel: () => void;
 }
 
@@ -50,15 +50,17 @@ export default function CompleteStep(props: ICompleteStepProps) {
       >
         {closeText}
       </PrimaryButton>
-      <PrimaryButton
-        className="rounded-md mt-4 min-w-[80px] shadow-md rtl:text-xl-rtl"
-        onClick={() => {
-          setUserData([]);
-          handleDirection("again");
-        }}
-      >
-        {againText}
-      </PrimaryButton>
+      {againText && (
+        <PrimaryButton
+          className="rounded-md mt-4 min-w-[80px] shadow-md rtl:text-xl-rtl"
+          onClick={() => {
+            setUserData([]);
+            handleDirection("again");
+          }}
+        >
+          {againText}
+        </PrimaryButton>
+      )}
     </div>
   );
 }

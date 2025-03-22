@@ -32,9 +32,10 @@ import { PermissionEnum } from "@/lib/constants";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 interface EditStatusTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditStatusTab(props: EditStatusTabProps) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const { t } = useTranslation();
   const { id } = useParams();
   const [state] = useGlobalState();
@@ -92,7 +93,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : (
           <>
-            {hasEdit && (
+            {!registerationExpired && hasEdit && (
               <NastranModel
                 size="lg"
                 isDismissable={false}
@@ -114,6 +115,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                   <TableHead className="text-start">{t("id")}</TableHead>
                   <TableHead className="text-start">{t("name")}</TableHead>
                   <TableHead className="text-start">{t("status")}</TableHead>
+                  <TableHead className="text-start">{t("saved_by")}</TableHead>
                   <TableHead className="text-start">{t("comment")}</TableHead>
                   <TableHead className="text-start">{t("date")}</TableHead>
                 </TableRow>
@@ -122,6 +124,9 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                 {loading ? (
                   <>
                     <TableRow>
+                      <TableCell>
+                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                      </TableCell>
                       <TableCell>
                         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                       </TableCell>
@@ -155,6 +160,9 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                           value1={t("currently")}
                           value2={t("formerly")}
                         />
+                      </TableCell>
+                      <TableCell className="truncate max-w-44">
+                        {ngoStatus.userable_type}
                       </TableCell>
                       <TableCell className="truncate max-w-44">
                         {ngoStatus.comment}

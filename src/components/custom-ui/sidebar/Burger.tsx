@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
+import { AlignLeft, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -37,9 +37,9 @@ export default function Burger(props: BurgerProps) {
   };
   return (
     <div className={cn("self-center flex-1 px-2 xl:hidden", className)}>
-      <Menu
+      <AlignLeft
         onClick={resizeSidebar}
-        className="size-[24px] hover:opacity-50 cursor-pointer self-center"
+        className="size-[24px] text-primary/85 hover:text-primary/60 transition-colors cursor-pointer self-center"
       />
     </div>
   );

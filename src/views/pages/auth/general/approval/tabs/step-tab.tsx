@@ -106,15 +106,26 @@ export default function StepTab(props: ApprovedStepTabProps) {
   useEffect(() => {
     initialize(undefined, undefined);
   }, []);
+
   const viewApprovalDialog = viewDetails.view && (
-    <ViewApprovalDailog
-      approval_id={viewDetails.approval_id}
-      onComplete={(id: string) => {
-        const updatedList = list.data.filter((item: Approval) => item.id != id);
-        setList({ ...list, data: updatedList });
-      }}
-      onClose={() => setViewDetails({ ...viewDetails, view: false })}
-    />
+    <NastranModel
+      size="lg"
+      visible={true}
+      isDismissable={false}
+      button={undefined}
+      showDialog={async () => true}
+    >
+      <ViewApprovalDailog
+        approval_id={viewDetails.approval_id}
+        onComplete={(id: string) => {
+          const updatedList = list.data.filter(
+            (item: Approval) => item.id != id
+          );
+          setList({ ...list, data: updatedList });
+        }}
+        onClose={() => setViewDetails({ ...viewDetails, view: false })}
+      />
+    </NastranModel>
   );
 
   return (

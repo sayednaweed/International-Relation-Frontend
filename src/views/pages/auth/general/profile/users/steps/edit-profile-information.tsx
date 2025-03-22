@@ -76,7 +76,7 @@ export default function EditProfileInformation() {
       !(await validate(
         [
           { name: "username", rules: ["required", "max:45", "min:3"] },
-          { name: "name", rules: ["required", "max:45", "min:3"] },
+          { name: "full_name", rules: ["required", "max:45", "min:3"] },
           { name: "email", rules: ["required", "max:45", "min:3"] },
         ],
         userData,
@@ -94,7 +94,10 @@ export default function EditProfileInformation() {
     formData.append("contact", userData.contact ? userData.contact : "");
     formData.append("email", userData.email);
     try {
-      const response = await axiosClient.post("profile/update", formData);
+      const response = await axiosClient.post(
+        "user/profile/info/update",
+        formData
+      );
       if (response.status == 200) {
         // Change logged in user data
 
@@ -127,7 +130,7 @@ export default function EditProfileInformation() {
 
   return (
     <Card>
-      <CardHeader className="space-y-0 ">
+      <CardHeader>
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
           {t("account_information")}
         </CardTitle>
@@ -135,120 +138,105 @@ export default function EditProfileInformation() {
           {t("update_user_acc_info")}
         </CardDescription>
       </CardHeader>
-      <CardContent>
-        <div className="grid gap-4 w-full sm:w-[70%] md:w-1/2">
-          <CustomInput
-            size_="md"
-            lable={t("full_name")}
-            name="full_name"
-            defaultValue={userData.full_name}
-            placeholder={t("enter_your_name")}
-            type="text"
-            errorMessage={error.get("full_name")}
-            onBlur={handleChange}
-            startContent={
-              <UserRound className="text-secondary-foreground size-[18px] pointer-events-none" />
-            }
-          />
-          <CustomInput
-            size_="md"
-            name="username"
-            lable={t("username")}
-            defaultValue={userData.username}
-            placeholder={t("enter_user_name")}
-            type="text"
-            errorMessage={error.get("username")}
-            onBlur={handleChange}
-            startContent={
-              <UserRound className="text-secondary-foreground size-[18px] pointer-events-none" />
-            }
-          />
-          <CustomInput
-            size_="sm"
-            name="email"
-            defaultValue={userData.email}
-            placeholder={t("enter_your_email")}
-            lable={t("email")}
-            type="email"
-            errorMessage={error.get("email")}
-            onChange={handleChange}
-            startContent={
-              <Mail className="text-secondary-foreground size-[18px] pointer-events-none" />
-            }
-          />
-          <CustomInput
-            size_="sm"
-            className={`rtl:text-right`}
-            placeholder={t("enter_ur_pho_num")}
-            defaultValue={userData.contact ? userData.contact : ""}
-            lable={t("contact")}
-            type="text"
-            name="contact"
-            dir="ltr"
-            errorMessage={error.get("contact")}
-            onChange={handleChange}
-            startContent={
-              <Phone className="text-primary-icon size-[18px] pointer-events-none" />
-            }
-          />
-          <FakeCombobox
-            icon={
-              <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
-            }
-            title={t("department")}
-            selected={user.destination}
-          />
-          <FakeCombobox
-            icon={
-              <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
-            }
-            title={t("job")}
-            selected={user.job}
-          />
-          <FakeCombobox
-            icon={
-              <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
-            }
-            title={t("role")}
-            selected={user.role.name}
-          />
-          <FakeCombobox
-            icon={
-              <CalendarDays className="size-[16px] text-tertiary absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
-            }
-            title={t("join_date")}
-            selected={toLocaleDate(new Date(user.created_at), state)}
-          />
-          {/* <CustomCheckbox
-            readOnly={true}
-            checked={userData["status"]}
-            onCheckedChange={(value: boolean) =>
-              setUserData({ ...userData, status: value })
-            }
-            parentClassName="rounded-md py-[12px] gap-x-1 bg-card border px-[10px]"
-            text={t("status")}
-            description={t("set_acco_act_or_dec")}
-            required={true}
-            errorMessage={error.get("status")}
-          /> */}
-          <CustomCheckbox
-            readOnly={true}
-            checked={userData.grantPermission}
-            onCheckedChange={(value: boolean) =>
-              setUserData({ ...userData, grantPermission: value })
-            }
-            parentClassName="rounded-md py-[12px] gap-x-1 bg-card border px-[10px]"
-            text={t("grant")}
-            description={t("allows_user_grant")}
-            errorMessage={error.get("grant")}
-          />
-        </div>
+      <CardContent className="flex flex-col gap-x-4 gap-y-6 w-full lg:w-1/2 2xl:h-1/3">
+        <CustomInput
+          size_="md"
+          lable={t("full_name")}
+          name="full_name"
+          defaultValue={userData.full_name}
+          placeholder={t("enter_your_name")}
+          type="text"
+          errorMessage={error.get("full_name")}
+          onBlur={handleChange}
+          startContent={
+            <UserRound className="text-secondary-foreground size-[18px] pointer-events-none" />
+          }
+        />
+        <CustomInput
+          size_="md"
+          name="username"
+          lable={t("username")}
+          defaultValue={userData.username}
+          placeholder={t("enter_user_name")}
+          type="text"
+          errorMessage={error.get("username")}
+          onBlur={handleChange}
+          startContent={
+            <UserRound className="text-secondary-foreground size-[18px] pointer-events-none" />
+          }
+        />
+        <CustomInput
+          size_="sm"
+          name="email"
+          defaultValue={userData.email}
+          placeholder={t("enter_your_email")}
+          lable={t("email")}
+          type="email"
+          errorMessage={error.get("email")}
+          onChange={handleChange}
+          startContent={
+            <Mail className="text-secondary-foreground size-[18px] pointer-events-none" />
+          }
+        />
+        <CustomInput
+          size_="sm"
+          className={`rtl:text-right`}
+          placeholder={t("enter_ur_pho_num")}
+          defaultValue={userData.contact ? userData.contact : ""}
+          lable={t("contact")}
+          type="text"
+          name="contact"
+          dir="ltr"
+          errorMessage={error.get("contact")}
+          onChange={handleChange}
+          startContent={
+            <Phone className="text-primary-icon size-[18px] pointer-events-none" />
+          }
+        />
+        <FakeCombobox
+          icon={
+            <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
+          }
+          title={t("department")}
+          selected={user.destination}
+        />
+        <FakeCombobox
+          icon={
+            <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
+          }
+          title={t("job")}
+          selected={user.job}
+        />
+        <FakeCombobox
+          icon={
+            <ChevronsUpDown className="size-[16px] absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
+          }
+          title={t("role")}
+          selected={user.role.name}
+        />
+        <FakeCombobox
+          icon={
+            <CalendarDays className="size-[16px] text-tertiary absolute top-1/2 transform -translate-y-1/2 ltr:right-4 rtl:left-4" />
+          }
+          title={t("join_date")}
+          selected={toLocaleDate(new Date(user.created_at), state)}
+        />
+        <CustomCheckbox
+          readOnly={true}
+          checked={userData.grantPermission}
+          onCheckedChange={(value: boolean) =>
+            setUserData({ ...userData, grantPermission: value })
+          }
+          parentClassName="rounded-md py-[12px] gap-x-1 bg-card border px-[10px]"
+          text={t("grant")}
+          description={t("allows_user_grant")}
+          errorMessage={error.get("grant")}
+        />
       </CardContent>
       <CardFooter>
         <PrimaryButton
-          onClick={async () => {
-            await saveData();
-          }}
+          disabled={loading}
+          onClick={saveData}
           className={`shadow-lg`}
         >
           <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>

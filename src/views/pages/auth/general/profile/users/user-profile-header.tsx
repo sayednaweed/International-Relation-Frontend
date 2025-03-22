@@ -7,64 +7,36 @@ import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
+import { validateFile } from "@/lib/utils";
 
-export default function ProfileHeader() {
+export default function UserProfileHeader() {
   const { user, setUser } = useUserAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
 
   const onFileUploadChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    // Handle execution
-    if (loading) return;
-    setLoading(true);
-
     const fileInput = e.target;
     const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-    if (!fileInput.files) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("No file was chosen"),
-      });
-      return;
-    }
-
     if (!fileInput.files || fileInput.files.length === 0) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        description: t("files_list_is_empty"),
+        description: t("ples_sel_vali_file"),
       });
       return;
     }
-
     const file = fileInput.files[0];
-    if (file.size >= maxFileSize) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("img_size_shou_less_2MB"),
-      });
-      return;
-    }
-    /** Type validation */
     const validTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (!validTypes.includes(file.type)) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: t("ples_sel_vali_img_file"),
-      });
-      return;
-    }
-
+    const result = validateFile(file, Math.round(maxFileSize), validTypes, t);
+    if (!result) return;
+    if (loading) return;
+    setLoading(true);
     // Update profile
     const formData = new FormData();
     formData.append("profile", file);
     try {
       const response = await axiosClient.post(
-        "profile/picture-update",
+        "user/profile/picture-update",
         formData,
         {
           headers: {
@@ -105,7 +77,7 @@ export default function ProfileHeader() {
     setLoading(true);
 
     try {
-      const response = await axiosClient.delete("profile/picture-delete");
+      const response = await axiosClient.delete("delete/profile-picture");
       if (response.status == 200) {
         // Change logged in user data
         await setUser({
@@ -129,10 +101,11 @@ export default function ProfileHeader() {
       setLoading(false);
     }
   };
+
   return (
     <div className="self-center text-center">
       <CachedImage
-        src={user.profile}
+        src={user?.profile}
         alt="Avatar"
         shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
@@ -153,6 +126,7 @@ export default function ProfileHeader() {
             <h1 className={`rtl:text-lg-rtl ltr:text-md-ltr`}>{t("choose")}</h1>
             <input
               type="file"
+              accept=".jpg, .png, .jpeg"
               className={`block w-0 h-0`}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 onFileUploadChange(e);
@@ -160,33 +134,24 @@ export default function ProfileHeader() {
             />
           </label>
         </IconButton>
+
         <IconButton
           className="hover:bg-red-400/30 transition-all border-red-400/40 text-red-400"
-          onClick={async () => {
-            if (user.profile == "")
-              toast({
-                toastType: "ERROR",
-                title: t("error"),
-                description: t("no_img_selected"),
-                duration: 3000,
-              });
-            else {
-              await deleteProfilePicture();
-            }
-          }}
+          onClick={deleteProfilePicture}
         >
-          <Trash2 className="size-[14px] pointer-events-none" />
+          <Trash2 className="size-[13px] pointer-events-none" />
           <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
         </IconButton>
       </div>
-      <h1 className="text-primary font-semibold rtl:text-4xl-rtl ltr:text-4xl-ltr">
-        {user.username}
+
+      <h1 className="text-primary font-semibold rtl:text-2xl-rtl ltr:text-4xl-ltr">
+        {user?.username}
       </h1>
       <h1 className="leading-6 rtl:text-sm-rtl ltr:text-2xl-ltr">
-        {user.email}
+        {user?.email}
       </h1>
       <h1 dir="ltr" className="text-primary rtl:text-md-rtl ltr:text-xl-ltr">
-        {user.contact}
+        {user?.contact}
       </h1>
     </div>
   );

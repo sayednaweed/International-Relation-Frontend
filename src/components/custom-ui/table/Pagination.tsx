@@ -73,9 +73,9 @@ const Pagination: React.FC<PaginationProps> = ({ lastPage, onPageChange }) => {
           <button
             key={index}
             onClick={() => handlePageClick(page)}
-            className={`min-w-8 rtl:text-sm-rtl px-[2px] rounded-sm hover:bg-primary/80 hover:text-white font-medium border border-primary/15 transition-colors ${
+            className={`min-w-8 rtl:text-sm-rtl px-[2px] rounded-lg text-primary-foreground font-medium border border-primary/15 transition-colors ${
               currentPage === page
-                ? "bg-primary/80 text-white"
+                ? "bg-primary/80"
                 : "bg-secondary text-secondary-foreground"
             }`}
           >

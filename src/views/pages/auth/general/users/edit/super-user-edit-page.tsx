@@ -108,7 +108,7 @@ export default function SuperUserEditPage() {
         defaultValue={PermissionEnum.users.sub.user_information.toString()}
         className="flex flex-col sm:flex-row gap-x-3 gap-y-2 sm:gap-y-0"
       >
-        <TabsList className="pb-4 min-h-fit sm:min-h-[80vh] h-fit sm:min-w-[300px] gap-y-4 items-start justify-start flex flex-wrap flex-col bg-card border">
+        <TabsList className="sm:min-h-[550px] h-fit pb-8 min-w-[300px] md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
           <UserEditHeader
             id={id}
             failed={failed}

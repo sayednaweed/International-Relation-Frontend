@@ -46,9 +46,9 @@ export default function AddNgo(props: AddNgoProps) {
     formData.append("name_pashto", userData.name_pashto);
     formData.append("name_farsi", userData.name_farsi);
     formData.append("username", userData.username);
-    formData.append("full_name_english", userData.repre_name_english);
-    formData.append("full_name_pashto", userData.repre_name_pashto);
-    formData.append("full_name_farsi", userData.repre_name_farsi);
+    formData.append("repre_name_english", userData.repre_name_english);
+    formData.append("repre_name_pashto", userData.repre_name_pashto);
+    formData.append("repre_name_farsi", userData.repre_name_farsi);
     formData.append("pending_id", userData.letter_of_intro.pending_id);
     try {
       const response = await axiosClient.post("ngo/store", formData);
@@ -94,7 +94,7 @@ export default function AddNgo(props: AddNgoProps) {
           pending: t("pending"),
           step: t("step"),
         }}
-        loadingText={t("loading")}
+        loadingText={t("store_infor")}
         backText={t("back")}
         nextText={t("next")}
         confirmText={t("confirm")}

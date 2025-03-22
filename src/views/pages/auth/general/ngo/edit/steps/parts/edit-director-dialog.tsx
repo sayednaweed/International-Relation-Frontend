@@ -368,8 +368,7 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
               selectedItem={userData?.province?.name}
               placeHolder={t("select_a")}
               errorMessage={error.get("province")}
-              apiUrl={"provinces"}
-              params={{ country_id: 1 }}
+              apiUrl={"provinces/" + 1}
               mode="single"
             />
             {userData.province && (
@@ -384,8 +383,7 @@ export default function EditDirectorDialog(props: EditDirectorDialogProps) {
                 selectedItem={userData?.district?.name}
                 placeHolder={t("select_a")}
                 errorMessage={error.get("district")}
-                apiUrl={"districts"}
-                params={{ province_id: userData.province?.id }}
+                apiUrl={"districts/" + userData.province?.id}
                 mode="single"
                 key={userData?.province?.id}
               />

@@ -76,7 +76,7 @@ export default function SettingsPage() {
       <Tabs
         dir={direction}
         defaultValue={per.sub.values().next().value?.id.toString()}
-        className="flex flex-col items-center"
+        className="flex flex-col items-center pb-12"
       >
         <TabsList className="px-0 pb-1 h-fit mt-2 flex-wrap overflow-x-auto overflow-y-hidden justify-center gap-y-1 gap-x-1">
           {tableList}

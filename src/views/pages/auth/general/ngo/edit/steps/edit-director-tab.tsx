@@ -31,9 +31,10 @@ import { PermissionEnum } from "@/lib/constants";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 interface EditDirectorTabProps {
   permissions: UserPermission;
+  registerationExpired: boolean;
 }
 export default function EditDirectorTab(props: EditDirectorTabProps) {
-  const { permissions } = props;
+  const { permissions, registerationExpired } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(false);
@@ -120,7 +121,7 @@ export default function EditDirectorTab(props: EditDirectorTabProps) {
         }}
       >
         <EditDirectorDialog
-          hasEdit={hasEdit}
+          hasEdit={!registerationExpired && hasEdit}
           director={selected.director}
           onComplete={update}
         />
@@ -140,7 +141,7 @@ export default function EditDirectorTab(props: EditDirectorTabProps) {
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : (
           <>
-            {hasAdd && (
+            {!registerationExpired && hasAdd && (
               <NastranModel
                 size="lg"
                 isDismissable={false}

@@ -3,7 +3,7 @@ import Stepper from "@/components/custom-ui/stepper/Stepper";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Database, Grip, NotebookPen, UserRound } from "lucide-react";
+import { Check, Database, Grip, NotebookPen, UserRound } from "lucide-react";
 import NgoInformationTab from "./steps/ngo-information-tab";
 import MoreInformationTab from "./steps/more-information-tab";
 import { useNavigate, useParams } from "react-router";
@@ -21,6 +21,7 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 
 export default function NgoFormSubmit() {
   const { t } = useTranslation();
@@ -104,12 +105,6 @@ export default function NgoFormSubmit() {
       );
 
       if (response.status == 200) {
-        if (user.role.role == RoleEnum.ngo) {
-          // Incase of ngo
-          navigate("/dashboard", { replace: true });
-        } else {
-          navigate("/ngo", { replace: true });
-        }
         return true;
       }
     } catch (error: any) {
@@ -144,11 +139,19 @@ export default function NgoFormSubmit() {
     formData.append("task_type", TaskTypeEnum.ngo_registeration.toString());
     if (id) formData.append("id", id.toString());
     await SaveContent(formData);
-    if (!onlySave) handleGoBack();
+    if (!onlySave) onClose();
   };
   const handleGoBack = () => navigate(-1);
   const handleGoHome = () => navigate("/dashboard", { replace: true });
-
+  const onClose = () => {
+    if (user.role.role == RoleEnum.ngo) {
+      // Incase of ngo
+      navigate("/dashboard", { replace: true });
+    } else {
+      // Back to ngo information
+      navigate(-1);
+    }
+  };
   return (
     <div className="p-2">
       {allowed ? (
@@ -188,6 +191,10 @@ export default function NgoFormSubmit() {
               {
                 description: t("checklist"),
                 icon: <NotebookPen className="size-[16px]" />,
+              },
+              {
+                description: t("complete"),
+                icon: <Check className="size-[16px]" />,
               },
             ]}
             components={[
@@ -340,7 +347,20 @@ export default function NgoFormSubmit() {
                 ],
               },
               {
-                component: <CheckListTab onSaveClose={onSaveClose} />,
+                component: (
+                  <CheckListTab onSaveClose={onSaveClose} type="register" />
+                ),
+                validationRules: [],
+              },
+              {
+                component: (
+                  <CompleteStep
+                    successText={t("congratulation")}
+                    closeText={t("close")}
+                    closeModel={onClose}
+                    description={t("info_stored")}
+                  />
+                ),
                 validationRules: [],
               },
             ]}
@@ -353,7 +373,7 @@ export default function NgoFormSubmit() {
           />
         </>
       ) : (
-        <NastranSpinner />
+        <NastranSpinner label={t("check_auth")} className="mt-16" />
       )}
     </div>
   );

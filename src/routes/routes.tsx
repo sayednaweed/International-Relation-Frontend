@@ -51,7 +51,10 @@ import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-s
 import DonorPage from "@/views/pages/auth/general/donor/donor-page";
 import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
 
-export const getSuperRouter = (user: User | Ngo | Donor) => {
+export const getSuperRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -96,6 +99,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SuperDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -106,6 +110,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SuperUserPage />}
                 routeName="users"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -116,6 +121,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SuperUserEditPage />}
                 routeName="users"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -126,6 +132,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SuperReportsPage />}
                 routeName="reports"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -137,6 +144,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -147,6 +155,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<SuperAuditPage />}
                 routeName="audit"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -157,6 +166,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<LogsPage />}
                 routeName="logs"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -167,6 +177,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<NgoPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -177,6 +188,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<UserNgoEditPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -187,6 +199,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -197,6 +210,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormExtend />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -207,6 +221,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -217,6 +232,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<ProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -227,6 +243,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<NewsManagementPage />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -237,6 +254,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<EditNews />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -247,6 +265,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<AboutManagementPage />}
                 routeName="management/about"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -257,6 +276,7 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
                 element={<ApprovalPage />}
                 routeName="approval"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -265,7 +285,10 @@ export const getSuperRouter = (user: User | Ngo | Donor) => {
     </BrowserRouter>
   );
 };
-export const getAdminRouter = (user: User | Ngo | Donor) => {
+export const getAdminRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -310,6 +333,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<AdminDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -320,6 +344,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<SuperUserPage />}
                 routeName="users"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -330,6 +355,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<SuperUserEditPage />}
                 routeName="users"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -340,6 +366,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<SuperReportsPage />}
                 routeName="reports"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -351,6 +378,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -361,6 +389,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<NgoPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -371,6 +400,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<UserNgoEditPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -381,6 +411,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -391,6 +422,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormExtend />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -401,6 +433,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<ProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -411,6 +444,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<NewsManagementPage />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -421,6 +455,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<EditNews />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -431,6 +466,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<AboutManagementPage />}
                 routeName="management/about"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -441,6 +477,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<ApprovalPage />}
                 routeName="approval"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -451,6 +488,7 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
                 element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -462,7 +500,10 @@ export const getAdminRouter = (user: User | Ngo | Donor) => {
     </BrowserRouter>
   );
 };
-export const getUserRouter = (user: User | Ngo | Donor) => {
+export const getUserRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -507,6 +548,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<UserDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -517,6 +559,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<SuperReportsPage />}
                 routeName="reports"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -527,6 +570,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -538,6 +582,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<NgoPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -548,6 +593,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<UserNgoEditPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -558,6 +604,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormSubmit />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -568,6 +615,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<NgoFormExtend />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -578,6 +626,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<ProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -588,6 +637,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<NewsManagementPage />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -598,6 +648,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<EditNews />}
                 routeName="management/news"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -608,6 +659,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<AboutManagementPage />}
                 routeName="management/about"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -618,6 +670,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<ApprovalPage />}
                 routeName="approval"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -628,6 +681,7 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
                 element={<DonorPage />}
                 routeName="donor"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -639,7 +693,10 @@ export const getUserRouter = (user: User | Ngo | Donor) => {
     </BrowserRouter>
   );
 };
-export const getDebuggerRouter = (user: User | Ngo | Donor) => {
+export const getDebuggerRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -684,6 +741,7 @@ export const getDebuggerRouter = (user: User | Ngo | Donor) => {
                 element={<DebuggerDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -694,6 +752,7 @@ export const getDebuggerRouter = (user: User | Ngo | Donor) => {
                 element={<LogsPage />}
                 routeName="logs"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -704,6 +763,7 @@ export const getDebuggerRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -763,7 +823,10 @@ export const getGuestRouter = () => {
     </BrowserRouter>
   );
 };
-export const getNgoRouter = (user: User | Ngo | Donor) => {
+export const getNgoRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -808,6 +871,7 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
                 element={<NgoDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -818,6 +882,7 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
                 element={<NgoProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -828,6 +893,7 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
                 element={<NgoReportsPage />}
                 routeName="reports"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -838,6 +904,29 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="ngo/profile/edit/:id"
+            element={
+              <ProtectedRoute
+                element={<NgoFormSubmit />}
+                routeName="ngo"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="ngo/:id"
+            element={
+              <ProtectedRoute
+                element={<UserNgoEditPage />}
+                routeName="ngo"
+                permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -850,7 +939,10 @@ export const getNgoRouter = (user: User | Ngo | Donor) => {
     </BrowserRouter>
   );
 };
-export const getDonorRouter = (user: User | Ngo | Donor) => {
+export const getDonorRouter = (
+  user: User | Ngo | Donor,
+  authenticated: boolean
+) => {
   const permissions: Map<string, UserPermission> = user.permissions;
   return (
     <BrowserRouter>
@@ -895,6 +987,7 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
                 element={<DonorDashboardPage />}
                 routeName="dashboard"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -905,6 +998,7 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
                 element={<DonorNgoPage />}
                 routeName="ngo"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -915,6 +1009,7 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
                 element={<DonorProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -925,6 +1020,7 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
                 element={<DonorReportsPage />}
                 routeName="reports"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />
@@ -935,6 +1031,7 @@ export const getDonorRouter = (user: User | Ngo | Donor) => {
                 element={<SettingsPage />}
                 routeName="settings"
                 permissions={permissions}
+                authenticated={authenticated}
               />
             }
           />

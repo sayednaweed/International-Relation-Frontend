@@ -81,9 +81,10 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
           is_active: status.is_active,
           created_at: status.created_at as string,
           ngo_id: id as string,
+          userable_type: status?.userable_type,
           comment: userData.comment as string,
           name: userData.status?.name as string,
-          status_type_id: userData.status?.id as string,
+          status_type_id: userData.status!.id,
         };
         onComplete(ngoStatus);
         modelOnRequestHide();
