@@ -1,5 +1,5 @@
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import { Eye, EyeOff, RefreshCcw } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
@@ -12,27 +12,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useTranslation } from "react-i18next";
-import { UserInformation, UserPassword } from "@/lib/types";
+import { UserPassword } from "@/lib/types";
 import axiosClient from "@/lib/axois-client";
-import { useUserAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import { PermissionEnum, RoleEnum } from "@/lib/constants";
 import { setServerError, validate } from "@/validation/validation";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { UserPermission } from "@/database/tables";
 import { ValidateItem } from "@/validation/types";
-export interface EditUserPasswordProps {
-  id: string | undefined;
-  refreshPage: () => Promise<void>;
-  userData: UserInformation | undefined;
+import { useNavigate } from "react-router";
+export interface EditNgoPasswordProps {
   failed: boolean;
   permissions: UserPermission;
 }
 
-export function EditUserPassword(props: EditUserPasswordProps) {
-  const { id, userData, failed, refreshPage, permissions } = props;
-  const { user, logoutUser } = useUserAuthState();
+export function EditNgoPassword(props: EditNgoPasswordProps) {
+  const { user, logoutNgo } = useGeneralAuthState();
+  const { failed, permissions } = props;
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -48,72 +47,61 @@ export function EditUserPassword(props: EditUserPasswordProps) {
     setPasswordData({ ...passwordData, [name]: value });
   };
   const saveData = async () => {
-    if (id != undefined) {
-      setLoading(true);
-      // 1. Validate form
-      const rules: ValidateItem[] = [
-        {
-          name: "new_password",
-          rules: ["required", "min:8", "max:45"],
-        },
-        {
-          name: "confirm_password",
-          rules: ["required", "min:8", "max:45"],
-        },
-      ];
-      if (user.role.role != RoleEnum.super) {
-        rules.push({
-          name: "old_password",
-          rules: ["required", "min:8", "max:45"],
-        });
-      }
-      const passed = await validate(rules, passwordData, setError);
-      if (!passed) {
-        setLoading(false);
-        return;
-      }
-      const formData = new FormData();
-      formData.append("id", id);
-      formData.append("new_password", passwordData.new_password);
-      if (user.role.role != RoleEnum.super)
-        formData.append("old_password", passwordData.old_password);
-      formData.append("confirm_password", passwordData.confirm_password);
-      try {
-        const response = await axiosClient.post(
-          "user/accpunt/change-password",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        if (response.status == 200) {
-          toast({
-            toastType: "SUCCESS",
-            title: t("success"),
-            description: t(response.data.message),
-          });
-          // If user changed his password he must login again
-          if (user?.id == id) await logoutUser();
-        }
-      } catch (error: any) {
+    setLoading(true);
+    // 1. Validate form
+    const rules: ValidateItem[] = [
+      {
+        name: "new_password",
+        rules: ["required", "min:8", "max:45"],
+      },
+      {
+        name: "confirm_password",
+        rules: ["required", "min:8", "max:45"],
+      },
+    ];
+    if (user.role.role != RoleEnum.super) {
+      rules.push({
+        name: "old_password",
+        rules: ["required", "min:8", "max:45"],
+      });
+    }
+    const passed = await validate(rules, passwordData, setError);
+    if (!passed) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axiosClient.post("user/change-password");
+      if (response.status == 200) {
         toast({
-          toastType: "ERROR",
-          title: t("error"),
-          description: error.response.data.message,
+          toastType: "SUCCESS",
+          title: t("success"),
+          description: t(response.data.message),
         });
-        setServerError(error.response.data.errors, setError);
-        console.log(error);
-      } finally {
-        setLoading(false);
+        // If user changed his password he must login again
+        if (user.role.role == RoleEnum.ngo) {
+          await logoutNgo();
+          navigate("ngo/login", { replace: true });
+        }
       }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: error.response.data.message,
+      });
+      setServerError(error.response.data.errors, setError);
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const hasEdit = permissions.sub.get(
-    PermissionEnum.users.sub.user_information
-  )?.edit;
+  const update_password = permissions.sub.get(
+    PermissionEnum.ngo.sub.ngo_update_account_password
+  );
+  const hasEdit = update_password?.edit;
   return (
     <Card>
       <CardHeader className="space-y-0">
@@ -127,7 +115,7 @@ export function EditUserPassword(props: EditUserPasswordProps) {
       <CardContent>
         {failed ? (
           <h1>{t("u_are_not_authzed!")}</h1>
-        ) : !userData ? (
+        ) : loading ? (
           <NastranSpinner />
         ) : (
           <div className="grid gap-4 w-full sm:w-[70%] md:w-1/2">
@@ -186,27 +174,16 @@ export function EditUserPassword(props: EditUserPasswordProps) {
         )}
       </CardContent>
       <CardFooter>
-        {failed ? (
+        {!failed && hasEdit && (
           <PrimaryButton
-            onClick={async () => await refreshPage()}
-            className="bg-red-500 hover:bg-red-500/70"
+            disabled={loading}
+            onClick={async () => {
+              await saveData();
+            }}
+            className={`shadow-lg`}
           >
-            {t("failed_retry")}
-            <RefreshCcw className="ltr:ml-2 rtl:mr-2" />
+            <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
           </PrimaryButton>
-        ) : (
-          userData &&
-          hasEdit && (
-            <PrimaryButton
-              disabled={loading}
-              onClick={async () => {
-                await saveData();
-              }}
-              className={`shadow-lg`}
-            >
-              <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
-            </PrimaryButton>
-          )
         )}
       </CardFooter>
     </Card>

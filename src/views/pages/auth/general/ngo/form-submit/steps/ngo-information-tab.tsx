@@ -44,7 +44,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
               content.show_new_director = false;
             }
           }
-          if (!content?.new_representer) {
+          if (!content?.new_represent) {
             if (type == "extend") {
               content.new_represent = false;
               content.show_new_representer = true;
@@ -251,6 +251,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           errorMessage={error.get("country")}
           apiUrl={"countries"}
           mode="single"
+          readonly={type == "extend"}
         />
         <CustomDatePicker
           placeholder={t("select_a_date")}
@@ -263,6 +264,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           }}
           className="py-3 w-full"
           errorMessage={error.get("establishment_date")}
+          readonly={type == "extend"}
         />
       </BorderContainer>
 

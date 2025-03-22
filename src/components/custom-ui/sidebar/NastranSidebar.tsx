@@ -72,7 +72,7 @@ export default function NastranSidebar() {
       <nav
         ref={sidebarRef}
         id="nastran_sidebar"
-        className={`grid grid-rows-[auto,1fr] overflow-hidden z-20 bg-primary rtl:transition-[right] ltr:transition-[left] duration-300 dark:bg-card dark:text-card-foreground text-primary-foreground absolute xl:relative top-[50%] xl:top-0 ltr:left-[-300px] ltr:xl:!left-0 rtl:xl:!right-0 rtl:right-[-300px] translate-y-[-50%] xl:translate-y-0 rounded-[12px] xl:rounded-none h-[98vh] xl:h-screen w-[240px] dark:border-primary/10`}
+        className={`border border-primary grid grid-rows-[auto,1fr] overflow-hidden z-20 bg-primary rtl:transition-[right] ltr:transition-[left] duration-300 dark:bg-card dark:text-card-foreground text-primary-foreground absolute xl:relative top-[50%] xl:top-0 ltr:left-[-300px] ltr:xl:!left-0 rtl:xl:!right-0 rtl:right-[-300px] translate-y-[-50%] xl:translate-y-0 rounded-[12px] xl:rounded-none h-[98vh] xl:h-screen w-[240px] dark:border-primary/10`}
       >
         {/* Header */}
         <div className="flex sticky top-2 flex-col dark:bg-card bg-primary z-50 items-center gap-y-2 border-b pb-4 border-secondary/20 mb-4">

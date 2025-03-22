@@ -92,6 +92,7 @@ export const PermissionEnum = {
       ngo_more_information: 55,
       ngo_status: 56,
       ngo_representative: 57,
+      ngo_update_account_password: 58,
     },
   },
   donor: { name: "donor", sub: {} },

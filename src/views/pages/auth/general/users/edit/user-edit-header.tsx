@@ -45,7 +45,7 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
       formData.append("profile", file);
       try {
         const response = await axiosClient.post(
-          "user/update-profile",
+          "user/update/profile-picture",
           formData,
           {
             headers: {
@@ -96,7 +96,9 @@ export default function UserEditHeader(props: UserEditHeaderProps) {
     setLoading(true);
 
     try {
-      const response = await axiosClient.delete("user/delete-profile/" + id);
+      const response = await axiosClient.delete(
+        "user/delete/profile-picture/" + id
+      );
       if (response.status == 200 && userData) {
         // Change logged in user data
         setUserData({

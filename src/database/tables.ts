@@ -150,6 +150,7 @@ export type NgoStatus = {
   status_type_id: string;
   is_active: number;
   name: string;
+  userable_type: string;
   comment: string;
   created_at: string;
 };
@@ -197,11 +198,12 @@ export type About = {
 
 export type Ngo = {
   id: string;
-  profile: string;
+  profile: string | undefined;
   name: string;
   username: string;
-  status_type_id: string;
+  status_type_id: number;
   email: Email;
+  contact: Contact;
   is_editable: boolean;
   role: Role;
   permissions: Map<string, UserPermission>;
@@ -217,6 +219,7 @@ export type CheckList = {
   active: number;
   file_size: number;
   acceptable_mimes: string;
+  accept: string;
   description: string;
   saved_by: string;
   created_at: string;
@@ -243,11 +246,13 @@ export interface AgreementDocument extends FileType {
   description: string;
 }
 export interface Representor {
-  id: 3;
+  id: string;
   is_active: number;
   created_at: string;
   full_name: string;
   saved_by: string;
+  userable_id: string;
+  userable_type: string;
   agreement_id: string;
   agreement_no: string;
   start_date: string | null;

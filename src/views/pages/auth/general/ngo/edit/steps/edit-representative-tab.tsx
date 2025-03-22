@@ -78,27 +78,13 @@ export default function EditRepresentativeTab(
     initialize();
   }, []);
 
-  const add = (representor: Representor) => {
-    if (representor.is_active == 1) {
-      const updatedUnFiltered = representors.map((item) => {
-        return { ...item, is_active: 0 };
-      });
-      setRepresentors([representor, ...updatedUnFiltered]);
-    } else {
-      setRepresentors([representor, ...representors]);
-    }
-  };
+  const add = (representor: Representor) =>
+    setRepresentors([representor, ...representors]);
+
   const update = (representor: Representor) => {
-    let updatedUnFiltered = [];
-    if (representor.is_active == 1) {
-      updatedUnFiltered = representors.map((item) =>
-        item.id === representor.id ? representor : { ...item, is_active: 0 }
-      );
-    } else {
-      updatedUnFiltered = representors.map((item) =>
-        item.id === representor.id ? representor : item
-      );
-    }
+    const updatedUnFiltered = representors.map((item) =>
+      item.id === representor.id ? representor : item
+    );
     setRepresentors(updatedUnFiltered);
   };
 
@@ -167,6 +153,7 @@ export default function EditRepresentativeTab(
                   <TableHead className="text-start">{t("full_name")}</TableHead>
                   <TableHead className="text-start">{t("status")}</TableHead>
                   <TableHead className="text-start">{t("saved_by")}</TableHead>
+                  <TableHead className="text-start">{t("type")}</TableHead>
                   <TableHead className="text-start">
                     {t("agreement_nu")}
                   </TableHead>
@@ -174,6 +161,7 @@ export default function EditRepresentativeTab(
                     {t("start_date")}
                   </TableHead>
                   <TableHead className="text-start">{t("end_date")}</TableHead>
+                  <TableHead className="text-start">{t("date")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="rtl:text-xl-rtl ltr:text-lg-ltr">
@@ -198,56 +186,78 @@ export default function EditRepresentativeTab(
                       <TableCell>
                         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                       </TableCell>
+                      <TableCell>
+                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                      </TableCell>
+                      <TableCell>
+                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                      </TableCell>
                     </TableRow>
                   </>
                 ) : (
-                  representors.map((representor: Representor) => (
-                    <TableRowIcon
-                      read={hasView}
-                      remove={false}
-                      edit={false}
-                      onEdit={async () => {}}
-                      key={representor.id}
-                      item={representor}
-                      onRemove={async () => {}}
-                      onRead={async (representor: Representor) => {
-                        setSelected({
-                          visible: true,
-                          representor: representor,
-                        });
-                      }}
-                    >
-                      <TableCell className="font-medium">
-                        {representor.full_name}
-                      </TableCell>
-                      <TableCell>
-                        <BooleanStatusButton
-                          id={representor.is_active}
-                          value1={t("currently")}
-                          value2={t("formerly")}
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {representor.saved_by}
-                      </TableCell>
-                      <TableCell className="font-semibold text-[14px]">
-                        {representor.agreement_no}
-                      </TableCell>
-                      <TableCell>
-                        {representor.start_date
-                          ? toLocaleDate(
-                              new Date(representor.start_date),
-                              state
-                            )
-                          : ""}
-                      </TableCell>
-                      <TableCell>
-                        {representor.end_date
-                          ? toLocaleDate(new Date(representor.end_date), state)
-                          : ""}
-                      </TableCell>
-                    </TableRowIcon>
-                  ))
+                  representors.map(
+                    (representor: Representor, index: number) => (
+                      <TableRowIcon
+                        read={hasView}
+                        remove={false}
+                        edit={false}
+                        onEdit={async () => {}}
+                        key={index}
+                        item={representor}
+                        onRemove={async () => {}}
+                        onRead={async (representor: Representor) => {
+                          setSelected({
+                            visible: true,
+                            representor: representor,
+                          });
+                        }}
+                      >
+                        <TableCell className="font-medium">
+                          {representor.full_name}
+                        </TableCell>
+                        <TableCell>
+                          <BooleanStatusButton
+                            id={representor.is_active}
+                            value1={t("currently")}
+                            value2={t("formerly")}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {representor.saved_by}
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {representor.userable_type}
+                        </TableCell>
+                        <TableCell className="font-semibold text-[14px]">
+                          {representor.agreement_no}
+                        </TableCell>
+                        <TableCell className="font-semibold text-[14px]">
+                          {representor.start_date
+                            ? toLocaleDate(
+                                new Date(representor.start_date),
+                                state
+                              )
+                            : ""}
+                        </TableCell>
+                        <TableCell className="font-semibold text-[14px]">
+                          {representor.end_date
+                            ? toLocaleDate(
+                                new Date(representor.end_date),
+                                state
+                              )
+                            : ""}
+                        </TableCell>
+                        <TableCell className="font-semibold text-[14px]">
+                          {representor.end_date
+                            ? toLocaleDate(
+                                new Date(representor.created_at),
+                                state
+                              )
+                            : ""}
+                        </TableCell>
+                      </TableRowIcon>
+                    )
+                  )
                 )}
               </TableBody>
             </Table>

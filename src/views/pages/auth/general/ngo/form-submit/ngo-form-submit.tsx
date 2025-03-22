@@ -105,12 +105,6 @@ export default function NgoFormSubmit() {
       );
 
       if (response.status == 200) {
-        if (user.role.role == RoleEnum.ngo) {
-          // Incase of ngo
-          navigate("/dashboard", { replace: true });
-        } else {
-          navigate("/ngo", { replace: true });
-        }
         return true;
       }
     } catch (error: any) {
@@ -363,9 +357,8 @@ export default function NgoFormSubmit() {
                   <CompleteStep
                     successText={t("congratulation")}
                     closeText={t("close")}
-                    againText={t("again")}
                     closeModel={onClose}
-                    description={t("user_acc_crea")}
+                    description={t("info_stored")}
                   />
                 ),
                 validationRules: [],

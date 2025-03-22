@@ -112,7 +112,10 @@ export default function EditUserInformation(props: EditUserInformationProps) {
     formData.append("status", tempUserData.status ? "true" : "false");
     formData.append("grant", tempUserData.grant ? "true" : "false");
     try {
-      const response = await axiosClient.post("user/update", formData);
+      const response = await axiosClient.post(
+        "user/update/information",
+        formData
+      );
       if (response.status == 200) {
         // Update user state
         setUserData(tempUserData);
@@ -148,7 +151,7 @@ export default function EditUserInformation(props: EditUserInformationProps) {
           {t("update_user_acc_info")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-x-4 gap-y-6 w-full xl:w-1/2">
+      <CardContent className="flex flex-col gap-x-4 gap-y-6 w-full lg:w-1/2 2xl:h-1/3">
         {failed ? (
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : tempUserData === undefined ? (

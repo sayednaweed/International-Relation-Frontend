@@ -110,7 +110,7 @@ export default function NgoFormExtend() {
       formData.append("content", JSON.stringify(content));
 
       const response = await axiosClient.post(
-        "ngo/register/form/complete",
+        "ngo/extend/form/complete",
         formData
       );
 
@@ -146,7 +146,7 @@ export default function NgoFormExtend() {
     let formData = new FormData();
     formData.append("contents", JSON.stringify(content));
     formData.append("step", currentStep.toString());
-    formData.append("task_type", TaskTypeEnum.ngo_registeration.toString());
+    formData.append("task_type", TaskTypeEnum.ngo_agreement_extend.toString());
     if (id) formData.append("id", id.toString());
     await SaveContent(formData);
     if (!onlySave) onClose();
@@ -416,9 +416,8 @@ export default function NgoFormExtend() {
                   <CompleteStep
                     successText={t("congratulation")}
                     closeText={t("close")}
-                    againText={t("again")}
                     closeModel={onClose}
-                    description={t("user_acc_crea")}
+                    description={t("extend_success")}
                   />
                 ),
                 validationRules: [],

@@ -11,6 +11,7 @@ import {
   CloudUpload,
   Database,
   Grip,
+  KeyRound,
   NotebookPen,
   UserRound,
   UsersRound,
@@ -26,7 +27,7 @@ import EditInformationTab from "./steps/edit-information-tab";
 import EditStatusTab from "./steps/edit-status-tab";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import { UserPermission } from "@/database/tables";
-import { useUserAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import EditRepresentativeTab from "./steps/edit-representative-tab";
 import IconButton from "@/components/custom-ui/button/IconButton";
 import UploadRegisterFormDailog from "./parts/upload-register-form-Dailog";
@@ -36,13 +37,14 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import { EditNgoPassword } from "./steps/edit-ngo-password";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
   registerFormSubmitted: boolean;
 }
 export default function UserNgoEditPage() {
-  const { user } = useUserAuthState();
+  const { user } = useGeneralAuthState();
   const navigate = useNavigate();
   const handleGoBack = () => navigate(-1);
   const handleGoHome = () => navigate("/dashboard", { replace: true });
@@ -142,15 +144,24 @@ export default function UserNgoEditPage() {
             <Activity className="size-[18px]" />
             {t("status")}
           </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_representative ? (
+          <TabsTrigger
+            className={`${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <UsersRound className="size-[18px]" />
+            {t("representative")}
+          </TabsTrigger>
         ) : (
-          key == PermissionEnum.ngo.sub.ngo_representative && (
+          key == PermissionEnum.ngo.sub.ngo_update_account_password && (
             <TabsTrigger
               className={`${selectedTabStyle}`}
               key={index}
               value={key.toString()}
             >
-              <UsersRound className="size-[18px]" />
-              {t("representative")}
+              <KeyRound className="size-[18px]" />
+              {t("update_account_password")}
             </TabsTrigger>
           )
         );
@@ -218,7 +229,7 @@ export default function UserNgoEditPage() {
           </>
         ) : (
           <>
-            <TabsList className="pb-4 min-h-fit sm:min-h-[80vh] h-fit md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
+            <TabsList className="sm:min-h-[550px] h-fit pb-8 min-w-[300px] md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
               <UserNgoEditHeader
                 id={id}
                 failed={failed}
@@ -342,6 +353,12 @@ export default function UserNgoEditPage() {
                 permissions={per}
                 registerationExpired={registerationExpired}
               />
+            </TabsContent>
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_representative.toString()}
+            >
+              <EditNgoPassword permissions={per} failed={failed} />
             </TabsContent>
           </>
         )}

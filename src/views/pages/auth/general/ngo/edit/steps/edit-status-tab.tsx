@@ -115,6 +115,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                   <TableHead className="text-start">{t("id")}</TableHead>
                   <TableHead className="text-start">{t("name")}</TableHead>
                   <TableHead className="text-start">{t("status")}</TableHead>
+                  <TableHead className="text-start">{t("saved_by")}</TableHead>
                   <TableHead className="text-start">{t("comment")}</TableHead>
                   <TableHead className="text-start">{t("date")}</TableHead>
                 </TableRow>
@@ -123,6 +124,9 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                 {loading ? (
                   <>
                     <TableRow>
+                      <TableCell>
+                        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                      </TableCell>
                       <TableCell>
                         <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
                       </TableCell>
@@ -156,6 +160,9 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                           value1={t("currently")}
                           value2={t("formerly")}
                         />
+                      </TableCell>
+                      <TableCell className="truncate max-w-44">
+                        {ngoStatus.userable_type}
                       </TableCell>
                       <TableCell className="truncate max-w-44">
                         {ngoStatus.comment}

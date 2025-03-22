@@ -28,18 +28,23 @@ export default function CheckListTab(props: CheckListTabProps) {
   const loadInformation = async () => {
     try {
       let url = "";
+      let ex = {};
       if (type == "extend") {
         url =
           userData.prev_dire.country_id == CountryEnum.afghanistan
             ? "ngo/extend/checklist"
             : "ngo/extend/abroad/director-checklist";
+        ex = {
+          n_dir: userData.new_director,
+          n_r: userData.new_represent,
+        };
       } else {
         url =
           userData.nationality.id == CountryEnum.afghanistan
             ? "ngo/register/checklist"
             : "ngo/register/abroad/director-checklist";
       }
-      const response = await axiosClient.get(url);
+      const response = await axiosClient.get(url, { params: ex });
       if (response.status == 200) {
         setList(response.data.checklist);
       }

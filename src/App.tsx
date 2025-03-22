@@ -18,17 +18,17 @@ export default function App() {
   else {
     routes =
       user.role.role == RoleEnum.donor
-        ? getDonorRouter(user)
+        ? getDonorRouter(user, authenticated)
         : user.role.role == RoleEnum.super
-        ? getSuperRouter(user)
+        ? getSuperRouter(user, authenticated)
         : user.role.role == RoleEnum.user
-        ? getUserRouter(user)
+        ? getUserRouter(user, authenticated)
         : user.role.role == RoleEnum.admin
-        ? getAdminRouter(user)
+        ? getAdminRouter(user, authenticated)
         : user.role.role == RoleEnum.ngo
-        ? getNgoRouter(user)
+        ? getNgoRouter(user, authenticated)
         : user.role.role == RoleEnum.debugger
-        ? getDebuggerRouter(user)
+        ? getDebuggerRouter(user, authenticated)
         : getGuestRouter();
   }
   return routes;

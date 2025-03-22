@@ -203,7 +203,7 @@ export default function EditRepresentorDialog(
                   hasEdit={true}
                   url={`${
                     import.meta.env.VITE_API_BASE_URL
-                  }/api/v1/single/checklist/file/upload`}
+                  }/api/v1/checklist/file/upload`}
                   headers={{
                     "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
                     "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
@@ -214,6 +214,7 @@ export default function EditRepresentorDialog(
                   uploadParam={{
                     checklist_id: ChecklistEnum.ngo_representor_letter,
                     task_type: TaskTypeEnum.ngo_registeration,
+                    ngo_id: id,
                   }}
                   onComplete={async (record: any) => {
                     for (const element of record) {

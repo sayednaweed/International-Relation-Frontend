@@ -1,6 +1,6 @@
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import IconButton from "@/components/custom-ui/button/IconButton";
-import { Pencil, Trash2 } from "lucide-react";
+import { MessageSquareText, Pencil, Trash2 } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
@@ -208,6 +208,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
       <h1 dir="ltr" className="text-primary rtl:text-md-rtl ltr:text-xl-ltr">
         {userData?.ngoInformation?.contact}
       </h1>
+      <MessageSquareText className="size-[22px] cursor-pointer text-tertiary mx-auto mt-3" />
     </div>
   );
 }
