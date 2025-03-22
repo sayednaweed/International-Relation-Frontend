@@ -21,7 +21,6 @@ export default function NgoReportsPage() {
         <BreadcrumbItem onClick={handleGoBack}>{t("reports")}</BreadcrumbItem>
       </Breadcrumb>
       <h1 className="p-4"> Comming Soon...</h1>
-      {/* <AuditTable /> */}
     </div>
   );
 }

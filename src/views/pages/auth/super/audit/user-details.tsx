@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useModelOnRequestHide";
+import { Heading, Table } from "lucide-react";
 
 interface UserData {
   id: number;
@@ -29,6 +30,7 @@ export default function UserDetails() {
   const [oldData, setOldData] = useState<UserData | null>(null);
   const [newData, setNewData] = useState<UserData | null>(null);
   const { modelOnRequestHide } = useModelOnRequestHide();
+
   useEffect(() => {
     axios
       .get("http://localhost/api/user/1/old")
@@ -49,79 +51,100 @@ export default function UserDetails() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {/* {oldData && newData ? ( */}
-        <div className="flex justify-between w-[700px] h-auto ">
-          <div className="p-3 ltr:text-start">
-            <p className="font-semibold">Field</p>
-            <p>ID:</p>
-            <p>Type:</p>
-            <p>Event:</p>
-            <p>Table:</p>
-            <p>Table ID:</p>
-            <p>URL:</p>
-            <p>IP Address:</p>
-            <p>User Agent:</p>
-            <p>Created At:</p>
-            <p>Updated At:</p>
-          </div>
-          <div className="text-primary/50 font-normal p-3 ltr:text-start">
-            <p className="font-semibold">Old Value</p>
-            {/* <p>{oldData.id}</p>
-              <p>{oldData.type}</p>
-              <p>{oldData.event}</p>
-              <p>{oldData.table}</p>
-              <p>{oldData.table_id}</p>
-              <p>{oldData.url}</p>
-              <p>{oldData.ip_address}</p>
-              <p>{oldData.user_agent}</p>
-              <p>{new Date(oldData.created_at).toLocaleString()}</p>
-              <p>{new Date(oldData.updated_at).toLocaleString()}</p> */}
-            <p>23</p>
-            <p>Admin</p>
-            <p>Updated</p>
-            <p>ngo</p>
-            <p>22</p>
-            <p>www.url.com</p>
-            <p>172.16.5.67</p>
-            <p>grome </p>
-            <p>2025/2/3</p>
-            <p>2024/3/2</p>
-          </div>
-          <div className="text-green-500 font-normal p-3 ltr:text-start">
-            <p className="font-semibold">New Value</p>
-            {/* <p>{newData.id}</p>
-              <p>{newData.type}</p>
-              <p>{newData.event}</p>
-              <p>{newData.table}</p>
-              <p>{newData.table_id}</p>
-              <p>{newData.url}</p>
-              <p>{newData.ip_address}</p>
-              <p>{newData.user_agent}</p>
-              <p>{new Date(newData.created_at).toLocaleString()}</p>
-              <p>{new Date(newData.updated_at).toLocaleString()}</p> */}
-            <p>23</p>
-            <p>Admin</p>
-            <p>Updated</p>
-            <p>ngo</p>
-            <p>22</p>
-            <p>www.url.com</p>
-            <p>172.16.5.67</p>
-            <p>grome </p>
-            <p>2025/2/3</p>
-            <p>2024/3/2</p>
+        <div className="flex flex-col justify-center py-1">
+          <div className="relative flex flex-col  md:flex-row  justify-start md:space-x-5 space-y-3 md:space-y-0 rounded-xl shadow-lg p-3 max-w-xs md:max-w-3xl mx-auto border border-white bg-white">
+            <div className="w-full md:w-2/3 bg-white flex flex-col space-y-2 p-3">
+              <div className=" flex items-center bg-primary/10 px-8 py-1 rounded-full text-xs font-medium text-gray-800  w-28">
+                Field
+              </div>
+              <h3 className="flex flex-row  font-semibold  gap-7 text-primary/90 md:text-3xl text-xl">
+                <Table>
+                  <Heading>ID</Heading>
+                  <Heading>Type</Heading>
+                  <Heading>Event</Heading>
+                  <Heading>Table</Heading>
+                  <Heading>Table_ID</Heading>
+                  <Heading>URL</Heading>
+                  <Heading>IP_Address</Heading>
+                  <Heading>User_Agent</Heading>
+                  <Heading>URL</Heading>
+                </Table>
+                <p></p>
+                <p></p>
+                <p>Event</p>
+                <p>Table</p>
+                <p>Table_ID</p>
+                <p>URL</p>
+                <p>IP_Address</p>
+                <p>User_Agent</p>
+                <p>Created_At</p>
+                <p>Updated_At</p>
+              </h3>
+              <div className="flex flex-row md:text-lg gap-6 text-gray-500 text-base">
+                <p>23</p>
+                <p>Admin</p>
+                <p>Update</p>
+                <p>ngo</p>
+                <p>22</p>
+                <p>www.url.com</p>
+                <p>172.16.5.67</p>
+                <p>Chrome</p>
+                <p>2025/2/3</p>
+                <p>2024/3/2</p>
+              </div>
+            </div>
           </div>
         </div>
-        {/* ) : (
-          <p className="text-center">Loading...</p>
-        )} */}
+        <div className="flex flex-col justify-center ">
+          <div className="relative flex flex-col  md:flex-row  justify-start md:space-x-5 space-y-3 md:space-y-0 rounded-xl shadow-lg p-3 max-w-xs md:max-w-3xl mx-auto border border-white bg-white">
+            <div className="w-full md:w-2/3 bg-white flex flex-col space-y-2 p-3">
+              <div className=" flex items-center bg-primary/10 px-8 py-1 rounded-full text-xs font-medium text-green-400  w-28">
+                Old_Value
+              </div>
+
+              <div className="flex flex-row md:text-lg gap-6 px-4 text-gray-500 text-base">
+                <p>23</p>
+                <p>Admin</p>
+                <p>Update</p>
+                <p>ngo</p>
+                <p>22</p>
+                <p>www.url.com</p>
+                <p>172.16.5.67</p>
+                <p>Chrome</p>
+                <p>2025/2/3</p>
+                <p>2024/3/2</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col justify-center py-1 ">
+          <div className="relative flex flex-col  md:flex-row  justify-start md:space-x-5 space-y-3 md:space-y-0 rounded-xl shadow-lg p-3 max-w-xs md:max-w-3xl mx-auto border border-white bg-white">
+            <div className="w-full md:w-2/3 bg-white flex flex-col space-y-2 p-3">
+              <div className=" flex items-center bg-primary/10 px-8 py-1 rounded-full text-xs font-medium text-red-400  w-28">
+                New_value
+              </div>
+
+              <div className="flex flex-row md:text-lg gap-6 px-4 text-gray-500 text-base">
+                <p>23</p>
+                <p>Admin</p>
+                <p>Update</p>
+                <p>ngo</p>
+                <p>22</p>
+                <p>www.url.com</p>
+                <p>172.16.5.67</p>
+                <p>Chrome</p>
+                <p>2025/2/3</p>
+                <p>2024/3/2</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </CardContent>
       <CardFooter className="flex justify-between">
         <Button
           variant="outline"
           className="text-lg"
-          onClick={() => {
-            modelOnRequestHide();
-          }}
+          onClick={() => modelOnRequestHide()}
         >
           {t("cancel")}
         </Button>

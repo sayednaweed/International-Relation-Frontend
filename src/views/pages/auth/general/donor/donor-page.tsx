@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
-import { LockKeyhole } from "lucide-react";
+
 import {
   Breadcrumb,
   BreadcrumbHome,
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
-import Activity from "./activity";
+import { Activity } from "./activity";
+
 export default function DonorPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
