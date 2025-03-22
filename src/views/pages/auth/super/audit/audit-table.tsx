@@ -17,7 +17,7 @@ import axiosClient from "@/lib/axois-client";
 
 import Pagination from "@/components/custom-ui/table/Pagination";
 import { toLocaleDate } from "@/lib/utils";
-import { Search } from "lucide-react";
+import { Eye, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
@@ -38,40 +38,29 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { DateObject } from "react-multi-date-picker";
 import { Button } from "@/components/ui/button";
 
+import UserDetails from "./user-details";
+import NastranModel from "@/components/custom-ui/model/NastranModel";
+
+type AuditProps = {
+  users: string;
+  event: string;
+  colum: string;
+  table: string;
+  type: string;
+};
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
-  const { updateComponentCache, getComponentCache } = useCacheDB();
-  type Users = { label: string; value: string };
-  type Colums = { label: string; value: string };
+  const { getComponentCache } = useCacheDB();
   const { userData, setUserData, error } = useContext(StepperContext);
-  const [auditData, setAuditData] = useState<AuditDataProps>({
-    users: { label: "", value: "" },
-    colums: { label: "", value: "" },
+  const [isactive, setIsActive] = useState(false);
+  const [auditData, setAuditData] = useState<AuditProps>({
+    users: "",
+    event: "",
+    colum: "",
+    table: "",
+    type: "",
   });
-  type AuditDataProps = {
-    users: Users;
-    colums: Colums;
-  };
 
-  const userTypeOptions = [
-    { label: "User", value: "user" },
-    { label: "NGO", value: "ngo" },
-    { label: "Director", value: "director" },
-    { label: "Donor", value: "donor" },
-  ];
-  const EventOptions = [
-    { label: "Created", value: "created" },
-    { label: "Updated", value: "updated" },
-    { label: "Deleted", value: "deleted" },
-  ];
-  const TableOptions = [
-    { label: "Permission", value: "permission" },
-    { label: "Ngo", value: "ngo" },
-    { label: "User", value: "user" },
-    { label: "Donor", value: "donor" },
-    { label: "Audit", value: "audit" },
-    { label: "User", value: "user" },
-  ];
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
   const search = searchParams.get("search");
@@ -225,19 +214,21 @@ export function AuditTable() {
       </TableCell>
     </TableRow>
   );
+
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2 gap-y-0 items-center  ">
-        <CustomSelect
-          className="w-full"
-          placeholder={t("select_userType")}
-          paginationKey=""
-          emptyPlaceholder=""
-          rangePlaceholder=""
-          options={userTypeOptions}
-          onChange={(value: string) => {}}
-          updateCache={async () => {}}
-          getCache={async () => []}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2x:grid-cols-6 gap-2 gap-y-0 items-center  ">
+        <APICombobox
+          className="w-full py-2 mb-5"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {}}
+          required={true}
+          selectedItem={auditData["type"]}
+          placeHolder={t("select_type")}
+          errorMessage={error.get("type")}
+          apiUrl={"type"}
+          mode="single"
         />
         <APICombobox
           className="w-full py-2 mb-5"
@@ -245,35 +236,37 @@ export function AuditTable() {
           errorText={t("no_item")}
           onSelect={(selection: any) => {}}
           required={true}
-          selectedItem={auditData["users"]?.label}
+          selectedItem={auditData["users"]}
           placeHolder={t("select_user")}
           errorMessage={error.get("users")}
           apiUrl={"users"}
           mode="single"
         />
-        <CustomSelect
-          className="w-full"
-          placeholder={t("select_event")}
-          paginationKey=""
-          emptyPlaceholder=""
-          rangePlaceholder=""
-          options={EventOptions}
-          onChange={(value: string) => {
-            setAuditData((prev) => ({ ...prev, event: value }));
-          }}
-          updateCache={async () => {}}
-          getCache={async () => []}
+
+        <APICombobox
+          className="w-full py-2 mb-5"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {}}
+          required={true}
+          selectedItem={auditData["event"]}
+          placeHolder={t("select_event")}
+          errorMessage={error.get("event")}
+          apiUrl={"event"}
+          mode="single"
         />
-        <CustomSelect
-          className="w-full"
-          placeholder={t("select_table")}
-          paginationKey=""
-          emptyPlaceholder=""
-          rangePlaceholder=""
-          options={TableOptions}
-          onChange={(value: string) => {}}
-          updateCache={async () => {}}
-          getCache={async () => []}
+
+        <APICombobox
+          className="w-full py-2 mb-5"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {}}
+          required={true}
+          selectedItem={auditData["table"]}
+          placeHolder={t("select_table")}
+          errorMessage={error.get("table")}
+          apiUrl={"table"}
+          mode="single"
         />
         <APICombobox
           className="w-full py-2 mb-5"
@@ -281,7 +274,7 @@ export function AuditTable() {
           errorText={t("no_item")}
           onSelect={(selection: any) => {}}
           required={true}
-          selectedItem={auditData["colums"]?.label}
+          selectedItem={auditData["colum"]}
           placeHolder={t("select_colum")}
           errorMessage={error.get("colum")}
           apiUrl={"users"}
@@ -292,12 +285,15 @@ export function AuditTable() {
             console.log("Selected Dates:", selectedDates);
           }}
           value={[]}
-          className="w-full py-2 "
+          className="w-full py-2  bg-transparent "
         />
       </div>
-      <div className="flex justify-center w-full ">
-        <div className=" w-[320px] sm:w-[450px] lg:w-[550px]  ">
+
+      <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4 ">
+        <div className="w-[650px]">
+          {" "}
           <CustomInput
+            className=""
             size_="lg"
             placeholder={`${t(filters.search.column)}...`}
             parentClassName="sm:flex-1"
@@ -328,35 +324,43 @@ export function AuditTable() {
             }
           />
         </div>
-      </div>
 
-      <div className="flex justify-center mb-2">
-        <Button className=" mt-4 bg-tertiary w-24 ">{t("apply")}</Button>
+        <div className="flex justify-center mb-2">
+          <Button className=" mt-4 bg-tertiary w-24 ">{t("apply")}</Button>
+        </div>
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
-        <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="text-start">{t("user")}</TableHead>
-            <TableHead className="text-start">{t("table")}</TableHead>
-            <TableHead className="text-start">{t("event")}</TableHead>
-            <TableHead className="text-start">{t("date")}</TableHead>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="text-start">User</TableHead>
+            <TableHead className="text-start">Table</TableHead>
+            <TableHead className="text-start">Event</TableHead>
+            <TableHead className="text-start">Date</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          <TableRow
-          // read={() => {}}
-          // remove={async () => {}}
-          // edit={false}
-          // onEdit={async () => {}}
-          // key={""}
-          // item={""}
-          // onRemove={() => deleteOnClick}
-          // onRead={watchOnClick}
-          >
+        <TableBody>
+          <TableRow>
             <TableCell>Ahmad</TableCell>
-            <TableCell>permission</TableCell>
-            <TableCell>created</TableCell>
+            <TableCell>Permission</TableCell>
+            <TableCell>Created</TableCell>
             <TableCell>2025/2/1</TableCell>
+            <TableCell className="text-right">
+              <NastranModel
+                size="lg"
+                isDismissable={false}
+                button={
+                  <SecondaryButton
+                    className=" px-8 bg-primary/50 hover:bg-primary/80 rounded-full"
+                    type="button"
+                  >
+                    <Eye className="text-primary-foreground size-[18px] transition" />
+                  </SecondaryButton>
+                }
+                showDialog={async () => true}
+              >
+                <UserDetails />
+              </NastranModel>
+            </TableCell>
           </TableRow>
           <TableRow>
             <TableCell>Naweed</TableCell>
@@ -364,12 +368,7 @@ export function AuditTable() {
             <TableCell>Deleted</TableCell>
             <TableCell>2025/2/2</TableCell>
           </TableRow>
-          <TableRow>
-            <TableCell>Waheed</TableCell>
-            <TableCell>permission</TableCell>
-            <TableCell>created</TableCell>
-            <TableCell>2025/2/1</TableCell>
-          </TableRow>
+
           {/* {loading ? (
             <>
               {skeleton}
@@ -405,6 +404,7 @@ export function AuditTable() {
           )} */}
         </TableBody>
       </Table>
+
       <div className="flex justify-between rounded-md bg-card flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"

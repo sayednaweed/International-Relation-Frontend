@@ -1,12 +1,14 @@
 import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
-import { LockKeyhole } from "lucide-react";
+
 import {
   Breadcrumb,
   BreadcrumbHome,
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import { Activity } from "./activity";
+
 export default function DonorPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -18,10 +20,7 @@ export default function DonorPage() {
         <BreadcrumbSeparator />
         <BreadcrumbItem>{t("donor")}</BreadcrumbItem>
       </Breadcrumb>
-      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
-        <LockKeyhole className="text-orange-500 size-[32px]" />
-        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
-      </div>
+      <Activity />
     </div>
   );
 }
