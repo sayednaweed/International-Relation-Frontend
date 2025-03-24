@@ -12,18 +12,17 @@ import { useGlobalState } from "@/context/GlobalStateContext";
 import { Audit } from "@/database/tables";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
 
 import Pagination from "@/components/custom-ui/table/Pagination";
-import { toLocaleDate } from "@/lib/utils";
-import { Eye, Search } from "lucide-react";
+import { setDateToURL, toLocaleDate } from "@/lib/utils";
+import { Eye, ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import {
   AuditFilter,
-  AuditFilterBy,
   AuditPaginationData,
   AuditSearch,
   AuditSort,
@@ -34,31 +33,32 @@ import { CACHE } from "@/lib/constants";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
 
-import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { DateObject } from "react-multi-date-picker";
 import { Button } from "@/components/ui/button";
 
 import UserDetails from "./user-details";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 
+import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
+
 type AuditProps = {
-  users: string;
-  event: string;
-  colum: string;
-  table: string;
-  type: string;
+  userType: string;
+  user: string;
+  event: "created" | "deleted" | "updated" | "view" | "all";
+  table: string | "all";
+  columns: string | "all";
 };
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   const { getComponentCache } = useCacheDB();
-  const { userData, setUserData, error } = useContext(StepperContext);
   const [isactive, setIsActive] = useState(false);
   const [auditData, setAuditData] = useState<AuditProps>({
-    users: "",
-    event: "",
-    colum: "",
+    userType: "",
+    user: "",
+    event: "created",
+    columns: "",
     table: "",
-    type: "",
   });
 
   const [searchParams] = useSearchParams();
@@ -66,13 +66,31 @@ export function AuditTable() {
   const search = searchParams.get("search");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
-  const filterBy = searchParams.get("filterBy");
   const [filters, setFilters] = useState<AuditFilter>({
     sort: sort ? (sort as AuditSort) : "id",
     order: order ? (order as Order) : "asc",
     filterBy: {
-      column: filterBy ? (filterBy as AuditFilterBy) : "none",
-      value: "",
+      userType: {
+        column: "User",
+        value: "",
+      },
+      user: {
+        column: "ngo",
+        value: "",
+      },
+
+      event: {
+        column: "created",
+        Value: "",
+      },
+      table: {
+        column: "all",
+        value: "",
+      },
+      columns: {
+        column: "all",
+        value: "",
+      },
     },
     search: {
       column: search ? (search as AuditSearch) : "user",
@@ -222,24 +240,13 @@ export function AuditTable() {
           className="w-full py-2 mb-5"
           placeholderText={t("search_item")}
           errorText={t("no_item")}
-          onSelect={(selection: any) => {}}
+          onSelect={(selection: any) => {
+            setAuditData({ ...auditData, userType: selection });
+          }}
           required={true}
-          selectedItem={auditData["type"]}
+          selectedItem={auditData.userType}
           placeHolder={t("select_type")}
-          errorMessage={error.get("type")}
-          apiUrl={"type"}
-          mode="single"
-        />
-        <APICombobox
-          className="w-full py-2 mb-5"
-          placeholderText={t("search_item")}
-          errorText={t("no_item")}
-          onSelect={(selection: any) => {}}
-          required={true}
-          selectedItem={auditData["users"]}
-          placeHolder={t("select_user")}
-          errorMessage={error.get("users")}
-          apiUrl={"users"}
+          apiUrl={"audits/user/type"}
           mode="single"
         />
 
@@ -247,11 +254,26 @@ export function AuditTable() {
           className="w-full py-2 mb-5"
           placeholderText={t("search_item")}
           errorText={t("no_item")}
-          onSelect={(selection: any) => {}}
+          onSelect={(selection: any) => {
+            setAuditData({ ...auditData, user: selection });
+          }}
           required={true}
-          selectedItem={auditData["event"]}
+          selectedItem={auditData.user}
+          placeHolder={t("select_user")}
+          apiUrl={"audits/user/list"}
+          mode="single"
+        />
+
+        <APICombobox
+          className="w-full py-2 mb-5"
+          placeholderText={t("search_item")}
+          errorText={t("no_item")}
+          onSelect={(selection: any) => {
+            setAuditData({ ...auditData, event: selection });
+          }}
+          required={true}
+          selectedItem={auditData.event}
           placeHolder={t("select_event")}
-          errorMessage={error.get("event")}
           apiUrl={"event"}
           mode="single"
         />
@@ -260,24 +282,26 @@ export function AuditTable() {
           className="w-full py-2 mb-5"
           placeholderText={t("search_item")}
           errorText={t("no_item")}
-          onSelect={(selection: any) => {}}
+          onSelect={(selection: any) =>
+            setAuditData({ ...auditData, table: selection })
+          }
           required={true}
-          selectedItem={auditData["table"]}
+          selectedItem={auditData.table}
           placeHolder={t("select_table")}
-          errorMessage={error.get("table")}
-          apiUrl={"table"}
+          apiUrl={"audits/table/list"}
           mode="single"
         />
         <APICombobox
           className="w-full py-2 mb-5"
           placeholderText={t("search_item")}
           errorText={t("no_item")}
-          onSelect={(selection: any) => {}}
+          onSelect={(selection: any) =>
+            setAuditData({ ...auditData, columns: selection })
+          }
           required={true}
-          selectedItem={auditData["colum"]}
+          selectedItem={auditData.columns}
           placeHolder={t("select_colum")}
-          errorMessage={error.get("colum")}
-          apiUrl={"users"}
+          apiUrl={"audits/column/list"}
           mode="single"
         />
         <CustomMultiDatePicker
@@ -291,7 +315,6 @@ export function AuditTable() {
 
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4 ">
         <div className="w-[650px]">
-          {" "}
           <CustomInput
             className=""
             size_="lg"
@@ -327,6 +350,130 @@ export function AuditTable() {
 
         <div className="flex justify-center mb-2">
           <Button className=" mt-4 bg-tertiary w-24 ">{t("apply")}</Button>
+        </div>
+        <div className="sm:px-4 col-span-3 flex-1 self-start sm:self-baseline flex justify-end items-center">
+          <NastranModel
+            size="lg"
+            isDismissable={false}
+            button={
+              <SecondaryButton
+                className="px-8 rtl:text-md-rtl ltr:text-md-ltr"
+                type="button"
+              >
+                {t("filter")}
+                <ListFilter className="text-secondary mx-2 size-[15px]" />
+              </SecondaryButton>
+            }
+            showDialog={async () => true}
+          >
+            <FilterDialog
+              filters={filters}
+              sortOnComplete={async (filterName: AuditSort) => {
+                if (filterName != filters.sort) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filterName);
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/users?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              searchFilterChanged={async (filterName: AuditSearch) => {
+                if (filterName != filters.search.column) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sch_col", filterName);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/audits?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              orderOnComplete={async (filterName: Order) => {
+                if (filterName != filters.order) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("order", filterName);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, filters.date);
+                  navigate(`/audits?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              dateOnComplete={(selectedDates: DateObject[]) => {
+                if (selectedDates.length == 2) {
+                  const queryParams = new URLSearchParams();
+                  queryParams.set("order", filters.order);
+                  queryParams.set("sort", filters.sort);
+                  queryParams.set("sch_col", filters.search.column);
+                  queryParams.set("sch_val", filters.search.value);
+                  setDateToURL(queryParams, selectedDates);
+                  navigate(`/users?${queryParams.toString()}`, {
+                    replace: true,
+                  });
+                }
+              }}
+              filtersShowData={{
+                sort: [
+                  {
+                    name: "created_at",
+                    translate: t("date"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "username",
+                    translate: t("username"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "destination",
+                    translate: t("department"),
+                    onClick: () => {},
+                  },
+                  { name: "status", translate: t("status"), onClick: () => {} },
+                  { name: "job", translate: t("job"), onClick: () => {} },
+                ],
+                order: [
+                  {
+                    name: "asc",
+                    translate: t("asc"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "desc",
+                    translate: t("desc"),
+                    onClick: () => {},
+                  },
+                ],
+                search: [
+                  {
+                    name: "username",
+                    translate: t("username"),
+                    onClick: () => {},
+                  },
+                  { name: "email", translate: t("email"), onClick: () => {} },
+                  {
+                    name: "contact",
+                    translate: t("contact"),
+                    onClick: () => {},
+                  },
+                ],
+              }}
+              showColumns={{
+                sort: false,
+                order: true,
+                search: true,
+                date: false,
+              }}
+            />
+          </NastranModel>
         </div>
       </div>
       <Table className="bg-card rounded-md my-[2px] py-8">
