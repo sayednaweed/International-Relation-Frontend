@@ -54,6 +54,7 @@ function NewSection() {
                   src={news.image}
                   shimmerClassName="min-w-full h-full object-fill rounded-t"
                   className="min-w-full shadow-lg h-full object-fill rounded-t"
+                  routeIdentifier={"public"}
                 />
               </CardContent>
               <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">

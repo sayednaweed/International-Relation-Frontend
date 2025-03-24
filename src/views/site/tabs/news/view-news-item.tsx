@@ -81,6 +81,7 @@ const ViewNewsItem = () => {
               src={news.image}
               shimmerClassName="object-fill rounded-xl w-full"
               className="shadow-lg object-fill rounded-xl w-full"
+              routeIdentifier={"public"}
             />
           </div>
           <h1 className="rounded-xl sm:mx-8 bg-card text-justify ltr:font-normal p-4 sm:p-8 mt-12 mb-1 border">

@@ -423,6 +423,7 @@ export default function NewsTable() {
                   src={news.image}
                   shimmerClassName="min-w-full h-full object-fill rounded-t"
                   className="min-w-full shadow-lg h-full object-fill rounded-t"
+                  routeIdentifier={"public"}
                 />
               </CardContent>
               <CardFooter className="flex flex-col justify-start items-start gap-y-2 pt-4">
@@ -440,10 +441,10 @@ export default function NewsTable() {
                     />
                   )}
                 </div>
-                <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2">
+                <h2 className="font-bold rtl:text-2xl-rtl max-w-full ltr:text-2xl-ltr line-clamp-2">
                   {news.title}
                 </h2>
-                <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr text-primary/95 line-clamp-4 px-2">
+                <h1 className="rtl:text-xl-rtl ltr:text-xl-ltr max-w-full text-primary/95 line-clamp-4 px-2">
                   {news.contents}
                 </h1>
                 <div

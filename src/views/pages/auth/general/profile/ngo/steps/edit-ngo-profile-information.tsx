@@ -1,6 +1,5 @@
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { RefreshCcw } from "lucide-react";
-import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import {
@@ -15,7 +14,6 @@ import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import { District, NgoType, Province } from "@/database/tables";
 import { useNgoAuthState } from "@/context/AuthContextProvider";
 import { ValidateItem } from "@/validation/types";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
@@ -23,52 +21,33 @@ import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
+import { Dispatch, SetStateAction } from "react";
 
-interface EditNgoInformation {
-  name_english: string | undefined;
-  name_pashto: string;
-  name_farsi: string;
-  area_english: string;
-  area_pashto: string;
-  area_farsi: string;
-  abbr: string;
-  type: NgoType;
-  contact: string;
-  email: string;
-  province: Province;
-  district: District;
-  optional_lang: string;
+interface EditNgoProfileInformationProps {
+  loading: boolean;
+  failed: boolean;
+  setLoading: any;
+  ngoData: any;
+  setError: Dispatch<SetStateAction<Map<string, string>>>;
+  setNgoData: any;
+  error: Map<string, string>;
+  loadInformation: () => void;
 }
-
-export default function EditNgoProfileInformation() {
+export default function EditNgoProfileInformation(
+  props: EditNgoProfileInformationProps
+) {
+  const {
+    loading,
+    setLoading,
+    ngoData,
+    setError,
+    failed,
+    setNgoData,
+    error,
+    loadInformation,
+  } = props;
   const { user, setNgo } = useNgoAuthState();
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
-  const [error, setError] = useState<Map<string, string>>(new Map());
-  const [ngoData, setNgoData] = useState<EditNgoInformation>();
-
-  const loadInformation = async () => {
-    try {
-      const response = await axiosClient.get(`ngo/profile/info/${user.id}`);
-      if (response.status == 200) {
-        const ngo = response.data.ngo;
-        if (ngo) setNgoData(ngo);
-      }
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-      console.log(error);
-      setFailed(true);
-    }
-    setLoading(false);
-  };
-  useEffect(() => {
-    loadInformation();
-  }, []);
 
   const saveData = async () => {
     if (loading) {
@@ -323,7 +302,7 @@ export default function EditNgoProfileInformation() {
       <CardFooter>
         {failed ? (
           <PrimaryButton
-            onClick={async () => await loadInformation()}
+            onClick={loadInformation}
             className="bg-red-500 hover:bg-red-500/70"
           >
             {t("failed_retry")}

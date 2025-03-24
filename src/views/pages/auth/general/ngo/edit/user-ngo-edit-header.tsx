@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { INgoInformation } from "./user-ngo-edit-page";
+import StatusButton from "@/components/custom-ui/button/StatusButton";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
@@ -158,6 +159,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
         alt="Avatar"
         shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
+        routeIdentifier={"profile"}
       />
       {loading && (
         <NastranSpinner
@@ -198,6 +200,12 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
           )}
         </div>
       )}
+
+      <StatusButton
+        status={userData?.ngoInformation.status}
+        status_id={userData?.ngoInformation.status_id}
+        className="mx-auto"
+      />
 
       <h1 className="text-primary uppercase font-semibold line-clamp-2 text-wrap rtl:text-2xl-rtl ltr:text-4xl-ltr max-w-64 truncate">
         {userData?.ngoInformation?.username}

@@ -800,9 +800,9 @@ export const getGuestRouter = () => {
           }
         >
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/user/login" element={<UserLoginPage />} />
-          <Route path="/donor/login" element={<DonorLoginPage />} />
-          <Route path="/ngo/login" element={<NgoLoginPage />} />
+          <Route path="/auth/user/login" element={<UserLoginPage />} />
+          <Route path="/auth/donor/login" element={<DonorLoginPage />} />
+          <Route path="/auth/ngo/login" element={<NgoLoginPage />} />
           <Route path="/forget-password" element={<ForgotPasswordPage />} />
         </Route>
         {/* Site Routes */}

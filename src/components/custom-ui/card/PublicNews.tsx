@@ -21,6 +21,7 @@ export function PublicNews(props: PublicNewsProps) {
         src={news.image}
         shimmerClassName="min-w-full h-full object-cover h-[200px] rounded-t-lg sm:h-[200px]"
         className="min-w-full shadow-lg object-cover rounded-t-lg h-[200px] sm:h-[200px]"
+        routeIdentifier={"public"}
       />
       <div className="flex flex-col justify-start gap-y-2 pt-4 px-3">
         <h2 className="font-bold rtl:text-2xl-rtl ltr:text-2xl-ltr line-clamp-2 pt-4">

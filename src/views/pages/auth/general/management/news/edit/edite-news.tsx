@@ -175,7 +175,9 @@ export default function EditNews() {
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />
-        <BreadcrumbItem>{t("news")}</BreadcrumbItem>
+        <BreadcrumbItem onClick={() => navigate(-1)}>
+          {t("news")}
+        </BreadcrumbItem>
       </Breadcrumb>
       <Card>
         <CardHeader className="space-y-0">

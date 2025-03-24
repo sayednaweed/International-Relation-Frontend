@@ -45,7 +45,7 @@ export default function NastranSidebar() {
           }`}
           key={key}
         >
-          <NetworkSvg src={value.icon} />
+          <NetworkSvg src={value.icon} routeIdentifier={"public"} />
           <h1 className="truncate">{t(key)}</h1>
         </div>
       );

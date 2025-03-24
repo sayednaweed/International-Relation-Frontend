@@ -8,8 +8,14 @@ import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { validateFile } from "@/lib/utils";
+import StatusButton from "@/components/custom-ui/button/StatusButton";
 
-export default function NgoProfileHeader() {
+interface NgoProfileHeaderProps {
+  status_type_id?: number;
+  status_type?: string;
+}
+export default function NgoProfileHeader(props: NgoProfileHeaderProps) {
+  const { status_type_id, status_type } = props;
   const { user, setNgo } = useNgoAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -108,6 +114,7 @@ export default function NgoProfileHeader() {
         alt="Avatar"
         shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
+        routeIdentifier={"profile"}
       />
       {loading && (
         <NastranSpinner
@@ -142,7 +149,11 @@ export default function NgoProfileHeader() {
           <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
         </IconButton>
       </div>
-
+      <StatusButton
+        status={status_type}
+        status_id={status_type_id}
+        className="mx-auto"
+      />
       <h1 className="text-primary font-semibold rtl:text-2xl-rtl ltr:text-4xl-ltr">
         {user?.username}
       </h1>

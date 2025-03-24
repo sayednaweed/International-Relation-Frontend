@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { AlignLeft, Menu } from "lucide-react";
+import { AlignLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 

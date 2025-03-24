@@ -56,6 +56,7 @@ export default function TechnicalStaff() {
                       alt="Avatar"
                       shimmerClassName="size-24 shadow-lg border border-primary/30 rounded-full"
                       className=" size-24 object-center object-cover shadow-lg border-[2px] border-primary rounded-full"
+                      routeIdentifier={"public"}
                     />
                   </TooltipTrigger>
                   <TooltipContent className="pb-6 pt-4 max-w-[300px] bg-card/95 border rounded-xl">
@@ -64,6 +65,7 @@ export default function TechnicalStaff() {
                       alt="Avatar"
                       shimmerClassName="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full"
                       className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full "
+                      routeIdentifier={"public"}
                     />
                     <div className="grid grid-cols-[auto_auto] mt-6 text-start gap-x-6 text-primary">
                       <p className="ltr:font-semibold font-bold rtl:text-[17px]">
