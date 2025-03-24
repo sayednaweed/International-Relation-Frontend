@@ -9,6 +9,7 @@ export interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   shimmerClassName?: string;
   ShimmerIconClassName?: string;
   src: string | undefined;
+  routeIdentifier: "public" | "profile";
 }
 
 // Custom image cache singleton
@@ -46,6 +47,7 @@ const CachedImage = React.forwardRef<HTMLImageElement, ImageProps>(
       shimmerClassName,
       ShimmerIconClassName,
       children,
+      routeIdentifier,
       ...props
     },
     ref
@@ -73,7 +75,7 @@ const CachedImage = React.forwardRef<HTMLImageElement, ImageProps>(
           setImage(cachedImage);
         } else {
           // Image not cached, fetch and cache
-          const response = await axiosClient.get("media", {
+          const response = await axiosClient.get(`media/${routeIdentifier}`, {
             params: {
               path: src,
             },

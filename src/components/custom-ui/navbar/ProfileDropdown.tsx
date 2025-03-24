@@ -32,6 +32,7 @@ function ProfileDropdown(props: ProfileDropdownProps) {
             ShimmerIconClassName="size-[18px]"
             shimmerClassName="size-[36px] ltr:mr-8 rtl:ml-8 shadow-lg border border-tertiary rounded-full size-[36px] select-none"
             className="size-[36px] ltr:mr-8 rtl:ml-8 object-center object-cover shadow-lg border border-tertiary  rounded-full"
+            routeIdentifier={"profile"}
           />
         </div>
       </DropdownMenuTrigger>
@@ -60,13 +61,13 @@ function ProfileDropdown(props: ProfileDropdownProps) {
           onClick={async () => {
             if (user.role.name === "donor") {
               await logoutDonor();
-              navigate("/donor/login", { replace: true });
+              navigate("/auth/donor/login", { replace: true });
             } else if (user.role.name === "ngo") {
               await logoutNgo();
-              navigate("/ngo/login", { replace: true });
+              navigate("/auth/ngo/login", { replace: true });
             } else {
               await logoutUser();
-              navigate("/user/login", { replace: true });
+              navigate("/auth/user/login", { replace: true });
             }
           }}
         >

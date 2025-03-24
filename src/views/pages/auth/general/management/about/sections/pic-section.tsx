@@ -132,6 +132,7 @@ export default function PicSection(props: PicSectionProps) {
             alt="Avatar"
             shimmerClassName="h-auto max-w-full rounded-lg shadow-lg size-60"
             className="rounded-lg shadow-lg w-fit h-fit max-w-[86%] max-h-[86%]"
+            routeIdentifier={"public"}
           />
         </div>
       )}
@@ -185,6 +186,7 @@ const Image = (props: ImageProps) => {
         alt="Avatar"
         shimmerClassName="h-[300px] max-w-full rounded-lg shadow-lg"
         className="h-auto max-w-full rounded-lg shadow-lg"
+        routeIdentifier={"public"}
       />
       <div className="absolute justify-end items-center gap-3 bottom-0 rounded-b-lg bg-primary/50 w-full flex py-1 px-4">
         <CloudDownload className="size-[22px] text-primary-foreground/80 cursor-pointer transition-colors duration-300 hover:text-primary-foreground" />

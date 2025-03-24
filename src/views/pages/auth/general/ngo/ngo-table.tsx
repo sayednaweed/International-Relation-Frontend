@@ -485,6 +485,7 @@ export function NgoTable() {
                     ShimmerIconClassName="size-[18px]"
                     shimmerClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
                     className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
+                    routeIdentifier={"public"}
                   />
                 </TableCell>
                 <TableCell className="truncate rtl:text-md-rtl">

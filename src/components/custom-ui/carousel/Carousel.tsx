@@ -46,6 +46,7 @@ const Carousel: React.FC<CarouselProps> = ({
           ShimmerIconClassName="hidden"
           shimmerClassName="w-full min-h-full transition-transform duration-700 ease-in-out object-fill"
           className="w-full min-h-full transition-transform duration-700 ease-in-out object-fill"
+          routeIdentifier={"public"}
         />
       </div>
 

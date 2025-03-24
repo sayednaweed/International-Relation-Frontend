@@ -120,7 +120,8 @@ export default function NgoLoginPage() {
           type={isVisible ? "text" : "password"}
         />
         <PrimaryButton
-          className={`w-full mt-8 uppercase ${loading && "opacity-90"}`}
+          disabled={loading}
+          className={`w-full py-6 uppercase ${loading && "opacity-90"}`}
           type="submit"
         >
           <ButtonSpinner

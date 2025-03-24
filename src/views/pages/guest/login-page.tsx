@@ -14,23 +14,23 @@ export default function LoginPage() {
         {t("welcome")}
       </h1>
       <h1
-        onClick={() => navigate("/user/login")}
+        onClick={() => navigate("/auth/user/login")}
         className="border py-4 px-5 rounded-md bg-primary/5 shadow hover:shadow-sm rtl:text-xl-rtl"
       >
-        {t("are_a_donor")}{" "}
+        {t("are_a_donor")}
         <span className="text-fourth cursor-pointer hover:opacity-70 rtl:text-xl-rtl font-bold">
           {t("click_here")}
-        </span>{" "}
+        </span>
         {t("to_login")}
       </h1>
       <h1
-        onClick={() => navigate("/ngo/login")}
+        onClick={() => navigate("/auth/ngo/login")}
         className="border py-4 px-5 rounded-md bg-primary/5 mt-4 shadow hover:shadow-sm rtl:text-xl-rtl"
       >
         {t("are_a_ngo")}{" "}
         <span className="text-fourth cursor-pointer hover:opacity-70 rtl:text-xl-rtl font-bold">
           {t("click_here")}
-        </span>{" "}
+        </span>
         {t("to_login")}
       </h1>
     </div>

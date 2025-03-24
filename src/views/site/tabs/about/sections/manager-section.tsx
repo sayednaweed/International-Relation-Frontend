@@ -39,6 +39,7 @@ export default function Manager() {
             alt="Avatar"
             shimmerClassName="size-[86px] mx-auto shadow-lg border border-primary/30 rounded-full"
             className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full"
+            routeIdentifier={"public"}
           />
 
           <p className=" font-bold mt-2 mb-6 text-primary ltr:text-4xl-ltr self-center ">

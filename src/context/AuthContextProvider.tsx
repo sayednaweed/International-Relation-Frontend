@@ -112,34 +112,31 @@ function reducer(state: AuthState, action: Action) {
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const configuration = getConfiguration();
-        if (
-          configuration?.token === null ||
-          configuration?.token === undefined
-        ) {
-          dispatch({ type: "STOP_LOADING" });
-          return;
-        }
-        const response = await axiosClient.get(`auth-${configuration?.type}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (response.status === 200) {
-          const user = response.data.user;
-          if (user != null) {
-            user.permissions = returnPermissionsMap(response.data?.permissions);
-          }
-          dispatch({ type: "LOGIN", payload: user });
-        }
-      } catch (err) {
-        console.log(err);
-        dispatch({ type: "LOGOUT" });
+  const loadUser = async () => {
+    try {
+      const configuration = getConfiguration();
+      if (configuration?.token === null || configuration?.token === undefined) {
+        dispatch({ type: "STOP_LOADING" });
+        return;
       }
-    };
+      const response = await axiosClient.get(`auth-${configuration?.type}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        const user = response.data.user;
+        if (user != null) {
+          user.permissions = returnPermissionsMap(response.data?.permissions);
+        }
+        dispatch({ type: "LOGIN", payload: user });
+      }
+    } catch (err) {
+      console.log(err);
+      dispatch({ type: "LOGOUT" });
+    }
+  };
+  useEffect(() => {
     loadUser();
   }, []);
   const loginUser = async (

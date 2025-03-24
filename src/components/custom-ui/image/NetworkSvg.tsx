@@ -3,18 +3,19 @@ import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
 export interface NetworkSvgProps extends React.HtmlHTMLAttributes<HTMLElement> {
   src: string;
+  routeIdentifier: "public";
 }
 
 const NetworkSvg = React.forwardRef<HTMLElement, NetworkSvgProps>(
   (props, ref: any) => {
-    const { src, className } = props;
+    const { src, className, routeIdentifier } = props;
     const [svgContent, setSvgContent] = useState<string | undefined>(undefined);
     const iconStyle =
       "opacity-90 min-h-[18px] min-w-[20px] w-[20px] h-[18px] ltr:ml-2 rtl:mr-2";
     useEffect(() => {
       const fetchSvg = async () => {
         try {
-          const response = await axiosClient.get("media", {
+          const response = await axiosClient.get(`media/${routeIdentifier}`, {
             params: {
               path: src,
             },
