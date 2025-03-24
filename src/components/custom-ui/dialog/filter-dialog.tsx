@@ -108,20 +108,18 @@ export default function FilterDialog(props: FilterDialogProps) {
             />
           </section>
         )}
-
-        {showColumns.search && (
-          <FilterItem
-            selected={filters.search.column}
-            headerName={t("search")}
-            items={searchs ? searchs : []}
-          />
-        )}
-
         {showColumns.order && (
           <FilterItem
             selected={filters.order}
             headerName={t("order")}
             items={orders ? orders : []}
+          />
+        )}
+        {showColumns.search && (
+          <FilterItem
+            selected={filters.search.column}
+            headerName={t("search")}
+            items={searchs ? searchs : []}
           />
         )}
       </CardContent>

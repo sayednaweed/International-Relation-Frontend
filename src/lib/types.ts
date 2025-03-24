@@ -103,14 +103,33 @@ export interface AuditData {
 
 export type AuditSort = "id" | "date" | "user" | "user_id" | "action" | "table";
 export type AuditSearch = "user" | "user_id" | "table";
-export type AuditFilterBy = "none" | "user" | "table" | "user_id";
+
 
 export interface AuditFilter {
   sort: AuditSort;
   order: Order;
   filterBy: {
-    column: AuditFilterBy;
-    value: string;
+    userType: {
+      column: "User"| string,
+      value: string,
+    },
+    user: {
+      column: string|"ngo",
+      value: string,
+    },
+
+    event: {
+      column: string|"created_at",
+      Value: string,
+    },
+    table: {
+      column: string|"all",
+      value: string,
+    },
+    columns: {
+      column: string|"all",
+      value: string,
+    },
   };
   search: {
     column: AuditSearch;
