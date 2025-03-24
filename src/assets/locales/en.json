@@ -344,5 +344,6 @@
   "check_auth": "Checking Authorization",
   "extend_success": "Extended successfully",
   "info_stored": "Information stored.",
-  "continue_regis": "Continue Registration"
+  "continue_regis": "Continue Registration",
+  "activity": "Activity"
 }

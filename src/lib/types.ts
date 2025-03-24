@@ -1,4 +1,5 @@
 import {
+  ActivityModel,
   AgreementDocument,
   Approval,
   Audit,
@@ -104,32 +105,31 @@ export interface AuditData {
 export type AuditSort = "id" | "date" | "user" | "user_id" | "action" | "table";
 export type AuditSearch = "user" | "user_id" | "table";
 
-
 export interface AuditFilter {
   sort: AuditSort;
   order: Order;
   filterBy: {
     userType: {
-      column: "User"| string,
-      value: string,
-    },
+      column: "User" | string;
+      value: string;
+    };
     user: {
-      column: string|"ngo",
-      value: string,
-    },
+      column: string | "ngo";
+      value: string;
+    };
 
     event: {
-      column: string|"created_at",
-      Value: string,
-    },
+      column: string | "created_at";
+      Value: string;
+    };
     table: {
-      column: string|"all",
-      value: string,
-    },
+      column: string | "all";
+      value: string;
+    };
     columns: {
-      column: string|"all",
-      value: string,
-    },
+      column: string | "all";
+      value: string;
+    };
   };
   search: {
     column: AuditSearch;
@@ -226,6 +226,23 @@ export interface ApprovalPaginationData {
   per_page: number;
   current_page: number;
   total_items: number;
+}
+export type ActivitySearch = "user" | "type";
+
+export interface ActivityFilter {
+  order: Order;
+  search: {
+    column: ActivitySearch;
+    value: string;
+  };
+  date: DateObject[];
+}
+export interface ActivityPaginationData {
+  data: ActivityModel[];
+  lastPage: number;
+  perPage: number;
+  currentPage: number;
+  totalItems: number;
 }
 export type NgoInformation = {
   id: string;

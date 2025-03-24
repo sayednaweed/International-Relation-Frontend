@@ -104,6 +104,13 @@ export const PermissionEnum = {
       donor: 33,
     },
   },
+  activity: {
+    name: "activity",
+    sub: {
+      user: 41,
+      password: 42,
+    },
+  },
 };
 export const StatusEnum = {
   register_form_not_completed: 1,
@@ -188,5 +195,6 @@ export const CACHE = {
   NEWS_TABLE_PAGINATION_COUNT: "NEWS_TABLE",
   NEWS_PUB_TABLE_PAGINATION_COUNT: "NEWS_PUB_TABLE",
   APPROVAL_TABLE_PAGINATION_COUNT: "APPROVAL_TABLE",
+  USER_ACTIVITY_TABLE_PAGINATION_COUNT: "USER_ACTIVITY_TABLE",
   SYSTEM_CALENDAR: "SYSTEM_CALENDAR",
 };

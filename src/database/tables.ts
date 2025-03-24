@@ -282,3 +282,14 @@ export interface Approval {
   notifier_type: string;
   document_count: string;
 }
+
+export interface ActivityModel {
+  id: string;
+  user: string;
+  type: string;
+  action: string;
+  ip_address: string;
+  device: string;
+  browser: string;
+  date: string;
+}

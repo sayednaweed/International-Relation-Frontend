@@ -8,8 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { UserPermission } from "@/database/tables";
-import { CACHE, PermissionEnum, StatusEnum } from "@/lib/constants";
+import { CACHE } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -19,26 +18,18 @@ import Pagination from "@/components/custom-ui/table/Pagination";
 
 import { setDateToURL } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
-import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
-import {
-  NgoInformation,
-  NgoPaginationData,
-  NgoSearch,
-  NgoSort,
-  Order,
-} from "@/lib/types";
+import { ActivityPaginationData, ActivitySearch, Order } from "@/lib/types";
 
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-import { useUserAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
+import { ActivityModel } from "@/database/tables";
 
 export function Activity() {
-  const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
@@ -47,15 +38,13 @@ export function Activity() {
   // Accessing individual search filters
   const searchValue = searchParams.get("sch_val");
   const searchColumn = searchParams.get("sch_col");
-  const sort = searchParams.get("sort");
   const order = searchParams.get("order");
   const startDate = searchParams.get("st_dt");
   const endDate = searchParams.get("en_dt");
   const filters = {
-    sort: sort == null ? "id" : (sort as NgoSort),
     order: order == null ? "desc" : (order as Order),
     search: {
-      column: searchColumn == null ? "name" : (searchColumn as NgoSearch),
+      column: searchColumn == null ? "user" : (searchColumn as ActivitySearch),
       value: searchValue == null ? "" : searchValue,
     },
     date:
@@ -84,12 +73,11 @@ export function Activity() {
         endDate: endDate,
       };
       // 2. Send data
-      const response = await axiosClient.get(`ngos`, {
+      const response = await axiosClient.get(`user/activities`, {
         params: {
           page: page,
           per_page: count,
           filters: {
-            sort: filters.sort,
             order: filters.order,
             search: {
               column: filters.search.column,
@@ -99,12 +87,12 @@ export function Activity() {
           },
         },
       });
-      const fetch = response.data.ngos.data as NgoInformation[];
-      const lastPage = response.data.ngos.last_page;
-      const totalItems = response.data.ngos.total;
-      const perPage = response.data.ngos.per_page;
-      const currentPage = response.data.ngos.current_page;
-      setNgos({
+      const fetch = response.data.data as ActivityModel[];
+      const lastPage = response.data.last_page;
+      const totalItems = response.data.total;
+      const perPage = response.data.per_page;
+      const currentPage = response.data.current_page;
+      setActivities({
         filterList: {
           data: fetch,
           lastPage: lastPage,
@@ -137,7 +125,7 @@ export function Activity() {
   ) => {
     if (!count) {
       const countSore = await getComponentCache(
-        CACHE.NGO_TABLE_PAGINATION_COUNT
+        CACHE.USER_ACTIVITY_TABLE_PAGINATION_COUNT
       );
       count = countSore?.value ? countSore.value : 10;
     }
@@ -151,10 +139,10 @@ export function Activity() {
   };
   useEffect(() => {
     initialize(undefined, undefined, 1);
-  }, [sort, startDate, endDate, order]);
-  const [ngos, setNgos] = useState<{
-    filterList: NgoPaginationData;
-    unFilterList: NgoPaginationData;
+  }, [startDate, endDate, order]);
+  const [activities, setActivities] = useState<{
+    filterList: ActivityPaginationData;
+    unFilterList: ActivityPaginationData;
   }>({
     filterList: {
       data: [],
@@ -173,54 +161,9 @@ export function Activity() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const addItem = (ngo: NgoInformation) => {
-    setNgos((prevState) => ({
-      filterList: {
-        ...prevState.filterList,
-        data: [ngo, ...prevState.filterList.data],
-      },
-      unFilterList: {
-        ...prevState.unFilterList,
-        data: [ngo, ...prevState.unFilterList.data],
-      },
-    }));
-  };
 
-  const deleteOnClick = async (ngo: NgoInformation) => {
-    try {
-      const ngoId = ngo.id;
-      const response = await axiosClient.delete("ngo/" + ngoId);
-      if (response.status == 200) {
-        const filtered = ngos.unFilterList.data.filter(
-          (item: NgoInformation) => ngoId != item?.id
-        );
-        const item = {
-          data: filtered,
-          lastPage: ngos.unFilterList.lastPage,
-          totalItems: ngos.unFilterList.totalItems,
-          perPage: ngos.unFilterList.perPage,
-          currentPage: ngos.unFilterList.currentPage,
-        };
-        setNgos({ ...ngos, filterList: item, unFilterList: item });
-      }
-      toast({
-        toastType: "SUCCESS",
-        title: t("success"),
-        description: response.data.message,
-      });
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-    }
-  };
   const skeleton = (
     <TableRow>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
       <TableCell>
         <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
@@ -244,36 +187,10 @@ export function Activity() {
       </TableCell>
     </TableRow>
   );
-  const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
-  ) as UserPermission;
-  const hasView = per?.view;
-  const hasAdd = per?.add;
 
-  const watchOnClick = async (ngo: NgoInformation) => {
-    const ngoId = ngo.id;
-    if (ngo.status_id == StatusEnum.register_form_not_completed) {
-      navigate(`/ngo/profile/edit/${ngoId}`);
-    } else {
-      navigate(`/ngo/${ngoId}`);
-    }
-  };
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
-        {hasAdd && (
-          <NastranModel
-            size="lg"
-            isDismissable={false}
-            button={
-              <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("add")}
-              </PrimaryButton>
-            }
-            showDialog={async () => true}
-          ></NastranModel>
-        )}
-
         <CustomInput
           size_="lg"
           placeholder={`${t(filters.search.column)}...`}
@@ -316,28 +233,15 @@ export function Activity() {
           >
             <FilterDialog
               filters={filters}
-              sortOnComplete={async (filterName: NgoSort) => {
-                if (filterName != filters.sort) {
-                  const queryParams = new URLSearchParams();
-                  queryParams.set("sort", filterName);
-                  queryParams.set("order", filters.order);
-                  queryParams.set("sch_col", filters.search.column);
-                  queryParams.set("sch_val", filters.search.value);
-                  setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
-                    replace: true,
-                  });
-                }
-              }}
-              searchFilterChanged={async (filterName: NgoSearch) => {
+              sortOnComplete={async () => {}}
+              searchFilterChanged={async (filterName: ActivitySearch) => {
                 if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
-                  queryParams.set("sort", filters.sort);
                   queryParams.set("order", filters.order);
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/activity?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -345,12 +249,11 @@ export function Activity() {
               orderOnComplete={async (filterName: Order) => {
                 if (filterName != filters.order) {
                   const queryParams = new URLSearchParams();
-                  queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/activity?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -359,34 +262,16 @@ export function Activity() {
                 if (selectedDates.length == 2) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("order", filters.order);
-                  queryParams.set("sort", filters.sort);
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, selectedDates);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/activity?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
               filtersShowData={{
-                sort: [
-                  { name: "name", translate: t("name"), onClick: () => {} },
-                  {
-                    name: "type",
-                    translate: t("type"),
-                    onClick: () => {},
-                  },
-                  {
-                    name: "contact",
-                    translate: t("contact"),
-                    onClick: () => {},
-                  },
-                  {
-                    name: "status",
-                    translate: t("status"),
-                    onClick: () => {},
-                  },
-                ],
+                sort: [],
                 order: [
                   {
                     name: "asc",
@@ -401,26 +286,15 @@ export function Activity() {
                 ],
                 search: [
                   {
-                    name: "registration_no",
-                    translate: t("registration_no"),
+                    name: "user",
+                    translate: t("user"),
                     onClick: () => {},
                   },
-                  { name: "name", translate: t("name"), onClick: () => {} },
                   { name: "type", translate: t("type"), onClick: () => {} },
-                  {
-                    name: "contact",
-                    translate: t("contact"),
-                    onClick: () => {},
-                  },
-                  {
-                    name: "email",
-                    translate: t("email"),
-                    onClick: () => {},
-                  },
                 ],
               }}
               showColumns={{
-                sort: true,
+                sort: false,
                 order: true,
                 search: true,
                 date: true,
@@ -429,7 +303,7 @@ export function Activity() {
           </NastranModel>
         </div>
         <CustomSelect
-          paginationKey={CACHE.NGO_TABLE_PAGINATION_COUNT}
+          paginationKey={CACHE.USER_ACTIVITY_TABLE_PAGINATION_COUNT}
           options={[
             { value: "10", label: "10" },
             { value: "20", label: "20" },
@@ -438,7 +312,7 @@ export function Activity() {
           className="w-fit sm:self-baseline"
           updateCache={(data: any) => updateComponentCache(data)}
           getCache={async () =>
-            await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT)
+            await getComponentCache(CACHE.USER_ACTIVITY_TABLE_PAGINATION_COUNT)
           }
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
@@ -451,68 +325,64 @@ export function Activity() {
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-center w-[60px]">{t("id")}</TableHead>
             <TableHead className="text-start">{t("user")}</TableHead>
             <TableHead className="text-start">{t("type")}</TableHead>
             <TableHead className="text-start">{t("action")}</TableHead>
-            <TableHead className="text-start w-[60px]">
-              {t("local_ip")}
-            </TableHead>
-            <TableHead className="text-start">{t("public_ip")}</TableHead>
-            <TableHead className="text-start">{t("agent")}</TableHead>
-            <TableHead className="text-start">{t("attempt")}</TableHead>
+            <TableHead className="text-start">{t("ip_address")}</TableHead>
+            <TableHead className="text-start">{t("device")}</TableHead>
+            <TableHead className="text-start">{t("browser")}</TableHead>
+            <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
           {loading ? (
-            <>
-              {skeleton}
-              {skeleton}
-            </>
+            <>{skeleton}</>
           ) : (
-            ngos.filterList.data.map((item: NgoInformation) => (
-              <TableRowIcon
-                read={hasView}
-                remove={false}
-                edit={false}
-                onEdit={async () => {}}
-                key={item.name}
-                item={item}
-                onRemove={deleteOnClick}
-                onRead={watchOnClick}
-              >
-                <TableCell className="px-1 py-0">23</TableCell>
-                <TableCell className="truncate rtl:text-md-rtl">
-                  Naweed
-                </TableCell>
-                <TableCell className="truncate">Super_Admin</TableCell>
-                <TableCell className="truncate">update</TableCell>
-                <TableCell>172.23.24.35</TableCell>
-                <TableCell
-                  className="rtl:text-md-rtl truncate rtl:text-end"
-                  dir="ltr"
+            activities.filterList.data.map(
+              (item: ActivityModel, index: number) => (
+                <TableRowIcon
+                  read={false}
+                  remove={false}
+                  edit={false}
+                  onEdit={async () => {}}
+                  key={index}
+                  item={item}
+                  onRemove={async () => {}}
+                  onRead={async () => {}}
                 >
-                  174.56.45.44
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate">
-                  grome
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate">
-                  success
-                </TableCell>
-              </TableRowIcon>
-            ))
+                  <TableCell className="px-1 py-0">23</TableCell>
+                  <TableCell className="truncate rtl:text-md-rtl">
+                    Naweed
+                  </TableCell>
+                  <TableCell className="truncate">Super_Admin</TableCell>
+                  <TableCell className="truncate">update</TableCell>
+                  <TableCell>172.23.24.35</TableCell>
+                  <TableCell
+                    className="rtl:text-md-rtl truncate rtl:text-end"
+                    dir="ltr"
+                  >
+                    174.56.45.44
+                  </TableCell>
+                  <TableCell className="rtl:text-md-rtl truncate">
+                    grome
+                  </TableCell>
+                  <TableCell className="rtl:text-md-rtl truncate">
+                    success
+                  </TableCell>
+                </TableRowIcon>
+              )
+            )
           )}
         </TableBody>
       </Table>
       <div className="flex justify-between rounded-md bg-card dark:bg-card-secondary flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
-        )} ${ngos.unFilterList.currentPage} ${t("of")} ${
-          ngos.unFilterList.lastPage
+        )} ${activities.unFilterList.currentPage} ${t("of")} ${
+          activities.unFilterList.lastPage
         }`}</h1>
         <Pagination
-          lastPage={ngos.unFilterList.lastPage}
+          lastPage={activities.unFilterList.lastPage}
           onPageChange={async (page) =>
             await initialize(undefined, undefined, page)
           }
