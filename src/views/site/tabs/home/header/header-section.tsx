@@ -34,7 +34,7 @@ function HeaderSection() {
   }, []);
 
   return (
-    <div className="px-2 flex justify-center sm:px-6 xl:px-16 mt-2 sm:mt-6 h-[200px] xxl:h-[350px] lg:h-[480px] xl:h-[620px] 2xl:h-[700px]">
+    <div className="px-2 flex justify-center mx-auto sm:px-6 xl:px-16 mt-2 sm:mt-6 h-[200px] xxl:h-[350px] sm:h-[480px] lg:w-[85%] xl:h-[530px] 2xl:h-[700px] xl:w-[90%]">
       {loading ? (
         <Shimmer className="relative w-full h-full rounded-md overflow-hidden" />
       ) : (

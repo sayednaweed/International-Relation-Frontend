@@ -45,7 +45,7 @@ export interface IAPIComboboxProps {
   errorMessage?: string;
   mode: ComboboxMode;
   className?: string;
-  // params?: any;
+  params?: any;
   required?: boolean;
   requiredHint?: string;
   lable?: string;
@@ -66,7 +66,7 @@ function APICombobox(props: IAPIComboboxProps) {
     readonly,
     className,
     required,
-    // params,
+    params,
     requiredHint,
     errorText,
     lable,
@@ -107,12 +107,9 @@ function APICombobox(props: IAPIComboboxProps) {
           return;
         }
         // 2. Fetch data
-        const response = await axiosClient.get(
-          apiUrl
-          //    {
-          //   params: params,
-          // }
-        );
+        const response = await axiosClient.get(apiUrl, {
+          params: params,
+        });
         // 3. Store in IndexedDB
         if (response.status == 200) {
           const data = response.data;
@@ -195,9 +192,9 @@ function APICombobox(props: IAPIComboboxProps) {
             role="combobox"
             aria-expanded={open}
             className={cn(
-              `min-w-[260px] w-full h-fit py-3 bg-card text-wrap text-start dark:bg-card-secondary rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
+              `min-w-[260px] w-full h-fit py-3 bg-card shadow-none hover:bg-card hover:shadow-sm text-wrap hover text-start dark:bg-card-secondary rtl:text-lg-rtl ltr:text-xl-ltr relative justify-between ${
                 error && "border-red-400 border"
-              } ${required || lable ? "mt-[20px]" : "mt-2"} ${
+              } ${required || lable ? "mt-[26px]" : "mt-2"} ${
                 readonly && "cursor-not-allowed"
               }`,
               className
@@ -211,7 +208,7 @@ function APICombobox(props: IAPIComboboxProps) {
               </span>
             )}
             {lable && (
-              <span className="rtl:text-lg-rtl ltr:text-lg-ltr ltr:left-[4px] rtl:right-[4px] ltr:-top-[20px] rtl:-top-[23px] absolute font-semibold">
+              <span className="rtl:text-lg-rtl ltr:text-lg-ltr ltr:left-[4px] rtl:right-[4px] ltr:-top-[26px] rtl:-top-[29px] absolute font-semibold">
                 {lable}
               </span>
             )}

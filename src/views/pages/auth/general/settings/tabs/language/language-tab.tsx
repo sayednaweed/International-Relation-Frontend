@@ -166,6 +166,9 @@ export default function LanguageTab() {
               <SelectItem value={CALENDAR_FORMAT.format_3}>
                 {t("format_3")}
               </SelectItem>
+              <SelectItem value={CALENDAR_FORMAT.format_4}>
+                {t("format_4")}
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>

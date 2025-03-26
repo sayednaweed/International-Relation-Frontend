@@ -24,7 +24,7 @@ interface UserData {
   updated_at: string;
 }
 
-export default function UserDetails() {
+export default function AuditDetailsDialog() {
   const { t } = useTranslation();
   const [oldData, setOldData] = useState<UserData | null>(null);
   const [newData, setNewData] = useState<UserData | null>(null);

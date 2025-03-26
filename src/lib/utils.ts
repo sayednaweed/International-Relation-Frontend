@@ -52,44 +52,6 @@ export const returnPermissionsMap = (
   return permissionMap;
 };
 
-// export const userWithPermissions = (response: any): UserInformation => {
-//   const user = response.data.user as UserInformation;
-//   const permissions = response.data.permission;
-
-//   const permissionMap = new Map<string, SelectUserPermission>();
-//   if (permissions != null || permissions != undefined) {
-//     let allSelected: boolean = false;
-//     let counter: number = 0;
-//     for (let i = 0; i < permissions.length; i++) {
-//       const item: any = permissions[i];
-//       const edit = item.edit;
-//       const view = item.view;
-//       // When variable name is delete arises delete is not allowed
-//       const erase = item.delete;
-//       const add = item.add;
-//       allSelected = edit && view && erase && add ? true : false;
-//       if (!allSelected) counter++;
-//       // const permission: SelectUserPermission = {
-//       //   id: item.id,
-//       //   edit: edit,
-//       //   visible: visible,
-//       //   view: view,
-//       //   delete: erase,
-//       //   add: add,
-//       //   icon: item.icon,
-//       //   priority: item.priority,
-//       //   permission: item.permission,
-//       //   allSelected: allSelected,
-//       // };
-//       // permissionMap.set(permission.permission, permission);
-//     }
-//     user.allSelected = counter == 0 ? true : false;
-//   }
-
-//   user.permission = permissionMap;
-//   return user;
-// };
-
 export const loadFont = async (direction: string) => {
   if (direction == "rtl") {
     document.body.style.fontFamily = "Arial";

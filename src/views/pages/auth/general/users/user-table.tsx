@@ -216,25 +216,25 @@ export function UserTable() {
   const skeleton = (
     <TableRow>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
     </TableRow>
   );
@@ -452,11 +452,7 @@ export function UserTable() {
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
           {loading ? (
-            <>
-              {skeleton}
-              {skeleton}
-              {skeleton}
-            </>
+            <>{skeleton}</>
           ) : (
             users.filterList.data.map((item: User) => (
               <TableRowIcon
@@ -492,10 +488,13 @@ export function UserTable() {
                 >
                   {item.email}
                 </TableCell>
-                <TableCell dir="ltr" className="rtl:text-end rtl:text-sm-rtl">
+                <TableCell
+                  dir="ltr"
+                  className="rtl:text-end rtl:text-sm-rtl truncate"
+                >
                   {item?.contact == "null" ? "" : item?.contact}
                 </TableCell>
-                <TableCell>
+                <TableCell className="truncate">
                   {toLocaleDate(new Date(item.created_at), state)}
                 </TableCell>
                 <TableCell>

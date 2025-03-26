@@ -205,6 +205,8 @@ export default function ViewApprovalDailog(props: ViewApprovalDailogprops) {
                       index={index}
                       checklist_name={file.checklist_name}
                       className="p-2"
+                      apiUrl={"ngo/media"}
+                      params={undefined}
                     />
                   );
                 }

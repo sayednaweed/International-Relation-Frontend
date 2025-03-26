@@ -208,7 +208,7 @@ export default function UserNgoEditPage() {
   const registerationExpired: boolean =
     userData?.ngoInformation.status_id == StatusEnum.registration_expired;
   return (
-    <div className="flex flex-col gap-y-2 px-3 mt-2 pb-bottom">
+    <div className="flex flex-col gap-y-2 px-3 mt-2 pb-12">
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />

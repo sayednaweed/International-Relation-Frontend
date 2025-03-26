@@ -170,7 +170,7 @@ function NewsPage() {
   const handleGoHome = () => navigate("/home", { replace: true });
 
   return (
-    <div className="px-3 pt-3 pb-2">
+    <div className="px-3 pt-3 pb-2 h-full">
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />
@@ -357,7 +357,7 @@ function NewsPage() {
           ))
         )}
       </div>
-      <div className="flex justify-between rounded-md flex-1 p-3 items-center">
+      <div className="flex justify-between rounded-md p-3 max-h-fit items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
         )} ${newsList.unFilterList.currentPage} ${t("of")} ${

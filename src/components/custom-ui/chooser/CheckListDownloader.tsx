@@ -8,10 +8,12 @@ export interface CheckListDownloaderProps {
   index: number;
   checklist_name: string;
   className?: string;
+  apiUrl: string;
+  params: any;
 }
 
 export default function CheckListDownloader(props: CheckListDownloaderProps) {
-  const { document, index, checklist_name, className } = props;
+  const { document, index, checklist_name, className, apiUrl, params } = props;
   const { t } = useTranslation();
 
   return (
@@ -32,6 +34,8 @@ export default function CheckListDownloader(props: CheckListDownloaderProps) {
         filetoDownload={document}
         downloadText={t("download")}
         errorText={t("error")}
+        apiUrl={apiUrl}
+        params={params}
       />
       <h1 className="text-[14px]">{document.name}</h1>
       <h1 className="text-[14px]" dir="ltr">

@@ -83,6 +83,7 @@ const CheckListChooser = React.forwardRef<HTMLInputElement, CheckListProps>(
                   downloadText={t("download")}
                   errorText={t("error")}
                   lockUpload={lockUpload}
+                  apiUrl={"temp/media"}
                 />
               </>
             )

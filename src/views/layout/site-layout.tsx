@@ -5,7 +5,7 @@ import FooterSection from "../site/general/footer/footer-section";
 
 export default function SiteLayout() {
   return (
-    <div className="flex flex-col min-h-[100vh] max-h-[100vh] bg-secondary overflow-auto select-none">
+    <div className="grid grid-rows-[auto_1fr_auto] h-screen min-h-[100vh] max-h-[100vh] bg-secondary overflow-auto select-none">
       <SiteNavbar />
       <Outlet />
       <Toaster />
