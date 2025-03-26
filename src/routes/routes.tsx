@@ -50,6 +50,7 @@ import UserNgoEditPage from "@/views/pages/auth/general/ngo/edit/user-ngo-edit-p
 import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-submit";
 import DonorPage from "@/views/pages/auth/general/donor/donor-page";
 import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
+import SuperActivityPage from "@/views/pages/auth/super/activity/super-activity-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -275,6 +276,17 @@ export const getSuperRouter = (
               <ProtectedRoute
                 element={<ApprovalPage />}
                 routeName="approval"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="activity"
+            element={
+              <ProtectedRoute
+                element={<SuperActivityPage />}
+                routeName="activity"
                 permissions={permissions}
                 authenticated={authenticated}
               />

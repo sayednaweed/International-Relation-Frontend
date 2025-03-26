@@ -344,5 +344,6 @@
   "check_auth": "بررسی مجوز",
   "extend_success": "با موفقیت تمدید شد",
   "info_stored": "اطلاعات ذخیره شد.",
-  "continue_regis": "ادامه ثبت نام"
+  "continue_regis": "ادامه ثبت نام",
+  "activity": "فعالیت"
 }

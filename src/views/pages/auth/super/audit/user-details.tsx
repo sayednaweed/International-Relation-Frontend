@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import axios from "axios";
 import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useModelOnRequestHide";
 import { Heading, Table } from "lucide-react";
 
@@ -30,18 +29,6 @@ export default function UserDetails() {
   const [oldData, setOldData] = useState<UserData | null>(null);
   const [newData, setNewData] = useState<UserData | null>(null);
   const { modelOnRequestHide } = useModelOnRequestHide();
-
-  useEffect(() => {
-    axios
-      .get("http://localhost/api/user/1/old")
-      .then((response) => setOldData(response.data))
-      .catch((error) => console.error("Error fetching old user data:", error));
-
-    axios
-      .get("http://localhost/api/user/1")
-      .then((response) => setNewData(response.data))
-      .catch((error) => console.error("Error fetching new user data:", error));
-  }, []);
 
   return (
     <Card className="w-fit self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40">
