@@ -96,47 +96,6 @@ export interface UserRecordCount {
   todayCount: number | null;
   userCount: number | null;
 }
-//
-export interface AuditData {
-  name: string;
-  data: any;
-}
-
-export type AuditSort = "id" | "date" | "user" | "user_id" | "action" | "table";
-export type AuditSearch = "user" | "user_id" | "table";
-
-export interface AuditFilter {
-  sort: AuditSort;
-  order: Order;
-  filterBy: {
-    userType: {
-      column: "User" | string;
-      value: string;
-    };
-    user: {
-      column: string | "ngo";
-      value: string;
-    };
-
-    event: {
-      column: string | "created_at";
-      Value: string;
-    };
-    table: {
-      column: string | "all";
-      value: string;
-    };
-    columns: {
-      column: string | "all";
-      value: string;
-    };
-  };
-  search: {
-    column: AuditSearch;
-    value: string;
-  };
-  date: DateObject[];
-}
 export interface AuditPaginationData {
   data: Audit[];
   lastPage: number;

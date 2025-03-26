@@ -190,6 +190,8 @@ const AgreementDocumentComponent = (props: AgreementProps) => {
               document={document}
               index={index}
               checklist_name={document.checklist_name}
+              apiUrl={"ngo/media"}
+              params={undefined}
             />
           ))
         )}

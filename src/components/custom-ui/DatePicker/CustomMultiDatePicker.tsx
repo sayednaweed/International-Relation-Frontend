@@ -45,53 +45,6 @@ export default function CustomMultiDatePicker(
       setVisible(false);
     }
   };
-  // const formatHijriDate = (date?: DateObject) => {
-  //   if (date) {
-  //     let month = "";
-  //     let day: any;
-  //     let year: any;
-  //     if (state.systemLanguage.info.calendarId === CALENDAR.SOLAR) {
-  //       if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-  //         month = afgMonthNamesFa[date.monthIndex];
-  //         day = convertNumberToPersian(date.day);
-  //         year = convertNumberToPersian(date.year);
-  //       } else if (
-  //         state.systemLanguage.info.localeId === CALENDAR_LOCALE.english
-  //       ) {
-  //         month = afgMonthNamesEn[date.monthIndex];
-  //         day = date.day;
-  //         year = date.year;
-  //       } else {
-  //         month = date.month.name;
-  //         day = date.day;
-  //         year = date.year;
-  //       }
-  //     } else if (state.systemLanguage.info.calendarId === CALENDAR.LUNAR) {
-  //       if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-  //         month = afgMonthNamesFa[date.monthIndex];
-  //         day = convertNumberToPersian(date.day);
-  //         year = convertNumberToPersian(date.year);
-  //       } else {
-  //         month = date.month.name;
-  //         day = convertNumberToPersian(date.day);
-  //         year = convertNumberToPersian(date.year);
-  //         console.log(date);
-  //       }
-  //     } else {
-  //       if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-  //         day = convertNumberToPersian(date.day);
-  //         year = convertNumberToPersian(date.year);
-  //       } else {
-  //         day = date.day;
-  //         year = date.year;
-  //       }
-  //       month = date.month.name;
-  //     }
-
-  //     return `${month}, ${day}, ${year}`;
-  //   }
-  //   return undefined;
-  // };
 
   const handleDateChange = (selectedDates: DateObject[]) => {
     // let object = { date, format };

@@ -220,7 +220,7 @@ export function NgoTable() {
   const skeleton = (
     <TableRow>
       <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+        <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
       <TableCell>
         <Shimmer className="h-[24px] w-full rounded-sm" />
@@ -462,10 +462,7 @@ export function NgoTable() {
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
           {loading ? (
-            <>
-              {skeleton}
-              {skeleton}
-            </>
+            <>{skeleton}</>
           ) : (
             ngos.filterList.data.map((item: NgoInformation) => (
               <TableRowIcon

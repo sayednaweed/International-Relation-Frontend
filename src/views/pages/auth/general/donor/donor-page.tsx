@@ -7,6 +7,7 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import { LockKeyhole } from "lucide-react";
 
 export default function DonorPage() {
   const { t } = useTranslation();
@@ -19,6 +20,10 @@ export default function DonorPage() {
         <BreadcrumbSeparator />
         <BreadcrumbItem>{t("donor")}</BreadcrumbItem>
       </Breadcrumb>
+      <div className=" flex flex-col items-center my-auto h-full justify-center mt-32 bg-primary/5 w-fit mx-auto rounded-xl p-6 gap-y-2">
+        <LockKeyhole className="text-orange-500 size-[32px]" />
+        <h1 className="text-[20px] text-justify">{t("under_testing")}</h1>
+      </div>
     </div>
   );
 }

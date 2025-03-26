@@ -3,9 +3,12 @@ import {
   useBatchFinalizeListener,
   useItemProgressListener,
   useItemStartListener,
+  useUploadyContext,
 } from "@rpldy/uploady";
 import { useRef } from "react";
 import IconButton from "../button/IconButton";
+import { getConfiguration } from "@/lib/utils";
+import { refreshAccessToken } from "@/lib/axois-client";
 export interface ISimpleProgressBarProps {
   onFailed: (failed: boolean, response: any) => Promise<void>;
   onComplete: (response: any) => Promise<void>;
@@ -30,6 +33,7 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
   const mainDiv = useRef<HTMLDivElement | null>(null);
   const circleRef = useRef<SVGCircleElement | null>(null);
   const abortAll = useAbortAll();
+  const uploadyContext = useUploadyContext();
 
   const initProgress = (progress: number) => {
     mainDiv.current!.style.setProperty("display", "flex");
@@ -75,11 +79,16 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
       (item) => item.state == "error" || item.state == "aborted"
     );
     if (failedFiles.length > 0) {
-      failedFiles.forEach((file) => {
-        const response = file.uploadResponse?.chunkUploadResponse?.response;
-        onFailed(true, response);
-        taskFailed();
-      });
+      for (const file of failedFiles) {
+        const chunkUploadResponse = file.uploadResponse?.chunkUploadResponse;
+        if (chunkUploadResponse?.status === 403) {
+          console.warn("Token expired. Refreshing token...");
+          retryUploadAfterTokenRefresh(file, uploadyContext);
+        } else {
+          onFailed(true, chunkUploadResponse.response);
+          taskFailed();
+        }
+      }
     } else {
       const file = batch.items.map((item) => {
         return item.uploadResponse.results.map((data: any) => data.data);
@@ -92,6 +101,40 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
     abortAll();
     setProgress(0);
   };
+  const retryUploadAfterTokenRefresh = async (
+    item: any,
+    uploadyContext: any
+  ) => {
+    try {
+      // Refresh the token
+      const conf = getConfiguration();
+      const newToken = await refreshAccessToken(conf);
+      if (newToken) {
+        // Update Uploady context with new token
+        const currentOptions = uploadyContext.getOptions(); // Assuming you have a function to get options
+
+        const updatedOptions = {
+          ...currentOptions,
+          destination: {
+            ...currentOptions.destination,
+            headers: {
+              ...currentOptions.destination?.headers,
+              Authorization: `Bearer ${newToken}`, // Set the new token
+            },
+          },
+        };
+        uploadyContext.setOptions(updatedOptions);
+
+        // Retry the upload
+        uploadyContext.upload(item.file, uploadyContext.getOptions()); // Re-upload the file
+      } else {
+        throw new Error("Failed to refresh token");
+      }
+    } catch (error) {
+      console.error("Upload failed after token refresh", error);
+    }
+  };
+
   return (
     <div className="flex flex-col justify-center items-center gap-y-1">
       <div
@@ -148,112 +191,3 @@ const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
 };
 
 export default SimpleProgressBar;
-
-// import {
-//   useAbortAll,
-//   useBatchFinalizeListener,
-//   useItemProgressListener,
-//   useItemStartListener,
-// } from "@rpldy/uploady";
-// import { useState } from "react";
-// export interface ISimpleProgressBarProps {
-//   onFailed: (failed: boolean, response: any) => Promise<void>;
-//   onComplete: (response: any) => Promise<void>;
-//   onStart: (file: File) => Promise<void>;
-//   cancelText: string;
-//   failedText: string;
-// }
-// const SimpleProgressBar = (props: ISimpleProgressBarProps) => {
-//   const { onComplete, onStart, onFailed, cancelText } = props;
-//   const [progress, setProgress] = useState(0);
-//   const [failed, setFailed] = useState(false);
-//   const abortAll = useAbortAll();
-
-//   useItemStartListener((item) => {
-//     onStart(item.file as File);
-//     setProgress(0);
-//   });
-//   useItemProgressListener((item) => {
-//     if (item.state != "error") setProgress(Math.round(item.completed));
-//   });
-//   useBatchFinalizeListener(async (batch) => {
-//     const failedFiles = batch.items.filter(
-//       (item) => item.state == "error" || item.state == "aborted"
-//     );
-//     if (failedFiles.length > 0) {
-//       failedFiles.forEach((file) => {
-//         const response = file.uploadResponse?.chunkUploadResponse?.response;
-//         onFailed(true, response);
-//         setFailed(true);
-//       });
-//     } else {
-//       const file = batch.items.map((item) => {
-//         return item.uploadResponse.results.map((data: any) => data.data);
-//       });
-//       await onComplete(file);
-//     }
-//   });
-//   const cancel = () => {
-//     abortAll();
-//     setProgress(0);
-//   };
-//   return (
-//     progress > 0 && (
-//       <>
-//         <div className="relative mx-[4px] mb-[6px] w-fit flex justify-center h-[50px]">
-//           {/* Background Circle */}
-//           <svg className="absolute transform rotate-90" width="50" height="50">
-//             <circle
-//               cx="25"
-//               cy="25"
-//               r="22"
-//               stroke="rgba(200, 200, 200, 0.2)"
-//               strokeWidth="5"
-//               fill="none"
-//             />
-//           </svg>
-
-//           {/* Progress Circle */}
-//           <svg className="absolute transform rotate-90" width="50" height="50">
-//             <circle
-//               cx="25"
-//               cy="25"
-//               r="22"
-//               stroke="#34D399" // Adjust to match your desired color (primary/tertiary)
-//               strokeWidth="5"
-//               fill="none"
-//               strokeDasharray="138.2" // Circumference of the smaller circle (2 * PI * radius)
-//               strokeDashoffset={138.2 - (138.2 * progress) / 100} // Dynamically adjust stroke dashoffset based on progress
-//             />
-//           </svg>
-
-//           {/* Text inside circle */}
-//           <div className="text-primary text-[12px] font-semibold flex items-center justify-center w-fit h-full">
-//             {failed ? "failed" : `${progress}%`}
-//           </div>
-//         </div>
-//         {progress != 100 && (
-//           <h1
-//             onClick={cancel}
-//             className="rtl:text-[14px] ltr:text-[12px] font-semibold shadow-lg cursor-pointer hover:shadow bg-red-500 px-1 rounded-md text-white "
-//           >
-//             {cancelText}
-//           </h1>
-//         )}
-//       </>
-//     )
-//   );
-// };
-
-// export default SimpleProgressBar;
-
-// // Change circle:
-// // Container Size: I set the width and height of the outer container to 40px, which is smaller than before.
-
-// // Circle Radius (r): I reduced the radius to 17. This makes the circle smaller.
-
-// // Circumference: The circumference is calculated as 2 * PI * radius, so with r = 17, it becomes approximately 106.8. I updated strokeDasharray to 106.8.
-
-// // Stroke Width: I reduced the strokeWidth to 4 to maintain a visually proportional thickness for the smaller circle.
-
-// // Text Size: I reduced the text size to text-[10px] to better fit the smaller circle.

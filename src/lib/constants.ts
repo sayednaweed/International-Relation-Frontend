@@ -185,6 +185,7 @@ export const CALENDAR_FORMAT = {
   format_1: "YYYY-MM-DD hh:mm A",
   format_2: "YYYY-MM-DD",
   format_3: "YYYY/MM/dddd",
+  format_4: "dddd DD MMMM YYYY / hh:mm:ss A",
 };
 export const CACHE = {
   USER_TABLE_PAGINATION_COUNT: "USER_TABLE",

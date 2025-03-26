@@ -11,11 +11,20 @@ interface DownloaderProps {
   filetoDownload: FileType;
   errorText: string;
   cancelText: string;
+  apiUrl: string;
+  params?: any;
   lockUpload?: (lock: boolean) => void;
 }
 const Downloader = (props: DownloaderProps) => {
-  const { downloadText, filetoDownload, errorText, cancelText, lockUpload } =
-    props;
+  const {
+    downloadText,
+    filetoDownload,
+    errorText,
+    cancelText,
+    lockUpload,
+    apiUrl,
+    params,
+  } = props;
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
   const [cancelTokenSource, setCancelTokenSource] = useState<any>(null); // New state to store the cancel token
@@ -27,9 +36,10 @@ const Downloader = (props: DownloaderProps) => {
     try {
       if (lockUpload) lockUpload(true);
       setIsDownloading(true);
-      const response = await axiosClient.get(`media`, {
+      const response = await axiosClient.get(apiUrl, {
         params: {
           path: filetoDownload?.path,
+          ...params,
         },
         responseType: "blob", // Important to handle the binary data (PDF)
         cancelToken: source.token, // Pass the cancel token here
@@ -61,7 +71,7 @@ const Downloader = (props: DownloaderProps) => {
       toast({
         toastType: "ERROR",
         title: errorText,
-        description: error.response.data.message,
+        description: error.response.data?.message,
       });
       console.log(error);
     }

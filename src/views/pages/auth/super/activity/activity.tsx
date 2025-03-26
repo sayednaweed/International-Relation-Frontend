@@ -16,7 +16,7 @@ import axiosClient from "@/lib/axois-client";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
 
-import { setDateToURL } from "@/lib/utils";
+import { setDateToURL, toLocaleDate } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import { ListFilter, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
@@ -28,11 +28,14 @@ import { ActivityPaginationData, ActivitySearch, Order } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import { ActivityModel } from "@/database/tables";
+import CachedImage from "@/components/custom-ui/image/CachedImage";
+import { useGlobalState } from "@/context/GlobalStateContext";
 
 export function Activity() {
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
+  const [state] = useGlobalState();
 
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
@@ -44,7 +47,8 @@ export function Activity() {
   const filters = {
     order: order == null ? "desc" : (order as Order),
     search: {
-      column: searchColumn == null ? "user" : (searchColumn as ActivitySearch),
+      column:
+        searchColumn == null ? "username" : (searchColumn as ActivitySearch),
       value: searchValue == null ? "" : searchValue,
     },
     date:
@@ -73,7 +77,7 @@ export function Activity() {
         endDate: endDate,
       };
       // 2. Send data
-      const response = await axiosClient.get(`user/activities`, {
+      const response = await axiosClient.get(`user-activities`, {
         params: {
           page: page,
           per_page: count,
@@ -87,11 +91,11 @@ export function Activity() {
           },
         },
       });
-      const fetch = response.data.data as ActivityModel[];
-      const lastPage = response.data.last_page;
-      const totalItems = response.data.total;
-      const perPage = response.data.per_page;
-      const currentPage = response.data.current_page;
+      const fetch = response.data.logs.data as ActivityModel[];
+      const lastPage = response.data.logs.last_page;
+      const totalItems = response.data.logs.total;
+      const perPage = response.data.logs.per_page;
+      const currentPage = response.data.logs.current_page;
       setActivities({
         filterList: {
           data: fetch,
@@ -164,6 +168,9 @@ export function Activity() {
 
   const skeleton = (
     <TableRow>
+      <TableCell>
+        <Shimmer className="h-[24px] w-full rounded-sm" />
+      </TableCell>
       <TableCell>
         <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
@@ -286,8 +293,8 @@ export function Activity() {
                 ],
                 search: [
                   {
-                    name: "user",
-                    translate: t("user"),
+                    name: "username",
+                    translate: t("username"),
                     onClick: () => {},
                   },
                   { name: "type", translate: t("type"), onClick: () => {} },
@@ -325,9 +332,10 @@ export function Activity() {
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-start">{t("user")}</TableHead>
+            <TableHead className="text-start">{t("profile")}</TableHead>
+            <TableHead className="text-start">{t("username")}</TableHead>
             <TableHead className="text-start">{t("type")}</TableHead>
-            <TableHead className="text-start">{t("action")}</TableHead>
+            <TableHead className="text-start">{t("event")}</TableHead>
             <TableHead className="text-start">{t("ip_address")}</TableHead>
             <TableHead className="text-start">{t("device")}</TableHead>
             <TableHead className="text-start">{t("browser")}</TableHead>
@@ -350,24 +358,26 @@ export function Activity() {
                   onRemove={async () => {}}
                   onRead={async () => {}}
                 >
-                  <TableCell className="px-1 py-0">23</TableCell>
-                  <TableCell className="truncate rtl:text-md-rtl">
-                    Naweed
+                  <TableCell>
+                    <CachedImage
+                      src={item?.profile}
+                      alt="Avatar"
+                      ShimmerIconClassName="size-[18px]"
+                      shimmerClassName="size-[36px] shadow-lg border border-tertiary rounded-full"
+                      className="size-[36px] object-center object-cover shadow-lg border border-tertiary rounded-full"
+                      routeIdentifier={"profile"}
+                    />
                   </TableCell>
-                  <TableCell className="truncate">Super_Admin</TableCell>
-                  <TableCell className="truncate">update</TableCell>
-                  <TableCell>172.23.24.35</TableCell>
-                  <TableCell
-                    className="rtl:text-md-rtl truncate rtl:text-end"
-                    dir="ltr"
-                  >
-                    174.56.45.44
+                  <TableCell className="truncate">{item.username}</TableCell>
+                  <TableCell className="truncate">
+                    {item.userable_type}
                   </TableCell>
-                  <TableCell className="rtl:text-md-rtl truncate">
-                    grome
-                  </TableCell>
-                  <TableCell className="rtl:text-md-rtl truncate">
-                    success
+                  <TableCell className="truncate">{item.action}</TableCell>
+                  <TableCell className="truncate">{item.ip_address}</TableCell>
+                  <TableCell className="truncate">{item.device}</TableCell>
+                  <TableCell className="truncate">{item.browser}</TableCell>
+                  <TableCell className="truncate">
+                    {toLocaleDate(new Date(item.date), state)}
                   </TableCell>
                 </TableRowIcon>
               )

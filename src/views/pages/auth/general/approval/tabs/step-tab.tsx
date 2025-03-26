@@ -234,19 +234,19 @@ export default function StepTab(props: ApprovedStepTabProps) {
           {loading ? (
             <TableRow>
               <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                <Shimmer className="h-[24px] w-full rounded-sm" />
               </TableCell>
               <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                <Shimmer className="h-[24px] w-full rounded-sm" />
               </TableCell>
               <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                <Shimmer className="h-[24px] w-full rounded-sm" />
               </TableCell>
               <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                <Shimmer className="h-[24px] w-full rounded-sm" />
               </TableCell>
               <TableCell>
-                <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
+                <Shimmer className="h-[24px] w-full rounded-sm" />
               </TableCell>
             </TableRow>
           ) : list.data.length == 0 ? (

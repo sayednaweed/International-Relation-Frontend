@@ -23,7 +23,7 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle 401 Unauthorized
+    // Handle 403 Unauthorized
     if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
       const conf = getConfiguration();
@@ -53,7 +53,7 @@ axiosClient.interceptors.response.use(
   }
 );
 
-async function refreshAccessToken(conf: Configuration | null) {
+export async function refreshAccessToken(conf: Configuration | null) {
   try {
     const response = await axios.post(
       `${import.meta.env.VITE_API_BASE_URL}/api/v1/refresh-token`,

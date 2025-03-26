@@ -44,8 +44,8 @@ const Carousel: React.FC<CarouselProps> = ({
           src={images[currentIndex]?.path}
           alt="Avatar"
           ShimmerIconClassName="hidden"
-          shimmerClassName="w-full min-h-full transition-transform duration-700 ease-in-out object-fill"
-          className="w-full min-h-full transition-transform duration-700 ease-in-out object-fill"
+          shimmerClassName="w-full min-h-full transition-transform duration-700 ease-in-out object-center"
+          className="w-full min-h-full transition-transform duration-700 ease-in-out object-contain"
           routeIdentifier={"public"}
         />
       </div>

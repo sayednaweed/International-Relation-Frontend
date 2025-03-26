@@ -285,8 +285,9 @@ export interface Approval {
 
 export interface ActivityModel {
   id: string;
-  user: string;
-  type: string;
+  profile: string;
+  username: string;
+  userable_type: string;
   action: string;
   ip_address: string;
   device: string;
