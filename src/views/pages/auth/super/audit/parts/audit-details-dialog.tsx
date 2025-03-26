@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,23 +10,8 @@ import { useTranslation } from "react-i18next";
 import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useModelOnRequestHide";
 import { Heading, Table } from "lucide-react";
 
-interface UserData {
-  id: number;
-  type: string;
-  event: string;
-  table: string;
-  table_id: number;
-  url: string;
-  ip_address: string;
-  user_agent: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export default function AuditDetailsDialog() {
   const { t } = useTranslation();
-  const [oldData, setOldData] = useState<UserData | null>(null);
-  const [newData, setNewData] = useState<UserData | null>(null);
   const { modelOnRequestHide } = useModelOnRequestHide();
 
   return (

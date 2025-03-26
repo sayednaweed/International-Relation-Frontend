@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { AuditTable } from "./audit-table";
+// import { AuditTable } from "./audit-table";
 import {
   Breadcrumb,
   BreadcrumbHome,
@@ -21,7 +21,7 @@ export default function SuperAuditPage() {
         <BreadcrumbSeparator />
         <BreadcrumbItem onClick={handleGoBack}>{t("audit")}</BreadcrumbItem>
       </Breadcrumb>
-      <AuditTable />
+      {/* <AuditTable /> */}
     </div>
   );
 }

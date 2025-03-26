@@ -1,4 +1,3 @@
-import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import {
   Table,
   TableBody,
@@ -35,15 +34,6 @@ import NastranModel from "@/components/custom-ui/model/NastranModel";
 import AuditDetailsDialog from "./parts/audit-details-dialog";
 import { setDateToURL } from "@/lib/utils";
 
-type AuditProps = {
-  userType: { name: string; selected: boolean };
-  user: { id: string; name: string; selected: boolean } | undefined;
-  event: "created" | "deleted" | "updated" | "viewed" | "all";
-  table: { name: string };
-  column: { name: string };
-  lockTable: boolean;
-  lockColumn: boolean;
-};
 export function AuditTable() {
   const searchRef = useRef<HTMLInputElement>(null);
   const { getComponentCache } = useCacheDB();
@@ -217,32 +207,6 @@ export function AuditTable() {
       currentPage: 0,
     },
   });
-  const skeleton = (
-    <TableRow>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-      <TableCell>
-        <Shimmer className="h-[24px] bg-primary/30 w-full rounded-sm" />
-      </TableCell>
-    </TableRow>
-  );
-
   return (
     <>
       <div className="grid place-content-center gap-y-4 sm:grid-cols-2 shadow-sm md:grid-cols-3 bg-card mt-2 rounded-md p-4 items-center">
