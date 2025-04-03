@@ -7,6 +7,7 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import { AuditTable } from "./audit-table";
 
 export default function SuperAuditPage() {
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function SuperAuditPage() {
         <BreadcrumbSeparator />
         <BreadcrumbItem onClick={handleGoBack}>{t("audit")}</BreadcrumbItem>
       </Breadcrumb>
-      {/* <AuditTable /> */}
+      <AuditTable />
     </div>
   );
 }
