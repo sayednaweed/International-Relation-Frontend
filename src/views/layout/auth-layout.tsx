@@ -40,7 +40,7 @@ export default function AuthLayout() {
     };
   }, []);
   return (
-    <section className="min-h-[100vh] max-h-[100vh] flex bg-secondary select-none">
+    <section className="min-h-[100vh] max-h-[100vh] flex bg-secondary select-none pb-12">
       <NastranSidebar />
       <main className="min-h-full flex-1 flex flex-col overflow-auto">
         <DashboardNavbar />

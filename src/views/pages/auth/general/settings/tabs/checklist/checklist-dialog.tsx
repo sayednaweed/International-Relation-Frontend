@@ -72,7 +72,7 @@ const defaultExtensions = [
 ];
 export default function ChecklistDialog(props: ChecklistDialogProps) {
   const { onComplete, checklist } = props;
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [error, setError] = useState(new Map<string, string>());
@@ -106,6 +106,7 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
   const { t } = useTranslation();
   const fetch = async () => {
     try {
+      setLoading(true);
       const response = await axiosClient.get(`ngo-checklist/${checklist?.id}`);
       if (response.status === 200) {
         setUserData(response.data);
@@ -323,7 +324,6 @@ export default function ChecklistDialog(props: ChecklistDialogProps) {
                 label: "Select frameworks",
               }}
               onChange={(option: Option[]) => {
-                console.log(option, "Naweed");
                 setUserData({
                   ...userData,
                   file_type: option,

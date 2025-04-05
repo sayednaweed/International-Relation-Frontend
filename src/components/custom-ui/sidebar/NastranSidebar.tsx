@@ -77,7 +77,7 @@ export default function NastranSidebar() {
         {/* Header */}
         <div className="flex sticky top-2 flex-col dark:bg-card bg-primary z-50 items-center gap-y-2 border-b pb-4 border-secondary/20 mb-4">
           <img
-            src="http://127.0.0.1:8000/images/app-logo.png"
+            src={`${import.meta.env.VITE_API_BASE_URL}/images/app-logo.png`}
             className="size-[56px] text-primary/70 max-h-[76px] rounded-lg max-w-[76px]"
           />
 

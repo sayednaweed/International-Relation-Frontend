@@ -83,7 +83,7 @@ export default function SettingsPage() {
         </TabsList>
         <TabsContent
           value={PermissionEnum.settings.sub.setting_language.toString()}
-          className="overflow-y-auto self-start w-1/2"
+          className="overflow-y-auto self-start w-full sm:w-1/2 xl:w-1/3"
         >
           <LanguageTab />
         </TabsContent>

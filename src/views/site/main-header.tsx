@@ -45,7 +45,7 @@ export default function MainHeader() {
           <div className="flex items-center justify-end gap-3 justify-self-start">
             <img
               className="xxl:h-16 h-12"
-              src="http://127.0.0.1:8000/images/app-logo.png"
+              src={`${import.meta.env.VITE_API_BASE_URL}/images/app-logo.png`}
               alt="logo"
             />
             <h1 className="font-bold ltr:text-lg-ltr ltr:sm:text-2xl-ltr rtl:text-xl-rtl rtl:sm:text-4xl-rtl text-white">

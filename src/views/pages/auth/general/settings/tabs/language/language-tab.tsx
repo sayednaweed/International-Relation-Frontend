@@ -106,15 +106,15 @@ export default function LanguageTab() {
   const defaultText =
     "rtl:text-xl-rtl ltr:text-xl-ltr bg-card ring-0 focus:ring-0 ";
   return (
-    <section className="px-2 pt-2 select-none">
+    <section className="px-2 pt-2 select-none w-full">
       <div>
         <Label className={defaultLabelText}>{t("system_language")}</Label>
-        <LanguageChanger className="rounded-md !min-w-[180px]" />
+        <LanguageChanger className="rounded-md w-full" />
       </div>
       <div>
         <Label className={defaultLabelText}>{t("system_calendar")}</Label>
         <Select onValueChange={onChangeCalendar} value={calender}>
-          <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
+          <SelectTrigger className={`${defaultText}`}>
             <SelectValue placeholder={t("select_sys_cal")} />
           </SelectTrigger>
           <SelectContent>
@@ -132,7 +132,7 @@ export default function LanguageTab() {
       <div>
         <Label className={defaultLabelText}>{t("calendar_locale")}</Label>
         <Select onValueChange={onChangeLocale} value={locale}>
-          <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
+          <SelectTrigger className={`${defaultText}`}>
             <SelectValue placeholder={t("select_calendar_locale")} />
           </SelectTrigger>
           <SelectContent>
@@ -148,7 +148,7 @@ export default function LanguageTab() {
       <div>
         <Label className={defaultLabelText}>{t("calendar_format")}</Label>
         <Select onValueChange={onChangeFormat} value={format}>
-          <SelectTrigger className={`min-w-[180px] ${defaultText}`}>
+          <SelectTrigger className={`${defaultText}`}>
             <SelectValue
               className="text-header2"
               placeholder={t("select_calendar_format")}

@@ -34,7 +34,7 @@ const initialState: State = {
       calendarId: CALENDAR.LUNAR,
       localeId: CALENDAR_LOCALE.arabic,
     },
-    format: "YYYY-MM-DD",
+    format: "dddd DD MMMM YYYY / hh:mm:ss A",
   },
 };
 
