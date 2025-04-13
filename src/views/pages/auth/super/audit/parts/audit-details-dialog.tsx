@@ -15,152 +15,115 @@ import CachedImage from "@/components/custom-ui/image/CachedImage";
 export default function AuditDetailsDialog() {
   const { t } = useTranslation();
   const { modelOnRequestHide } = useModelOnRequestHide();
+  const oldValue = {
+    canary: false,
+    config: {
+      autoSyncColumns: false,
+      changeMethod: "PUT",
+      configVersion: 0,
+      contentType: "application/json",
+      mappings: [],
+      rowsPerBatch: 1000,
+    },
+    created_at: "2022-11-10T20:19:31",
+    destination_id: 66595,
+    draft: false,
+  };
 
+  const newValue = {
+    canary: false,
+    config: {
+      autoSyncColumns: true,
+      changeMethod: "POST",
+      configVersion: 0,
+      contentType: "application/json",
+      mappings: [],
+      rowsPerBatch: 1000,
+    },
+    created_at: "2022-11-10T20:19:31",
+    destination_id: 66595,
+    draft: true,
+  };
+
+  const highlightDifferences = (oldObj: any, newObj: any) => {
+    const isObject = (val: any) => typeof val === "object" && val !== null;
+
+    const walk = (oldVal: any, newVal: any): any => {
+      if (!isObject(newVal)) {
+        return oldVal !== newVal ? (
+          <span className="text-red-500 font-semibold">
+            {JSON.stringify(newVal)}
+          </span>
+        ) : (
+          JSON.stringify(newVal)
+        );
+      }
+
+      const entries = Object.keys(newVal).map((key) => (
+        <div key={key} className="pl-4">
+          <span className="text-sky-600">"{key}": </span>
+          {walk(oldVal?.[key], newVal[key])}
+        </div>
+      ));
+
+      return <div>{entries}</div>;
+    };
+
+    return walk(oldObj, newObj);
+  };
   return (
     <Card className="w-fit self-center [backdrop-filter:blur(20px)] bg-white/70 dark:!bg-black/40 mt-4">
       <CardContent>
-        <Table className=" bg-card rounded-md my-2 py-4 shadow-sm pointer-events-none mt-4">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-start">{t("profile")}</TableHead>
-              <TableHead className="text-start ">{t("user")}</TableHead>
-              <TableHead className="text-start">{t("table")}</TableHead>
-              <TableHead className="text-start">{t("event")}</TableHead>
-              <TableHead className="text-start">{t("date")}</TableHead>
-            </TableRow>
-          </TableHeader>
+        <Table className="bg-card rounded-md my-2 py-4 shadow-sm pointer-events-none mt-4">
           <TableBody>
-            <TableRow className="">
-              <TableCell className="  w-0">
+            <TableRow className=" ">
+              <TableHead className="">{t("profile")}</TableHead>
+              <TableCell className=" rounded-full  text-start w-24  colSpan={2} p-0">
                 <CachedImage
                   src={""}
                   alt="Avatar"
-                  className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
+                  className=" size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full "
                   routeIdentifier={"profile"}
                 />
               </TableCell>
-              <TableCell className="truncate text-start">Ahmad</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead className="text-start  ">{t("user")}</TableHead>
+              <TableCell className="text-start  ">Ahmad</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead className="text-start ">{t("table")}</TableHead>
               <TableCell className="text-start">ngo</TableCell>
-              <TableCell className="truncate text-start">Updated</TableCell>
-              <TableCell className="truncate text-start">2025-03-27</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead className="text-start">{t("event")}</TableHead>
+              <TableCell className="text-start">Updated</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableHead className="text-start w-24">{t("date")}</TableHead>
+              <TableCell className="text-start">2025-03-27</TableCell>
             </TableRow>
           </TableBody>
         </Table>
+        <div className="mt-3">
+          <div className="flex justify-evenly ">
+            <h2 className=" text-lg font-semibold mb-2 ">Old_value</h2>
+            <h2 className=" text-lg font-semibold mb-2">changes</h2>
+          </div>
 
-        <Table
-          className="bg-card rounded-md my-2 py-4 shadow-sm
-        "
-        >
-          <TableBody>
-            <TableRow>
-              {" "}
-              <TableHead className="ltr:text-start">{t("field")}</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                {t("old_value")}
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                {t("new_value")}
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">ID</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ id: 1 }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ id: 23 }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">Type</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ type: "Admin" }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ type: "SuperAdmin" }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">Table</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ table: "ngo" }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ table: "permission" }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">Table ID</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ table_id: 22 }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ table_id: 21 }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">URL</TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ url: "www.oldurl.com" }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ url: "www.newurl.com" }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">
-                IP Address
-              </TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ ip: "192.168.1.1" }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ ip: "172.16.5.67" }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">
-                User Agent
-              </TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>{JSON.stringify({ user_agent: "Firefox" }, null, 2)}</pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>{JSON.stringify({ user_agent: "Chrome" }, null, 2)}</pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">
-                Created At
-              </TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>
-                  {JSON.stringify({ created_at: "2024-03-01" }, null, 2)}
-                </pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>
-                  {JSON.stringify({ created_at: "2025-01-01" }, null, 2)}
-                </pre>
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableHead className="text-start font-medium">
-                Updated At
-              </TableHead>
-              <TableCell className="text-center text-red-500" colSpan={2}>
-                <pre>
-                  {JSON.stringify({ updated_at: "2024-03-01" }, null, 2)}
-                </pre>
-              </TableCell>
-              <TableCell className="text-center text-green-500" colSpan={2}>
-                <pre>
-                  {JSON.stringify({ updated_at: "2025-03-27" }, null, 2)}
-                </pre>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-muted p-4 rounded border">
+              <pre className="text-xs whitespace-pre-wrap text-start">
+                {JSON.stringify(oldValue, null, 2)}
+              </pre>
+            </div>
+            <div className="bg-muted p-4 rounded border">
+              <pre className="text-xs whitespace-pre-wrap text-start">
+                {highlightDifferences(oldValue, newValue)}
+              </pre>
+            </div>
+          </div>
+        </div>
       </CardContent>
 
       <CardFooter className="flex justify-between">
