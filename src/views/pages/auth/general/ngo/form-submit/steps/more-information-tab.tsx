@@ -23,7 +23,11 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
         const response = await axiosClient.get(url);
         if (response.status == 200) {
           const ngo = response.data.ngo;
-          if (ngo) setUserData({ ...userData, ...ngo });
+          if (ngo)
+            setUserData((prev: any) => ({
+              ...prev,
+              ...ngo,
+            }));
         }
       } catch (error: any) {
         toast({
@@ -43,7 +47,7 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
   return loading ? (
     <NastranSpinner />
   ) : (
-    <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-x-4 xl:gap-x-12 lg:items-stretch mt-4 gap-y-3 w-full lg:w-full">
+    <div className="flex flex-col lg:grid lg:grid-cols-1 gap-y-8 mt-4 w-full lg:w-full">
       <BorderContainer
         title={t("vision")}
         required={true}
@@ -53,17 +57,17 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
         <MultiTabTextarea
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="vision"
           rows={8}
@@ -89,17 +93,17 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
         <MultiTabTextarea
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="mission"
           highlightColor="bg-tertiary"
@@ -125,17 +129,17 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
         <MultiTabTextarea
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="general_objes"
           highlightColor="bg-tertiary"
@@ -161,17 +165,17 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
         <MultiTabTextarea
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="objes_in_afg"
           highlightColor="bg-tertiary"

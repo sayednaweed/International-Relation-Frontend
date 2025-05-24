@@ -71,13 +71,13 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           ngo.show_new_director = true;
           ngo.new_represent = false;
           ngo.show_new_representer = true;
-          setUserData({
-            ...userData,
+          setUserData((prev: any) => ({
+            ...prev,
             allowed: true,
             shouldContinue: true,
             checklistMap: new Map<string, any>(),
             ...ngo,
-          });
+          }));
         }
       }
     } catch (error: any) {
@@ -96,7 +96,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
   // The passed state
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+    setUserData((prev: any) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
   return userData?.shouldContinue == false ? (
     <ConfirmationDialog
@@ -110,11 +113,11 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
             checklistMap: new Map<string, any>(),
           });
         } else {
-          setUserData({
-            ...userData,
+          setUserData((prev: any) => ({
+            ...prev,
             allowed: true,
             shouldContinue: true,
-          });
+          }));
         }
       }}
       params={{
@@ -133,17 +136,17 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
         <MultiTabInput
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="name"
           highlightColor="bg-tertiary"
@@ -176,7 +179,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) =>
-          setUserData({ ...userData, ["type"]: selection })
+          setUserData((prev: any) => ({
+            ...prev,
+            ["type"]: selection,
+          }))
         }
         lable={t("type")}
         required={true}
@@ -242,7 +248,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
-            setUserData({ ...userData, ["country"]: selection })
+            setUserData((prev: any) => ({
+              ...prev,
+              ["country"]: selection,
+            }))
           }
           lable={t("country")}
           required={true}
@@ -260,7 +269,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           required={true}
           value={userData.establishment_date}
           dateOnComplete={(date: DateObject) => {
-            setUserData({ ...userData, establishment_date: date });
+            setUserData((prev: any) => ({
+              ...prev,
+              establishment_date: date,
+            }));
           }}
           className="py-3 w-full"
           errorMessage={error.get("establishment_date")}
@@ -278,7 +290,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
-            setUserData({ ...userData, ["province"]: selection })
+            setUserData((prev: any) => ({
+              ...prev,
+              ["province"]: selection,
+            }))
           }
           lable={t("province")}
           required={true}
@@ -293,7 +308,10 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
             placeholderText={t("search_item")}
             errorText={t("no_item")}
             onSelect={(selection: any) =>
-              setUserData({ ...userData, ["district"]: selection })
+              setUserData((prev: any) => ({
+                ...prev,
+                ["district"]: selection,
+              }))
             }
             lable={t("district")}
             required={true}
@@ -312,17 +330,17 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
             parentClassName="w-full"
             optionalKey={"optional_lang"}
             onTabChanged={(key: string, tabName: string) => {
-              setUserData({
-                ...userData,
+              setUserData((prev: any) => ({
+                ...prev,
                 [key]: tabName,
                 optional_lang: tabName,
-              });
+              }));
             }}
             onChanged={(value: string, name: string) => {
-              setUserData({
-                ...userData,
+              setUserData((prev: any) => ({
+                ...prev,
                 [name]: value,
-              });
+              }));
             }}
             name="area"
             highlightColor="bg-tertiary"

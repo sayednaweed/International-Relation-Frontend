@@ -24,8 +24,6 @@ import DonorDashboardPage from "@/views/pages/auth/donor/dashboard/donor-dashboa
 import DonorNgoPage from "@/views/pages/auth/donor/ngo/donor-ngo-page";
 import DonorReportsPage from "@/views/pages/auth/donor/reports/donor-reports-page";
 import NgoDashboardPage from "@/views/pages/auth/ngo/dashboard/ngo-dashboard-page";
-import NgoProjectsPage from "@/views/pages/auth/ngo/projects/ngo-projects-page";
-import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
 import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import SuperDashboardPage from "@/views/pages/auth/super/dashboard/super-dashboard-page";
 import AdminDashboardPage from "@/views/pages/auth/admin/dashboard/admin-dashboard-page";
@@ -51,6 +49,7 @@ import NgoFormSubmit from "@/views/pages/auth/general/ngo/form-submit/ngo-form-s
 import DonorPage from "@/views/pages/auth/general/donor/donor-page";
 import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
 import SuperActivityPage from "@/views/pages/auth/super/activity/super-activity-page";
+import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -891,7 +890,7 @@ export const getNgoRouter = (
             path="projects"
             element={
               <ProtectedRoute
-                element={<NgoProjectsPage />}
+                element={<ProjectsPage />}
                 routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}

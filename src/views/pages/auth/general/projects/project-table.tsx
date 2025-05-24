@@ -34,12 +34,12 @@ import {
 } from "@/lib/types";
 import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
-import { useUserAuthState } from "@/context/AuthContextProvider";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import StatusButton from "@/components/custom-ui/button/StatusButton";
 
-export function NgoTable() {
-  const { user } = useUserAuthState();
+export function ProjectTable() {
+  const { user } = useGeneralAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();

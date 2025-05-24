@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import ButtonSpinner from "../spinner/ButtonSpinner";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
+import PrimaryButton from "../button/PrimaryButton";
 
 export interface IStepperControlProps {
   backText: string;
@@ -76,15 +77,13 @@ function StepperControl(props: IStepperControlProps) {
         )}
       </button>
       {onSaveCloseText && (
-        <button
+        <PrimaryButton
           disabled={loading}
           onClick={onClose}
-          className={`flex gap-x-2 items-center transition-all duration-500 rtl:text-sm-rtl ltr:text-[14px] font-semibold w-fit text-primary rounded-md hover:bg-primary hover:text-primary-foreground px-3 py-[6px] ${
-            loading ? " bg-primary/30 border" : "border border-primary"
-          }`}
+          className={`shadow-lg`}
         >
           <ButtonSpinner loading={loading}>{onSaveCloseText}</ButtonSpinner>
-        </button>
+        </PrimaryButton>
       )}
     </div>
   );

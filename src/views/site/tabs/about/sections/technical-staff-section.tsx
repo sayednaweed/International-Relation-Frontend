@@ -59,7 +59,7 @@ export default function TechnicalStaff() {
                       routeIdentifier={"public"}
                     />
                   </TooltipTrigger>
-                  <TooltipContent className="pb-6 pt-4 max-w-44 bg-card border">
+                  <TooltipContent className="pb-6 pt-4 max-w-44 xxl:max-w-96 bg-card border">
                     <CachedImage
                       src={tech.picture}
                       alt="Avatar"
@@ -67,7 +67,7 @@ export default function TechnicalStaff() {
                       className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full "
                       routeIdentifier={"public"}
                     />
-                    <div className="grid grid-cols-2 mt-6 text-start gap-x-1 text-primary">
+                    <div className="grid grid-cols-[auto_1fr] mt-6 text-start gap-x-2 text-primary">
                       <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("name")}:
                       </p>
@@ -77,13 +77,13 @@ export default function TechnicalStaff() {
                       <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("contact")}:
                       </p>
-                      <p className="text-[14px] text-wrap break-words">
+                      <p className="text-[14px] rtl:pt-[3px] text-wrap break-words">
                         {tech.contact}
                       </p>
                       <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("email")}:
                       </p>
-                      <p className="text-[14px] text-wrap break-words">
+                      <p className="text-[14px] rtl:pt-[3px] text-wrap break-words">
                         {tech.email}
                       </p>
                     </div>

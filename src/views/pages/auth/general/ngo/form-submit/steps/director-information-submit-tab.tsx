@@ -15,7 +15,10 @@ export default function DirectorInformationSubmitTab() {
   const { t } = useTranslation();
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setUserData({ ...userData, [name]: value });
+    setUserData((prev: any) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -29,17 +32,17 @@ export default function DirectorInformationSubmitTab() {
         <MultiTabInput
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="director_name"
           highlightColor="bg-tertiary"
@@ -64,17 +67,17 @@ export default function DirectorInformationSubmitTab() {
         <MultiTabInput
           optionalKey={"optional_lang"}
           onTabChanged={(key: string, tabName: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [key]: tabName,
               optional_lang: tabName,
-            });
+            }));
           }}
           onChanged={(value: string, name: string) => {
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               [name]: value,
-            });
+            }));
           }}
           name="surname"
           highlightColor="bg-tertiary"
@@ -122,7 +125,10 @@ export default function DirectorInformationSubmitTab() {
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) =>
-          setUserData({ ...userData, ["gender"]: selection })
+          setUserData((prev: any) => ({
+            ...prev,
+            ["gender"]: selection,
+          }))
         }
         lable={t("gender")}
         required={true}
@@ -137,7 +143,10 @@ export default function DirectorInformationSubmitTab() {
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) =>
-          setUserData({ ...userData, ["nationality"]: selection })
+          setUserData((prev: any) => ({
+            ...prev,
+            ["nationality"]: selection,
+          }))
         }
         lable={t("nationality")}
         required={true}
@@ -151,7 +160,10 @@ export default function DirectorInformationSubmitTab() {
         placeholderText={t("search_item")}
         errorText={t("no_item")}
         onSelect={(selection: any) =>
-          setUserData({ ...userData, ["identity_type"]: selection })
+          setUserData((prev: any) => ({
+            ...prev,
+            ["identity_type"]: selection,
+          }))
         }
         lable={t("identity_type")}
         required={true}
@@ -186,10 +198,10 @@ export default function DirectorInformationSubmitTab() {
           placeholderText={t("search_item")}
           errorText={t("no_item")}
           onSelect={(selection: any) =>
-            setUserData({
-              ...userData,
+            setUserData((prev: any) => ({
+              ...prev,
               ["director_province"]: selection,
-            })
+            }))
           }
           lable={t("province")}
           required={true}
@@ -204,7 +216,10 @@ export default function DirectorInformationSubmitTab() {
             placeholderText={t("search_item")}
             errorText={t("no_item")}
             onSelect={(selection: any) =>
-              setUserData({ ...userData, ["director_dis"]: selection })
+              setUserData((prev: any) => ({
+                ...prev,
+                ["director_dis"]: selection,
+              }))
             }
             lable={t("director_dis")}
             required={true}
@@ -223,17 +238,17 @@ export default function DirectorInformationSubmitTab() {
             parentClassName="w-full"
             optionalKey={"optional_lang"}
             onTabChanged={(key: string, tabName: string) => {
-              setUserData({
-                ...userData,
+              setUserData((prev: any) => ({
+                ...prev,
                 [key]: tabName,
                 optional_lang: tabName,
-              });
+              }));
             }}
             onChanged={(value: string, name: string) => {
-              setUserData({
-                ...userData,
+              setUserData((prev: any) => ({
+                ...prev,
                 [name]: value,
-              });
+              }));
             }}
             name="director_area"
             highlightColor="bg-tertiary"

@@ -96,10 +96,10 @@ export default function CheckListTab(props: CheckListTabProps) {
                   const item = element[element.length - 1];
                   const checklistMap: Map<string, any> = userData.checklistMap;
                   checklistMap.set(checklist.id, item);
-                  setUserData({
-                    ...userData,
+                  setUserData((prev: any) => ({
+                    ...prev,
                     checklistMap: checklistMap,
-                  });
+                  }));
                 }
                 // 2. Save userData for any file inconsistency
                 // When new file added and save is not called old file data will show
@@ -115,10 +115,11 @@ export default function CheckListTab(props: CheckListTabProps) {
                     const checklistMap: Map<string, any> =
                       userData.checklistMap;
                     checklistMap.delete(checklist.id);
-                    setUserData({
-                      ...userData,
+
+                    setUserData((prev: any) => ({
+                      ...prev,
                       checklistMap: checklistMap,
-                    });
+                    }));
                   }
                 }
               }}
