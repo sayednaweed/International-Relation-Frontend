@@ -43,7 +43,7 @@ export default function MoreInformationTab(props: MoreInformationTabProps) {
   return loading ? (
     <NastranSpinner />
   ) : (
-    <div className="flex flex-col mt-10 w-full gap-y-6 pb-12">
+    <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-x-4 xl:gap-x-12 lg:items-stretch mt-4 gap-y-3 w-full lg:w-full">
       <BorderContainer
         title={t("vision")}
         required={true}

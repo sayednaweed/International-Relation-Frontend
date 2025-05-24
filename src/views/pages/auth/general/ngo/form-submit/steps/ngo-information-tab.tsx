@@ -9,7 +9,7 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { toast } from "@/components/ui/use-toast";
 import axiosClient from "@/lib/axois-client";
-import { TaskTypeEnum } from "@/lib/constants";
+import { CountryEnum, TaskTypeEnum } from "@/lib/constants";
 import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
@@ -123,11 +123,11 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
       url={"destroy/ngo/task/content/" + id}
     />
   ) : userData?.allowed ? (
-    <div className="flex flex-col mt-10 w-full md:w-[60%] lg:w-[600px] gap-y-6 pb-12">
+    <div className="flex flex-col lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-x-4 xl:gap-x-12 lg:items-start mt-4 gap-y-3 w-full lg:w-full">
       <BorderContainer
         title={t("ngo_name")}
         required={true}
-        parentClassName="p-t-4 pb-0 px-0"
+        parentClassName="pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
       >
         <MultiTabInput
@@ -285,7 +285,7 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
           selectedItem={userData["province"]?.name}
           placeHolder={t("select_a")}
           errorMessage={error.get("province")}
-          apiUrl={"provinces/" + 1}
+          apiUrl={"provinces/" + CountryEnum.afghanistan}
           mode="single"
         />
         {userData.province && (

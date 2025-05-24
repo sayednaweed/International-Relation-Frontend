@@ -39,12 +39,12 @@ export default function TechnicalStaff() {
   }, [i18n.language]);
 
   return (
-    <div className="space-y-2 text-center self-start">
+    <div className="space-y-2 text-center self-start mx-auto">
       <p className="font-bold min-w-[190px] uppercase bg-tertiary text-white shadow-xl rounded-full rtl:text-3xl-rtl p-2">
         {t("technical_sup")}
       </p>
       <div className="relative rounded-xl overflow-auto p-4">
-        <div className="flex -space-x-3 rtl:space-x-reverse">
+        <div className="grid justify-items-center -space-y-3 xxl:space-y-0 xxl:flex xxl:-space-x-3 xxl:rtl:space-x-reverse">
           {technical.length != 0 ? (
             technical?.map((tech, index) => (
               <TooltipProvider key={index}>
@@ -59,7 +59,7 @@ export default function TechnicalStaff() {
                       routeIdentifier={"public"}
                     />
                   </TooltipTrigger>
-                  <TooltipContent className="pb-6 pt-4 max-w-[300px] bg-card/95 border rounded-xl">
+                  <TooltipContent className="pb-6 pt-4 max-w-44 bg-card border">
                     <CachedImage
                       src={tech.picture}
                       alt="Avatar"
@@ -67,23 +67,23 @@ export default function TechnicalStaff() {
                       className="size-[86px] object-center object-cover mx-auto shadow-lg border border-primary/50 rounded-full "
                       routeIdentifier={"public"}
                     />
-                    <div className="grid grid-cols-[auto_auto] mt-6 text-start gap-x-6 text-primary">
-                      <p className="ltr:font-semibold font-bold rtl:text-[17px]">
+                    <div className="grid grid-cols-2 mt-6 text-start gap-x-1 text-primary">
+                      <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("name")}:
                       </p>
-                      <p className="rtl:text-xl-rtl text-primary/85 truncate">
+                      <p className="rtl:text-xl-rtl text-primary/85 text-wrap break-words">
                         {tech.name}
                       </p>
-                      <p className="ltr:font-semibold font-bold rtl:text-[17px]">
+                      <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("contact")}:
                       </p>
-                      <p className="text-[14px] text-end" dir="ltr">
+                      <p className="text-[14px] text-wrap break-words">
                         {tech.contact}
                       </p>
-                      <p className="ltr:font-semibold font-bold rtl:text-[17px]">
+                      <p className="ltr:font-semibold font-bold rtl:text-xl-rtl">
                         {t("email")}:
                       </p>
-                      <p className="text-[14px] truncate" dir="ltr">
+                      <p className="text-[14px] text-wrap break-words">
                         {tech.email}
                       </p>
                     </div>

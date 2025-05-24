@@ -127,9 +127,9 @@ export default function AddNgo(props: AddNgoProps) {
               { name: "type", rules: ["required"] },
               { name: "province", rules: ["required"] },
               { name: "district", rules: ["required"] },
-              { name: "area_english", rules: ["required"] },
-              { name: "area_pashto", rules: ["required"] },
-              { name: "area_farsi", rules: ["required"] },
+              { name: "area_english", rules: ["required", "max:200", "min:3"] },
+              { name: "area_pashto", rules: ["required", "max:200", "min:3"] },
+              { name: "area_farsi", rules: ["required", "max:200", "min:3"] },
             ],
           },
           {

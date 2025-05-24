@@ -24,7 +24,7 @@ export default function SiteNavbar() {
         <div className="flex justify-start px-8 items-center gap-x-3 w-full rtl:text-md-rtl ltr:text-lg-ltr">
           <Link
             to="/login"
-            className="bg-card border border-tertiary hover:bg-tertiary duration-300 transition-all hover:text-primary-foreground rounded-full py-1 px-4 font-semibold"
+            className="bg-card border border-tertiary hover:bg-tertiary duration-300 transition-all hover:text-primary-foreground rounded-full py-1 rtl:pb-[3px] px-4 font-semibold"
           >
             {t("login")}
           </Link>

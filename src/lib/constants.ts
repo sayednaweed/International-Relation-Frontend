@@ -128,7 +128,7 @@ export const StaffEnum = {
   technical_support: 3,
 };
 export const CountryEnum = {
-  afghanistan: 1,
+  afghanistan: 2,
 };
 export const PriorityEnum = {
   high: 1,

@@ -41,12 +41,10 @@ export default function UploadRegisterFormDailog(
   const [error, setError] = useState(new Map<string, string>());
   const [userData, setUserData] = useState<{
     start_date: DateObject;
-    end_date: DateObject;
     request_comment: string;
     checklistMap: Map<string, any>;
   }>({
     start_date: new DateObject(),
-    end_date: new DateObject(),
     checklistMap: new Map(),
     request_comment: "",
   });
@@ -76,7 +74,6 @@ export default function UploadRegisterFormDailog(
       const content = {
         checklistMap: Array.from(userData.checklistMap),
         start_date: userData.start_date?.toDate()?.toISOString(),
-        end_date: userData.end_date?.toDate()?.toISOString(),
         request_comment: userData.request_comment,
       };
 
@@ -87,10 +84,6 @@ export default function UploadRegisterFormDailog(
         [
           {
             name: "start_date",
-            rules: ["required"],
-          },
-          {
-            name: "end_date",
             rules: ["required"],
           },
         ],
@@ -216,19 +209,6 @@ export default function UploadRegisterFormDailog(
               className="py-3 w-full mt-16"
               parentClassName="md:w-1/2 xl:w-1/3"
               errorMessage={error.get("start_date")}
-            />
-            <CustomDatePicker
-              placeholder={t("select_a_date")}
-              lable={t("end_date")}
-              requiredHint={`* ${t("required")}`}
-              required={true}
-              value={userData.end_date}
-              dateOnComplete={(date: DateObject) => {
-                setUserData({ ...userData, end_date: date });
-              }}
-              parentClassName="md:w-1/2 xl:w-1/3"
-              className="py-3 w-full"
-              errorMessage={error.get("end_date")}
             />
             <CustomTextarea
               lable={t("request_comment")}
