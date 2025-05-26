@@ -14,7 +14,7 @@ export default function StatusButton(props: StatusButtonProps) {
       ? "border-green-500"
       : StatusEnum.blocked === status_id
       ? "border-red-500"
-      : StatusEnum.register_form_not_completed === status_id
+      : StatusEnum.registration_incomplete === status_id
       ? "border-slate-400"
       : "border-orange-500";
 

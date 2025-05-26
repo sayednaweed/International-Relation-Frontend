@@ -113,15 +113,30 @@ export const PermissionEnum = {
   },
 };
 export const StatusEnum = {
-  register_form_not_completed: 1,
-  register_form_completed: 2,
-  signed_register_form_submitted: 3,
-  registered: 4,
-  blocked: 5,
-  registration_expired: 6,
-  registration_extended: 7,
-};
+  active: 1,
+  blocked: 2,
+  document_upload_required: 3,
+  pending_approval: 4,
+  rejected: 5,
+  expired: 6,
+  extended: 7,
+  approved: 8,
+  registered: 19,
 
+  // NGO
+  registration_incomplete: 10,
+
+  // Project
+  waiting_for_project_schedule: 11,
+  project_has_comment: 12,
+};
+export const StatusTypeEnum = {
+  ngo: 1,
+  agreement: 2,
+  donor: 3,
+  project: 4,
+  general: 5,
+};
 export const StaffEnum = {
   manager: 1,
   director: 2,

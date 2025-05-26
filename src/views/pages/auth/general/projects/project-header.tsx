@@ -49,7 +49,7 @@ export default function ProjectHeader() {
     <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 justify-items-center gap-y-2 mt-4">
       <HeaderCard
         loading={loading}
-        title={t("total")}
+        title={t("projects")}
         total={recordCount.userCount}
         description1={t("total")}
         description2={t("project")}
@@ -59,30 +59,30 @@ export default function ProjectHeader() {
       />
       <HeaderCard
         loading={loading}
-        title={t("total_registered_today")}
+        title={t("budget")}
         total={recordCount.todayCount}
         description1={t("total")}
-        description2={t("project")}
+        description2={t("budget")}
         icon={
           <UserRoundPlus className=" size-[22px] bg-orange-500 rounded-sm p-1 text-secondary" />
         }
       />
       <HeaderCard
         loading={loading}
-        title={t("active")}
+        title={t("direct_benefi")}
         total={recordCount.activeUserCount}
         description1={t("total")}
-        description2={t("project")}
+        description2={t("beneficiary")}
         icon={
           <UserRoundX className=" size-[22px] bg-red-500 rounded-sm p-1 text-secondary" />
         }
       />
       <HeaderCard
         loading={loading}
-        title={t("un_registered")}
+        title={t("in_direct_benefi")}
         total={recordCount.inActiveUserCount}
         description1={t("total")}
-        description2={t("project")}
+        description2={t("beneficiary")}
         icon={
           <UserRoundPen className=" size-[22px] bg-green-500 rounded-sm p-1 text-secondary" />
         }

@@ -355,5 +355,22 @@
   "deleted": "حذف شده",
   "viewed": "مشاهده شده",
   "all": "همه",
-  "table": "تیبل"
+  "table": "تیبل",
+  "register_project": "ثبت پروژه",
+  "project_name": "نام پروژه",
+  "budget": "بودجه",
+  "direct_benefi": "مستفدین مستقیم",
+  "in_direct_benefi": "مستفیدین غیرمستقیم",
+  "preamble": "مقدمه",
+  "preamble_farsi": "مقدمه فارسی",
+  "preamble_english": "مقدمه انگلیسی",
+  "preamble_pashto": "مقدمه پشتو",
+  "termin": "اصطلاحات",
+  "termin_farsi": "اصطلاحات فارسی",
+  "termin_pashto": "اصطلاحات پشتو",
+  "termin_english": "اصطلاحات انگلیسی",
+  "prev_proj_activi": "فعالیت‌های قبلی در این پروژه",
+  "prev_proj_activi_farsi": "فعالیت‌های قبلی در این پروژه به زبان فارسی",
+  "prev_proj_activi_pashto": "فعالیت‌های قبلی در این پروژه به زبان پشتو",
+  "prev_proj_activi_english": "فعالیت‌های قبلی در این پروژه به زبان انگلیسی"
 }

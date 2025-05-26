@@ -32,11 +32,11 @@ import {
   NgoSort,
   Order,
 } from "@/lib/types";
-import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import StatusButton from "@/components/custom-ui/button/StatusButton";
+import AddProject from "./add/add-project";
 
 export function ProjectTable() {
   const { user } = useGeneralAuthState();
@@ -250,7 +250,7 @@ export function ProjectTable() {
 
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    if (ngo.status_id == StatusEnum.register_form_not_completed) {
+    if (ngo.status_id == StatusEnum.registration_incomplete) {
       navigate(`/ngo/profile/edit/${ngoId}`);
     } else {
       navigate(`/ngo/${ngoId}`);
@@ -265,12 +265,12 @@ export function ProjectTable() {
             isDismissable={false}
             button={
               <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("add")}
+                {t("register_project")}
               </PrimaryButton>
             }
             showDialog={async () => true}
           >
-            <AddNgo onComplete={addItem} />
+            <AddProject onComplete={addItem} />
           </NastranModel>
         )}
 
@@ -451,13 +451,12 @@ export function ProjectTable() {
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
         <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr">
           <TableRow className="hover:bg-transparent">
-            <TableHead className="text-center w-[60px]">{t("pic")}</TableHead>
-            <TableHead className="text-start">{t("registration_no")}</TableHead>
-            <TableHead className="text-start">{t("name")}</TableHead>
-            <TableHead className="text-start">{t("type")}</TableHead>
-            <TableHead className="text-start w-[60px]">{t("status")}</TableHead>
-            <TableHead className="text-start">{t("contact")}</TableHead>
-            <TableHead className="text-start">{t("email")}</TableHead>
+            <TableHead className="text-start">{t("project_name")}</TableHead>
+            <TableHead className="text-start">{t("donor")}</TableHead>
+            <TableHead className="text-start">{t("budget")}</TableHead>
+            <TableHead className="text-start">{t("start_date")}</TableHead>
+            <TableHead className="text-start">{t("end_date")}</TableHead>
+            <TableHead className="text-start">{t("status")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">

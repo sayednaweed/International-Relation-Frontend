@@ -1,6 +1,5 @@
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
-import CustomInput from "@/components/custom-ui/input/CustomInput";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
@@ -8,7 +7,7 @@ import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function AddNgoInformation() {
+export default function AddProjectDetails() {
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
   const handleChange = (e: any) => {
@@ -22,7 +21,7 @@ export default function AddNgoInformation() {
   return (
     <div className="flex flex-col mt-10 w-full lg:w-[60%] gap-y-6 pb-12">
       <BorderContainer
-        title={t("name")}
+        title={t("project_name")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -55,20 +54,112 @@ export default function AddNgoInformation() {
           <SingleTab>pashto</SingleTab>
         </MultiTabInput>
       </BorderContainer>
-
-      <CustomInput
+      <BorderContainer
+        title={t("preamble")}
         required={true}
-        requiredHint={`* ${t("required")}`}
-        size_="sm"
-        lable={t("abbr")}
-        name="abbr"
-        defaultValue={userData["abbr"]}
-        placeholder={t("abbr_english")}
-        type="text"
-        className="uppercase"
-        errorMessage={error.get("abbr")}
-        onBlur={handleChange}
-      />
+        parentClassName="p-t-4 pb-0 px-0"
+        className="grid grid-cols-1 gap-y-3"
+      >
+        <MultiTabTextarea
+          optionalKey={"optional_lang"}
+          onTabChanged={(key: string, tabName: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [key]: tabName,
+              optional_lang: tabName,
+            }));
+          }}
+          onChanged={(value: string, name: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [name]: value,
+            }));
+          }}
+          name="preamble"
+          rows={8}
+          highlightColor="bg-tertiary"
+          userData={userData}
+          errorData={error}
+          placeholder={t("content")}
+          className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+          tabsClassName="gap-x-5 px-3"
+        >
+          <SingleTab>english</SingleTab>
+          <SingleTab>farsi</SingleTab>
+          <SingleTab>pashto</SingleTab>
+        </MultiTabTextarea>
+      </BorderContainer>
+      <BorderContainer
+        title={t("termin")}
+        required={true}
+        parentClassName="p-t-4 pb-0 px-0"
+        className="grid grid-cols-1 gap-y-3"
+      >
+        <MultiTabTextarea
+          optionalKey={"optional_lang"}
+          onTabChanged={(key: string, tabName: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [key]: tabName,
+              optional_lang: tabName,
+            }));
+          }}
+          onChanged={(value: string, name: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [name]: value,
+            }));
+          }}
+          name="termin"
+          rows={8}
+          highlightColor="bg-tertiary"
+          userData={userData}
+          errorData={error}
+          placeholder={t("content")}
+          className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+          tabsClassName="gap-x-5 px-3"
+        >
+          <SingleTab>english</SingleTab>
+          <SingleTab>farsi</SingleTab>
+          <SingleTab>pashto</SingleTab>
+        </MultiTabTextarea>
+      </BorderContainer>
+
+      <BorderContainer
+        title={t("prev_proj_activi")}
+        required={true}
+        parentClassName="p-t-4 pb-0 px-0"
+        className="grid grid-cols-1 gap-y-3"
+      >
+        <MultiTabTextarea
+          optionalKey={"optional_lang"}
+          onTabChanged={(key: string, tabName: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [key]: tabName,
+              optional_lang: tabName,
+            }));
+          }}
+          onChanged={(value: string, name: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [name]: value,
+            }));
+          }}
+          name="prev_proj_activi"
+          rows={8}
+          highlightColor="bg-tertiary"
+          userData={userData}
+          errorData={error}
+          placeholder={t("content")}
+          className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+          tabsClassName="gap-x-5 px-3"
+        >
+          <SingleTab>english</SingleTab>
+          <SingleTab>farsi</SingleTab>
+          <SingleTab>pashto</SingleTab>
+        </MultiTabTextarea>
+      </BorderContainer>
       <APICombobox
         placeholderText={t("search_item")}
         errorText={t("no_item")}

@@ -7,17 +7,25 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction } from "react";
 import { setServerError } from "@/validation/validation";
-import { Check, Database, User as UserIcon, UserRound } from "lucide-react";
-import AddNgoInformation from "./steps/AddNgorInformation";
+import {
+  Building2,
+  Check,
+  Coins,
+  NotebookPen,
+  User as UserIcon,
+  UserRound,
+} from "lucide-react";
 import AddNgoAccount from "./steps/AddNgoAccount";
 import { NgoInformation } from "@/lib/types";
 import AddNgoRepresentative from "./steps/AddNgoRepresentative";
 import { checkStrength, passwordStrengthScore } from "@/validation/utils";
+import CheckListTab from "./steps/checklist-tab";
+import AddProjectDetails from "./steps/add-project-details";
 
-export interface AddNgoProps {
+export interface AddProjectProps {
   onComplete: (ngo: NgoInformation) => void;
 }
-export default function AddNgo(props: AddNgoProps) {
+export default function AddProject(props: AddProjectProps) {
   const { onComplete } = props;
   const { t } = useTranslation();
   const { modelOnRequestHide } = useModelOnRequestHide();
@@ -100,16 +108,20 @@ export default function AddNgo(props: AddNgoProps) {
         confirmText={t("confirm")}
         steps={[
           {
-            description: t("personal_details"),
+            description: t("detail"),
             icon: <UserIcon className="size-[16px]" />,
           },
           {
-            description: t("representative"),
-            icon: <UserRound className="size-[16px]" />,
+            description: t("center_budget"),
+            icon: <Coins className="size-[16px]" />,
           },
           {
-            description: t("account_information"),
-            icon: <Database className="size-[16px]" />,
+            description: t("organ_structure"),
+            icon: <Building2 className="size-[16px]" />,
+          },
+          {
+            description: t("checklist"),
+            icon: <NotebookPen className="size-[16px]" />,
           },
           {
             description: t("complete"),
@@ -118,7 +130,7 @@ export default function AddNgo(props: AddNgoProps) {
         ]}
         components={[
           {
-            component: <AddNgoInformation />,
+            component: <AddProjectDetails />,
             validationRules: [
               { name: "name_english", rules: ["required", "max:128", "min:3"] },
               { name: "name_farsi", rules: ["required", "max:128", "min:3"] },
@@ -155,6 +167,34 @@ export default function AddNgo(props: AddNgoProps) {
           },
           {
             component: <AddNgoAccount />,
+            validationRules: [
+              { name: "username", rules: ["required", "max:128", "min:2"] },
+              { name: "contact", rules: ["required"] },
+              { name: "email", rules: ["required"] },
+              {
+                name: "password",
+                rules: [
+                  (value: any) => {
+                    const strength = checkStrength(value, t);
+                    const score = passwordStrengthScore(strength);
+                    if (score === 4) return true;
+                    return false;
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            component: (
+              <CheckListTab
+                onSaveClose={async (
+                  userData: any,
+                  currentStep: number,
+                  onlySave: boolean
+                ) => {}}
+                type="register"
+              />
+            ),
             validationRules: [
               { name: "username", rules: ["required", "max:128", "min:2"] },
               { name: "contact", rules: ["required"] },
