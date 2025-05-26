@@ -38,6 +38,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 import { EditNgoPassword } from "./steps/edit-ngo-password";
+import EditAgreementStatusTab from "./steps/edit-agreement-status-tab";
 
 export interface INgoInformation {
   ngoInformation: NgoInformation;
@@ -153,18 +154,25 @@ export default function UserNgoEditPage() {
             <UsersRound className="size-[18px]" />
             {t("representative")}
           </TabsTrigger>
-        ) : (
-          key == PermissionEnum.ngo.sub.ngo_update_account_password && (
-            <TabsTrigger
-              className={`${selectedTabStyle}`}
-              key={index}
-              value={key.toString()}
-            >
-              <KeyRound className="size-[18px]" />
-              {t("update_account_password")}
-            </TabsTrigger>
-          )
-        );
+        ) : key == PermissionEnum.ngo.sub.ngo_update_account_password ? (
+          <TabsTrigger
+            className={`${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <KeyRound className="size-[18px]" />
+            {t("update_account_password")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.ngo.sub.ngo_agreement_status ? (
+          <TabsTrigger
+            className={`${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <KeyRound className="size-[18px]" />
+            {t("agreement_status")}
+          </TabsTrigger>
+        ) : undefined;
       }),
     []
   );
@@ -358,6 +366,15 @@ export default function UserNgoEditPage() {
               value={PermissionEnum.ngo.sub.ngo_update_account_password.toString()}
             >
               <EditNgoPassword id={id} permissions={per} failed={failed} />
+            </TabsContent>
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.ngo.sub.ngo_update_account_password.toString()}
+            >
+              <EditAgreementStatusTab
+                permissions={per}
+                registerationExpired={registerationExpired}
+              />
             </TabsContent>
           </>
         )}

@@ -34,7 +34,7 @@ export default function NgoFormSubmit() {
       const response = await axiosClient.get(`ngo/status/${id}`);
       if (response.status == 200) {
         const data = response.data;
-        if (data.status_type_id == StatusEnum.register_form_not_completed) {
+        if (data.status_id == StatusEnum.registration_incomplete) {
           setAllowed(true);
         } else {
           navigate("/unauthorized", { replace: true });

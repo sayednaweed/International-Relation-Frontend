@@ -62,8 +62,8 @@ export default function UserNgoEditPage() {
         const ngo = response.data.ngo as NgoInformation;
         // Do not allow until register form is submitted
         const registerFormSubmitted =
-          ngo.status_id == StatusEnum.register_form_completed;
-        if (ngo.status_id == StatusEnum.register_form_not_completed) {
+          ngo.status_id == StatusEnum.document_upload_required;
+        if (ngo.status_id == StatusEnum.pending_approval) {
           navigate(`/ngo/profile/edit/${id}`, {
             state: {
               data: { edit: true },
@@ -206,7 +206,7 @@ export default function UserNgoEditPage() {
   };
 
   const registerationExpired: boolean =
-    userData?.ngoInformation.status_id == StatusEnum.registration_expired;
+    userData?.ngoInformation.status_id == StatusEnum.expired;
   return (
     <div className="flex flex-col gap-y-2 px-3 mt-2 pb-12">
       <Breadcrumb>
@@ -256,7 +256,7 @@ export default function UserNgoEditPage() {
                 </IconButton>
               )}
               {userData.ngoInformation.status_id ==
-                StatusEnum.register_form_completed && (
+                StatusEnum.document_upload_required && (
                 <>
                   <NastranModel
                     size="lg"
@@ -278,8 +278,7 @@ export default function UserNgoEditPage() {
                     <UploadRegisterFormDailog
                       onComplete={() => {
                         const ngoInformation = userData.ngoInformation;
-                        ngoInformation.status_id =
-                          StatusEnum.signed_register_form_submitted;
+                        ngoInformation.status_id = StatusEnum.pending_approval;
                         setUserData({
                           ...userData,
                           ngoInformation: ngoInformation,

@@ -57,9 +57,9 @@ export default function NgoInformationTab(props: NgoInformationTabProps) {
             ...content,
             allowed: true,
             shouldContinue: false,
-            establishment_date: new DateObject(
-              new Date(content.establishment_date)
-            ),
+            establishment_date:
+              content.establishment_date &&
+              new DateObject(new Date(content.establishment_date)),
             // If checklistMap exist means it is array
             checklistMap: content.checklistMap
               ? new Map(content.checklistMap)

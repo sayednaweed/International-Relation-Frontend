@@ -45,7 +45,7 @@ export default function NgoFormExtend() {
       const response = await axiosClient.get(`ngo/status/${id}`);
       if (response.status == 200) {
         const data = response.data;
-        if (data.status_type_id == StatusEnum.registration_expired) {
+        if (data.status_type_id == StatusEnum.expired) {
           setAllowed(true);
         } else {
           navigate("/unauthorized", { replace: true });

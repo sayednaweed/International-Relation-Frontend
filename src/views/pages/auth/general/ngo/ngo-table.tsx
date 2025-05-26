@@ -250,7 +250,7 @@ export function NgoTable() {
 
   const watchOnClick = async (ngo: NgoInformation) => {
     const ngoId = ngo.id;
-    if (ngo.status_id == StatusEnum.register_form_not_completed) {
+    if (ngo.status_id == StatusEnum.registration_incomplete) {
       navigate(`/ngo/profile/edit/${ngoId}`);
     } else {
       navigate(`/ngo/${ngoId}`);
