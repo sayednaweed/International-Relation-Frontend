@@ -132,6 +132,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
             errorMessage={error.get("status")}
             apiUrl={"statuses/ngo/modify"}
             mode="single"
+            cacheData={false}
           />
 
           <CustomTextarea

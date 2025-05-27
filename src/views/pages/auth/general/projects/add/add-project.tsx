@@ -13,7 +13,6 @@ import {
   Coins,
   NotebookPen,
   User as UserIcon,
-  UserRound,
 } from "lucide-react";
 import AddNgoAccount from "./steps/AddNgoAccount";
 import { NgoInformation } from "@/lib/types";

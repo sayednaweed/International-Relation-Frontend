@@ -103,7 +103,7 @@ export default function NgoProfilePage() {
             <KeyRound className="size-[18px]" />
             {t("update_account_password")}
           </TabsTrigger>
-          {user.status_type_id == StatusEnum.registration_incomplete ? (
+          {user.status_id == StatusEnum.registration_incomplete ? (
             <IconButton
               onClick={() =>
                 navigate(`/ngo/profile/edit/${user.id}`, { replace: true })

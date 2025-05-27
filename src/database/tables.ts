@@ -201,7 +201,8 @@ export type Ngo = {
   profile: string | undefined;
   name: string;
   username: string;
-  status_type_id: number;
+  status_id: number;
+  agreement_id: number;
   email: Email;
   contact: Contact;
   is_editable: boolean;

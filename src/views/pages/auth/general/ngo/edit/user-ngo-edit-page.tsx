@@ -371,10 +371,7 @@ export default function UserNgoEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.ngo.sub.ngo_agreement_status.toString()}
             >
-              <EditAgreementStatusTab
-                permissions={per}
-                registerationExpired={registerationExpired}
-              />
+              <EditAgreementStatusTab />
             </TabsContent>
           </>
         )}
