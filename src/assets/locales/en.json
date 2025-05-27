@@ -375,5 +375,7 @@
   "prev_proj_activi": "Previous activity in this project",
   "prev_proj_activi_farsi": "Previous activity in this project farsi",
   "prev_proj_activi_pashto": "Previous activity in this project pashto",
-  "prev_proj_activi_english": "Previous activity in this project english"
+  "prev_proj_activi_english": "Previous activity in this project english",
+  "agreement_status": "Agreement status",
+  "change_status": "Change status"
 }

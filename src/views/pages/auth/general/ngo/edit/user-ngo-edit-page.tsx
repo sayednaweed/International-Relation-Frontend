@@ -369,7 +369,7 @@ export default function UserNgoEditPage() {
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_update_account_password.toString()}
+              value={PermissionEnum.ngo.sub.ngo_agreement_status.toString()}
             >
               <EditAgreementStatusTab
                 permissions={per}

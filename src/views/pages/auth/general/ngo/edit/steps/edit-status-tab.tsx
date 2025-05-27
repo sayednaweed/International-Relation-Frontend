@@ -47,7 +47,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
       if (loading) return;
       setLoading(true);
       // 2. Send data
-      const response = await axiosClient.get(`ngo/statuses/${id}`);
+      const response = await axiosClient.get(`statuses/ngo/${id}`);
       if (response.status === 200) {
         const fetch = response.data.statuses as NgoStatus[];
         setNgoStatuses(fetch);
@@ -100,7 +100,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                 className="py-8"
                 button={
                   <PrimaryButton className="text-primary-foreground">
-                    {t("edit")}
+                    {t("change_status")}
                   </PrimaryButton>
                 }
                 showDialog={async () => true}

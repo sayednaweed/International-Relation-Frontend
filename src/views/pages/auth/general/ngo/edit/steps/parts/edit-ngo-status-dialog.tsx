@@ -66,10 +66,9 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
       let formData = new FormData();
       if (id) formData.append("ngo_id", id.toString());
       formData.append("comment", userData.comment);
-      if (userData?.status)
-        formData.append("status_type_id", userData.status.id);
+      if (userData?.status) formData.append("status_id", userData.status.id);
 
-      const response = await axiosClient.post("ngo/change-status", formData);
+      const response = await axiosClient.post("statuses/ngo/modify", formData);
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",
@@ -131,7 +130,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
             selectedItem={userData?.status?.name}
             placeHolder={t("select_a")}
             errorMessage={error.get("status")}
-            apiUrl={"block/statuse/types"}
+            apiUrl={"statuses/ngo/modify"}
             mode="single"
           />
 
