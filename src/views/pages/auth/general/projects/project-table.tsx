@@ -35,8 +35,7 @@ import {
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
-import AddProject from "./add/add-project";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 
 export function ProjectTable() {
   const { user } = useGeneralAuthState();
@@ -174,18 +173,6 @@ export function ProjectTable() {
   });
   const [loading, setLoading] = useState(false);
   const { t } = useTranslation();
-  const addItem = (ngo: NgoInformation) => {
-    setNgos((prevState) => ({
-      filterList: {
-        ...prevState.filterList,
-        data: [ngo, ...prevState.filterList.data],
-      },
-      unFilterList: {
-        ...prevState.unFilterList,
-        data: [ngo, ...prevState.unFilterList.data],
-      },
-    }));
-  };
 
   const deleteOnClick = async (ngo: NgoInformation) => {
     try {
@@ -260,18 +247,12 @@ export function ProjectTable() {
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
         {hasAdd && (
-          <NastranModel
-            size="lg"
-            isDismissable={false}
-            button={
-              <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("register_project")}
-              </PrimaryButton>
-            }
-            showDialog={async () => true}
+          <PrimaryButton
+            onClick={() => navigate(`/projects/${user.id}`)}
+            className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr"
           >
-            <AddProject onComplete={addItem} />
-          </NastranModel>
+            {t("register_project")}
+          </PrimaryButton>
         )}
 
         <CustomInput
@@ -490,9 +471,31 @@ export function ProjectTable() {
                 <TableCell className="truncate">{item.name}</TableCell>
                 <TableCell className="truncate">{item.type}</TableCell>
                 <TableCell>
-                  <StatusButton
-                    status={item.status}
-                    status_id={item.status_id}
+                  <BooleanStatusButton
+                    getColor={function (): {
+                      style: string;
+                      value?: string;
+                    } {
+                      return StatusEnum.registered === item.status_id
+                        ? {
+                            style: "border-green-500/90",
+                            value: item.status,
+                          }
+                        : StatusEnum.blocked == item.status_id
+                        ? {
+                            style: "border-red-500",
+                            value: item.status,
+                          }
+                        : StatusEnum.registration_incomplete == item.status_id
+                        ? {
+                            style: "border-blue-500/90",
+                            value: item.status,
+                          }
+                        : {
+                            style: "border-orange-500",
+                            value: item.status,
+                          };
+                    }}
                   />
                 </TableCell>
                 <TableCell

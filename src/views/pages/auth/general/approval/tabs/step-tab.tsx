@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { Approval } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
-import { CACHE } from "@/lib/constants";
+import { CACHE, StatusEnum } from "@/lib/constants";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { ApprovalPaginationData, ApprovalSearch } from "@/lib/types";
 import { toLocaleDate } from "@/lib/utils";
@@ -25,7 +25,7 @@ import { ListFilter, Repeat2, Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ViewApprovalDailog from "./view-approval-Dailog";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 export interface ApprovedStepTabProps {
   url: string;
 }
@@ -281,9 +281,32 @@ export default function StepTab(props: ApprovedStepTabProps) {
                   {toLocaleDate(new Date(approval.request_date), state)}
                 </TableCell>
                 <TableCell className=" text-nowrap">
-                  <StatusButton
-                    status_id={approval.notifier_type_id}
-                    status={approval.notifier_type}
+                  <BooleanStatusButton
+                    getColor={function (): {
+                      style: string;
+                      value?: string;
+                    } {
+                      return StatusEnum.registered === approval.notifier_type_id
+                        ? {
+                            style: "border-green-500/90",
+                            value: approval.notifier_type,
+                          }
+                        : StatusEnum.blocked == approval.notifier_type_id
+                        ? {
+                            style: "border-red-500",
+                            value: approval.notifier_type,
+                          }
+                        : StatusEnum.registration_incomplete ==
+                          approval.notifier_type_id
+                        ? {
+                            style: "border-blue-500/90",
+                            value: approval.notifier_type,
+                          }
+                        : {
+                            style: "border-orange-500",
+                            value: approval.notifier_type,
+                          };
+                    }}
                   />
                 </TableCell>
                 <TableCell>{approval.document_count}</TableCell>

@@ -147,7 +147,7 @@ export type Audit = {
 export type NgoStatus = {
   id: string;
   ngo_id: string;
-  status_type_id: string;
+  status_type_id: number;
   is_active: number;
   name: string;
   userable_type: string;

@@ -36,7 +36,7 @@ import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 
 export function NgoTable() {
   const { user } = useUserAuthState();
@@ -265,7 +265,7 @@ export function NgoTable() {
             isDismissable={false}
             button={
               <PrimaryButton className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr">
-                {t("add")}
+                {t("register_ngo")}
               </PrimaryButton>
             }
             showDialog={async () => true}
@@ -491,9 +491,31 @@ export function NgoTable() {
                 <TableCell className="truncate">{item.name}</TableCell>
                 <TableCell className="truncate">{item.type}</TableCell>
                 <TableCell>
-                  <StatusButton
-                    status={item.status}
-                    status_id={item.status_id}
+                  <BooleanStatusButton
+                    getColor={function (): {
+                      style: string;
+                      value?: string;
+                    } {
+                      return StatusEnum.registered === item.status_id
+                        ? {
+                            style: "border-green-500/90",
+                            value: item.status,
+                          }
+                        : StatusEnum.blocked == item.status_id
+                        ? {
+                            style: "border-red-500",
+                            value: item.status,
+                          }
+                        : StatusEnum.registration_incomplete == item.status_id
+                        ? {
+                            style: "border-blue-500/90",
+                            value: item.status,
+                          }
+                        : {
+                            style: "border-orange-500",
+                            value: item.status,
+                          };
+                    }}
                   />
                 </TableCell>
                 <TableCell

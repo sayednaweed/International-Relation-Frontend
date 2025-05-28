@@ -249,6 +249,7 @@ export type PublicNgo = {
   name: string;
   type: string;
   status: string;
+  status_id: number;
   abbr: string;
   establishment_date: string;
   director: string;

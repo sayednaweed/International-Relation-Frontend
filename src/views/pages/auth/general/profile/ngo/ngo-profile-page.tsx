@@ -31,8 +31,10 @@ interface EditNgoInformation {
   email: string;
   province: Province;
   district: District;
-  status_type_id: number;
-  status_type: string;
+  agreement_status_id: number;
+  agreement_status: string;
+  status_id: number;
+  status: string;
   optional_lang: string;
 }
 export default function NgoProfilePage() {
@@ -48,7 +50,7 @@ export default function NgoProfilePage() {
 
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`ngo/profile/info/${user.id}`);
+      const response = await axiosClient.get(`ngos/profile/${user.id}`);
       if (response.status == 200) {
         const ngo = response.data.ngo;
         if (ngo) setNgoData(ngo);
@@ -86,8 +88,8 @@ export default function NgoProfilePage() {
       >
         <TabsList className="sm:min-h-[550px] h-fit pb-8 xxl:min-w-[300px] md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
           <NgoProfileHeader
-            status_type_id={ngoData?.status_type_id}
-            status_type={ngoData?.status_type}
+            agreement_status_id={ngoData?.agreement_status_id}
+            agreement_status={ngoData?.agreement_status}
           />
           <TabsTrigger
             className={`mt-6 rtl:text-2xl-rtl ltr:text-2xl-ltr  ${selectedTabStyle}`}

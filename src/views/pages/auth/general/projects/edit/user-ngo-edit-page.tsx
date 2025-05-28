@@ -276,14 +276,12 @@ export default function UserNgoEditPage() {
                     showDialog={async () => true}
                   >
                     <UploadRegisterFormDailog
-                      onComplete={() => {
-                        const ngoInformation = userData.ngoInformation;
-                        ngoInformation.status_id = StatusEnum.pending_approval;
-                        setUserData({
-                          ...userData,
-                          ngoInformation: ngoInformation,
-                        });
-                      }}
+                      onComplete={() =>
+                        setUserData((prev: any) => ({
+                          ...prev,
+                          status_id: StatusEnum.pending_approval,
+                        }))
+                      }
                     />
                   </NastranModel>
                   <IconButton

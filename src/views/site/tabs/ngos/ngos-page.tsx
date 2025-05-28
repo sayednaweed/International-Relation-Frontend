@@ -17,7 +17,7 @@ import {
   Order,
   PublicNgo,
 } from "@/lib/types";
-import { CACHE } from "@/lib/constants";
+import { CACHE, StatusEnum } from "@/lib/constants";
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate, useSearchParams } from "react-router";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
@@ -28,7 +28,6 @@ import { ListFilter, Search } from "lucide-react";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import {
   Breadcrumb,
@@ -36,6 +35,7 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 
 function NgosPage() {
   const navigate = useNavigate();
@@ -67,7 +67,7 @@ function NgosPage() {
       setLoading(true);
       // 1. Organize date
       // 2. Send data
-      const response = await axiosClient.get(`public/ngos`, {
+      const response = await axiosClient.get(`ngos/public`, {
         params: {
           page: page,
           per_page: count,
@@ -339,7 +339,32 @@ function NgosPage() {
                   {ngo.type}
                 </TableCell>
                 <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
-                  <StatusButton status_id={0} status={ngo.status} />
+                  <BooleanStatusButton
+                    getColor={function (): {
+                      style: string;
+                      value?: string;
+                    } {
+                      return StatusEnum.registered === ngo.status_id
+                        ? {
+                            style: "border-green-500/90",
+                            value: ngo.status,
+                          }
+                        : StatusEnum.blocked == ngo.status_id
+                        ? {
+                            style: "border-red-500",
+                            value: ngo.status,
+                          }
+                        : StatusEnum.registration_incomplete == ngo.status_id
+                        ? {
+                            style: "border-blue-500/90",
+                            value: ngo.status,
+                          }
+                        : {
+                            style: "border-orange-500",
+                            value: ngo.status,
+                          };
+                    }}
+                  />
                 </TableCell>
                 <TableCell className="p-3 border-b rtl:text-right ltr:text-left">
                   {ngo.abbr}

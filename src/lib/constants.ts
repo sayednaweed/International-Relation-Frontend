@@ -27,6 +27,7 @@ export const RoleEnum = {
 };
 export const TaskTypeEnum = {
   ngo_registeration: 1,
+  project_registeration: 2,
   ngo_agreement_extend: 3,
 };
 export const ChecklistEnum = {
@@ -122,7 +123,7 @@ export const StatusEnum = {
   expired: 6,
   extended: 7,
   approved: 8,
-  registered: 19,
+  registered: 9,
 
   // NGO
   registration_incomplete: 10,

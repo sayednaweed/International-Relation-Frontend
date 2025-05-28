@@ -211,9 +211,20 @@ export default function EditDirectorTab(props: EditDirectorTabProps) {
                       <TableCell>{director.name}</TableCell>
                       <TableCell>
                         <BooleanStatusButton
-                          id={director.is_active}
-                          value1={t("currently")}
-                          value2={t("formerly")}
+                          getColor={function (): {
+                            style: string;
+                            value?: string;
+                          } {
+                            return director.is_active === 1
+                              ? {
+                                  style: "border-green-500/90",
+                                  value: t("currently"),
+                                }
+                              : {
+                                  style: "border-red-500",
+                                  value: t("formerly"),
+                                };
+                          }}
                         />
                       </TableCell>
                       <TableCell className="text-[15px]">

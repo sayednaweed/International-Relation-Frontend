@@ -7,8 +7,9 @@ import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { INgoInformation } from "./user-ngo-edit-page";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
 import { validateFile } from "@/lib/utils";
+import { StatusEnum } from "@/lib/constants";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 
 export interface UserEditHeaderProps {
   id: string | undefined;
@@ -178,10 +179,32 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
         </div>
       )}
 
-      <StatusButton
-        status={userData?.ngoInformation.status}
-        status_id={userData?.ngoInformation.status_id}
-        className="mx-auto rounded-lg shadow-lg mb-1"
+      <BooleanStatusButton
+        getColor={function (): {
+          style: string;
+          value?: string;
+        } {
+          return StatusEnum.registered === userData?.ngoInformation.status_id
+            ? {
+                style: "border-green-500/90",
+                value: userData?.ngoInformation.status,
+              }
+            : StatusEnum.blocked == userData?.ngoInformation.status_id
+            ? {
+                style: "border-red-500",
+                value: userData?.ngoInformation.status,
+              }
+            : StatusEnum.registration_incomplete ==
+              userData?.ngoInformation.status_id
+            ? {
+                style: "border-blue-500/90",
+                value: userData?.ngoInformation.status,
+              }
+            : {
+                style: "border-orange-500",
+                value: userData?.ngoInformation.status,
+              };
+        }}
       />
 
       <h1 className="text-primary uppercase font-semibold line-clamp-2 text-wrap rtl:text-2xl-rtl ltr:text-4xl-ltr max-w-64 truncate">

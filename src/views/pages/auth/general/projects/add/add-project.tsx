@@ -1,72 +1,64 @@
 import { useTranslation } from "react-i18next";
-import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useModelOnRequestHide";
-import CloseButton from "@/components/custom-ui/button/CloseButton";
 import Stepper from "@/components/custom-ui/stepper/Stepper";
-import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Building2, Check, Coins, NotebookPen, UserIcon } from "lucide-react";
+import { useNavigate, useParams } from "react-router";
+import { isString } from "@/lib/utils";
+import { ServerError } from "@/components/custom-ui/errors/ServerError";
+import { StatusEnum, TaskTypeEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import {
-  Building2,
-  Check,
-  Coins,
-  NotebookPen,
-  User as UserIcon,
-} from "lucide-react";
-import AddNgoAccount from "./steps/AddNgoAccount";
-import { NgoInformation } from "@/lib/types";
-import AddNgoRepresentative from "./steps/AddNgoRepresentative";
-import { checkStrength, passwordStrengthScore } from "@/validation/utils";
-import CheckListTab from "./steps/checklist-tab";
+  Breadcrumb,
+  BreadcrumbHome,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
+import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 import AddProjectDetails from "./steps/add-project-details";
+import AddCenterBudget from "./steps/add-center-budget";
 
-export interface AddProjectProps {
-  onComplete: (ngo: NgoInformation) => void;
-}
-export default function AddProject(props: AddProjectProps) {
-  const { onComplete } = props;
+export default function AddProject() {
   const { t } = useTranslation();
-  const { modelOnRequestHide } = useModelOnRequestHide();
-  const beforeStepSuccess = async (
-    _userData: any,
-    _currentStep: number,
-    _setError: Dispatch<SetStateAction<Map<string, string>>>
-  ) => true;
+  let { id } = useParams();
 
-  const stepsCompleted = async (
-    userData: any,
-    setError: Dispatch<SetStateAction<Map<string, string>>>
-  ) => {
-    let formData = new FormData();
-    formData.append("email", userData.email);
-    formData.append("district_id", userData?.district?.id);
-    formData.append("province_id", userData?.province?.id);
-    formData.append("password", userData.password);
-    formData.append("area_english", userData.area_english);
-    formData.append("area_pashto", userData.area_pashto);
-    formData.append("area_farsi", userData.area_farsi);
-    formData.append("abbr", userData.abbr);
-    formData.append("ngo_type_id", userData.type.id);
-    formData.append("contact", userData.contact);
-    formData.append("name_english", userData.name_english);
-    formData.append("name_pashto", userData.name_pashto);
-    formData.append("name_farsi", userData.name_farsi);
-    formData.append("username", userData.username);
-    formData.append("repre_name_english", userData.repre_name_english);
-    formData.append("repre_name_pashto", userData.repre_name_pashto);
-    formData.append("repre_name_farsi", userData.repre_name_farsi);
-    formData.append("pending_id", userData.letter_of_intro.pending_id);
+  const navigate = useNavigate();
+  const [allowed, setAllowed] = useState(false);
+  const fetchData = async () => {
     try {
-      const response = await axiosClient.post("ngo/store", formData);
+      const response = await axiosClient.get(`ngo/status/${id}`);
       if (response.status == 200) {
-        const item = response.data.ngo;
-        item.type = userData.type.name;
-        onComplete(response.data.ngo);
-        toast({
-          toastType: "SUCCESS",
-          description: response.data.message,
-        });
+        const data = response.data;
+        if (data.status_id == StatusEnum.registered) {
+          setAllowed(true);
+        } else {
+          navigate("/unauthorized", { replace: true });
+        }
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+      });
+      console.log(error);
+      navigate("/unauthorized", { replace: true });
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const SaveContent = async (formData: FormData) => {
+    try {
+      const response = await axiosClient.post(
+        `store/task/with/content/${id}`,
+        formData
+      );
+      if (response.status == 200) {
+        return true;
       }
     } catch (error: any) {
       toast({
@@ -74,159 +66,305 @@ export default function AddProject(props: AddProjectProps) {
         title: t("error"),
         description: error.response.data.message,
       });
-      setServerError(error.response.data.errors, setError);
       console.log(error);
+    }
+    return false;
+  };
+  const beforeStepSuccess = async (
+    _userData: any,
+    _currentStep: number,
+    _setError: Dispatch<SetStateAction<Map<string, string>>>,
+    _backClicked: boolean
+  ) => {
+    return true;
+  };
+
+  const stepsCompleted = async (
+    userData: any,
+    setError: Dispatch<SetStateAction<Map<string, string>>>
+  ) => {
+    let formData = new FormData();
+    try {
+      const content = {
+        ...userData, // shallow copy of the userData object
+        // checklistMap: Array.from(userData.checklistMap),
+        // establishment_date: !isString(userData.establishment_date)
+        //   ? userData.establishment_date?.toDate()?.toISOString()
+        //   : userData.establishment_date,
+      };
+
+      if (id) formData.append("ngo_id", id.toString());
+      formData.append("content", JSON.stringify(content));
+
+      const response = await axiosClient.post(
+        "ngo/register/form/complete",
+        formData
+      );
+
+      if (response.status == 200) {
+        return true;
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        title: t("error"),
+        description: <ServerError errors={error.response.data.errors} />,
+        duration: 9000 * 10,
+      });
+      setServerError(error.response.data.errors, setError);
+
       return false;
     }
     return true;
   };
-  const closeModel = () => {
-    modelOnRequestHide();
-  };
 
+  const onSaveClose = async (
+    userData: any,
+    currentStep: number,
+    onlySave: boolean
+  ) => {
+    const content = {
+      ...userData, // shallow copy of the userData object
+      // checklistMap: Array.from(userData.checklistMap),
+      // establishment_date: !isString(userData.establishment_date)
+      //   ? userData.establishment_date?.toDate()?.toISOString()
+      //   : userData.establishment_date,
+    };
+    let formData = new FormData();
+    formData.append("contents", JSON.stringify(content));
+    formData.append("step", currentStep.toString());
+    formData.append("task_type", TaskTypeEnum.project_registeration.toString());
+    if (id) formData.append("id", id.toString());
+    await SaveContent(formData);
+    if (!onlySave) onClose();
+  };
+  const handleGoBack = () => navigate(-1);
+  const handleGoHome = () => navigate("/dashboard", { replace: true });
+  const onClose = () => {
+    navigate("/projects", { replace: true });
+  };
   return (
-    <div className="pt-4">
-      {/* Header */}
-      <div className="flex px-1 py-1 fixed w-full justify-end">
-        <CloseButton dismissModel={closeModel} />
-      </div>
-      {/* Body */}
-      <Stepper
-        isCardActive={true}
-        size="wrap-height"
-        className="bg-transparent dark:!bg-transparent"
-        progressText={{
-          complete: t("complete"),
-          inProgress: t("in_progress"),
-          pending: t("pending"),
-          step: t("step"),
-        }}
-        loadingText={t("store_infor")}
-        backText={t("back")}
-        nextText={t("next")}
-        confirmText={t("confirm")}
-        steps={[
-          {
-            description: t("detail"),
-            icon: <UserIcon className="size-[16px]" />,
-          },
-          {
-            description: t("center_budget"),
-            icon: <Coins className="size-[16px]" />,
-          },
-          {
-            description: t("organ_structure"),
-            icon: <Building2 className="size-[16px]" />,
-          },
-          {
-            description: t("checklist"),
-            icon: <NotebookPen className="size-[16px]" />,
-          },
-          {
-            description: t("complete"),
-            icon: <Check className="size-[16px]" />,
-          },
-        ]}
-        components={[
-          {
-            component: <AddProjectDetails />,
-            validationRules: [
-              { name: "name_english", rules: ["required", "max:128", "min:3"] },
-              { name: "name_farsi", rules: ["required", "max:128", "min:3"] },
-              { name: "name_pashto", rules: ["required", "max:128", "min:3"] },
-              { name: "abbr", rules: ["required"] },
-              { name: "type", rules: ["required"] },
-              { name: "province", rules: ["required"] },
-              { name: "district", rules: ["required"] },
-              { name: "area_english", rules: ["required", "max:200", "min:3"] },
-              { name: "area_pashto", rules: ["required", "max:200", "min:3"] },
-              { name: "area_farsi", rules: ["required", "max:200", "min:3"] },
-            ],
-          },
-          {
-            component: <AddNgoRepresentative />,
-            validationRules: [
+    <div className="p-2">
+      {allowed ? (
+        <>
+          <Breadcrumb>
+            <BreadcrumbHome onClick={handleGoHome} />
+            <BreadcrumbSeparator />
+            <BreadcrumbItem onClick={handleGoBack}>
+              {t("projects")}
+            </BreadcrumbItem>
+          </Breadcrumb>
+          <Stepper
+            isCardActive={true}
+            size="wrap-height"
+            className="mt-3 overflow-y-auto overflow-x-hidden"
+            progressText={{
+              complete: t("complete"),
+              inProgress: t("in_progress"),
+              pending: t("pending"),
+              step: t("step"),
+            }}
+            loadingText={t("store_infor")}
+            backText={t("back")}
+            nextText={t("next")}
+            confirmText={t("confirm")}
+            steps={[
               {
-                name: "repre_name_english",
-                rules: ["required", "max:128", "min:3"],
+                description: t("detail"),
+                icon: <UserIcon className="size-[16px]" />,
               },
               {
-                name: "repre_name_farsi",
-                rules: ["required", "max:128", "min:3"],
+                description: t("center_budget"),
+                icon: <Coins className="size-[16px]" />,
               },
               {
-                name: "repre_name_pashto",
-                rules: ["required", "max:128", "min:3"],
+                description: t("organ_structure"),
+                icon: <Building2 className="size-[16px]" />,
               },
               {
-                name: "letter_of_intro",
-                rules: ["required"],
+                description: t("checklist"),
+                icon: <NotebookPen className="size-[16px]" />,
               },
-            ],
-          },
-          {
-            component: <AddNgoAccount />,
-            validationRules: [
-              { name: "username", rules: ["required", "max:128", "min:2"] },
-              { name: "contact", rules: ["required"] },
-              { name: "email", rules: ["required"] },
               {
-                name: "password",
-                rules: [
-                  (value: any) => {
-                    const strength = checkStrength(value, t);
-                    const score = passwordStrengthScore(strength);
-                    if (score === 4) return true;
-                    return false;
+                description: t("complete"),
+                icon: <Check className="size-[16px]" />,
+              },
+            ]}
+            components={[
+              {
+                component: (
+                  <AddProjectDetails
+                    type="register"
+                    fetchUrl={"projects/register-form/"}
+                  />
+                ),
+                validationRules: [
+                  {
+                    name: "project_name_english",
+                    rules: ["required", "max:128", "min:2"],
+                  },
+                  {
+                    name: "project_name_farsi",
+                    rules: ["required", "max:128", "min:2"],
+                  },
+                  {
+                    name: "project_name_pashto",
+                    rules: ["required", "max:128", "min:2"],
+                  },
+                  {
+                    name: "preamble_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "preamble_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "preamble_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "termin_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "termin_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "termin_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "prev_proj_activi_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "prev_proj_activi_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "prev_proj_activi_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_intro_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_intro_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_intro_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_goals_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_goals_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_goals_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_object_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_object_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "project_object_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_outcome_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_outcome_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_outcome_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_impact_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_impact_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "expected_impact_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "main_activities_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "main_activities_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "main_activities_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "operational_plan_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "operational_plan_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "operational_plan_pashto",
+                    rules: ["required", "max:4048", "min:2"],
                   },
                 ],
               },
-            ],
-          },
-          {
-            component: (
-              <CheckListTab
-                onSaveClose={async (
-                  userData: any,
-                  currentStep: number,
-                  onlySave: boolean
-                ) => {}}
-                type="register"
-              />
-            ),
-            validationRules: [
-              { name: "username", rules: ["required", "max:128", "min:2"] },
-              { name: "contact", rules: ["required"] },
-              { name: "email", rules: ["required"] },
               {
-                name: "password",
-                rules: [
-                  (value: any) => {
-                    const strength = checkStrength(value, t);
-                    const score = passwordStrengthScore(strength);
-                    if (score === 4) return true;
-                    return false;
+                component: <AddCenterBudget />,
+                validationRules: [
+                  {
+                    name: "project_name_english",
+                    rules: ["required", "max:128", "min:2"],
                   },
                 ],
               },
-            ],
-          },
-          {
-            component: (
-              <CompleteStep
-                successText={t("congratulation")}
-                closeText={t("close")}
-                againText={t("again")}
-                closeModel={closeModel}
-                description={t("account_created")}
-              />
-            ),
-            validationRules: [],
-          },
-        ]}
-        beforeStepSuccess={beforeStepSuccess}
-        stepsCompleted={stepsCompleted}
-      />
+              {
+                component: (
+                  <CompleteStep
+                    successText={t("congratulation")}
+                    closeText={t("close")}
+                    closeModel={onClose}
+                    description={t("info_stored")}
+                  />
+                ),
+                validationRules: [],
+              },
+            ]}
+            beforeStepSuccess={beforeStepSuccess}
+            stepsCompleted={stepsCompleted}
+            onSaveClose={(userData: any, currentStep: number) =>
+              onSaveClose(userData, currentStep, false)
+            }
+            onSaveCloseText={t("save_close")}
+          />
+        </>
+      ) : (
+        <NastranSpinner label={t("check_auth")} className="mt-16" />
+      )}
     </div>
   );
 }

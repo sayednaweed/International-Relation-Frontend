@@ -25,10 +25,9 @@ import {
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { NgoStatus, UserPermission } from "@/database/tables";
 import EditNgoStatusDialog from "./parts/edit-ngo-status-dialog";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
 import { toLocaleDate } from "@/lib/utils";
 import { useGlobalState } from "@/context/GlobalStateContext";
-import { PermissionEnum } from "@/lib/constants";
+import { PermissionEnum, StatusEnum } from "@/lib/constants";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 interface EditStatusTabProps {
   permissions: UserPermission;
@@ -149,16 +148,51 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                     <TableRow key={index}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>
-                        <StatusButton
-                          status_id={parseInt(ngoStatus.status_type_id)}
-                          status={ngoStatus.name}
+                        <BooleanStatusButton
+                          getColor={function (): {
+                            style: string;
+                            value?: string;
+                          } {
+                            return StatusEnum.registered ===
+                              ngoStatus.status_type_id
+                              ? {
+                                  style: "border-green-500/90",
+                                  value: ngoStatus.name,
+                                }
+                              : StatusEnum.blocked == ngoStatus.status_type_id
+                              ? {
+                                  style: "border-red-500",
+                                  value: ngoStatus.name,
+                                }
+                              : StatusEnum.registration_incomplete ==
+                                ngoStatus.status_type_id
+                              ? {
+                                  style: "border-blue-500/90",
+                                  value: ngoStatus.name,
+                                }
+                              : {
+                                  style: "border-orange-500",
+                                  value: ngoStatus.name,
+                                };
+                          }}
                         />
                       </TableCell>
                       <TableCell>
                         <BooleanStatusButton
-                          id={ngoStatus.is_active}
-                          value1={t("currently")}
-                          value2={t("formerly")}
+                          getColor={function (): {
+                            style: string;
+                            value?: string;
+                          } {
+                            return ngoStatus.is_active === 1
+                              ? {
+                                  style: "border-green-500/90",
+                                  value: t("currently"),
+                                }
+                              : {
+                                  style: "border-red-500",
+                                  value: t("formerly"),
+                                };
+                          }}
                         />
                       </TableCell>
                       <TableCell className="truncate max-w-44">

@@ -30,7 +30,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
   const { id } = useParams();
 
   const [userData, setUserData] = useState<{
-    status: { id: string; name: string } | undefined;
+    status: { id: number; name: string } | undefined;
     comment: "";
   }>({
     status: undefined,
@@ -63,13 +63,11 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
         return;
       }
       // 2. Store
-      let formData = new FormData();
-      if (id) formData.append("ngo_id", id.toString());
-      formData.append("comment", userData.comment);
-      if (userData?.status)
-        formData.append("status_type_id", userData.status.id);
-
-      const response = await axiosClient.post("ngo/change-status", formData);
+      const response = await axiosClient.post("ngo/change-status", {
+        status_id: userData?.status?.id,
+        comment: userData.comment,
+        ngo_id: id,
+      });
       if (response.status === 200) {
         toast({
           toastType: "SUCCESS",

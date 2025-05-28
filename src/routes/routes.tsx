@@ -24,7 +24,6 @@ import DonorDashboardPage from "@/views/pages/auth/donor/dashboard/donor-dashboa
 import DonorNgoPage from "@/views/pages/auth/donor/ngo/donor-ngo-page";
 import DonorReportsPage from "@/views/pages/auth/donor/reports/donor-reports-page";
 import NgoDashboardPage from "@/views/pages/auth/ngo/dashboard/ngo-dashboard-page";
-import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import SuperDashboardPage from "@/views/pages/auth/super/dashboard/super-dashboard-page";
 import AdminDashboardPage from "@/views/pages/auth/admin/dashboard/admin-dashboard-page";
 import DonorProjectsPage from "@/views/pages/auth/donor/projects/donor-projects-page";
@@ -50,6 +49,8 @@ import DonorPage from "@/views/pages/auth/general/donor/donor-page";
 import NgoFormExtend from "@/views/pages/auth/general/ngo/form-extend/ngo-form-extend";
 import SuperActivityPage from "@/views/pages/auth/super/activity/super-activity-page";
 import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
+import AddProject from "@/views/pages/auth/general/projects/add/add-project";
+import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -220,17 +221,6 @@ export const getSuperRouter = (
               <ProtectedRoute
                 element={<DonorPage />}
                 routeName="donor"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
-          <Route
-            path="projects"
-            element={
-              <ProtectedRoute
-                element={<ProjectsPage />}
-                routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -437,17 +427,7 @@ export const getAdminRouter = (
               />
             }
           />
-          <Route
-            path="projects"
-            element={
-              <ProtectedRoute
-                element={<ProjectsPage />}
-                routeName="projects"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+
           <Route
             path="management/news"
             element={
@@ -625,17 +605,6 @@ export const getUserRouter = (
               <ProtectedRoute
                 element={<NgoFormExtend />}
                 routeName="ngo"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
-          <Route
-            path="projects"
-            element={
-              <ProtectedRoute
-                element={<ProjectsPage />}
-                routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -887,17 +856,6 @@ export const getNgoRouter = (
             }
           />
           <Route
-            path="projects"
-            element={
-              <ProtectedRoute
-                element={<ProjectsPage />}
-                routeName="projects"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
-          <Route
             path="reports"
             element={
               <ProtectedRoute
@@ -936,6 +894,28 @@ export const getNgoRouter = (
               <ProtectedRoute
                 element={<UserNgoEditPage />}
                 routeName="ngo"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects"
+            element={
+              <ProtectedRoute
+                element={<ProjectsPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects/:id"
+            element={
+              <ProtectedRoute
+                element={<AddProject />}
+                routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}
               />

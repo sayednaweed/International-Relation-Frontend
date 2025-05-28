@@ -8,14 +8,15 @@ import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { validateFile } from "@/lib/utils";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
+import { StatusEnum } from "@/lib/constants";
 
 interface NgoProfileHeaderProps {
-  status_type_id?: number;
-  status_type?: string;
+  agreement_status_id?: number;
+  agreement_status?: string;
 }
 export default function NgoProfileHeader(props: NgoProfileHeaderProps) {
-  const { status_type_id, status_type } = props;
+  const { agreement_status_id, agreement_status } = props;
   const { user, setNgo } = useNgoAuthState();
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -149,10 +150,31 @@ export default function NgoProfileHeader(props: NgoProfileHeaderProps) {
           <h1 className="rtl:text-lg-rtl ltr:text-md-ltr">{t("delete")}</h1>
         </IconButton>
       </div>
-      <StatusButton
-        status={status_type}
-        status_id={status_type_id}
-        className="mx-auto"
+      <BooleanStatusButton
+        getColor={function (): {
+          style: string;
+          value?: string;
+        } {
+          return StatusEnum.registered === agreement_status_id
+            ? {
+                style: "border-green-500/90",
+                value: agreement_status,
+              }
+            : StatusEnum.blocked == agreement_status_id
+            ? {
+                style: "border-red-500",
+                value: agreement_status,
+              }
+            : StatusEnum.registration_incomplete == agreement_status_id
+            ? {
+                style: "border-blue-500/90",
+                value: agreement_status,
+              }
+            : {
+                style: "border-orange-500",
+                value: agreement_status,
+              };
+        }}
       />
       <h1 className="text-primary font-semibold rtl:text-2xl-rtl ltr:text-4xl-ltr">
         {user?.username}

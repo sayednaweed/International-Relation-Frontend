@@ -65,7 +65,6 @@ export default function AddNgoInformation() {
         defaultValue={userData["abbr"]}
         placeholder={t("abbr_english")}
         type="text"
-        className="uppercase"
         errorMessage={error.get("abbr")}
         onBlur={handleChange}
       />

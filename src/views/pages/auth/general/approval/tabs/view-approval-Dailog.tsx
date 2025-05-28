@@ -1,6 +1,6 @@
+import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 import CloseButton from "@/components/custom-ui/button/CloseButton";
 import IconButton from "@/components/custom-ui/button/IconButton";
-import StatusButton from "@/components/custom-ui/button/StatusButton";
 import CheckListDownloader from "@/components/custom-ui/chooser/CheckListDownloader";
 import FakeCombobox from "@/components/custom-ui/combobox/FakeCombobox";
 import CustomTextarea from "@/components/custom-ui/input/CustomTextarea";
@@ -10,6 +10,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { AgreementDocument } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
+import { StatusEnum } from "@/lib/constants";
 import { IApproval } from "@/lib/types";
 import { toLocaleDate } from "@/lib/utils";
 import { CalendarDays, Check, X } from "lucide-react";
@@ -114,10 +115,32 @@ export default function ViewApprovalDailog(props: ViewApprovalDailogprops) {
               </div>
             )}
 
-            <StatusButton
-              status_id={approval?.notifier_type_id}
-              status={approval?.notifier_type}
-              className="ltr:text-[12px] rtl:text-[13px] rtl:py-0 self-end"
+            <BooleanStatusButton
+              getColor={function (): {
+                style: string;
+                value?: string;
+              } {
+                return StatusEnum.registered === approval?.notifier_type_id
+                  ? {
+                      style: "border-green-500/90",
+                      value: approval?.notifier_type,
+                    }
+                  : StatusEnum.blocked == approval?.notifier_type_id
+                  ? {
+                      style: "border-red-500",
+                      value: approval.notifier_type,
+                    }
+                  : StatusEnum.registration_incomplete ==
+                    approval?.notifier_type_id
+                  ? {
+                      style: "border-blue-500/90",
+                      value: approval?.notifier_type,
+                    }
+                  : {
+                      style: "border-orange-500",
+                      value: approval?.notifier_type,
+                    };
+              }}
             />
           </CardHeader>
           <CardContent className="flex flex-col gap-y-4 pb-12 pt-4 text-start">
