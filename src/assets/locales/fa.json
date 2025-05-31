@@ -410,5 +410,13 @@
   "operational_plan": "پلان عملیاتی",
   "operational_plan_english": "پلان عملیاتی در انگلیسی",
   "operational_plan_farsi": "پلان عملیاتی در فارسی",
-  "operational_plan_pashto": "پلان عملیاتی در پشتو"
+  "operational_plan_pashto": "پلان عملیاتی در پشتو",
+  "donor_register_no": "شماره ثبت دونر",
+  "village": "قریه",
+  "health_centers": "مراکز صحی",
+  "proj_employees": "کارمندان پروژه",
+  "health_worker": "کارمند صحی",
+  "fin_admin_employees": "کارمند مالی و اداری",
+  "guideline": "راهنما",
+  "g_w_des": "1. نام, 2. نام, 3. نام..."
 }

@@ -108,7 +108,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
       url={"projects/pending-task/" + id}
     />
   ) : userData?.allowed ? (
-    <div className="flex flex-col mt-10 w-full lg:w-[60%] gap-y-6 pb-12">
+    <div className="flex flex-col mt-10 w-full 2xl:w-[60%] gap-y-6 pb-12">
       <BorderContainer
         title={t("project_name")}
         required={true}

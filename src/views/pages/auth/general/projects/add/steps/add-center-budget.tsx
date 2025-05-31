@@ -1,16 +1,16 @@
-import { Eye, EyeOff, Mail, Phone, RotateCcwSquare } from "lucide-react";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useTranslation } from "react-i18next";
-import PasswordInput from "@/components/custom-ui/input/PasswordInput";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import { generatePassword } from "@/validation/utils";
 import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
 import { DateObject } from "react-multi-date-picker";
+import APICombobox from "@/components/custom-ui/combobox/APICombobox";
+import AddCenterBudgetPart from "./parts/add-center-budget-part";
+import { CenterBudget } from "@/database/tables";
+import CenterBudgetTable from "./parts/center-budget-table";
 
 export default function AddCenterBudget() {
   const { userData, setUserData, error } = useContext(StepperContext);
-  const [isVisible, setIsVisible] = useState(false);
   const { t } = useTranslation();
 
   const handleChange = (e: any) => {
@@ -49,6 +49,37 @@ export default function AddCenterBudget() {
         className="py-3 w-full"
         errorMessage={error.get("end_date")}
       />
+      <APICombobox
+        placeholderText={t("search_item")}
+        errorText={t("no_item")}
+        onSelect={(selection: any) =>
+          setUserData((prev: any) => ({
+            ...prev,
+            ["donor"]: selection,
+          }))
+        }
+        lable={t("donor")}
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        selectedItem={userData["donor"]?.name}
+        placeHolder={t("select_a")}
+        errorMessage={error.get("donor")}
+        apiUrl={"donors"}
+        mode="single"
+      />
+      <CustomInput
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        size_="sm"
+        lable={t("donor_register_no")}
+        name="donor_register_no"
+        defaultValue={userData["donor_register_no"]}
+        placeholder={t("enter")}
+        type="text"
+        errorMessage={error.get("donor_register_no")}
+        onBlur={handleChange}
+      />
+      <CenterBudgetTable />
     </div>
   );
 }
