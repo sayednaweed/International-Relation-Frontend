@@ -115,11 +115,31 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
             <div className="flex justify-start text-wrap p-2">
               <h1>{t("district")}</h1>
             </div>
-            <div className="flex justify-start text-wrap p-2">
+            <div className="flex justify-between text-wrap text-center p-2 items-start">
               <h1>{t("village")}</h1>
+              <IconTooltip
+                icon={
+                  <MessageCircleQuestion className="size-[18px] text-blue-800 dark:text-white" />
+                }
+              >
+                <h1 className="font-medium ltr:text-2xl-ltr">
+                  {t("guideline")}
+                </h1>
+                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
+              </IconTooltip>
             </div>
-            <div className="flex justify-start text-wrap p-2">
+            <div className="flex justify-between text-wrap text-center p-2 items-start">
               <h1>{t("health_centers")}</h1>
+              <IconTooltip
+                icon={
+                  <MessageCircleQuestion className="size-[18px] text-blue-800 dark:text-white" />
+                }
+              >
+                <h1 className="font-medium ltr:text-2xl-ltr">
+                  {t("guideline")}
+                </h1>
+                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
+              </IconTooltip>
             </div>
             <div className="flex justify-start text-wrap p-2">
               <h1>{t("budget")}</h1>
@@ -130,8 +150,18 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
             <div className="flex justify-start text-wrap p-2">
               <h1>{t("in_direct_benefi")}</h1>
             </div>
-            <div className="flex justify-start text-wrap p-2">
+            <div className="flex justify-between text-wrap text-center p-2 items-start">
               <h1>{t("address")}</h1>
+              <IconTooltip
+                icon={
+                  <MessageCircleQuestion className="size-[18px] text-blue-800 dark:text-white" />
+                }
+              >
+                <h1 className="font-medium ltr:text-2xl-ltr">
+                  {t("guideline")}
+                </h1>
+                <h1 className="ltr:text-xl-ltr">{t("a_w_des")}</h1>
+              </IconTooltip>
             </div>
           </li>
 
@@ -278,12 +308,24 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
                   <MessageCircleQuestion className="size-[18px] text-blue-800 dark:text-white" />
                 }
               >
-                <h1 className="font-medium">1. Financial Manager</h1>
-                <h1 className="font-medium">2. Guard</h1>
+                <h1 className="font-medium ltr:text-2xl-ltr">
+                  {t("guideline")}
+                </h1>
+                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
               </IconTooltip>
             </div>
-            <div className="flex justify-start text-wrap text-center p-2">
+            <div className="flex justify-between text-wrap text-center p-2 items-center">
               <h1>{t("fin_admin_employees")}</h1>
+              <IconTooltip
+                icon={
+                  <MessageCircleQuestion className="size-[18px] text-blue-800 dark:text-white" />
+                }
+              >
+                <h1 className="font-medium ltr:text-2xl-ltr">
+                  {t("guideline")}
+                </h1>
+                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
+              </IconTooltip>
             </div>
           </li>
 
