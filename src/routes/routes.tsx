@@ -51,6 +51,7 @@ import SuperActivityPage from "@/views/pages/auth/super/activity/super-activity-
 import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
 import AddProject from "@/views/pages/auth/general/projects/add/add-project";
 import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
+import UserDonorEditPage from "@/views/pages/auth/general/donor/edit/user-donor-edit-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -220,6 +221,17 @@ export const getSuperRouter = (
             element={
               <ProtectedRoute
                 element={<DonorPage />}
+                routeName="donor"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="donor/:id"
+            element={
+              <ProtectedRoute
+                element={<UserDonorEditPage />}
                 routeName="donor"
                 permissions={permissions}
                 authenticated={authenticated}
@@ -483,6 +495,17 @@ export const getAdminRouter = (
               />
             }
           />
+          <Route
+            path="donor/:id"
+            element={
+              <ProtectedRoute
+                element={<UserDonorEditPage />}
+                routeName="donor"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -659,6 +682,17 @@ export const getUserRouter = (
             element={
               <ProtectedRoute
                 element={<DonorPage />}
+                routeName="donor"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="donor/:id"
+            element={
+              <ProtectedRoute
+                element={<UserDonorEditPage />}
                 routeName="donor"
                 permissions={permissions}
                 authenticated={authenticated}

@@ -138,6 +138,7 @@ export type NgoSearch =
   | "name"
   | "type"
   | "contact";
+
 export interface NgoFilter {
   sort: NgoSort;
   order: Order;
@@ -346,3 +347,44 @@ export interface IApproval {
   approval_documents: AgreementDocument[];
   completed: number;
 }
+
+// donor
+export type DonorInformation = {
+  id: string;
+  name: string;
+  abbr: string;
+  profile: string | undefined;
+  username: string;
+  email: string;
+  contact: string;
+  created_at: string;
+};
+
+export type EditDonorInformation = {
+  id: string;
+  profile: string | undefined;
+  name_english: string | undefined;
+  name_pashto: string;
+  name_farsi: string;
+  username: string;
+  area_english: string;
+  area_pashto: string;
+  area_farsi: string;
+  abbr: string;
+  contact: string;
+  email: string;
+  province: Province;
+  district: District;
+  created_at: string;
+  optional_lang: string;
+};
+
+export interface DonorPaginationData {
+  data: DonorInformation[];
+  lastPage: number;
+  perPage: number;
+  currentPage: number;
+  totalItems: number;
+}
+export type DonorSearch = "id" | "abbr" | "name" | "username" | "contact";
+export type DonorSort = "id" | "name" | "contact" | "status";
