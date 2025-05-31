@@ -413,4 +413,13 @@
   "operational_plan_pashto": "Operational plan in pashto",
   "register_donor": "Register Donor",
   "donor_information": "Donor Information"
+  "donor_register_no": "Donor registration number",
+  "village": "Village",
+  "health_centers": "Health centers",
+  "proj_employees": "Project employees",
+  "health_worker": "Health worker",
+  "fin_admin_employees": "Financial and administrative employee",
+  "guideline": "Guideline",
+  "g_w_des": "1. name, 2. name, 3. name...",
+  "a_w_des": "5th district, Karti-e-mamurin"
 }

@@ -1,4 +1,5 @@
 import { FileType } from "@/lib/types";
+import { Option } from "@/lib/types";
 
 export type Role =
   | { role: 3; name: "user" }
@@ -294,4 +295,18 @@ export interface ActivityModel {
   device: string;
   browser: string;
   date: string;
+}
+
+export interface CenterBudget {
+  id: string;
+  province: { id: string; name: string } | undefined | Option;
+  district: { id: string; name: string }[] | Option[];
+  village: { id: string; name: string }[];
+  health_centers: { id: string; name: string }[];
+  budget: string;
+  direct_benefi: number;
+  in_direct_benefi: number;
+  address: string;
+  health_employees: string[];
+  finance_and_admin: string[];
 }

@@ -31,6 +31,7 @@ export interface ComboboxItem {
   id: string;
   name: string;
   selected: boolean;
+  value: string;
 }
 
 export type ComboboxMode = "single" | "multiple";
@@ -40,7 +41,7 @@ export interface IAPIComboboxProps {
   selectedItem?: string;
   apiUrl?: string;
   apiSelected?: FetchApi;
-  placeHolder: string;
+  placeHolder?: string;
   readonly?: boolean;
   errorMessage?: string;
   mode: ComboboxMode;
@@ -53,6 +54,7 @@ export interface IAPIComboboxProps {
   placeholderText: string;
   translate?: boolean;
   cacheData?: boolean;
+  showIcon?: boolean;
 }
 
 function APICombobox(props: IAPIComboboxProps) {
@@ -72,6 +74,7 @@ function APICombobox(props: IAPIComboboxProps) {
     lable,
     placeholderText,
     translate,
+    showIcon = true,
     cacheData = true,
   } = props;
   const [loading, setLoading] = useState(true);
@@ -200,8 +203,18 @@ function APICombobox(props: IAPIComboboxProps) {
               className
             )}
           >
-            {!selected ? placeHolder : translate ? t(selected) : selected}
-            <ChevronsUpDown className="h-4 w-4 ltr:ml-4 rtl:mr-4 shrink-0 opacity-50" />
+            {!selected ? (
+              <h1 className=" text-primary/90 rtl:text-xl-rtl ltr:text-lg-ltr">
+                {placeHolder}
+              </h1>
+            ) : translate ? (
+              t(selected)
+            ) : (
+              selected
+            )}
+            {showIcon && (
+              <ChevronsUpDown className="h-4 w-4 ltr:ml-4 rtl:mr-4 shrink-0 opacity-50" />
+            )}
             {required && (
               <span className="text-red-600 ltr:right-[10px] rtl:left-[10px] -top-[17px] absolute font-semibold rtl:text-[13px] ltr:text-[11px]">
                 {requiredHint}
@@ -250,11 +263,11 @@ function APICombobox(props: IAPIComboboxProps) {
           </Command>
         </PopoverContent>
       </Popover>
-      {
+      {errorMessage && (
         <h1 className="rtl:text-sm-rtl ltr:text-sm-ltr text-start text-red-400">
           {errorMessage}
         </h1>
-      }
+      )}
     </div>
   );
 }
