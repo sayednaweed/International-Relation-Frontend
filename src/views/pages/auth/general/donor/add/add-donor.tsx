@@ -7,11 +7,11 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction } from "react";
 import { setServerError } from "@/validation/validation";
-import { Check, Database, User as UserIcon, UserRound } from "lucide-react";
+import { Check, User as UserIcon } from "lucide-react";
 import { DonorInformation } from "@/lib/types";
 import { checkStrength, passwordStrengthScore } from "@/validation/utils";
-import AddDonorInformation from "./steps/AddDonorInformation";
-import AddDonorAccount from "./steps/AddDonorAccount";
+import AddDonorInformation from "./steps/add-donor-information";
+import AddDonorAccount from "./steps/add-donor-account";
 
 export interface AddDonorProps {
   onComplete: (donor: DonorInformation) => void;
@@ -45,10 +45,8 @@ export default function AddDonor(props: AddDonorProps) {
     formData.append("name_farsi", userData.name_farsi);
     formData.append("username", userData.username);
     try {
-      const response = await axiosClient.post("donor", formData);
+      const response = await axiosClient.post("donors", formData);
       if (response.status == 200) {
-        const item = response.data.donor;
-
         onComplete(response.data.donor);
         toast({
           toastType: "SUCCESS",

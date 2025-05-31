@@ -22,7 +22,7 @@ export default function DonorHeader() {
   const [loading, setLoading] = useState(true);
   const fetchCount = async () => {
     try {
-      const response = await axiosClient.get(`/ngos/record/count`);
+      const response = await axiosClient.get(`/projects/statistics`);
       if (response.status == 200) {
         setRecordCount({
           activeUserCount: response.data.counts.activeCount,
@@ -52,7 +52,7 @@ export default function DonorHeader() {
         title={t("total")}
         total={recordCount.userCount}
         description1={t("total")}
-        description2={t("ngo")}
+        description2={t("donor")}
         icon={
           <UsersRound className=" size-[22px] bg-tertiary rounded-sm p-1 text-secondary" />
         }
@@ -62,7 +62,7 @@ export default function DonorHeader() {
         title={t("total_registered_today")}
         total={recordCount.todayCount}
         description1={t("total")}
-        description2={t("ngo")}
+        description2={t("donor")}
         icon={
           <UserRoundPlus className=" size-[22px] bg-orange-500 rounded-sm p-1 text-secondary" />
         }
@@ -72,7 +72,7 @@ export default function DonorHeader() {
         title={t("active")}
         total={recordCount.activeUserCount}
         description1={t("total")}
-        description2={t("ngo")}
+        description2={t("donor")}
         icon={
           <UserRoundX className=" size-[22px] bg-red-500 rounded-sm p-1 text-secondary" />
         }
@@ -82,7 +82,7 @@ export default function DonorHeader() {
         title={t("un_registered")}
         total={recordCount.inActiveUserCount}
         description1={t("total")}
-        description2={t("ngo")}
+        description2={t("donor")}
         icon={
           <UserRoundPen className=" size-[22px] bg-green-500 rounded-sm p-1 text-secondary" />
         }

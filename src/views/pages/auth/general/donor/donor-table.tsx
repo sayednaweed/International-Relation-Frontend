@@ -32,7 +32,6 @@ import {
   DonorSort,
   Order,
 } from "@/lib/types";
-// import AddNgo from "./add/add-ngo";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
@@ -138,7 +137,7 @@ export function DonorTable() {
   ) => {
     if (!count) {
       const countSore = await getComponentCache(
-        CACHE.NGO_TABLE_PAGINATION_COUNT
+        CACHE.DONOR_TABLE_PAGINATION_COUNT
       );
       count = countSore?.value ? countSore.value : 10;
     }
@@ -187,36 +186,6 @@ export function DonorTable() {
     }));
   };
 
-  const deleteOnClick = async (donor: DonorInformation) => {
-    try {
-      const donorId = donor.id;
-      const response = await axiosClient.delete("ngo/" + donorId);
-      if (response.status == 200) {
-        const filtered = donors.unFilterList.data.filter(
-          (item: DonorInformation) => donorId != item?.id
-        );
-        const item = {
-          data: filtered,
-          lastPage: donors.unFilterList.lastPage,
-          totalItems: donors.unFilterList.totalItems,
-          perPage: donors.unFilterList.perPage,
-          currentPage: donors.unFilterList.currentPage,
-        };
-        setDonors({ ...donors, filterList: item, unFilterList: item });
-      }
-      toast({
-        toastType: "SUCCESS",
-        title: t("success"),
-        description: response.data.message,
-      });
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-    }
-  };
   const skeleton = (
     <TableRow>
       <TableCell>
@@ -243,7 +212,7 @@ export function DonorTable() {
     </TableRow>
   );
   const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
+    PermissionEnum.donor.name
   ) as UserPermission;
   const hasView = per?.view;
   const hasAdd = per?.add;
@@ -320,7 +289,7 @@ export function DonorTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/donor?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -333,7 +302,7 @@ export function DonorTable() {
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/donor?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -346,7 +315,7 @@ export function DonorTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/donor?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -359,7 +328,7 @@ export function DonorTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, selectedDates);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/donor?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -425,7 +394,7 @@ export function DonorTable() {
           </NastranModel>
         </div>
         <CustomSelect
-          paginationKey={CACHE.NGO_TABLE_PAGINATION_COUNT}
+          paginationKey={CACHE.DONOR_TABLE_PAGINATION_COUNT}
           options={[
             { value: "10", label: "10" },
             { value: "20", label: "20" },
@@ -434,7 +403,7 @@ export function DonorTable() {
           className="w-fit sm:self-baseline"
           updateCache={(data: any) => updateComponentCache(data)}
           getCache={async () =>
-            await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT)
+            await getComponentCache(CACHE.DONOR_TABLE_PAGINATION_COUNT)
           }
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
@@ -468,11 +437,11 @@ export function DonorTable() {
                 onEdit={async () => {}}
                 key={item.name}
                 item={item}
-                onRemove={deleteOnClick}
+                onRemove={async () => {}}
                 onRead={watchOnClick}
               >
-                <TableCell className="px-1 py-0">{item.id}</TableCell>
-                <TableCell className="px-1 py-0">
+                <TableCell>{item.id}</TableCell>
+                <TableCell>
                   <CachedImage
                     src={item?.profile}
                     alt="Avatar"
@@ -482,9 +451,9 @@ export function DonorTable() {
                     routeIdentifier={"profile"}
                   />
                 </TableCell>
-                <TableCell className="px-1 py-0">{item.abbr}</TableCell>
-                <TableCell className="px-1 py-0">{item.name}</TableCell>
-                <TableCell className="px-1 py-0">{item.username}</TableCell>
+                <TableCell>{item.abbr}</TableCell>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.username}</TableCell>
                 <TableCell
                   className="rtl:text-md-rtl truncate rtl:text-end"
                   dir="ltr"
