@@ -410,5 +410,7 @@
   "operational_plan": "Operational plan",
   "operational_plan_english": "Operational plan in english",
   "operational_plan_farsi": "Operational plan in farsi",
-  "operational_plan_pashto": "Operational plan in pashto"
+  "operational_plan_pashto": "Operational plan in pashto",
+  "register_donor": "Register Donor",
+  "donor_information": "Donor Information"
 }
