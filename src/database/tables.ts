@@ -310,3 +310,15 @@ export interface CenterBudget {
   health_employees: string[];
   finance_and_admin: string[];
 }
+
+// donor
+export type DonorStatus = {
+  id: string;
+  donor_id: string;
+  status_id: number;
+  is_active: number;
+  name: string;
+  username: string;
+  comment: string;
+  created_at: string;
+};

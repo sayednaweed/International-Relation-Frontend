@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { EditDonorInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Database, KeyRound, NotebookPen } from "lucide-react";
+import { Activity, Database, KeyRound, NotebookPen } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import { PermissionEnum, StatusEnum } from "@/lib/constants";
 import EditInformationTab from "./steps/edit-information-tab";
@@ -19,6 +19,7 @@ import {
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 import { EditDonorPassword } from "./steps/edit-donor-password";
 import UserDonorEditHeader from "./user-donor-edit-header";
+import EditStatusTab from "./steps/edit-status-tab";
 
 export interface IDonorInformation {
   donorInformation: EditDonorInformation;
@@ -38,7 +39,7 @@ export default function UserDonorEditPage() {
 
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`/donor/${id}`);
+      const response = await axiosClient.get(`/donors/${id}`);
       if (response.status == 200) {
         const donor = response.data.donor as EditDonorInformation;
         // Do not allow until register form is submitted
@@ -64,12 +65,12 @@ export default function UserDonorEditPage() {
   const selectedTabStyle = `rtl:text-xl-rtl ltr:text-lg-ltr relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
   const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
+    PermissionEnum.donor.name
   ) as UserPermission;
   const tableList = useMemo(
     () =>
       Array.from(per.sub).map(([key, _subPermission], index: number) => {
-        return key == PermissionEnum.ngo.sub.ngo_information ? (
+        return key == PermissionEnum.donor.sub.donor_information ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
@@ -78,7 +79,16 @@ export default function UserDonorEditPage() {
             <Database className="size-[18px]" />
             {t("donor_information")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_agreement ? (
+        ) : key == PermissionEnum.donor.sub.donor_status ? (
+          <TabsTrigger
+            className={`${selectedTabStyle}`}
+            key={index}
+            value={key.toString()}
+          >
+            <Activity className="size-[18px]" />
+            {t("status")}
+          </TabsTrigger>
+        ) : key == PermissionEnum.donor.sub.project ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
@@ -87,7 +97,7 @@ export default function UserDonorEditPage() {
             <NotebookPen className="size-[18px]" />
             {t("projects")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_update_account_password ? (
+        ) : key == PermissionEnum.donor.sub.donor_update_account_password ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
@@ -113,7 +123,7 @@ export default function UserDonorEditPage() {
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue={PermissionEnum.ngo.sub.ngo_information.toString()}
+        defaultValue={PermissionEnum.donor.sub.donor_information.toString()}
         className="flex flex-col md:flex-row gap-x-3 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
@@ -137,7 +147,7 @@ export default function UserDonorEditPage() {
 
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_information.toString()}
+              value={PermissionEnum.donor.sub.donor_information.toString()}
             >
               <EditInformationTab
                 permissions={per}
@@ -146,13 +156,19 @@ export default function UserDonorEditPage() {
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_update_account_password.toString()}
+              value={PermissionEnum.donor.sub.donor_update_account_password.toString()}
             >
               <EditDonorPassword id={id} permissions={per} failed={failed} />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_agreement_status.toString()}
+              value={PermissionEnum.donor.sub.donor_status.toString()}
+            >
+              <EditStatusTab permissions={per} />
+            </TabsContent>
+            <TabsContent
+              className="flex-1 m-0"
+              value={PermissionEnum.donor.sub.project.toString()}
             >
               {/* <EditAgreementStatusTab /> */}
             </TabsContent>
