@@ -1,50 +1,174 @@
-import { useGlobalState } from "@/context/GlobalStateContext";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CenterBudget } from "@/database/tables";
 import { CountryEnum } from "@/lib/constants";
 import MultipleSelector from "@/components/custom-ui/select/MultipleSelector";
 import { Option } from "@/lib/types";
-import { MessageCircleQuestion } from "lucide-react";
+import { ChevronsDown, MessageCircleQuestion, Save } from "lucide-react";
 import { IconTooltip } from "@/components/custom-ui/tooltip/icon-tooltip";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
-import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
+import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
+import { validate } from "@/validation/validation";
+import { toast } from "@/components/ui/use-toast";
+import { generateUUID } from "@/lib/utils";
 
-export interface AddCenterBudgetPartProps {
+export interface CenterBudgetHeaderProps {
   onComplete: (center: CenterBudget) => boolean;
   onEditComplete: (center: CenterBudget) => boolean;
   editCenter?: CenterBudget;
 }
-export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
+export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
   const { onComplete, editCenter, onEditComplete } = props;
-  const [userData, setUserData] = useState<CenterBudget>({
-    id: "",
-    province: undefined,
-    district: [],
-    village: [],
-    health_centers: [],
-    budget: "",
-    direct_benefi: 0,
-    in_direct_benefi: 0,
-    address: "",
-    health_employees: [],
-    finance_and_admin: [],
-  });
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState<any>([]);
   const [error, setError] = useState<Map<string, string>>(new Map());
   const { t } = useTranslation();
-  const [state] = useGlobalState();
   useEffect(() => {
     if (editCenter) {
       setUserData(editCenter);
     }
   }, [editCenter]);
-  const handleChange = (e: any) => {
+
+  const handleNumberChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setUserData((prev: any) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const store = async () => {
+    try {
+      if (loading) return;
+      setLoading(true);
+      // 1. Validate form
+      const passed = await validate(
+        [
+          {
+            name: "province",
+            rules: ["required"],
+          },
+          {
+            name: "district",
+            rules: ["required"],
+          },
+          {
+            name: "village_english",
+            rules: ["required"],
+          },
+          {
+            name: "village_farsi",
+            rules: ["required"],
+          },
+          {
+            name: "village_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "health_centers_english",
+            rules: ["required"],
+          },
+          {
+            name: "health_centers_farsi",
+            rules: ["required"],
+          },
+          {
+            name: "health_centers_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "budget",
+            rules: ["required"],
+          },
+          {
+            name: "direct_benefi",
+            rules: ["required"],
+          },
+          {
+            name: "in_direct_benefi",
+            rules: ["required"],
+          },
+          {
+            name: "address_english",
+            rules: ["required"],
+          },
+          {
+            name: "address_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "address_farsi",
+            rules: ["required"],
+          },
+          {
+            name: "health_worker_english",
+            rules: ["required"],
+          },
+          {
+            name: "health_worker_farsi",
+            rules: ["required"],
+          },
+          {
+            name: "health_worker_pashto",
+            rules: ["required"],
+          },
+          {
+            name: "fin_admin_employees_english",
+            rules: ["required"],
+          },
+          {
+            name: "fin_admin_employees_farsi",
+            rules: ["required"],
+          },
+          {
+            name: "fin_admin_employees_pashto",
+            rules: ["required"],
+          },
+        ],
+        userData,
+        setError
+      );
+      if (!passed) return;
+      // 2. Complete
+      const center = {
+        id: editCenter ? userData?.id : generateUUID(),
+        province: userData?.province,
+        district: userData?.district,
+        village_english: userData?.village_english,
+        village_pashto: userData?.village_pashto,
+        village_farsi: userData?.village_farsi,
+        health_centers_english: userData?.health_centers_english,
+        health_centers_pashto: userData?.health_centers_pashto,
+        health_centers_farsi: userData?.health_centers_farsi,
+        budget: userData?.budget,
+        direct_benefi: userData?.direct_benefi,
+        in_direct_benefi: userData?.in_direct_benefi,
+        address_english: userData?.address_english,
+        address_pashto: userData?.address_pashto,
+        address_farsi: userData?.address_farsi,
+        health_worker_english: userData?.health_worker_english,
+        health_worker_pashto: userData?.health_worker_pashto,
+        health_worker_farsi: userData?.health_worker_farsi,
+        fin_admin_employees_english: userData?.fin_admin_employees_english,
+        fin_admin_employees_pashto: userData?.fin_admin_employees_pashto,
+        fin_admin_employees_farsi: userData?.fin_admin_employees_farsi,
+      };
+      if (editCenter) onEditComplete(center);
+      else onComplete(center);
+      setUserData(() => []);
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        description: error.response.data.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const province = useMemo(() => {
@@ -53,13 +177,14 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
         popoverClassName="h-36"
         commandProps={{
           label: "Select frameworks",
-          className: "mt-0 h-full min-w-[15rem] max-w-[15rem]",
+          className: "mt-0 h-full min-w-[11rem] max-w-[11rem]",
         }}
         placeholder={t("select")}
         onChange={(option: Option[]) => {
           setUserData((prev: any) => ({
             ...prev,
             province: option[0],
+            district: [],
           }));
         }}
         // defaultOptions={frameworks}
@@ -68,14 +193,16 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
             ? ([userData.province] as Option[])
             : []
         }
-        required={false}
+        errorMessage={error.get("province")}
         apiUrl={"provinces/" + CountryEnum.afghanistan}
         emptyIndicator={<p className="text-center text-sm">{t("no_item")}</p>}
-        className="m-0 rounded-none border-none h-full"
+        className="m-0 rounded-none border-none h-full min-w-[160px] max-w-[160px]"
         maxSelected={1}
+        required={false}
       />
     );
-  }, []);
+  }, [error, userData?.province?.id]);
+
   const district = useMemo(() => {
     return (
       <MultipleSelector
@@ -84,7 +211,7 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
         placeholder={t("select")}
         commandProps={{
           label: "Select frameworks",
-          className: "mt-0 h-full min-w-[14rem] max-w-[14rem]",
+          className: "mt-0 h-full min-w-[238px] max-w-[238px]",
         }}
         onChange={(option: Option[]) => {
           setUserData((prev: any) => ({
@@ -102,11 +229,11 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
         shouldFetch={userData?.province ? true : false}
       />
     );
-  }, [userData?.province?.id]);
+  }, [userData?.province?.id, error]);
   return (
-    <>
+    <div className="flex flex-col">
       <div className="col-span-full border overflow-auto p-4">
-        <ul className="w-full h-fit overflow-hidden min-w-fit">
+        <ul className="w-full h-fit min-w-fit">
           {/* Header Row */}
           <li className="grid grid-cols-[11rem_15rem_1fr_1fr_8rem_8rem_8rem_1fr] [&>div]:border bg-primary/5 font-semibold">
             <div className="flex justify-start text-wrap p-2">
@@ -241,20 +368,35 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
             </div>
             <div className="border">
               <textarea
-                className="h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none"
+                name="budget"
+                value={userData.budget || ""}
+                className={`h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none ${
+                  error.get("budget") && "border border-red-400"
+                }`}
                 placeholder={t("enter")}
+                onChange={handleNumberChange}
               />
             </div>
             <div className="border">
               <textarea
-                className="h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none"
+                name="direct_benefi"
+                value={userData.direct_benefi || ""}
+                className={`h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none ${
+                  error.get("direct_benefi") && "border border-red-400"
+                }`}
                 placeholder={t("enter")}
+                onChange={handleNumberChange}
               />
             </div>
             <div className="border">
               <textarea
-                className="h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none"
+                name="in_direct_benefi"
+                value={userData.in_direct_benefi || ""}
+                className={`h-full w-full resize-none px-3 pt-1 placeholder:text-muted-foreground ltr:placeholder:text-xl-ltr focus-visible:ring-0 focus-visible:outline-none ${
+                  error.get("in_direct_benefi") && "border border-red-400"
+                }`}
                 placeholder={t("enter")}
+                onChange={handleNumberChange}
               />
             </div>
             <div className="border">
@@ -311,7 +453,7 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
                 <h1 className="font-medium ltr:text-2xl-ltr">
                   {t("guideline")}
                 </h1>
-                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
+                <h1 className="ltr:text-xl-ltr">{t("h_w_w_des")}</h1>
               </IconTooltip>
             </div>
             <div className="flex justify-between text-wrap text-center p-2 items-center">
@@ -324,7 +466,7 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
                 <h1 className="font-medium ltr:text-2xl-ltr">
                   {t("guideline")}
                 </h1>
-                <h1 className="ltr:text-xl-ltr">{t("g_w_des")}</h1>
+                <h1 className="ltr:text-xl-ltr">{t("f_a_e_des")}</h1>
               </IconTooltip>
             </div>
           </li>
@@ -404,6 +546,22 @@ export default function AddCenterBudgetPart(props: AddCenterBudgetPartProps) {
           </li>
         </ul>
       </div>
-    </>
+      <PrimaryButton
+        onClick={store}
+        className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr mx-auto col-span-full mt-8"
+      >
+        {editCenter ? (
+          <>
+            {t("save_changes")}
+            <Save className="text-tertiary size-[18px]  transition mx-auto cursor-pointer" />
+          </>
+        ) : (
+          <>
+            {t("add_center_to_list")}{" "}
+            <ChevronsDown className="text-tertiary size-[18px]  transition mx-auto cursor-pointer" />
+          </>
+        )}
+      </PrimaryButton>
+    </div>
   );
 }

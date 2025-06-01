@@ -166,7 +166,7 @@ const MultiTabTextarea = React.forwardRef<
         key={selectedTab}
         placeholder={placeholder}
         onChange={inputOnchange}
-        defaultValue={selectTabValue}
+        value={selectTabValue || ""}
       />
       {errorMessages.map((error: string, index: number) => (
         <h1

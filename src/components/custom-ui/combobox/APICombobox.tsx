@@ -102,12 +102,14 @@ function APICombobox(props: IAPIComboboxProps) {
     try {
       if (!readonly && apiUrl) {
         // 1. Check IndexedDB, if present set Items
-        const content = (await getApiCache(apiUrl, lang)) as any;
-        if (content && cacheData) {
-          setItems(content);
-          updateSelect();
-          setLoading(false);
-          return;
+        if (cacheData) {
+          const content = (await getApiCache(apiUrl, lang)) as any;
+          if (content) {
+            setItems(content);
+            updateSelect();
+            setLoading(false);
+            return;
+          }
         }
         // 2. Fetch data
         const response = await axiosClient.get(apiUrl, {

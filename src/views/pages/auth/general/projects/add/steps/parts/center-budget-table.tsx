@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/table";
 import { Edit, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
-import AddCenterBudgetPart from "./add-center-budget-part";
 import { CenterBudget } from "@/database/tables";
+import CenterBudgetHeader from "./center-budget-header";
 
 export default function CenterBudgetTable() {
   const { userData, setUserData } = useContext(StepperContext);
@@ -29,7 +29,7 @@ export default function CenterBudgetTable() {
         toast({
           toastType: "ERROR",
           title: t("error"),
-          description: t("item_exist"),
+          description: t("province_exist"),
         });
         return false;
       } else {
@@ -60,18 +60,16 @@ export default function CenterBudgetTable() {
 
     if (centers) {
       const alreadyExists = centers.some(
-        (v: CenterBudget) =>
-          v?.province?.id === updatedVac?.province?.id && v?.id != updatedVac.id
+        (v: CenterBudget) => v?.province?.id === updatedVac?.province?.id
       );
       if (alreadyExists) {
         toast({
           toastType: "ERROR",
           title: t("error"),
-          description: t("item_exist"),
+          description: t("province_exist"),
         });
         // do not clear input data
         return false;
-      } else {
       }
       setUserData((prev: any) => {
         const filtered = prev.centers_list.filter(
@@ -88,46 +86,54 @@ export default function CenterBudgetTable() {
     }
     return true;
   };
-  const editCenter = (vac: CenterBudget) => {
-    setOnEdit(vac); // Just set for editing, don't remove yet
+  const editCenter = (cent: CenterBudget) => {
+    const deepCopy = JSON.parse(JSON.stringify(cent));
+    setOnEdit(deepCopy); // Just set for editing, don't remove yet
+    setUserData((prev: any) => ({
+      ...prev,
+      centers_list: prev.centers_list.filter(
+        (center: CenterBudget) => center?.id !== cent?.id
+      ),
+    }));
   };
 
   return (
     <div className="flex flex-col col-span-full gap-x-4 xl:gap-x-12 mt-4 gap-y-3 w-full lg:w-full">
-      <AddCenterBudgetPart
+      <CenterBudgetHeader
         editCenter={onEdit}
         onEditComplete={onEditComplete}
         onComplete={onCenterComplete}
       />
-      <div className="col-span-full flex flex-col border-t mt-5 pt-6 space-y-4 pb-12 relative">
-        <h1 className="absolute uppercase text-tertiary font-bold ltr:text-[22px] bg-card -top-5">
+      <div className="col-span-full flex flex-col border-t mt-12 pt-6 space-y-4 pb-12 relative">
+        <h1 className="absolute text-tertiary font-bold ltr:text-[22px] bg-card -top-5">
           {t("centers")}
         </h1>
         <Table className="bg-card rounded-md">
           <TableHeader className="rtl:text-3xl-rtl ltr:text-xl-ltr bg-primary/5">
             <TableRow className="hover:bg-transparent border-none">
-              <TableHead className="text-start px-1">{t("province")}</TableHead>
+              <TableHead className="text-start">{t("province")}</TableHead>
               <TableHead className="text-start">{t("budget")}</TableHead>
               <TableHead className="text-start">{t("direct_benefi")}</TableHead>
-              <TableHead className="text-center">
+              <TableHead className="text-start">
                 {t("in_direct_benefi")}
               </TableHead>
+              <TableHead className="text-center">{t("action")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
             {userData.centers_list &&
               userData.centers_list.map((item: CenterBudget) => (
                 <TableRow key={item.id}>
-                  <TableCell className="text-start truncate px-1 py-0">
+                  <TableCell className="text-start truncate">
                     {item.province?.name}
                   </TableCell>
-                  <TableCell className="text-start truncate px-1 py-0">
+                  <TableCell className="text-start truncate">
                     {item.budget}
                   </TableCell>
-                  <TableCell className=" text-center truncate px-1 py-0">
+                  <TableCell className="text-start truncate">
                     {item.direct_benefi}
                   </TableCell>
-                  <TableCell className=" text-center truncate px-1 py-0">
+                  <TableCell className="text-start truncate">
                     {item.in_direct_benefi}
                   </TableCell>
                   <TableCell className="flex gap-x-2 justify-center items-center">

@@ -15,6 +15,8 @@ import axiosClient from "@/lib/axois-client";
 import { Option } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { useDebounce } from "@/hooks/use-debounce";
+import useCacheDB from "@/lib/indexeddb/useCacheDB";
+import { useTranslation } from "react-i18next";
 
 interface GroupOption {
   [key: string]: Option[];
@@ -50,6 +52,7 @@ interface MultipleSelectorProps {
   badgeClassName?: string;
   selectFirstItem?: boolean;
   creatable?: boolean;
+  cacheData?: boolean;
   commandProps?: React.ComponentPropsWithoutRef<typeof Command>;
   inputProps?: Omit<
     React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>,
@@ -167,6 +170,7 @@ const MultipleSelector = React.forwardRef<
       required,
       label,
       popoverClassName,
+      cacheData = true,
     }: MultipleSelectorProps,
     ref: React.Ref<MultipleSelectorRef>
   ) => {
@@ -181,7 +185,9 @@ const MultipleSelector = React.forwardRef<
       width: 0,
     });
     const [selected, setSelected] = React.useState<Option[]>(value || []);
-
+    const { getApiCache, updateApiCache } = useCacheDB();
+    const { i18n } = useTranslation();
+    const lang = i18n.language;
     const updateDropdownPosition = useCallback(() => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
@@ -222,10 +228,25 @@ const MultipleSelector = React.forwardRef<
             setSelected(selectedOptions);
           }
           setIsLoading(true);
+          if (cacheData) {
+            const content = (await getApiCache(apiUrl, lang)) as any;
+            if (content) {
+              const items = transToGroupOption(content, groupBy);
+              setOptions(items);
+              return;
+            }
+          }
           const response = await axiosClient.get(apiUrl, {
             params: params,
           });
           if (response.status == 200) {
+            if (cacheData)
+              updateApiCache({
+                key: apiUrl,
+                data: response.data,
+                expireAt: 10,
+                lang: lang,
+              });
             const list: Option[] = response.data;
             const items = transToGroupOption(list, groupBy);
             setOptions(items);

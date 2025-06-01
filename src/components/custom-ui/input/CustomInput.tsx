@@ -80,7 +80,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, InputProps>(
                 startContent
                   ? "rtl:pr-[42px] ltr:ps-[42px]"
                   : "rtl:pr-[12px] ltr:ps-[12px]"
-              } ${className} ${error && "border-red-400 border"} ${
+              } ${error && "border-red-400 border"} ${
                 props.readOnly && "cursor-not-allowed"
               }`,
               className

@@ -3,7 +3,7 @@ export type ValidationRule =
   | `requiredIf:${string}:${boolean}`
   | `max:${number}`
   | `min:${number}`
-  | ((value: any) => boolean);
+  | ((userData: any) => boolean);
 export interface ValidateItem {
   name: string;
   rules: ValidationRule[];

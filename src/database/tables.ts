@@ -1,5 +1,4 @@
 import { FileType } from "@/lib/types";
-import { Option } from "@/lib/types";
 
 export type Role =
   | { role: 3; name: "user" }
@@ -299,14 +298,24 @@ export interface ActivityModel {
 
 export interface CenterBudget {
   id: string;
-  province: { id: string; name: string } | undefined | Option;
-  district: { id: string; name: string }[] | Option[];
-  village: { id: string; name: string }[];
-  health_centers: { id: string; name: string }[];
+  province: { id: string; name: string };
+  district: { id: string; name: string };
+  village_english: string;
+  village_pashto: string;
+  village_farsi: string;
+  health_centers_english: string;
+  health_centers_pashto: string;
+  health_centers_farsi: string;
   budget: string;
-  direct_benefi: number;
-  in_direct_benefi: number;
-  address: string;
-  health_employees: string[];
-  finance_and_admin: string[];
+  direct_benefi: string;
+  in_direct_benefi: string;
+  address_english: string;
+  address_pashto: string;
+  address_farsi: string;
+  health_worker_english: string;
+  health_worker_pashto: string;
+  health_worker_farsi: string;
+  fin_admin_employees_english: string;
+  fin_admin_employees_pashto: string;
+  fin_admin_employees_farsi: string;
 }

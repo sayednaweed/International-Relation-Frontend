@@ -5,8 +5,6 @@ import CustomInput from "@/components/custom-ui/input/CustomInput";
 import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
 import { DateObject } from "react-multi-date-picker";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
-import AddCenterBudgetPart from "./parts/add-center-budget-part";
-import { CenterBudget } from "@/database/tables";
 import CenterBudgetTable from "./parts/center-budget-table";
 
 export default function AddCenterBudget() {
@@ -64,8 +62,9 @@ export default function AddCenterBudget() {
         selectedItem={userData["donor"]?.name}
         placeHolder={t("select_a")}
         errorMessage={error.get("donor")}
-        apiUrl={"donors"}
+        apiUrl={"donors/names/list"}
         mode="single"
+        cacheData={false}
       />
       <CustomInput
         required={true}
@@ -78,6 +77,42 @@ export default function AddCenterBudget() {
         type="text"
         errorMessage={error.get("donor_register_no")}
         onBlur={handleChange}
+      />
+      <APICombobox
+        placeholderText={t("search_item")}
+        errorText={t("no_item")}
+        onSelect={(selection: any) =>
+          setUserData((prev: any) => ({
+            ...prev,
+            ["currency"]: selection,
+          }))
+        }
+        lable={t("currency")}
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        selectedItem={userData["currency"]?.name}
+        placeHolder={t("select_a")}
+        errorMessage={error.get("currency")}
+        apiUrl={"currencies"}
+        mode="single"
+        cacheData={false}
+      />
+      <CustomInput
+        endContent={
+          <h1 className="flex justify-center items-center rounded border border-primary/50 size-[18px]">
+            {userData?.currency?.symbol}
+          </h1>
+        }
+        required={true}
+        requiredHint={`* ${t("required")}`}
+        size_="sm"
+        lable={t("budget")}
+        name="budget"
+        value={userData["budget"] || ""}
+        placeholder={t("enter")}
+        type="text"
+        errorMessage={error.get("budget")}
+        onChange={handleChange}
       />
       <CenterBudgetTable />
     </div>

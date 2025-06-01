@@ -12,7 +12,7 @@ import { getConfiguration, validateFile } from "@/lib/utils";
 import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-export default function AddNgoRepresentative() {
+export default function AddNgoStructure() {
   const { t } = useTranslation();
   const { userData, setUserData, error } = useContext(StepperContext);
   const fetch = async () => {

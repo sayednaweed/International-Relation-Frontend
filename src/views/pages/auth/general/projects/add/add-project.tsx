@@ -4,8 +4,7 @@ import axiosClient from "@/lib/axois-client";
 import { toast } from "@/components/ui/use-toast";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Building2, Check, Coins, NotebookPen, UserIcon } from "lucide-react";
-import { useNavigate, useParams } from "react-router";
-import { isString } from "@/lib/utils";
+import { useNavigate } from "react-router";
 import { ServerError } from "@/components/custom-ui/errors/ServerError";
 import { StatusEnum, TaskTypeEnum } from "@/lib/constants";
 import { setServerError } from "@/validation/validation";
@@ -19,16 +18,17 @@ import {
 import CompleteStep from "@/components/custom-ui/stepper/CompleteStep";
 import AddProjectDetails from "./steps/add-project-details";
 import AddCenterBudget from "./steps/add-center-budget";
+import { useGeneralAuthState } from "@/context/AuthContextProvider";
+import AddNgoStructure from "./steps/add-ngo-structure";
 
 export default function AddProject() {
   const { t } = useTranslation();
-  let { id } = useParams();
-
+  const { user } = useGeneralAuthState();
   const navigate = useNavigate();
   const [allowed, setAllowed] = useState(false);
   const fetchData = async () => {
     try {
-      const response = await axiosClient.get(`ngo/status/${id}`);
+      const response = await axiosClient.get(`ngo/status/${user.id}`);
       if (response.status == 200) {
         const data = response.data;
         if (data.status_id == StatusEnum.registered) {
@@ -54,7 +54,7 @@ export default function AddProject() {
   const SaveContent = async (formData: FormData) => {
     try {
       const response = await axiosClient.post(
-        `store/task/with/content/${id}`,
+        `store/task/with/content/${user.id}`,
         formData
       );
       if (response.status == 200) {
@@ -93,7 +93,7 @@ export default function AddProject() {
         //   : userData.establishment_date,
       };
 
-      if (id) formData.append("ngo_id", id.toString());
+      formData.append("ngo_id", user.id.toString());
       formData.append("content", JSON.stringify(content));
 
       const response = await axiosClient.post(
@@ -134,7 +134,7 @@ export default function AddProject() {
     formData.append("contents", JSON.stringify(content));
     formData.append("step", currentStep.toString());
     formData.append("task_type", TaskTypeEnum.project_registeration.toString());
-    if (id) formData.append("id", id.toString());
+    formData.append("id", user.id.toString());
     await SaveContent(formData);
     if (!onlySave) onClose();
   };
@@ -337,8 +337,53 @@ export default function AddProject() {
                 component: <AddCenterBudget />,
                 validationRules: [
                   {
-                    name: "project_name_english",
-                    rules: ["required", "max:128", "min:2"],
+                    name: "start_date",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "end_date",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "donor",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "donor_register_no",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "currency",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "budget",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "centers_list",
+                    rules: [
+                      (userData: any) => {
+                        if (Array.isArray(userData?.centers_list)) {
+                          if (userData.centers_list.length >= 1) return false;
+                        }
+                        toast({
+                          toastType: "ERROR",
+                          title: t("error"),
+                          description: t("must_be_one_center"),
+                        });
+                        return true;
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                component: <AddNgoStructure />,
+                validationRules: [
+                  {
+                    name: "currency",
+                    rules: ["required"],
                   },
                 ],
               },
