@@ -79,7 +79,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
     formData.append("contents", JSON.stringify(content));
     // formData.append("contents", JSON.stringify(content));
     try {
-      const response = await axiosClient.post(`donor/${id}`, formData);
+      const response = await axiosClient.post(`donors/${id}`, formData);
       if (response.status == 200) {
         toast({
           toastType: "SUCCESS",

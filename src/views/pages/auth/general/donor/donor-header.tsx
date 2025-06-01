@@ -22,11 +22,11 @@ export default function DonorHeader() {
   const [loading, setLoading] = useState(true);
   const fetchCount = async () => {
     try {
-      const response = await axiosClient.get(`/projects/statistics`);
+      const response = await axiosClient.get(`/donors/statistics`);
       if (response.status == 200) {
         setRecordCount({
           activeUserCount: response.data.counts.activeCount,
-          inActiveUserCount: response.data.counts.unRegisteredCount,
+          inActiveUserCount: response.data.counts.blockCount,
           userCount: response.data.counts.count,
           todayCount: response.data.counts.todayCount,
         });
@@ -79,7 +79,7 @@ export default function DonorHeader() {
       />
       <HeaderCard
         loading={loading}
-        title={t("un_registered")}
+        title={t("in_active")}
         total={recordCount.inActiveUserCount}
         description1={t("total")}
         description2={t("donor")}

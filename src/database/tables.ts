@@ -319,3 +319,15 @@ export interface CenterBudget {
   fin_admin_employees_pashto: string;
   fin_admin_employees_farsi: string;
 }
+
+// donor
+export type DonorStatus = {
+  id: string;
+  donor_id: string;
+  status_id: number;
+  is_active: number;
+  name: string;
+  username: string;
+  comment: string;
+  created_at: string;
+};
