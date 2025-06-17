@@ -7,7 +7,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Activity, Database, KeyRound, NotebookPen } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
-import { PermissionEnum, StatusEnum } from "@/lib/constants";
+import { PermissionEnum } from "@/lib/constants";
 import EditInformationTab from "./steps/edit-information-tab";
 import { UserPermission } from "@/database/tables";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";

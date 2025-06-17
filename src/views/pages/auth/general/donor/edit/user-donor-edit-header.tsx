@@ -8,8 +8,6 @@ import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { IDonorInformation } from "./user-donor-edit-page";
 import { validateFile } from "@/lib/utils";
-import { StatusEnum } from "@/lib/constants";
-import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 
 export interface UserEditHeaderProps {
   id: string | undefined;

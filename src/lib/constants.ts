@@ -57,14 +57,13 @@ export const PermissionEnum = {
   },
   dashboard: { name: "dashboard", sub: {} },
   reports: { name: "reports", sub: {} },
-  settings: {
-    name: "settings",
+  configurations: {
+    name: "configurations",
     sub: {
-      setting_language: 21,
-      setting_job: 22,
-      setting_destination: 23,
-      setting_checklist: 24,
-      setting_news_type: 25,
+      configurations_job: 21,
+      configurations_checklist: 22,
+      configurations_news_type: 23,
+      configurations_priority: 24,
     },
   },
   logs: { name: "logs", sub: {} },

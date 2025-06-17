@@ -144,7 +144,7 @@ export default function ChecklistTab(props: ChecklistTabProps) {
     [selected.visible]
   );
   const checklist = permissions.sub.get(
-    PermissionEnum.settings.sub.setting_checklist
+    PermissionEnum.configurations.sub.configurations_checklist
   );
   const hasEdit = checklist?.edit;
   const hasAdd = checklist?.add;

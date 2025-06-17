@@ -11,7 +11,7 @@ import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabText
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { validate } from "@/validation/validation";
 import { toast } from "@/components/ui/use-toast";
-import { generateUUID } from "@/lib/utils";
+import { generateUUID, valueIsNumber } from "@/lib/utils";
 
 export interface CenterBudgetHeaderProps {
   onComplete: (center: CenterBudget) => boolean;
@@ -34,7 +34,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     const { name, value } = e.target;
-    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+    if (valueIsNumber(value)) {
       setUserData((prev: any) => ({
         ...prev,
         [name]: value,

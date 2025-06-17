@@ -230,3 +230,10 @@ export const validateFile = (
 };
 export const generateUUID = () =>
   Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+export const valueIsNumber = (value: string) => {
+  if (value === "" || /^\d*\.?\d*$/.test(value)) {
+    return true;
+  }
+  return false;
+};

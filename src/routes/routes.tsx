@@ -39,7 +39,6 @@ import EditNews from "@/views/pages/auth/general/management/news/edit/edite-news
 import AboutManagementPage from "@/views/pages/auth/general/management/about/about-management-page";
 import ViewNewsItem from "@/views/site/tabs/news/view-news-item";
 import ErrorLayout from "@/views/layout/error-layout";
-import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
 import ApprovalPage from "@/views/pages/auth/general/approval/approval-page";
 import SuperReportsPage from "@/views/pages/auth/general/reports/super-reports-page";
 import NgoPage from "@/views/pages/auth/general/ngo/ngo-page";
@@ -52,6 +51,8 @@ import NgoReportsPage from "@/views/pages/auth/ngo/reports/ngo-reports-page";
 import AddProject from "@/views/pages/auth/general/projects/add/add-project";
 import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import UserDonorEditPage from "@/views/pages/auth/general/donor/edit/user-donor-edit-page";
+import ConfigurationsPage from "@/views/pages/auth/general/configurations/configurations-page";
+import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -139,6 +140,17 @@ export const getSuperRouter = (
             }
           />
           <Route path="profile" element={<UsersProfilePage />} />
+          <Route
+            path="configurations"
+            element={
+              <ProtectedRoute
+                element={<ConfigurationsPage />}
+                routeName="configurations"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
           <Route
             path="settings"
             element={
@@ -385,6 +397,17 @@ export const getAdminRouter = (
           />
           <Route path="profile" element={<UsersProfilePage />} />
           <Route
+            path="configurations"
+            element={
+              <ProtectedRoute
+                element={<ConfigurationsPage />}
+                routeName="configurations"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
             path="settings"
             element={
               <ProtectedRoute
@@ -572,6 +595,17 @@ export const getUserRouter = (
               <ProtectedRoute
                 element={<SuperReportsPage />}
                 routeName="reports"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="configurations"
+            element={
+              <ProtectedRoute
+                element={<ConfigurationsPage />}
+                routeName="configurations"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -781,6 +815,7 @@ export const getDebuggerRouter = (
               />
             }
           />
+
           <Route path="profile" element={<UsersProfilePage />} />
         </Route>
 
