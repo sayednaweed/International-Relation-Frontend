@@ -88,7 +88,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
 
   return userData?.shouldContinue == false ? (
     <ConfirmationDialog
-      onComplete={async (clearState: boolean, response: any) => {
+      onComplete={async (clearState: boolean, _response: any) => {
         if (clearState) {
           setUserData({
             allowed: true,
