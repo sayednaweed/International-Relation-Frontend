@@ -20,6 +20,7 @@ import AddProjectDetails from "./steps/add-project-details";
 import AddCenterBudget from "./steps/add-center-budget";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import AddNgoStructure from "./steps/add-ngo-structure";
+import { isString } from "@/lib/utils";
 
 export default function AddProject() {
   const { t } = useTranslation();
@@ -88,9 +89,12 @@ export default function AddProject() {
       const content = {
         ...userData, // shallow copy of the userData object
         // checklistMap: Array.from(userData.checklistMap),
-        // establishment_date: !isString(userData.establishment_date)
-        //   ? userData.establishment_date?.toDate()?.toISOString()
-        //   : userData.establishment_date,
+        start_date: !isString(userData?.start_date)
+          ? userData?.start_date?.toDate()?.toISOString()
+          : userData?.start_date,
+        end_date: !isString(userData?.end_date)
+          ? userData?.end_date?.toDate()?.toISOString()
+          : userData?.end_date,
       };
 
       formData.append("ngo_id", user.id.toString());
@@ -126,9 +130,12 @@ export default function AddProject() {
     const content = {
       ...userData, // shallow copy of the userData object
       // checklistMap: Array.from(userData.checklistMap),
-      // establishment_date: !isString(userData.establishment_date)
-      //   ? userData.establishment_date?.toDate()?.toISOString()
-      //   : userData.establishment_date,
+      start_date: !isString(userData?.start_date)
+        ? userData?.start_date?.toDate()?.toISOString()
+        : userData?.start_date,
+      end_date: !isString(userData?.end_date)
+        ? userData?.end_date?.toDate()?.toISOString()
+        : userData?.end_date,
     };
     let formData = new FormData();
     formData.append("contents", JSON.stringify(content));
@@ -382,11 +389,57 @@ export default function AddProject() {
                 component: <AddNgoStructure />,
                 validationRules: [
                   {
-                    name: "currency",
+                    name: "pro_manager_name_english",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_name_farsi",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_name_pashto",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_contact",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_email",
                     rules: ["required"],
                   },
                 ],
               },
+              // {
+              //   component: (
+              //     <ProjectCheckListTab
+              //       onSaveClose={onSaveClose}
+              //       type={"register"}
+              //     />
+              //   ),
+              //   validationRules: [
+              //     {
+              //       name: "pro_manager_name_english",
+              //       rules: ["required"],
+              //     },
+              //     {
+              //       name: "pro_manager_name_farsi",
+              //       rules: ["required"],
+              //     },
+              //     {
+              //       name: "pro_manager_name_pashto",
+              //       rules: ["required"],
+              //     },
+              //     {
+              //       name: "pro_manager_contact",
+              //       rules: ["required"],
+              //     },
+              //     {
+              //       name: "pro_manager_email",
+              //       rules: ["required"],
+              //     },
+              //   ],
+              // },
               {
                 component: (
                   <CompleteStep

@@ -19,7 +19,7 @@ interface CheckListTabProps {
   type: "extend" | "register";
 }
 
-export default function CheckListTab(props: CheckListTabProps) {
+export default function ProjectCheckListTab(props: CheckListTabProps) {
   const { onSaveClose, type } = props;
   const { t } = useTranslation();
   let { id } = useParams();
@@ -58,7 +58,7 @@ export default function CheckListTab(props: CheckListTabProps) {
     }
   };
   useEffect(() => {
-    loadInformation();
+    // loadInformation();
   }, []);
 
   return (

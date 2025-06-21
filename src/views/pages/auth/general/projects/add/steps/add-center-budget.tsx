@@ -6,9 +6,12 @@ import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker
 import { DateObject } from "react-multi-date-picker";
 import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import CenterBudgetTable from "./parts/center-budget-table";
+import { useScrollToElement } from "@/hooks/use-scroll-to-element";
 
 export default function AddCenterBudget() {
   const { userData, setUserData, error } = useContext(StepperContext);
+  useScrollToElement(error);
+
   const { t } = useTranslation();
 
   const handleChange = (e: any) => {
@@ -114,7 +117,7 @@ export default function AddCenterBudget() {
         errorMessage={error.get("budget")}
         onChange={handleChange}
       />
-      <CenterBudgetTable />
+      {userData?.budget && <CenterBudgetTable />}
     </div>
   );
 }

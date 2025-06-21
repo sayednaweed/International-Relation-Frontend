@@ -11,7 +11,7 @@ import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabText
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { validate } from "@/validation/validation";
 import { toast } from "@/components/ui/use-toast";
-import { generateUUID, valueIsNumber } from "@/lib/utils";
+import { generateUUID, isObjectEmpty, valueIsNumber } from "@/lib/utils";
 
 export interface CenterBudgetHeaderProps {
   onComplete: (center: CenterBudget) => boolean;
@@ -55,18 +55,6 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
           },
           {
             name: "district",
-            rules: ["required"],
-          },
-          {
-            name: "village_english",
-            rules: ["required"],
-          },
-          {
-            name: "village_farsi",
-            rules: ["required"],
-          },
-          {
-            name: "village_pashto",
             rules: ["required"],
           },
           {
@@ -133,6 +121,61 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
         userData,
         setError
       );
+      // Validation Next step
+      const newError = new Map<string, string>();
+      let validatationFailed = false;
+      if (isObjectEmpty(userData?.villages) && userData?.selectedDistrictId) {
+        for (const dis of userData?.district) {
+          const village = userData?.villages[dis?.id];
+
+          if (village) {
+            ["village_english", "village_pashto", "village_farsi"].forEach(
+              (item: string) => {
+                if (!village[item]) {
+                  newError.set(item, `${t(item)} ${t("is_required")}`);
+                  newError.set(`${dis?.id}`, "");
+                }
+              }
+            );
+          } else {
+            newError.set(
+              "village_english",
+              `${t("village_farsi")} ${t("is_required")}`
+            );
+            newError.set(
+              "village_pashto",
+              `${t("village_farsi")} ${t("is_required")}`
+            );
+            newError.set(
+              "village_farsi",
+              `${t("village_farsi")} ${t("is_required")}`
+            );
+            newError.set(`${dis?.id}`, "");
+            validatationFailed = true;
+          }
+        }
+      } else {
+        newError.set(
+          "village_english",
+          `${t("village_farsi")} ${t("is_required")}`
+        );
+        newError.set(
+          "village_pashto",
+          `${t("village_farsi")} ${t("is_required")}`
+        );
+        newError.set(
+          "village_farsi",
+          `${t("village_farsi")} ${t("is_required")}`
+        );
+        const options: Option[] = userData?.district;
+        if (userData?.district) {
+          for (const dis of options) {
+            newError.set(`${dis?.id}`, "");
+          }
+        }
+      }
+      setError((prev) => new Map([...prev, ...newError]));
+      if (validatationFailed) return;
       if (!passed) return;
       // 2. Complete
       const center = {
@@ -170,7 +213,14 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
       setLoading(false);
     }
   };
-
+  console.log(userData);
+  const viewDistrictVillage = (option: Option) => {
+    setUserData((prev: any) => ({
+      ...prev,
+      // district: option,
+      selectedDistrictId: option?.id,
+    }));
+  };
   const province = useMemo(() => {
     return (
       <MultipleSelector
@@ -181,10 +231,12 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
         }}
         placeholder={t("select")}
         onChange={(option: Option[]) => {
+          const villages: any = {};
           setUserData((prev: any) => ({
             ...prev,
             province: option[0],
             district: [],
+            villages: villages,
           }));
         }}
         // defaultOptions={frameworks}
@@ -203,6 +255,18 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
     );
   }, [error, userData?.province?.id]);
 
+  const removeVillages = (all: boolean, option?: any) => {
+    if (all) {
+      setUserData((prev: any) => {
+        return { ...prev, villages: {} };
+      });
+    } else {
+      setUserData((prev: any) => {
+        const { [option?.id]: _, ...rest } = userData?.villages;
+        return { ...prev, villages: rest };
+      });
+    }
+  };
   const district = useMemo(() => {
     return (
       <MultipleSelector
@@ -217,10 +281,14 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
           setUserData((prev: any) => ({
             ...prev,
             district: option,
+            selectedDistrictId: option[option.length - 1]?.id,
           }));
         }}
-        // defaultOptions={frameworks}
+        onUnselect={(option: Option) => removeVillages(false, option)}
+        showView={true}
+        onViewClick={viewDistrictVillage}
         errorMessage={error.get("district")}
+        error={error}
         selectedOptions={userData.district as Option[]}
         required={true}
         apiUrl={"districts/" + userData?.province?.id}
@@ -230,6 +298,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
       />
     );
   }, [userData?.province?.id, error]);
+
   return (
     <div className="flex flex-col">
       <div className="col-span-full border overflow-auto p-4">
@@ -300,22 +369,48 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
               <MultiTabTextarea
                 optionalKey={"optional_lang"}
                 onTabChanged={(key: string, tabName: string) => {
-                  setUserData((prev: any) => ({
-                    ...prev,
-                    [key]: tabName,
-                    optional_lang: tabName,
-                  }));
+                  setUserData((prev: any) => {
+                    let villages = userData?.villages;
+                    let districtVillage =
+                      userData?.villages[userData?.selectedDistrictId];
+                    villages = {
+                      ...villages,
+                      [userData?.selectedDistrictId]: {
+                        ...districtVillage,
+                        [key]: tabName,
+                        optional_lang: tabName,
+                      },
+                    };
+                    return { ...prev, villages: villages };
+                  });
                 }}
                 onChanged={(value: string, name: string) => {
-                  setUserData((prev: any) => ({
-                    ...prev,
-                    [name]: value,
-                  }));
+                  setUserData((prev: any) => {
+                    let villages = userData?.villages;
+                    let districtVillage =
+                      userData?.villages[userData?.selectedDistrictId];
+                    villages = {
+                      ...villages,
+                      [userData?.selectedDistrictId]: {
+                        ...districtVillage,
+                        [name]: value,
+                      },
+                    };
+                    return { ...prev, villages: villages };
+                  });
                 }}
                 name="village"
                 highlightColor="bg-tertiary"
-                userData={userData}
+                userData={
+                  isObjectEmpty(userData?.villages) &&
+                  userData?.villages[userData?.selectedDistrictId]
+                    ? userData?.villages[userData?.selectedDistrictId]
+                    : userData
+                }
                 errorData={error}
+                key={
+                  userData?.selectedDistrictId && userData?.selectedDistrictId
+                }
                 placeholder={t("enter")}
                 className="rtl:text-xl-rtl resize ltr:placeholder:text-xl-ltr rounded-none m-0 border-t border-x-0 border-b-0"
                 tabsClassName="gap-0"

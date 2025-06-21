@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
 import { UserPermission } from "@/database/tables";
-import { CACHE, PermissionEnum, StatusEnum } from "@/lib/constants";
+import { CACHE, PermissionEnum, RoleEnum, StatusEnum } from "@/lib/constants";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
@@ -246,7 +246,7 @@ export function ProjectTable() {
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
-        {hasAdd && (
+        {hasAdd && user.role.role == RoleEnum.ngo && (
           <PrimaryButton
             onClick={() => navigate(`/projects/${user.id}`)}
             className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr"

@@ -442,5 +442,11 @@
   "action": "Action",
   "currency": "Currency",
   "save_changes": "Save changes",
-  "must_be_one_center": "There must be at least one center."
+  "must_be_one_center": "There must be at least one center.",
+  "pro_manager_name": "Project manager name",
+  "pro_manager_name_english": "Project manager name in english",
+  "pro_manager_name_pashto": "Project manager name in pashto",
+  "pro_manager_name_farsi": "Project manager name in farsi",
+  "pro_manager_contact": "Project manager contact",
+  "pro_manager_email": "Project manager email"
 }

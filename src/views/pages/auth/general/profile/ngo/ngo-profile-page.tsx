@@ -123,7 +123,7 @@ export default function NgoProfilePage() {
             </IconButton>
           ) : (
             <IconButton
-              onClick={() => navigate(`/ngo/${user.id}`, { replace: true })}
+              onClick={() => navigate(`/ngo/${user.id}`)}
               className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] sm:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
             >
               <UserRoundCog

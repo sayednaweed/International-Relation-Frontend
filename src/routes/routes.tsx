@@ -95,17 +95,7 @@ export const getSuperRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<SuperDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<SuperDashboardPage />} />
           <Route
             path="users"
             element={
@@ -151,17 +141,7 @@ export const getSuperRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
           <Route
             path="audit"
             element={
@@ -305,6 +285,28 @@ export const getSuperRouter = (
               />
             }
           />
+          <Route
+            path="projects"
+            element={
+              <ProtectedRoute
+                element={<ProjectsPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects/:id"
+            element={
+              <ProtectedRoute
+                element={<AddProject />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -351,17 +353,7 @@ export const getAdminRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<AdminDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
           <Route
             path="users"
             element={
@@ -407,17 +399,7 @@ export const getAdminRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
           <Route
             path="ngo"
             element={
@@ -524,6 +506,28 @@ export const getAdminRouter = (
               <ProtectedRoute
                 element={<UserDonorEditPage />}
                 routeName="donor"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects"
+            element={
+              <ProtectedRoute
+                element={<ProjectsPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects/:id"
+            element={
+              <ProtectedRoute
+                element={<AddProject />}
+                routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -578,17 +582,7 @@ export const getUserRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<UserDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<UserDashboardPage />} />
           <Route
             path="reports"
             element={
@@ -611,17 +605,7 @@ export const getUserRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<UsersProfilePage />} />
           <Route
             path="ngo"
@@ -733,6 +717,28 @@ export const getUserRouter = (
               />
             }
           />
+          <Route
+            path="projects"
+            element={
+              <ProtectedRoute
+                element={<ProjectsPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects/:id"
+            element={
+              <ProtectedRoute
+                element={<AddProject />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
         </Route>
 
         {/* Catch-all Route for Errors */}
@@ -782,17 +788,7 @@ export const getDebuggerRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<DebuggerDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<DebuggerDashboardPage />} />
           <Route
             path="logs"
             element={
@@ -804,17 +800,7 @@ export const getDebuggerRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
 
           <Route path="profile" element={<UsersProfilePage />} />
         </Route>
@@ -913,17 +899,7 @@ export const getNgoRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<NgoDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<NgoDashboardPage />} />
           <Route
             path="reports"
             element={
@@ -935,17 +911,7 @@ export const getNgoRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
           <Route
             path="ngo/profile/edit/:id"
             element={
@@ -1040,17 +1006,7 @@ export const getDonorRouter = (
             </I18nextProvider>
           }
         >
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute
-                element={<DonorDashboardPage />}
-                routeName="dashboard"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="dashboard" element={<DonorDashboardPage />} />
           <Route
             path="ngo"
             element={
@@ -1084,17 +1040,7 @@ export const getDonorRouter = (
               />
             }
           />
-          <Route
-            path="settings"
-            element={
-              <ProtectedRoute
-                element={<SettingsPage />}
-                routeName="settings"
-                permissions={permissions}
-                authenticated={authenticated}
-              />
-            }
-          />
+          <Route path="settings" element={<SettingsPage />} />
           <Route path="profile" element={<DonorProfilePage />} />
         </Route>
 

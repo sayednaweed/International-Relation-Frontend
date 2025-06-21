@@ -6,6 +6,7 @@ import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { toast } from "@/components/ui/use-toast";
+import { useScrollToElement } from "@/hooks/use-scroll-to-element";
 import axiosClient from "@/lib/axois-client";
 import { TaskTypeEnum } from "@/lib/constants";
 import { useContext, useEffect } from "react";
@@ -21,6 +22,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
   let { id } = useParams();
   const navigate = useNavigate();
   const { userData, setUserData, error } = useContext(StepperContext);
+  useScrollToElement(error);
 
   const fetchData = async () => {
     try {
@@ -80,7 +82,6 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
       navigate("/unauthorized", { replace: true });
     }
   };
-
   useEffect(() => {
     if (userData.shouldContinue == undefined) fetchData();
   }, []);

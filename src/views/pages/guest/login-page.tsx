@@ -14,7 +14,7 @@ export default function LoginPage() {
         {t("welcome")}
       </h1>
       <h1
-        onClick={() => navigate("/auth/user/login")}
+        onClick={() => navigate("/auth/donor/login")}
         className="border py-4 px-5 rounded-md bg-primary/5 shadow hover:shadow-sm rtl:text-xl-rtl"
       >
         {t("are_a_donor")}

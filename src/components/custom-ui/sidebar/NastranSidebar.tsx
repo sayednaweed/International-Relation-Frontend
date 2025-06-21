@@ -23,13 +23,27 @@ export default function NastranSidebar() {
   const sidebarComponents: JSX.Element[] = useMemo(() => {
     if (user?.permissions == undefined) return [];
     let items: JSX.Element[] = [];
+    const dashboardSelected = activeTab === "/" || activeTab === `/dashboard`;
+    const settingsSelected = activeTab === "/settings";
+    items.push(
+      <div
+        key={"dashboard"}
+        onClick={() => navigateTo("/dashboard")}
+        className={`flex gap-x-3 cursor-pointer items-center py-[8px] mx-2 rounded-[8px] ${
+          dashboardSelected
+            ? "bg-blue-500/30 text-tertiary font-semibold ltr:text-lg-ltr rtl:text-3xl-rtl"
+            : "hover:opacity-75 rtl:text-xl-rtl ltr:text-md-ltr"
+        }`}
+      >
+        <NetworkSvg src={"icons/home.svg"} routeIdentifier={"public"} />
+        <h1 className="truncate">{t("dashboard")}</h1>
+      </div>
+    );
     for (const [key, value] of user?.permissions) {
       // Show only button with visibility
       if (!value.visible) continue;
       const path = `/${value.permission}`;
-      const active = activeTab === "/" ? `/dashboard` : activeTab;
-      const isActive = active.startsWith(path);
-
+      const isActive = activeTab.startsWith(path);
       if (value.permission == SectionEnum.settings)
         items.push(
           <Separator className="opacity-90 my-4 relative" key="Separator" />
@@ -50,6 +64,23 @@ export default function NastranSidebar() {
         </div>
       );
     }
+    items.push(
+      <Separator className="opacity-90 my-4 relative" key="Separator" />
+    );
+    items.push(
+      <div
+        key={"settings"}
+        onClick={() => navigateTo("/settings")}
+        className={`flex gap-x-3 cursor-pointer items-center py-[8px] mx-2 rounded-[8px] ${
+          settingsSelected
+            ? "bg-blue-500/30 text-tertiary font-semibold ltr:text-lg-ltr rtl:text-3xl-rtl"
+            : "hover:opacity-75 rtl:text-xl-rtl ltr:text-md-ltr"
+        }`}
+      >
+        <NetworkSvg src={"icons/settings.svg"} routeIdentifier={"public"} />
+        <h1 className="truncate">{t("settings")}</h1>
+      </div>
+    );
     return items;
   }, [location.pathname, i18n.language]);
 

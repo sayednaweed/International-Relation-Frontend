@@ -1,5 +1,5 @@
 import { Command as CommandPrimitive, useCommandState } from "cmdk";
-import { X } from "lucide-react";
+import { Eye, X } from "lucide-react";
 import * as React from "react";
 import { forwardRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
@@ -26,6 +26,10 @@ interface MultipleSelectorProps {
   apiUrl?: string;
   shouldFetch?: boolean;
   params?: any;
+  error?: Map<string, string>;
+  showView?: boolean;
+  onViewClick?: (option: Option) => void;
+  onUnselect?: (option: Option) => void;
   popoverClassName?: string;
   value?: Option[];
   defaultOptions?: Option[];
@@ -139,8 +143,12 @@ const MultipleSelector = React.forwardRef<
   (
     {
       value,
+      error,
       apiUrl,
       shouldFetch = true,
+      showView = false,
+      onViewClick,
+      onUnselect,
       params,
       onChange,
       placeholder,
@@ -304,6 +312,7 @@ const MultipleSelector = React.forwardRef<
         setSelected(newOptions);
         onChange?.(newOptions);
         updateDropdownPosition();
+        if (onUnselect) onUnselect(option);
       },
       [selected, onChange, updateDropdownPosition]
     );
@@ -495,6 +504,12 @@ const MultipleSelector = React.forwardRef<
       ]
     );
 
+    const subErrorExist = (opt: Option): boolean => {
+      if (error && error.get(`${opt?.id}`) == "") {
+        return true;
+      }
+      return false;
+    };
     return (
       <Command
         {...commandProps}
@@ -549,7 +564,9 @@ const MultipleSelector = React.forwardRef<
                 <div
                   key={option.name}
                   className={cn(
-                    "animate-fadeIn relative ltr:text-xl-ltr bg-primary inline-flex h-fit cursor-default rtl:text-xl-rtl items- text-start rounded-md border border-solid rtl:ps-6 rtl:pe-2 ltr:pe-7 ltr:pl-2 rtl:pr-2 font-medium text-primary-foreground transition-all hover:bg-primary/70 disabled:cursor-not-allowed disabled:opacity-50 data-[fixed]:pe-2",
+                    `animate-fadeIn relative ltr:text-xl-ltr ${
+                      subErrorExist(option) ? "bg-red-500" : "bg-primary"
+                    } inline-flex h-fit cursor-default rtl:text-xl-rtl items- text-start rounded-md border border-solid rtl:ps-10 rtl:pe-2 ltr:pe-10 ltr:pl-2 rtl:pr-2 font-medium text-primary-foreground transition-all hover:bg-primary/70 disabled:cursor-not-allowed disabled:opacity-50 data-[fixed]:pe-2`,
                     badgeClassName
                   )}
                   data-fixed={option.fixed}
@@ -557,7 +574,7 @@ const MultipleSelector = React.forwardRef<
                 >
                   {option.name}
                   <button
-                    className="absolute -inset-y-px rtl:-start-px ltr:-end-px flex size-7 items-center justify-center rounded-e-lg border border-transparent p-0 text-primary-foreground ring-offset-background transition-colors hover:text-primary-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2"
+                    className="absolute ltr:pb-1 -inset-y-px w-fit rtl:right-4 ltr:right-4 flex size-7 items-center justify-center rounded-e-lg border border-transparent p-0 text-primary-foreground ring-offset-background transition-colors hover:text-primary-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         handleUnselect(option);
@@ -572,6 +589,25 @@ const MultipleSelector = React.forwardRef<
                   >
                     <X size={14} strokeWidth={2} aria-hidden="true" />
                   </button>
+                  {showView && (
+                    <button
+                      className="absolute ltr:pb-1 pr-[2px] -inset-y-px w-fit rtl:-start-px ltr:-end-px flex size-7 items-center justify-center rounded-e-lg border border-transparent p-0 text-primary-foreground ring-offset-background transition-colors hover:text-primary-foreground/70 focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:ring-offset-2"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={() => {
+                        if (onViewClick) onViewClick(option);
+                      }}
+                      aria-label="View"
+                    >
+                      <Eye
+                        className="size-[14px]"
+                        strokeWidth={2}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  )}
                 </div>
               );
             })}

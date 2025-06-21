@@ -237,3 +237,5 @@ export const valueIsNumber = (value: string) => {
   }
   return false;
 };
+export const isObjectEmpty = (obj: any) =>
+  obj ? Object.keys(obj).length > 0 : false;
