@@ -29,6 +29,7 @@ export const TaskTypeEnum = {
   ngo_registeration: 1,
   project_registeration: 2,
   ngo_agreement_extend: 3,
+  project_extend: 4,
 };
 export const ChecklistEnum = {
   NgoDirectorNid: 1,
@@ -41,6 +42,7 @@ export const ChecklistEnum = {
   ngo_register_form_ps: 9,
   ngo_register_form_fa: 10,
 };
+
 export const ApprovalTypeEnum = {
   pending: 1,
   approved: 2,
@@ -139,13 +141,7 @@ export const StatusEnum = {
   waiting_for_project_schedule: 11,
   project_has_comment: 12,
 };
-export const StatusTypeEnum = {
-  ngo: 1,
-  agreement: 2,
-  donor: 3,
-  project: 4,
-  general: 5,
-};
+
 export const StaffEnum = {
   manager: 1,
   director: 2,

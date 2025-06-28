@@ -13,6 +13,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
 import { CenterBudget } from "@/database/tables";
 import CenterBudgetHeader from "./center-budget-header";
+import { budgetFailed } from "@/lib/utils";
 
 export default function CenterBudgetTable() {
   const { userData, setUserData } = useContext(StepperContext);
@@ -31,21 +32,28 @@ export default function CenterBudgetTable() {
           title: t("error"),
           description: t("province_exist"),
         });
-        return false;
+        return true;
       } else {
+        let totalProvince = 0;
+        for (const center of centers) {
+          totalProvince += Number(center?.budget);
+        }
+        totalProvince += Number(center?.budget);
+        if (budgetFailed(userData?.budget, totalProvince, t)) return true;
         setUserData((prev: any) => ({
           ...prev,
           centers_list: [...prev.centers_list, center],
         }));
       }
     } else {
+      if (budgetFailed(userData?.budget, center?.budget, t)) return true;
       setUserData((prev: any) => ({
         ...prev,
         centers_list: [center],
       }));
     }
     // Clear inpput data
-    return true;
+    return false;
   };
   const removeCenter = (id: string) => {
     setUserData((prev: any) => ({
@@ -69,8 +77,15 @@ export default function CenterBudgetTable() {
           description: t("province_exist"),
         });
         // do not clear input data
-        return false;
+        return true;
       }
+      let totalProvince: number = 0;
+      for (const center of centers) {
+        totalProvince += Number(center?.budget);
+      }
+      totalProvince += Number(updatedVac?.budget);
+
+      if (budgetFailed(userData?.budget, totalProvince, t)) return true;
       setUserData((prev: any) => {
         const filtered = prev.centers_list.filter(
           (v: CenterBudget) => v.id !== updatedVac.id
@@ -83,8 +98,10 @@ export default function CenterBudgetTable() {
       });
       setOnEdit(undefined);
       // Clear inpput data
+    } else {
+      if (budgetFailed(userData?.budget, updatedVac?.budget, t)) return true;
     }
-    return true;
+    return false;
   };
   const editCenter = (cent: CenterBudget) => {
     const deepCopy = JSON.parse(JSON.stringify(cent));

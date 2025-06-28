@@ -33,24 +33,6 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         // Ask if user wants to resume prevoius operation
         if (content) {
           content = JSON.parse(content);
-          if (!content?.new_director) {
-            if (type == "extend") {
-              content.new_director = false;
-              content.show_new_director = true;
-            } else {
-              content.new_director = true;
-              content.show_new_director = false;
-            }
-          }
-          if (!content?.new_represent) {
-            if (type == "extend") {
-              content.new_represent = false;
-              content.show_new_representer = true;
-            } else {
-              content.new_represent = true;
-              content.show_new_representer = false;
-            }
-          }
           setUserData({
             ...content,
             allowed: true,
@@ -59,9 +41,9 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
             //   content.establishment_date &&
             //   new DateObject(new Date(content.establishment_date)),
             // If checklistMap exist means it is array
-            // checklistMap: content.checklistMap
-            //   ? new Map(content.checklistMap)
-            //   : new Map<string, any>(),
+            checklistMap: content.checklistMap
+              ? new Map(content.checklistMap)
+              : new Map<string, any>(),
           });
         } else {
           // no data is stored
@@ -93,7 +75,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
           setUserData({
             allowed: true,
             shouldContinue: true,
-            // checklistMap: new Map<string, any>(),
+            checklistMap: new Map<string, any>(),
           });
         } else {
           setUserData((prev: any) => ({

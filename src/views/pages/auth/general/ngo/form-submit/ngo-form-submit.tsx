@@ -146,8 +146,7 @@ export default function NgoFormSubmit() {
   const onClose = () => {
     if (user.role.role == RoleEnum.ngo) {
       // Incase of ngo
-      // navigate("/profile", { replace: true });
-      navigate(-1);
+      navigate("/profile", { replace: true });
     } else {
       // Back to ngo information
       navigate(-1);

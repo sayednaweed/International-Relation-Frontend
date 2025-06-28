@@ -21,6 +21,7 @@ import AddCenterBudget from "./steps/add-center-budget";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import AddNgoStructure from "./steps/add-ngo-structure";
 import { isString } from "@/lib/utils";
+import ProjectCheckListTab from "./steps/project-checklist-tab";
 
 export default function AddProject() {
   const { t } = useTranslation();
@@ -72,11 +73,26 @@ export default function AddProject() {
     return false;
   };
   const beforeStepSuccess = async (
-    _userData: any,
-    _currentStep: number,
+    userData: any,
+    currentStep: number,
     _setError: Dispatch<SetStateAction<Map<string, string>>>,
-    _backClicked: boolean
+    backClicked: boolean
   ) => {
+    if (!backClicked && currentStep == 2 && userData?.centers_list) {
+      let totalProvince = 0;
+      for (const center of userData?.centers_list) {
+        totalProvince += Number(center?.budget);
+      }
+      if (totalProvince != userData?.budget) {
+        // 2. Check province budget is not less than total budget
+        toast({
+          toastType: "ERROR",
+          title: t("error"),
+          description: "Province budget falls short of total budget.",
+        });
+        return false;
+      }
+    }
     return true;
   };
 
@@ -88,7 +104,7 @@ export default function AddProject() {
     try {
       const content = {
         ...userData, // shallow copy of the userData object
-        // checklistMap: Array.from(userData.checklistMap),
+        checklistMap: Array.from(userData.checklistMap),
         start_date: !isString(userData?.start_date)
           ? userData?.start_date?.toDate()?.toISOString()
           : userData?.start_date,
@@ -129,7 +145,7 @@ export default function AddProject() {
   ) => {
     const content = {
       ...userData, // shallow copy of the userData object
-      // checklistMap: Array.from(userData.checklistMap),
+      checklistMap: Array.from(userData.checklistMap),
       start_date: !isString(userData?.start_date)
         ? userData?.start_date?.toDate()?.toISOString()
         : userData?.start_date,
@@ -410,36 +426,36 @@ export default function AddProject() {
                   },
                 ],
               },
-              // {
-              //   component: (
-              //     <ProjectCheckListTab
-              //       onSaveClose={onSaveClose}
-              //       type={"register"}
-              //     />
-              //   ),
-              //   validationRules: [
-              //     {
-              //       name: "pro_manager_name_english",
-              //       rules: ["required"],
-              //     },
-              //     {
-              //       name: "pro_manager_name_farsi",
-              //       rules: ["required"],
-              //     },
-              //     {
-              //       name: "pro_manager_name_pashto",
-              //       rules: ["required"],
-              //     },
-              //     {
-              //       name: "pro_manager_contact",
-              //       rules: ["required"],
-              //     },
-              //     {
-              //       name: "pro_manager_email",
-              //       rules: ["required"],
-              //     },
-              //   ],
-              // },
+              {
+                component: (
+                  <ProjectCheckListTab
+                    onSaveClose={onSaveClose}
+                    type={"register"}
+                  />
+                ),
+                validationRules: [
+                  {
+                    name: "pro_manager_name_english",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_name_farsi",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_name_pashto",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_contact",
+                    rules: ["required"],
+                  },
+                  {
+                    name: "pro_manager_email",
+                    rules: ["required"],
+                  },
+                ],
+              },
               {
                 component: (
                   <CompleteStep

@@ -2,7 +2,6 @@ import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
-import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,9 +17,7 @@ export default function AddNgoStructure() {
     }));
   };
 
-  return !userData?.validationChecklist ? (
-    <NastranSpinner />
-  ) : (
+  return (
     <div className="flex flex-col mt-10 w-full lg:w-1/2 2xl:w-1/3 gap-y-6 pb-12">
       <BorderContainer
         title={t("pro_manager_name")}

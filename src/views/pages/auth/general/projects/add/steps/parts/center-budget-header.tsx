@@ -182,13 +182,12 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
         id: editCenter ? userData?.id : generateUUID(),
         province: userData?.province,
         district: userData?.district,
-        village_english: userData?.village_english,
-        village_pashto: userData?.village_pashto,
-        village_farsi: userData?.village_farsi,
+        villages: userData?.villages,
         health_centers_english: userData?.health_centers_english,
         health_centers_pashto: userData?.health_centers_pashto,
         health_centers_farsi: userData?.health_centers_farsi,
         budget: userData?.budget,
+        selectedDistrictId: userData?.selectedDistrictId,
         direct_benefi: userData?.direct_benefi,
         in_direct_benefi: userData?.in_direct_benefi,
         address_english: userData?.address_english,
@@ -201,19 +200,23 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
         fin_admin_employees_pashto: userData?.fin_admin_employees_pashto,
         fin_admin_employees_farsi: userData?.fin_admin_employees_farsi,
       };
-      if (editCenter) onEditComplete(center);
-      else onComplete(center);
+      if (editCenter) {
+        const failed = onEditComplete(center);
+        if (failed) return;
+      } else {
+        const failed = onComplete(center);
+        if (failed) return;
+      }
       setUserData(() => []);
     } catch (error: any) {
       toast({
         toastType: "ERROR",
-        description: error.response.data.message,
       });
+      console.log(error);
     } finally {
       setLoading(false);
     }
   };
-  console.log(userData);
   const viewDistrictVillage = (option: Option) => {
     setUserData((prev: any) => ({
       ...prev,
@@ -653,7 +656,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
         ) : (
           <>
             {t("add_center_to_list")}{" "}
-            <ChevronsDown className="text-tertiary size-[18px]  transition mx-auto cursor-pointer" />
+            <ChevronsDown className="text-tertiary size-[18px] animate-bounce transition mx-auto cursor-pointer" />
           </>
         )}
       </PrimaryButton>

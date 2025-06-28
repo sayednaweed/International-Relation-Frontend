@@ -239,3 +239,28 @@ export const valueIsNumber = (value: string) => {
 };
 export const isObjectEmpty = (obj: any) =>
   obj ? Object.keys(obj).length > 0 : false;
+
+export const budgetFailed = (
+  totalBuget: number,
+  totalProvince: number,
+  t: any
+) => {
+  // 1. Check province budget is not more than total budget
+  if (totalProvince > totalBuget) {
+    toast({
+      toastType: "ERROR",
+      title: t("error"),
+      description: "province budget Exceeds from total budget",
+    });
+    return true;
+  } else if (totalProvince <= 0) {
+    // 2. Check province budget is not less than total budget
+    toast({
+      toastType: "ERROR",
+      title: t("error"),
+      description: "Province budget falls short of total budget.",
+    });
+    return true;
+  }
+  return false;
+};

@@ -300,13 +300,16 @@ export interface CenterBudget {
   id: string;
   province: { id: string; name: string };
   district: { id: string; name: string };
-  village_english: string;
-  village_pashto: string;
-  village_farsi: string;
+  villages: {
+    village_english: string;
+    village_farsi: string;
+    village_pashto: string;
+  }[];
+  selectedDistrictId: string;
   health_centers_english: string;
   health_centers_pashto: string;
   health_centers_farsi: string;
-  budget: string;
+  budget: number;
   direct_benefi: string;
   in_direct_benefi: string;
   address_english: string;

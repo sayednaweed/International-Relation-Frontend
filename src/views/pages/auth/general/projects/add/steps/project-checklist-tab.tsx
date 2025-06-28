@@ -39,10 +39,7 @@ export default function ProjectCheckListTab(props: CheckListTabProps) {
           n_r: userData.new_represent,
         };
       } else {
-        url =
-          userData.nationality.id == CountryEnum.afghanistan
-            ? "ngo/register/checklist"
-            : "ngo/register/abroad/director-checklist";
+        url = "checklists/project-registeration";
       }
       const response = await axiosClient.get(url, { params: ex });
       if (response.status == 200) {
@@ -52,13 +49,13 @@ export default function ProjectCheckListTab(props: CheckListTabProps) {
       toast({
         toastType: "ERROR",
         title: t("error"),
-        // description: error.response.data.message,
+        description: error.response?.data?.message,
       });
       console.log(error);
     }
   };
   useEffect(() => {
-    // loadInformation();
+    loadInformation();
   }, []);
 
   return (
@@ -80,15 +77,15 @@ export default function ProjectCheckListTab(props: CheckListTabProps) {
               }}
               accept={checklist.acceptable_mimes}
               name={checklist.name}
-              defaultFile={userData.checklistMap.get(checklist.id)}
+              defaultFile={userData?.checklistMap.get(checklist.id)}
               // validTypes={["image/png", "image/jpeg", "image/gif"]}
               uploadParam={{
                 checklist_id: checklist.id,
                 ngo_id: id,
                 task_type:
                   type == "register"
-                    ? TaskTypeEnum.ngo_registeration
-                    : TaskTypeEnum.ngo_agreement_extend,
+                    ? TaskTypeEnum.project_registeration
+                    : TaskTypeEnum.project_extend,
               }}
               onComplete={async (record: any) => {
                 // 1. Update userData
