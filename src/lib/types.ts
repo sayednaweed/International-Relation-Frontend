@@ -9,6 +9,7 @@ import {
   Gender,
   News,
   NidType,
+  ProjectsDTO,
   Province,
   SelectUserPermission,
   SubPermission,
@@ -139,15 +140,6 @@ export type NgoSearch =
   | "type"
   | "contact";
 
-export interface NgoFilter {
-  sort: NgoSort;
-  order: Order;
-  search: {
-    column: NgoSearch;
-    value: string;
-  };
-  date: DateObject[];
-}
 export interface NgoPaginationData {
   data: NgoInformation[];
   lastPage: number;
@@ -388,3 +380,23 @@ export interface DonorPaginationData {
 }
 export type DonorSearch = "id" | "abbr" | "name" | "username" | "contact";
 export type DonorSort = "id" | "name" | "contact" | "status";
+
+export type ProjectSort =
+  | "registration_no"
+  | "project_name"
+  | "donor"
+  | "status"
+  | "currency";
+export type ProjectSearch =
+  | "registration_no"
+  | "project_name"
+  | "donor"
+  | "budget";
+
+export interface ProjectPaginationData {
+  data: ProjectsDTO[];
+  lastPage: number;
+  perPage: number;
+  currentPage: number;
+  totalItems: number;
+}

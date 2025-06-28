@@ -8,34 +8,39 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "@/components/ui/use-toast";
-import { UserPermission } from "@/database/tables";
+import { ProjectsDTO, UserPermission } from "@/database/tables";
 import { CACHE, PermissionEnum, RoleEnum, StatusEnum } from "@/lib/constants";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
-import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { setDateToURL } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ListFilter, Search } from "lucide-react";
+import { ListFilter, RefreshCcw, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
 import { DateObject } from "react-multi-date-picker";
 import {
-  NgoInformation,
-  NgoPaginationData,
-  NgoSearch,
-  NgoSort,
   Order,
+  ProjectPaginationData,
+  ProjectSearch,
+  ProjectSort,
 } from "@/lib/types";
 import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
+import { useDatasource } from "@/hooks/use-datasource";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function ProjectTable() {
   const { user } = useGeneralAuthState();
@@ -51,11 +56,17 @@ export function ProjectTable() {
   const order = searchParams.get("order");
   const startDate = searchParams.get("st_dt");
   const endDate = searchParams.get("en_dt");
+  const page = searchParams.get("page");
+
   const filters = {
-    sort: sort == null ? "id" : (sort as NgoSort),
+    sort: sort == null ? "registration_no" : (sort as ProjectSort),
+    page: page == null ? "1" : page,
     order: order == null ? "desc" : (order as Order),
     search: {
-      column: searchColumn == null ? "name" : (searchColumn as NgoSearch),
+      column:
+        searchColumn == null
+          ? "registration_no"
+          : (searchColumn as ProjectSearch),
       value: searchValue == null ? "" : searchValue,
     },
     date:
@@ -70,126 +81,103 @@ export function ProjectTable() {
         ? [new DateObject(new Date(endDate))]
         : [],
   };
-  const loadList = async (
-    searchInput: string | undefined = undefined,
-    count: number | undefined,
-    page: number | undefined
-  ) => {
-    try {
-      if (loading) return;
-      setLoading(true);
-      // 1. Organize date
-      let dates = {
-        startDate: startDate,
-        endDate: endDate,
-      };
-      // 2. Send data
-      const response = await axiosClient.get(`ngos`, {
-        params: {
-          page: page,
-          per_page: count,
-          filters: {
-            sort: filters.sort,
-            order: filters.order,
-            search: {
-              column: filters.search.column,
-              value: searchInput,
-            },
-            date: dates,
+  const loadList = async () => {
+    const countSore = await getComponentCache(
+      CACHE.PROJECT_TABLE_PAGINATION_COUNT
+    );
+    const count = countSore?.value ? countSore.value : 10;
+    // 1. Organize date
+    let dates = {
+      startDate: startDate,
+      endDate: endDate,
+    };
+    // 2. Send data
+    const response = await axiosClient.get(`projects`, {
+      params: {
+        page: filters.page,
+        per_page: count,
+        filters: {
+          sort: filters.sort,
+          order: filters.order,
+          search: {
+            column: filters.search.column,
+            value: filters.search.value,
           },
+          date: dates,
         },
-      });
-      const fetch = response.data.ngos.data as NgoInformation[];
-      const lastPage = response.data.ngos.last_page;
-      const totalItems = response.data.ngos.total;
-      const perPage = response.data.ngos.per_page;
-      const currentPage = response.data.ngos.current_page;
-      setNgos({
-        filterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-        unFilterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-      });
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-    } finally {
-      setLoading(false);
-    }
+      },
+    });
+    const fetch = response.data.projects.data as ProjectsDTO[];
+    const lastPage = response.data.projects.last_page;
+    const totalItems = response.data.projects.total;
+    const perPage = response.data.projects.per_page;
+    const currentPage = response.data.projects.current_page;
+
+    return {
+      filterList: {
+        data: fetch,
+        lastPage: lastPage,
+        totalItems: totalItems,
+        perPage: perPage,
+        currentPage: currentPage,
+      },
+      unFilterList: {
+        data: fetch,
+        lastPage: lastPage,
+        totalItems: totalItems,
+        perPage: perPage,
+        currentPage: currentPage,
+      },
+    };
   };
-  const initialize = async (
-    searchInput: string | undefined = undefined,
-    count: number | undefined,
-    page: number | undefined
-  ) => {
-    if (!count) {
-      const countSore = await getComponentCache(
-        CACHE.NGO_TABLE_PAGINATION_COUNT
-      );
-      count = countSore?.value ? countSore.value : 10;
-    }
-    if (!searchInput) {
-      searchInput = filters.search.value;
-    }
-    if (!page) {
-      page = 1;
-    }
-    loadList(searchInput, count, page);
-  };
-  useEffect(() => {
-    initialize(undefined, undefined, 1);
-  }, [sort, startDate, endDate, order]);
-  const [ngos, setNgos] = useState<{
-    filterList: NgoPaginationData;
-    unFilterList: NgoPaginationData;
-  }>({
-    filterList: {
-      data: [],
-      lastPage: 1,
-      totalItems: 0,
-      perPage: 0,
-      currentPage: 0,
+  const { projects, setProjects, isLoading, refetch } = useDatasource<
+    {
+      filterList: ProjectPaginationData;
+      unFilterList: ProjectPaginationData;
     },
-    unFilterList: {
-      data: [],
-      lastPage: 1,
-      totalItems: 0,
-      perPage: 0,
-      currentPage: 0,
+    "projects"
+  >(
+    {
+      queryFn: loadList,
+      queryKey: "projects",
     },
-  });
-  const [loading, setLoading] = useState(false);
+    [sort, startDate, endDate, order, searchValue],
+    {
+      filterList: {
+        data: [],
+        lastPage: 1,
+        totalItems: 0,
+        perPage: 0,
+        currentPage: 0,
+      },
+      unFilterList: {
+        data: [],
+        lastPage: 1,
+        totalItems: 0,
+        perPage: 0,
+        currentPage: 0,
+      },
+    }
+  );
+
   const { t } = useTranslation();
 
-  const deleteOnClick = async (ngo: NgoInformation) => {
+  const deleteOnClick = async (project: ProjectsDTO) => {
     try {
-      const ngoId = ngo.id;
-      const response = await axiosClient.delete("ngo/" + ngoId);
+      const itemId = project.id;
+      const response = await axiosClient.delete("projects/" + itemId);
       if (response.status == 200) {
-        const filtered = ngos.unFilterList.data.filter(
-          (item: NgoInformation) => ngoId != item?.id
+        const filtered = projects.unFilterList.data.filter(
+          (item: ProjectsDTO) => itemId != item?.id
         );
         const item = {
           data: filtered,
-          lastPage: ngos.unFilterList.lastPage,
-          totalItems: ngos.unFilterList.totalItems,
-          perPage: ngos.unFilterList.perPage,
-          currentPage: ngos.unFilterList.currentPage,
+          lastPage: projects.unFilterList.lastPage,
+          totalItems: projects.unFilterList.totalItems,
+          perPage: projects.unFilterList.perPage,
+          currentPage: projects.unFilterList.currentPage,
         };
-        setNgos({ ...ngos, filterList: item, unFilterList: item });
+        setProjects({ ...projects, filterList: item, unFilterList: item });
       }
       toast({
         toastType: "SUCCESS",
@@ -201,6 +189,22 @@ export function ProjectTable() {
         toastType: "ERROR",
         title: t("error"),
         description: error.response.data.message,
+      });
+    }
+  };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // prevent form submission or default behavior
+      const queryParams = new URLSearchParams();
+      queryParams.set("sort", filters.sort);
+      queryParams.set("order", filters.order);
+      queryParams.set("page", filters.page);
+      queryParams.set("sch_col", filters.search.column);
+      if (searchRef.current)
+        queryParams.set("sch_val", searchRef.current?.value);
+      setDateToURL(queryParams, filters.date);
+      navigate(`/projects?${queryParams.toString()}`, {
+        replace: true,
       });
     }
   };
@@ -227,21 +231,20 @@ export function ProjectTable() {
       <TableCell>
         <Shimmer className="h-[24px] w-full rounded-sm" />
       </TableCell>
+      <TableCell>
+        <Shimmer className="h-[24px] w-full rounded-sm" />
+      </TableCell>
     </TableRow>
   );
   const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
+    PermissionEnum.projects.name
   ) as UserPermission;
   const hasView = per?.view;
   const hasAdd = per?.add;
 
-  const watchOnClick = async (ngo: NgoInformation) => {
-    const ngoId = ngo.id;
-    if (ngo.status_id == StatusEnum.registration_incomplete) {
-      navigate(`/ngo/profile/edit/${ngoId}`);
-    } else {
-      navigate(`/ngo/${ngoId}`);
-    }
+  const watchOnClick = async (projects: ProjectsDTO) => {
+    const itemId = projects.id;
+    navigate(`/projects/${itemId}`);
   };
   return (
     <>
@@ -260,19 +263,26 @@ export function ProjectTable() {
           placeholder={`${t(filters.search.column)}...`}
           parentClassName="sm:flex-1 col-span-3"
           type="text"
+          defaultValue={filters.search.value}
           ref={searchRef}
+          onKeyDown={handleKeyDown}
           startContent={
             <Search className="size-[18px] mx-auto rtl:mr-[4px] text-primary pointer-events-none" />
           }
           endContent={
             <SecondaryButton
               onClick={async () => {
-                if (searchRef.current != undefined)
-                  await initialize(
-                    searchRef.current.value,
-                    undefined,
-                    undefined
-                  );
+                const queryParams = new URLSearchParams();
+                queryParams.set("sort", filters.sort);
+                queryParams.set("order", filters.order);
+                queryParams.set("page", filters.page);
+                queryParams.set("sch_col", filters.search.column);
+                if (searchRef.current)
+                  queryParams.set("sch_val", searchRef.current?.value);
+                setDateToURL(queryParams, filters.date);
+                navigate(`/projects?${queryParams.toString()}`, {
+                  replace: true,
+                });
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
             >
@@ -280,7 +290,7 @@ export function ProjectTable() {
             </SecondaryButton>
           }
         />
-        <div className="sm:px-4 col-span-3 flex-1 self-start sm:self-baseline flex justify-end items-center">
+        <div className="sm:px-4 col-span-3 flex-1 self-start gap-x-3 sm:self-baseline flex justify-end items-center">
           <NastranModel
             size="lg"
             isDismissable={false}
@@ -297,7 +307,7 @@ export function ProjectTable() {
           >
             <FilterDialog
               filters={filters}
-              sortOnComplete={async (filterName: NgoSort) => {
+              sortOnComplete={async (filterName: ProjectSort) => {
                 if (filterName != filters.sort) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filterName);
@@ -305,12 +315,12 @@ export function ProjectTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/projects?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
-              searchFilterChanged={async (filterName: NgoSearch) => {
+              searchFilterChanged={async (filterName: ProjectSearch) => {
                 if (filterName != filters.search.column) {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
@@ -318,7 +328,7 @@ export function ProjectTable() {
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/projects?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -331,7 +341,7 @@ export function ProjectTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/projects?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
@@ -344,27 +354,36 @@ export function ProjectTable() {
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, selectedDates);
-                  navigate(`/ngo?${queryParams.toString()}`, {
+                  navigate(`/projects?${queryParams.toString()}`, {
                     replace: true,
                   });
                 }
               }}
               filtersShowData={{
                 sort: [
-                  { name: "name", translate: t("name"), onClick: () => {} },
                   {
-                    name: "type",
-                    translate: t("type"),
+                    name: "registration_no",
+                    translate: t("registration_no"),
                     onClick: () => {},
                   },
                   {
-                    name: "contact",
-                    translate: t("contact"),
+                    name: "project_name",
+                    translate: t("project_name"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "donor",
+                    translate: t("donor"),
                     onClick: () => {},
                   },
                   {
                     name: "status",
                     translate: t("status"),
+                    onClick: () => {},
+                  },
+                  {
+                    name: "currency",
+                    translate: t("currency"),
                     onClick: () => {},
                   },
                 ],
@@ -386,16 +405,15 @@ export function ProjectTable() {
                     translate: t("registration_no"),
                     onClick: () => {},
                   },
-                  { name: "name", translate: t("name"), onClick: () => {} },
-                  { name: "type", translate: t("type"), onClick: () => {} },
                   {
-                    name: "contact",
-                    translate: t("contact"),
+                    name: "project_name",
+                    translate: t("project_name"),
                     onClick: () => {},
                   },
+                  { name: "donor", translate: t("donor"), onClick: () => {} },
                   {
-                    name: "email",
-                    translate: t("email"),
+                    name: "budget",
+                    translate: t("budget"),
                     onClick: () => {},
                   },
                 ],
@@ -408,9 +426,22 @@ export function ProjectTable() {
               }}
             />
           </NastranModel>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <RefreshCcw
+                  onClick={refetch}
+                  className="size-[24px] border hover:scale-110 transition-transform p-1 rounded-md bg-tertiary cursor-pointer text-primary-foreground"
+                />
+              </TooltipTrigger>
+              <TooltipContent className="rtl:text-3xl-rtl ltr:text-xl-ltr">
+                <p>{t("refresh_page")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <CustomSelect
-          paginationKey={CACHE.NGO_TABLE_PAGINATION_COUNT}
+          paginationKey={CACHE.PROJECT_TABLE_PAGINATION_COUNT}
           options={[
             { value: "10", label: "10" },
             { value: "20", label: "20" },
@@ -419,14 +450,12 @@ export function ProjectTable() {
           className="w-fit sm:self-baseline"
           updateCache={(data: any) => updateComponentCache(data)}
           getCache={async () =>
-            await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT)
+            await getComponentCache(CACHE.PROJECT_TABLE_PAGINATION_COUNT)
           }
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
-          onChange={async (value: string) =>
-            await initialize(undefined, parseInt(value), undefined)
-          }
+          onChange={refetch}
         />
       </div>
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
@@ -435,41 +464,34 @@ export function ProjectTable() {
             <TableHead className="text-start">{t("project_name")}</TableHead>
             <TableHead className="text-start">{t("donor")}</TableHead>
             <TableHead className="text-start">{t("budget")}</TableHead>
+            <TableHead className="text-start">{t("currency")}</TableHead>
             <TableHead className="text-start">{t("start_date")}</TableHead>
             <TableHead className="text-start">{t("end_date")}</TableHead>
             <TableHead className="text-start">{t("status")}</TableHead>
+            <TableHead className="text-start">{t("date")}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          {loading ? (
+          {isLoading ? (
             <>{skeleton}</>
           ) : (
-            ngos.filterList.data.map((item: NgoInformation) => (
+            projects.filterList.data.map((item: ProjectsDTO) => (
               <TableRowIcon
                 read={hasView}
                 remove={false}
                 edit={false}
                 onEdit={async () => {}}
-                key={item.name}
+                key={item.id}
                 item={item}
                 onRemove={deleteOnClick}
                 onRead={watchOnClick}
               >
-                <TableCell className="px-1 py-0">
-                  <CachedImage
-                    src={item?.profile}
-                    alt="Avatar"
-                    ShimmerIconClassName="size-[18px]"
-                    shimmerClassName="size-[36px] mx-auto shadow-lg border border-tertiary rounded-full"
-                    className="size-[36px] object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
-                    routeIdentifier={"profile"}
-                  />
-                </TableCell>
-                <TableCell className="truncate rtl:text-md-rtl">
-                  {item.registration_no}
-                </TableCell>
-                <TableCell className="truncate">{item.name}</TableCell>
-                <TableCell className="truncate">{item.type}</TableCell>
+                <TableCell className="truncate">{item.project_name}</TableCell>
+                <TableCell className="truncate">{item.donor}</TableCell>
+                <TableCell className="truncate">{item.budget}</TableCell>
+                <TableCell className="truncate">{item.currency}</TableCell>
+                <TableCell className="truncate">{item.start_date}</TableCell>
+                <TableCell className="truncate">{item.end_date}</TableCell>
                 <TableCell>
                   <BooleanStatusButton
                     getColor={function (): {
@@ -497,15 +519,7 @@ export function ProjectTable() {
                           };
                     }}
                   />
-                </TableCell>
-                <TableCell
-                  className="rtl:text-md-rtl truncate rtl:text-end"
-                  dir="ltr"
-                >
-                  {item.contact}
-                </TableCell>
-                <TableCell className="rtl:text-md-rtl truncate">
-                  {item.email}
+                  <TableCell className="truncate">{item.created_at}</TableCell>
                 </TableCell>
               </TableRowIcon>
             ))
@@ -515,14 +529,24 @@ export function ProjectTable() {
       <div className="flex justify-between rounded-md bg-card dark:bg-card-secondary flex-1 p-3 items-center">
         <h1 className="rtl:text-lg-rtl ltr:text-md-ltr font-medium">{`${t(
           "page"
-        )} ${ngos.unFilterList.currentPage} ${t("of")} ${
-          ngos.unFilterList.lastPage
+        )} ${projects.unFilterList.currentPage} ${t("of")} ${
+          projects.unFilterList.lastPage
         }`}</h1>
         <Pagination
-          lastPage={ngos.unFilterList.lastPage}
-          onPageChange={async (page) =>
-            await initialize(undefined, undefined, page)
-          }
+          lastPage={projects.unFilterList.lastPage}
+          onPageChange={async (page) => {
+            // await initialize(undefined, undefined, page)
+            const queryParams = new URLSearchParams();
+            queryParams.set("sort", filters.sort);
+            queryParams.set("order", filters.order);
+            queryParams.set("sch_col", filters.search.column);
+            queryParams.set("sch_val", filters.search.value);
+            queryParams.set("page", page.toString());
+            setDateToURL(queryParams, filters.date);
+            navigate(`/projects?${queryParams.toString()}`, {
+              replace: true,
+            });
+          }}
         />
       </div>
     </>

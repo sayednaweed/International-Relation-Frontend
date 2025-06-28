@@ -70,7 +70,7 @@ export const PermissionEnum = {
   },
   logs: { name: "logs", sub: {} },
   audit: { name: "audit", sub: {} },
-  projects: { projects: "projects", sub: {} },
+  projects: { name: "projects", sub: {} },
   about: {
     name: "management/about",
     sub: {

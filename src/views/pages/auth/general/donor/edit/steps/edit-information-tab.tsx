@@ -33,7 +33,6 @@ export default function EditInformationTab(props: EditInformationTabProps) {
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
   const [donorData, setDonorData] = useState<EditDonorInformation>(
     props.donorInformation
@@ -115,9 +114,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {failed ? (
-          <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
-        ) : donorData === undefined ? (
+        {loading ? (
           <NastranSpinner />
         ) : (
           <div className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">

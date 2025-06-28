@@ -10,7 +10,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { UserPermission } from "@/database/tables";
 import { CACHE, PermissionEnum, StatusEnum } from "@/lib/constants";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
@@ -20,7 +20,7 @@ import CachedImage from "@/components/custom-ui/image/CachedImage";
 import { setDateToURL } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ListFilter, Search } from "lucide-react";
+import { ListFilter, RefreshCcw, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
@@ -37,23 +37,31 @@ import useCacheDB from "@/lib/indexeddb/useCacheDB";
 import { useUserAuthState } from "@/context/AuthContextProvider";
 import FilterDialog from "@/components/custom-ui/dialog/filter-dialog";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
+import { useDatasource } from "@/hooks/use-datasource";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export function NgoTable() {
   const { user } = useUserAuthState();
   const navigate = useNavigate();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
-
   const [searchParams] = useSearchParams();
   // Accessing individual search filters
   const searchValue = searchParams.get("sch_val");
   const searchColumn = searchParams.get("sch_col");
   const sort = searchParams.get("sort");
   const order = searchParams.get("order");
+  const page = searchParams.get("page");
   const startDate = searchParams.get("st_dt");
   const endDate = searchParams.get("en_dt");
   const filters = {
-    sort: sort == null ? "id" : (sort as NgoSort),
+    sort: sort == null ? "name" : (sort as NgoSort),
+    page: page == null ? "1" : page,
     order: order == null ? "desc" : (order as Order),
     search: {
       column: searchColumn == null ? "name" : (searchColumn as NgoSearch),
@@ -71,108 +79,83 @@ export function NgoTable() {
         ? [new DateObject(new Date(endDate))]
         : [],
   };
-  const loadList = async (
-    searchInput: string | undefined = undefined,
-    count: number | undefined,
-    page: number | undefined
-  ) => {
-    try {
-      if (loading) return;
-      setLoading(true);
-      // 1. Organize date
-      let dates = {
-        startDate: startDate,
-        endDate: endDate,
-      };
-      // 2. Send data
-      const response = await axiosClient.get(`ngos`, {
-        params: {
-          page: page,
-          per_page: count,
-          filters: {
-            sort: filters.sort,
-            order: filters.order,
-            search: {
-              column: filters.search.column,
-              value: searchInput,
-            },
-            date: dates,
+  const loadList = async () => {
+    const countSore = await getComponentCache(CACHE.NGO_TABLE_PAGINATION_COUNT);
+    const count = countSore?.value ? countSore.value : 10;
+    // 1. Organize date
+    let dates = {
+      startDate: startDate,
+      endDate: endDate,
+    };
+    // 2. Send data
+    const response = await axiosClient.get(`ngos`, {
+      params: {
+        page: filters.page,
+        per_page: count,
+        filters: {
+          sort: filters.sort,
+          order: filters.order,
+          search: {
+            column: filters.search.column,
+            value: filters.search.value,
           },
+          date: dates,
         },
-      });
-      const fetch = response.data.ngos.data as NgoInformation[];
-      const lastPage = response.data.ngos.last_page;
-      const totalItems = response.data.ngos.total;
-      const perPage = response.data.ngos.per_page;
-      const currentPage = response.data.ngos.current_page;
-      setNgos({
-        filterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-        unFilterList: {
-          data: fetch,
-          lastPage: lastPage,
-          totalItems: totalItems,
-          perPage: perPage,
-          currentPage: currentPage,
-        },
-      });
-    } catch (error: any) {
-      toast({
-        toastType: "ERROR",
-        title: t("error"),
-        description: error.response.data.message,
-      });
-    } finally {
-      setLoading(false);
-    }
+      },
+    });
+    const fetch = response.data.ngos.data as NgoInformation[];
+    const lastPage = response.data.ngos.last_page;
+    const totalItems = response.data.ngos.total;
+    const perPage = response.data.ngos.per_page;
+    const currentPage = response.data.ngos.current_page;
+
+    return {
+      filterList: {
+        data: fetch,
+        lastPage: lastPage,
+        totalItems: totalItems,
+        perPage: perPage,
+        currentPage: currentPage,
+      },
+      unFilterList: {
+        data: fetch,
+        lastPage: lastPage,
+        totalItems: totalItems,
+        perPage: perPage,
+        currentPage: currentPage,
+      },
+    };
   };
-  const initialize = async (
-    searchInput: string | undefined = undefined,
-    count: number | undefined,
-    page: number | undefined
-  ) => {
-    if (!count) {
-      const countSore = await getComponentCache(
-        CACHE.NGO_TABLE_PAGINATION_COUNT
-      );
-      count = countSore?.value ? countSore.value : 10;
-    }
-    if (!searchInput) {
-      searchInput = filters.search.value;
-    }
-    if (!page) {
-      page = 1;
-    }
-    loadList(searchInput, count, page);
-  };
-  useEffect(() => {
-    initialize(undefined, undefined, 1);
-  }, [sort, startDate, endDate, order]);
-  const [ngos, setNgos] = useState<{
-    filterList: NgoPaginationData;
-    unFilterList: NgoPaginationData;
-  }>({
-    filterList: {
-      data: [],
-      lastPage: 1,
-      totalItems: 0,
-      perPage: 0,
-      currentPage: 0,
+  const { ngos, setNgos, isLoading, refetch } = useDatasource<
+    {
+      filterList: NgoPaginationData;
+      unFilterList: NgoPaginationData;
     },
-    unFilterList: {
-      data: [],
-      lastPage: 1,
-      totalItems: 0,
-      perPage: 0,
-      currentPage: 0,
+    "ngos"
+  >(
+    {
+      queryFn: loadList,
+      queryKey: "ngos",
     },
-  });
-  const [loading, setLoading] = useState(false);
+    [sort, startDate, endDate, order, searchValue],
+    {
+      filterList: {
+        data: [],
+        lastPage: 1,
+        totalItems: 0,
+        perPage: 0,
+        currentPage: 0,
+      },
+      unFilterList: {
+        data: [],
+        lastPage: 1,
+        totalItems: 0,
+        perPage: 0,
+        currentPage: 0,
+      },
+    }
+  );
+
   const { t } = useTranslation();
   const addItem = (ngo: NgoInformation) => {
     setNgos((prevState) => ({
@@ -256,6 +239,22 @@ export function NgoTable() {
       navigate(`/ngo/${ngoId}`);
     }
   };
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // prevent form submission or default behavior
+      const queryParams = new URLSearchParams();
+      queryParams.set("sort", filters.sort);
+      queryParams.set("order", filters.order);
+      queryParams.set("page", filters.page);
+      queryParams.set("sch_col", filters.search.column);
+      if (searchRef.current)
+        queryParams.set("sch_val", searchRef.current?.value);
+      setDateToURL(queryParams, filters.date);
+      navigate(`/ngo?${queryParams.toString()}`, {
+        replace: true,
+      });
+    }
+  };
   return (
     <>
       <div className="flex flex-col sm:items-baseline sm:flex-row rounded-md bg-card dark:!bg-black/30 gap-2 flex-1 px-2 py-2 mt-4">
@@ -279,19 +278,26 @@ export function NgoTable() {
           placeholder={`${t(filters.search.column)}...`}
           parentClassName="sm:flex-1 col-span-3"
           type="text"
+          defaultValue={filters.search.value}
           ref={searchRef}
+          onKeyDown={handleKeyDown}
           startContent={
             <Search className="size-[18px] mx-auto rtl:mr-[4px] text-primary pointer-events-none" />
           }
           endContent={
             <SecondaryButton
               onClick={async () => {
-                if (searchRef.current != undefined)
-                  await initialize(
-                    searchRef.current.value,
-                    undefined,
-                    undefined
-                  );
+                const queryParams = new URLSearchParams();
+                queryParams.set("sort", filters.sort);
+                queryParams.set("order", filters.order);
+                queryParams.set("page", filters.page);
+                queryParams.set("sch_col", filters.search.column);
+                if (searchRef.current)
+                  queryParams.set("sch_val", searchRef.current?.value);
+                setDateToURL(queryParams, filters.date);
+                navigate(`/ngo?${queryParams.toString()}`, {
+                  replace: true,
+                });
               }}
               className="w-[72px] absolute rtl:left-[6px] ltr:right-[6px] -top-[7px] h-[32px] rtl:text-sm-rtl ltr:text-md-ltr hover:shadow-sm shadow-lg"
             >
@@ -299,7 +305,7 @@ export function NgoTable() {
             </SecondaryButton>
           }
         />
-        <div className="sm:px-4 col-span-3 flex-1 self-start sm:self-baseline flex justify-end items-center">
+        <div className="sm:px-4 col-span-3 flex-1 self-start gap-x-3 sm:self-baseline flex justify-end items-center">
           <NastranModel
             size="lg"
             isDismissable={false}
@@ -321,6 +327,7 @@ export function NgoTable() {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filterName);
                   queryParams.set("order", filters.order);
+                  queryParams.set("page", filters.page);
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
@@ -334,6 +341,7 @@ export function NgoTable() {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filters.order);
+                  queryParams.set("page", filters.page);
                   queryParams.set("sch_col", filterName);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
@@ -347,6 +355,7 @@ export function NgoTable() {
                   const queryParams = new URLSearchParams();
                   queryParams.set("sort", filters.sort);
                   queryParams.set("order", filterName);
+                  queryParams.set("page", filters.page);
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, filters.date);
@@ -360,6 +369,7 @@ export function NgoTable() {
                   const queryParams = new URLSearchParams();
                   queryParams.set("order", filters.order);
                   queryParams.set("sort", filters.sort);
+                  queryParams.set("page", filters.page);
                   queryParams.set("sch_col", filters.search.column);
                   queryParams.set("sch_val", filters.search.value);
                   setDateToURL(queryParams, selectedDates);
@@ -427,6 +437,19 @@ export function NgoTable() {
               }}
             />
           </NastranModel>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <RefreshCcw
+                  onClick={refetch}
+                  className="size-[24px] border hover:scale-110 transition-transform p-1 rounded-md bg-tertiary cursor-pointer text-primary-foreground"
+                />
+              </TooltipTrigger>
+              <TooltipContent className="rtl:text-3xl-rtl ltr:text-xl-ltr">
+                <p>{t("refresh_page")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
         <CustomSelect
           paginationKey={CACHE.NGO_TABLE_PAGINATION_COUNT}
@@ -443,9 +466,7 @@ export function NgoTable() {
           placeholder={`${t("select")}...`}
           emptyPlaceholder={t("no_options_found")}
           rangePlaceholder={t("count")}
-          onChange={async (value: string) =>
-            await initialize(undefined, parseInt(value), undefined)
-          }
+          onChange={refetch}
         />
       </div>
       <Table className="bg-card dark:bg-card-secondary rounded-md my-[2px] py-8">
@@ -461,7 +482,7 @@ export function NgoTable() {
           </TableRow>
         </TableHeader>
         <TableBody className="rtl:text-xl-rtl ltr:text-2xl-ltr">
-          {loading ? (
+          {isLoading ? (
             <>{skeleton}</>
           ) : (
             ngos.filterList.data.map((item: NgoInformation) => (
@@ -540,9 +561,19 @@ export function NgoTable() {
         }`}</h1>
         <Pagination
           lastPage={ngos.unFilterList.lastPage}
-          onPageChange={async (page) =>
-            await initialize(undefined, undefined, page)
-          }
+          onPageChange={async (page) => {
+            // await initialize(undefined, undefined, page)
+            const queryParams = new URLSearchParams();
+            queryParams.set("sort", filters.sort);
+            queryParams.set("order", filters.order);
+            queryParams.set("sch_col", filters.search.column);
+            queryParams.set("sch_val", filters.search.value);
+            queryParams.set("page", page.toString());
+            setDateToURL(queryParams, filters.date);
+            navigate(`/ngo?${queryParams.toString()}`, {
+              replace: true,
+            });
+          }}
         />
       </div>
     </>

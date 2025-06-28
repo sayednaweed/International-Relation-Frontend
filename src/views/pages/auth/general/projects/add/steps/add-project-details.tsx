@@ -37,10 +37,6 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
             ...content,
             allowed: true,
             shouldContinue: false,
-            // establishment_date:
-            //   content.establishment_date &&
-            //   new DateObject(new Date(content.establishment_date)),
-            // If checklistMap exist means it is array
             checklistMap: content.checklistMap
               ? new Map(content.checklistMap)
               : new Map<string, any>(),

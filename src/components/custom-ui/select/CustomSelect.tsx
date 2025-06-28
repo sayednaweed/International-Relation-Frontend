@@ -14,7 +14,7 @@ interface SelectProps {
   emptyPlaceholder: string;
   rangePlaceholder: string;
   options: Option[];
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   updateCache: (data: any) => Promise<void>;
   getCache: () => Promise<any>;
 }
@@ -57,7 +57,7 @@ const CustomSelect: React.FC<SelectProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSelect = (value: string) => {
-    onChange(value);
+    if (onChange) onChange(value);
     const item = {
       key: paginationKey,
       value: value,
@@ -186,7 +186,7 @@ const CustomSelect: React.FC<SelectProps> = ({
                   value = "10";
                   option = KEYS.default;
                 }
-                onChange(value);
+                if (onChange) onChange(value);
                 const item = {
                   key: paginationKey,
                   value: value,

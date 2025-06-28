@@ -334,3 +334,15 @@ export type DonorStatus = {
   comment: string;
   created_at: string;
 };
+export type ProjectsDTO = {
+  id: string;
+  project_name: string;
+  donor: string;
+  budget: number;
+  currency: number;
+  start_date: string;
+  end_date: string;
+  status: string;
+  status_id: number;
+  created_at: string;
+};

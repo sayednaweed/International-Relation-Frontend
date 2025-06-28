@@ -11,6 +11,7 @@ import {
 import { useGlobalState } from "@/context/GlobalStateContext";
 import { cn, isString } from "@/lib/utils";
 import { CalendarDays } from "lucide-react";
+import { createPortal } from "react-dom";
 
 export interface CustomeDatePickerProps {
   dateOnComplete: (date: DateObject) => void;
@@ -44,27 +45,48 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
   const [state] = useGlobalState();
   const { i18n } = useTranslation();
   const direction = i18n.dir();
+
   const [visible, setVisible] = useState(false);
   const [selectedDates, setSelectedDates] = useState<DateObject | undefined>(
     isString(value) ? new DateObject(new Date(value)) : value
   );
-  const calendarRef = useRef<any>(null);
 
+  const calendarWrapperRef = useRef<HTMLDivElement | null>(null);
+  const calenderParentRef = useRef<HTMLDivElement | null>(null);
+
+  const [position, setPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
+
+  // Close calendar on outside clicks
   useEffect(() => {
-    // Add event listener for clicks outside
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        calendarWrapperRef.current &&
+        !calendarWrapperRef.current.contains(event.target as Node) &&
+        calenderParentRef.current &&
+        !calenderParentRef.current.contains(event.target as Node)
+      ) {
+        setVisible(false);
+      }
     };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      calendarRef.current &&
-      !calendarRef.current.contains(event.target as Node)
-    ) {
-      setVisible(false);
+
+  // Update position when calendar becomes visible
+  useEffect(() => {
+    if (visible && calenderParentRef.current) {
+      const rect = calenderParentRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
     }
-  };
+  }, [visible]);
+
   const formatHijriDate = (date?: DateObject) => {
     try {
       if (date) {
@@ -72,48 +94,6 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
         return date
           .convert(state.systemLanguage.calendar, state.systemLanguage.local)
           .format(format);
-
-        // let month = "";
-        // let day: any;
-        // let year: any;
-        // if (state.systemLanguage.info.calendarId === CALENDAR.SOLAR) {
-        //   if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-        //     month = afgMonthNamesFa[date.monthIndex];
-        //     day = convertNumberToPersian(date.day);
-        //     year = convertNumberToPersian(date.year);
-        //   } else if (
-        //     state.systemLanguage.info.localeId === CALENDAR_LOCALE.english
-        //   ) {
-        //     month = afgMonthNamesEn[date.monthIndex];
-        //     day = date.day;
-        //     year = date.year;
-        //   } else {
-        //     month = date.month.name;
-        //     day = date.day;
-        //     year = date.year;
-        //   }
-        // } else if (state.systemLanguage.info.calendarId === CALENDAR.LUNAR) {
-        //   if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-        //     month = afgMonthNamesFa[date.monthIndex];
-        //     day = convertNumberToPersian(date.day);
-        //     year = convertNumberToPersian(date.year);
-        //   } else {
-        //     month = date.month?.name;
-        //     day = convertNumberToPersian(date.day);
-        //     year = convertNumberToPersian(date.year);
-        //   }
-        // } else {
-        //   if (state.systemLanguage.info.localeId === CALENDAR_LOCALE.farsi) {
-        //     day = convertNumberToPersian(date.day);
-        //     year = convertNumberToPersian(date.year);
-        //   } else {
-        //     day = date.day;
-        //     year = date.year;
-        //   }
-        //   month = date.month?.name;
-        // }
-
-        // return `${month}, ${day}, ${year}`;
       }
     } catch (e: any) {
       console.log(e, "CustomDatePicker");
@@ -122,20 +102,13 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
   };
 
   const handleDateChange = (date: DateObject) => {
-    onVisibilityChange();
-    // const format = "MM/DD/YYYY";
-    // let object = { date, format };
-    // const gre = new DateObject(object)
-    // .convert(gregorian, gregorian_en)
-    // .format();
-    // const MiladiDate = date.toDate();
-
+    setVisible(false);
     dateOnComplete(date);
-
-    if (date instanceof DateObject) setSelectedDates(date);
+    setSelectedDates(date);
   };
+
   const onVisibilityChange = () => {
-    if (!readonly) setVisible(!visible);
+    if (!readonly) setVisible((v) => !v);
   };
 
   let months: any = [];
@@ -146,26 +119,48 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
       months = afgMonthNamesEn;
     }
   }
-  return (
-    <div dir={direction} className={cn("relative", parentClassName)}>
-      {visible && (
-        <Calendar
-          value={selectedDates}
-          ref={calendarRef}
-          className="absolute top-10"
-          onChange={handleDateChange}
-          months={months}
-          calendar={state.systemLanguage.calendar}
-          locale={state.systemLanguage.local}
-        />
-      )}
 
+  return (
+    <div
+      dir={direction}
+      ref={calenderParentRef}
+      className={cn("relative", parentClassName)}
+    >
+      {/* Calendar portal */}
+      {visible &&
+        position &&
+        createPortal(
+          <div
+            ref={calendarWrapperRef}
+            style={{
+              position: "absolute",
+              top: position.top,
+              left: position.left,
+              zIndex: 9999,
+              backgroundColor: "white",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+              borderRadius: "6px",
+            }}
+          >
+            <Calendar
+              value={selectedDates}
+              onChange={handleDateChange}
+              months={months}
+              calendar={state.systemLanguage.calendar}
+              locale={state.systemLanguage.local}
+              // Remove any conflicting absolute classes
+            />
+          </div>,
+          document.body
+        )}
+
+      {/* Input / trigger div */}
       <div
         className={cn(
           `border relative px-3 py-1 rounded-md ${
-            readonly && "cursor-not-allowed"
+            readonly ? "cursor-not-allowed" : "cursor-pointer"
           } ${required || lable ? "mt-[20px]" : "mt-2"} ${
-            errorMessage && "border-red-400"
+            errorMessage ? "border-red-400" : "border-gray-300"
           }`,
           className
         )}
@@ -181,13 +176,14 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
             {requiredHint}
           </span>
         )}
+
         {selectedDates ? (
-          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr text-primary/80 text-nowrap">
+          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr text-primary/80 whitespace-nowrap overflow-hidden">
             <CalendarDays className="size-[16px] inline-block text-tertiary rtl:ml-2 rtl:mr-2" />
             {formatHijriDate(selectedDates)}
           </h1>
         ) : (
-          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr font-semibold text-primary text-nowrap">
+          <h1 className="flex items-center gap-x-2 text-ellipsis rtl:text-lg-rtl ltr:text-lg-ltr font-semibold text-primary whitespace-nowrap overflow-hidden">
             <CalendarDays className="size-[16px] inline-block text-tertiary" />
             {placeholder}
           </h1>
@@ -202,6 +198,7 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
           </label>
         )}
       </div>
+
       {errorMessage && (
         <h1 className="rtl:text-sm-rtl ltr:text-sm-ltr capitalize text-start text-red-400">
           {errorMessage}
