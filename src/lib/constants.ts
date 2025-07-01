@@ -70,7 +70,15 @@ export const PermissionEnum = {
   },
   logs: { name: "logs", sub: {} },
   audit: { name: "audit", sub: {} },
-  projects: { name: "projects", sub: {} },
+  projects: {
+    name: "projects",
+    sub: {
+      detail: 61,
+      center_budget: 62,
+      organ_structure: 63,
+      checklist: 64,
+    },
+  },
   about: {
     name: "management/about",
     sub: {
@@ -138,8 +146,9 @@ export const StatusEnum = {
   registration_incomplete: 10,
 
   // Project
-  waiting_for_project_schedule: 11,
-  project_has_comment: 12,
+  pending_for_schedule: 11,
+  has_comment: 12,
+  scheduled: 13,
 };
 
 export const StaffEnum = {

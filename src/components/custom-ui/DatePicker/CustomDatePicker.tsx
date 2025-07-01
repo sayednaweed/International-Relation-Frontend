@@ -14,7 +14,7 @@ import { CalendarDays } from "lucide-react";
 import { createPortal } from "react-dom";
 
 export interface CustomeDatePickerProps {
-  dateOnComplete: (date: DateObject) => void;
+  dateOnComplete: (date: DateObject) => boolean | void;
   value: DateObject | undefined | string;
   className?: string;
   parentClassName?: string;
@@ -103,7 +103,8 @@ export default function CustomDatePicker(props: CustomeDatePickerProps) {
 
   const handleDateChange = (date: DateObject) => {
     setVisible(false);
-    dateOnComplete(date);
+    const failed = dateOnComplete(date);
+    if (failed) return;
     setSelectedDates(date);
   };
 

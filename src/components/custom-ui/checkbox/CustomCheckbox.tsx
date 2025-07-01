@@ -4,7 +4,7 @@ import React from "react";
 
 export interface CustomCheckboxProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
-  onCheckedChange: any;
+  onCheckedChange: (value: boolean) => void;
   checked: boolean;
   text?: string;
   description?: string;

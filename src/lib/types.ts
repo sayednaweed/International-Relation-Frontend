@@ -211,7 +211,62 @@ export type NgoInformation = {
   username: string;
   created_at: string;
 };
-
+export type ProjectHeaderType = {
+  profile: string | undefined;
+  name: string;
+  status_id: number;
+  status: string;
+  registration_no: string;
+  email: string;
+  contact: string;
+};
+export type ProjectDetailType = {
+  project_name_english: string;
+  project_name_farsi: string;
+  project_name_pashto: string;
+  preamble_english: string;
+  preamble_farsi: string;
+  preamble_pashto: string;
+  abbreviat_english: string;
+  abbreviat_farsi: string;
+  abbreviat_pashto: string;
+  organization_sen_man_english: string;
+  organization_sen_man_farsi: string;
+  organization_sen_man_pashto: string;
+  exper_in_health_english: string;
+  exper_in_health_farsi: string;
+  exper_in_health_pashto: string;
+  project_intro_english: string;
+  project_intro_farsi: string;
+  project_intro_pashto: string;
+  goals_english: string;
+  goals_farsi: string;
+  goals_pashto: string;
+  objective_english: string;
+  objective_farsi: string;
+  objective_pashto: string;
+  expected_outcome_english: string;
+  expected_outcome_farsi: string;
+  expected_outcome_pashto: string;
+  expected_impact_english: string;
+  expected_impact_farsi: string;
+  expected_impact_pashto: string;
+  main_activities_english: string;
+  main_activities_farsi: string;
+  main_activities_pashto: string;
+  action_plan_english: string;
+  action_plan_farsi: string;
+  action_plan_pashto: string;
+};
+export type ProjectOrganizationStructureType = {
+  pro_manager_name_english: string;
+  pro_manager_name_farsi: string;
+  pro_manager_name_pashto: string;
+  pro_manager_contact: string;
+  pro_manager_email: string;
+  previous_manager: boolean;
+  manager: { id: string; name: string } | undefined;
+};
 export type IStaff = {
   picture: string;
   name_english: string;

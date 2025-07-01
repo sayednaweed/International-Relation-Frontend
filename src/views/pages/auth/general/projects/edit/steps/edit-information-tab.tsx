@@ -1,5 +1,3 @@
-import APICombobox from "@/components/custom-ui/combobox/APICombobox";
-import CustomInput from "@/components/custom-ui/input/CustomInput";
 import { RefreshCcw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
@@ -17,60 +15,33 @@ import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import axiosClient from "@/lib/axois-client";
 import { setServerError, validate } from "@/validation/validation";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
-import {
-  Country,
-  District,
-  NgoType,
-  Province,
-  UserPermission,
-} from "@/database/tables";
 import { useParams } from "react-router";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
-import CustomDatePicker from "@/components/custom-ui/DatePicker/CustomDatePicker";
-import { DateObject } from "react-multi-date-picker";
 import { ValidateItem } from "@/validation/types";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
-import { isString } from "@/lib/utils";
-import { PermissionEnum } from "@/lib/constants";
-interface EditNgoInformation {
-  registration_no: string;
-  name_english: string | undefined;
-  name_pashto: string;
-  name_farsi: string;
-  area_english: string;
-  area_pashto: string;
-  area_farsi: string;
-  abbr: string;
-  type: NgoType;
-  contact: string;
-  email: string;
-  moe_registration_no: string;
-  country: Country;
-  province: Province;
-  district: District;
-  establishment_date: DateObject;
-  optional_lang: string;
-}
+import MultiTabTextarea from "@/components/custom-ui/input/mult-tab/MultiTabTextarea";
+import { ProjectDetailType } from "@/lib/types";
+
 interface EditInformationTabProps {
-  permissions: UserPermission;
-  registerationExpired: boolean;
+  hasEdit: boolean;
 }
 export default function EditInformationTab(props: EditInformationTabProps) {
-  const { permissions, registerationExpired } = props;
+  const { hasEdit } = props;
   const { t } = useTranslation();
   let { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState<Map<string, string>>(new Map());
-  const [ngoData, setNgoData] = useState<EditNgoInformation>();
+  const [projectDetail, setProjectDetail] = useState<
+    ProjectDetailType | undefined
+  >(undefined);
 
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`ngo/details/${id}`);
+      const response = await axiosClient.get(`projects/details/${id}`);
       if (response.status == 200) {
-        const ngo = response.data.ngo;
-        if (ngo) setNgoData(ngo);
+        setProjectDetail(response.data);
       }
     } catch (error: any) {
       toast({
@@ -96,39 +67,90 @@ export default function EditInformationTab(props: EditInformationTabProps) {
     // 1. Validate data changes
     // 2. Validate form
     const compulsoryFields: ValidateItem[] = [
-      { name: "name_english", rules: ["required", "max:128", "min:5"] },
-      { name: "name_farsi", rules: ["required", "max:128", "min:5"] },
-      { name: "name_pashto", rules: ["required", "max:128", "min:5"] },
-      { name: "abbr", rules: ["required"] },
-      { name: "type", rules: ["required"] },
-      { name: "contact", rules: ["required"] },
-      { name: "email", rules: ["required"] },
-      { name: "moe_registration_no", rules: ["required"] },
-      { name: "country", rules: ["required"] },
-      { name: "establishment_date", rules: ["required"] },
-      { name: "province", rules: ["required"] },
-      { name: "district", rules: ["required"] },
-      { name: "area_english", rules: ["required", "max:128", "min:5"] },
-      { name: "area_pashto", rules: ["required", "max:128", "min:5"] },
-      { name: "area_farsi", rules: ["required", "max:128", "min:5"] },
+      { name: "project_name_english", rules: ["required", "max:128"] },
+      { name: "project_name_farsi", rules: ["required", "max:128"] },
+      { name: "project_name_pashto", rules: ["required", "max:128"] },
+      { name: "preamble_english", rules: ["required"] },
+      { name: "preamble_farsi", rules: ["required"] },
+      { name: "preamble_pashto", rules: ["required"] },
+      { name: "abbreviat_english", rules: ["required"] },
+      { name: "abbreviat_farsi", rules: ["required"] },
+      { name: "abbreviat_pashto", rules: ["required"] },
+      { name: "organization_sen_man_english", rules: ["required"] },
+      { name: "organization_sen_man_farsi", rules: ["required"] },
+      { name: "organization_sen_man_pashto", rules: ["required"] },
+      { name: "exper_in_health_english", rules: ["required"] },
+      { name: "exper_in_health_farsi", rules: ["required"] },
+      { name: "exper_in_health_pashto", rules: ["required"] },
+      { name: "project_intro_english", rules: ["required"] },
+      { name: "project_intro_farsi", rules: ["required"] },
+      { name: "project_intro_pashto", rules: ["required"] },
+      { name: "goals_english", rules: ["required"] },
+      { name: "goals_farsi", rules: ["required"] },
+      { name: "goals_pashto", rules: ["required"] },
+      { name: "objective_english", rules: ["required"] },
+      { name: "objective_farsi", rules: ["required"] },
+      { name: "objective_pashto", rules: ["required"] },
+      { name: "expected_outcome_english", rules: ["required"] },
+      { name: "expected_outcome_farsi", rules: ["required"] },
+      { name: "expected_outcome_pashto", rules: ["required"] },
+      { name: "expected_impact_english", rules: ["required"] },
+      { name: "expected_impact_farsi", rules: ["required"] },
+      { name: "expected_impact_pashto", rules: ["required"] },
+      { name: "main_activities_english", rules: ["required"] },
+      { name: "main_activities_farsi", rules: ["required"] },
+      { name: "main_activities_pashto", rules: ["required"] },
+      { name: "action_plan_english", rules: ["required"] },
+      { name: "action_plan_farsi", rules: ["required"] },
+      { name: "action_plan_pashto", rules: ["required"] },
     ];
-    const passed = await validate(compulsoryFields, ngoData, setError);
+    const passed = await validate(compulsoryFields, projectDetail, setError);
     if (!passed) {
       setLoading(false);
       return;
     }
-    const content = {
-      ...ngoData, // shallow copy of the userData object
-      establishment_date: !isString(ngoData!.establishment_date)
-        ? ngoData!.establishment_date?.toDate()?.toISOString()
-        : ngoData!.establishment_date,
-    };
     // 2. Store
-    const formData = new FormData();
-    formData.append("id", id);
-    formData.append("contents", JSON.stringify(content));
     try {
-      const response = await axiosClient.post("ngo/update-info", formData);
+      const response = await axiosClient.post("projects/details", {
+        id: id,
+        project_name_english: projectDetail?.project_name_english,
+        project_name_farsi: projectDetail?.project_name_farsi,
+        project_name_pashto: projectDetail?.project_name_pashto,
+        preamble_english: projectDetail?.preamble_english,
+        preamble_farsi: projectDetail?.preamble_farsi,
+        preamble_pashto: projectDetail?.preamble_pashto,
+        abbreviat_english: projectDetail?.abbreviat_english,
+        abbreviat_farsi: projectDetail?.abbreviat_farsi,
+        abbreviat_pashto: projectDetail?.abbreviat_pashto,
+        organization_sen_man_english:
+          projectDetail?.organization_sen_man_english,
+        organization_sen_man_farsi: projectDetail?.organization_sen_man_farsi,
+        organization_sen_man_pashto: projectDetail?.organization_sen_man_pashto,
+        exper_in_health_english: projectDetail?.exper_in_health_english,
+        exper_in_health_farsi: projectDetail?.exper_in_health_farsi,
+        exper_in_health_pashto: projectDetail?.exper_in_health_pashto,
+        project_intro_english: projectDetail?.project_intro_english,
+        project_intro_farsi: projectDetail?.project_intro_farsi,
+        project_intro_pashto: projectDetail?.project_intro_pashto,
+        goals_english: projectDetail?.goals_english,
+        goals_farsi: projectDetail?.goals_farsi,
+        goals_pashto: projectDetail?.goals_pashto,
+        objective_english: projectDetail?.objective_english,
+        objective_farsi: projectDetail?.objective_farsi,
+        objective_pashto: projectDetail?.objective_pashto,
+        expected_outcome_english: projectDetail?.expected_outcome_english,
+        expected_outcome_farsi: projectDetail?.expected_outcome_farsi,
+        expected_outcome_pashto: projectDetail?.expected_outcome_pashto,
+        expected_impact_english: projectDetail?.expected_impact_english,
+        expected_impact_farsi: projectDetail?.expected_impact_farsi,
+        expected_impact_pashto: projectDetail?.expected_impact_pashto,
+        main_activities_english: projectDetail?.main_activities_english,
+        main_activities_farsi: projectDetail?.main_activities_farsi,
+        main_activities_pashto: projectDetail?.main_activities_pashto,
+        action_plan_english: projectDetail?.action_plan_english,
+        action_plan_farsi: projectDetail?.action_plan_farsi,
+        action_plan_pashto: projectDetail?.action_plan_pashto,
+      });
       if (response.status == 200) {
         toast({
           toastType: "SUCCESS",
@@ -149,52 +171,47 @@ export default function EditInformationTab(props: EditInformationTabProps) {
     }
   };
 
-  const information = permissions.sub.get(
-    PermissionEnum.ngo.sub.ngo_information
-  );
-  const hasEdit = information?.edit;
   return (
     <Card>
       <CardHeader className="space-y-0">
         <CardTitle className="rtl:text-3xl-rtl ltr:text-2xl-ltr">
-          {t("account_information")}
+          {t("detail")}
         </CardTitle>
         <CardDescription className="rtl:text-xl-rtl ltr:text-lg-ltr">
-          {t("update_user_acc_info")}
+          {t("update_proj_info")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         {failed ? (
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
-        ) : ngoData === undefined ? (
+        ) : projectDetail === undefined ? (
           <NastranSpinner />
         ) : (
-          <div className="grid gap-x-4 gap-y-6 w-full xl:w-1/2">
+          <div className="flex flex-col mt-10 w-full 2xl:w-[60%] gap-y-6 pb-12">
             <BorderContainer
-              title={t("ngo_name")}
+              title={t("project_name")}
               required={true}
               parentClassName="p-t-4 pb-0 px-0"
               className="grid grid-cols-1 gap-y-3"
             >
               <MultiTabInput
-                readOnly={!hasEdit}
                 optionalKey={"optional_lang"}
                 onTabChanged={(key: string, tabName: string) => {
-                  setNgoData({
-                    ...ngoData,
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
                     [key]: tabName,
                     optional_lang: tabName,
-                  });
+                  }));
                 }}
                 onChanged={(value: string, name: string) => {
-                  setNgoData({
-                    ...ngoData,
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
                     [name]: value,
-                  });
+                  }));
                 }}
-                name="name"
+                name="project_name"
                 highlightColor="bg-tertiary"
-                userData={ngoData}
+                userData={projectDetail}
                 errorData={error}
                 placeholder={t("content")}
                 className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0"
@@ -205,207 +222,390 @@ export default function EditInformationTab(props: EditInformationTabProps) {
                 <SingleTab>pashto</SingleTab>
               </MultiTabInput>
             </BorderContainer>
-
-            <CustomInput
-              readOnly={!hasEdit}
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              size_="sm"
-              lable={t("abbr")}
-              name="abbr"
-              defaultValue={ngoData["abbr"]}
-              placeholder={t("abbr_english")}
-              type="text"
-              className="uppercase"
-              errorMessage={error.get("abbr")}
-              onBlur={(e: any) => {
-                const { name, value } = e.target;
-                setNgoData({ ...ngoData, [name]: value });
-              }}
-            />
-            <APICombobox
-              placeholderText={t("search_item")}
-              errorText={t("no_item")}
-              onSelect={(selection: any) =>
-                setNgoData({ ...ngoData, ["type"]: selection })
-              }
-              lable={t("type")}
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              selectedItem={ngoData["type"]?.name}
-              placeHolder={t("select_a")}
-              errorMessage={error.get("type")}
-              apiUrl={"ngo-types"}
-              mode="single"
-              readonly={!hasEdit}
-            />
-            <CustomInput
-              size_="sm"
-              dir="ltr"
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              className="rtl:text-end"
-              lable={t("contact")}
-              placeholder={t("enter_ur_pho_num")}
-              defaultValue={ngoData["contact"]}
-              type="text"
-              name="contact"
-              errorMessage={error.get("contact")}
-              onChange={(e: any) => {
-                const { name, value } = e.target;
-                setNgoData({ ...ngoData, [name]: value });
-              }}
-              readOnly={!hasEdit}
-            />
-            <CustomInput
-              size_="sm"
-              name="email"
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              lable={t("email")}
-              defaultValue={ngoData["email"]}
-              placeholder={t("enter_your_email")}
-              type="email"
-              errorMessage={error.get("email")}
-              onChange={(e: any) => {
-                const { name, value } = e.target;
-                setNgoData({ ...ngoData, [name]: value });
-              }}
-              dir="ltr"
-              className="rtl:text-right"
-              readOnly={!hasEdit}
-            />
-
-            <CustomInput
-              size_="sm"
-              name="moe_registration_no"
-              required={true}
-              requiredHint={`* ${t("required")}`}
-              lable={t("moe_registration_no")}
-              defaultValue={ngoData["moe_registration_no"]}
-              placeholder={t("enter_your_email")}
-              type="moe_registration_no"
-              errorMessage={error.get("moe_registration_no")}
-              onChange={(e: any) => {
-                const { name, value } = e.target;
-                setNgoData({ ...ngoData, [name]: value });
-              }}
-              dir="ltr"
-              className="rtl:text-right"
-              readOnly={!hasEdit}
-            />
-
             <BorderContainer
-              title={t("place_of_establishment")}
+              title={t("preamble")}
               required={true}
-              parentClassName="mt-3"
-              className="flex flex-col items-stretch gap-y-3"
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
             >
-              <APICombobox
-                placeholderText={t("search_item")}
-                errorText={t("no_item")}
-                onSelect={(selection: any) =>
-                  setNgoData({
-                    ...ngoData,
-                    ["country"]: selection,
-                  })
-                }
-                lable={t("country")}
-                required={true}
-                selectedItem={ngoData["country"]?.name}
-                placeHolder={t("select_a")}
-                errorMessage={error.get("country")}
-                apiUrl={"countries"}
-                mode="single"
-                readonly={!hasEdit}
-              />
-              <CustomDatePicker
-                placeholder={t("select_a_date")}
-                lable={t("establishment_date")}
-                requiredHint={`* ${t("required")}`}
-                required={true}
-                value={ngoData.establishment_date}
-                dateOnComplete={(date: DateObject) => {
-                  setNgoData({ ...ngoData, establishment_date: date });
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
                 }}
-                className="py-3 w-full"
-                errorMessage={error.get("establishment_date")}
-                readonly={!hasEdit}
-              />
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="preamble"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
             </BorderContainer>
-
             <BorderContainer
-              title={t("head_office_add")}
+              title={t("abbreviat")}
               required={true}
-              parentClassName="mt-3"
-              className="flex flex-col items-start gap-y-3"
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
             >
-              <APICombobox
-                placeholderText={t("search_item")}
-                errorText={t("no_item")}
-                onSelect={(selection: any) =>
-                  setNgoData({ ...ngoData, ["province"]: selection })
-                }
-                lable={t("province")}
-                required={true}
-                selectedItem={ngoData["province"]?.name}
-                placeHolder={t("select_a")}
-                errorMessage={error.get("province")}
-                apiUrl={"provinces/" + 1}
-                mode="single"
-                readonly={!hasEdit}
-              />
-              {ngoData.province && (
-                <APICombobox
-                  placeholderText={t("search_item")}
-                  errorText={t("no_item")}
-                  onSelect={(selection: any) =>
-                    setNgoData({ ...ngoData, ["district"]: selection })
-                  }
-                  lable={t("district")}
-                  required={true}
-                  selectedItem={ngoData["district"]?.name}
-                  placeHolder={t("select_a")}
-                  errorMessage={error.get("district")}
-                  apiUrl={"districts/" + ngoData?.province?.id}
-                  mode="single"
-                  key={ngoData?.province?.id}
-                  readonly={!hasEdit}
-                />
-              )}
-
-              {ngoData.district && (
-                <MultiTabInput
-                  title={t("area")}
-                  parentClassName="w-full"
-                  optionalKey={"optional_lang"}
-                  onTabChanged={(key: string, tabName: string) => {
-                    setNgoData({
-                      ...ngoData,
-                      [key]: tabName,
-                      optional_lang: tabName,
-                    });
-                  }}
-                  onChanged={(value: string, name: string) => {
-                    setNgoData({
-                      ...ngoData,
-                      [name]: value,
-                    });
-                  }}
-                  name="area"
-                  highlightColor="bg-tertiary"
-                  userData={ngoData}
-                  errorData={error}
-                  placeholder={t("content")}
-                  className="rtl:text-xl-rtl"
-                  tabsClassName="gap-x-5"
-                  readOnly={!hasEdit}
-                >
-                  <SingleTab>english</SingleTab>
-                  <SingleTab>farsi</SingleTab>
-                  <SingleTab>pashto</SingleTab>
-                </MultiTabInput>
-              )}
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="abbreviat"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("organization_sen_man")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="organization_sen_man"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("exper_in_health")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="exper_in_health"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("project_intro")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="project_intro"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("goals")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="goals"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("objective")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="objective"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("expected_outcome")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="expected_outcome"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("expected_impact")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="expected_impact"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("main_activities")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="main_activities"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
+            </BorderContainer>
+            <BorderContainer
+              title={t("action_plan")}
+              required={true}
+              parentClassName="p-t-4 pb-0 px-0"
+              className="grid grid-cols-1 gap-y-3"
+            >
+              <MultiTabTextarea
+                optionalKey={"optional_lang"}
+                onTabChanged={(key: string, tabName: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [key]: tabName,
+                    optional_lang: tabName,
+                  }));
+                }}
+                onChanged={(value: string, name: string) => {
+                  setProjectDetail((prev: any) => ({
+                    ...prev,
+                    [name]: value,
+                  }));
+                }}
+                name="action_plan"
+                rows={8}
+                highlightColor="bg-tertiary"
+                userData={projectDetail}
+                errorData={error}
+                placeholder={t("content")}
+                className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+                tabsClassName="gap-x-5 px-3"
+              >
+                <SingleTab>english</SingleTab>
+                <SingleTab>farsi</SingleTab>
+                <SingleTab>pashto</SingleTab>
+              </MultiTabTextarea>
             </BorderContainer>
           </div>
         )}
@@ -420,8 +620,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
             <RefreshCcw className="ltr:ml-2 rtl:mr-2" />
           </PrimaryButton>
         ) : (
-          ngoData &&
-          !registerationExpired &&
+          projectDetail &&
           hasEdit && (
             <PrimaryButton onClick={saveData} className={`shadow-lg`}>
               <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>

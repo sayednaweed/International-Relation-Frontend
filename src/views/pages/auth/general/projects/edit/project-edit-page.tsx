@@ -2,48 +2,38 @@ import { useNavigate, useParams } from "react-router";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import { useEffect, useMemo, useState } from "react";
-import { NgoInformation } from "@/lib/types";
+import { ProjectHeaderType } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Activity,
   CloudDownload,
   CloudUpload,
   Database,
   Grip,
-  KeyRound,
   NotebookPen,
   UserRound,
-  UsersRound,
   Zap,
 } from "lucide-react";
-import UserNgoEditHeader from "./user-ngo-edit-header";
-import EditDirectorTab from "./steps/edit-director-tab";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import { PermissionEnum, StatusEnum } from "@/lib/constants";
-import EditAgreemenTab from "./steps/edit-agreement-tab";
-import EditMoreInformationTab from "./steps/edit-more-information-tab";
 import EditInformationTab from "./steps/edit-information-tab";
-import EditStatusTab from "./steps/edit-status-tab";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import { UserPermission } from "@/database/tables";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
-import EditRepresentativeTab from "./steps/edit-representative-tab";
 import IconButton from "@/components/custom-ui/button/IconButton";
-import UploadRegisterFormDailog from "./parts/upload-register-form-Dailog";
 import {
   Breadcrumb,
   BreadcrumbHome,
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
-import { EditNgoPassword } from "./steps/edit-ngo-password";
+import ProjectEditHeader from "./project-edit-header";
+import UploadMouDailog from "./parts/upload-mou-Dailog";
+import EditCenterBudgetTab from "./steps/edit-center-budget-tab";
+import EditOrganizationStructureTab from "./steps/edit-organization-structure-tab";
+import EditChecklistTab from "./steps/edit-checklist-tab";
 
-export interface INgoInformation {
-  ngoInformation: NgoInformation;
-  registerFormSubmitted: boolean;
-}
-export default function UserNgoEditPage() {
+export default function ProjectEditPage() {
   const { user } = useGeneralAuthState();
   const navigate = useNavigate();
   const handleGoBack = () => navigate(-1);
@@ -52,31 +42,25 @@ export default function UserNgoEditPage() {
   let { id } = useParams();
   const direction = i18n.dir();
   const [failed, setFailed] = useState(false);
-  const [userData, setUserData] = useState<INgoInformation | undefined>(
+  const [userData, setUserData] = useState<ProjectHeaderType | undefined>(
     undefined
   );
   const loadInformation = async () => {
     try {
-      const response = await axiosClient.get(`ngo/header-info/${id}`);
-      if (response.status == 200) {
-        const ngo = response.data.ngo as NgoInformation;
-        // Do not allow until register form is submitted
-        const registerFormSubmitted =
-          ngo.status_id == StatusEnum.document_upload_required;
-        if (ngo.status_id == StatusEnum.pending_approval) {
-          navigate(`/ngo/profile/edit/${id}`, {
-            state: {
-              data: { edit: true },
-            },
-          });
-          return;
-        } else {
-          setUserData({
-            ngoInformation: ngo,
-            registerFormSubmitted: registerFormSubmitted,
-          });
-        }
-      }
+      // const response = await axiosClient.get(`projects/header-info/${id}`);
+      // if (response.status == 200) {
+      // const header = response.data.header as ProjectHeaderType;
+      // setUserData(header);
+      setUserData({
+        profile: undefined,
+        name: "Save the children",
+        status_id: 11,
+        status: "Pending for schedule",
+        registration_no: "NF-P-01",
+        email: "notion@gmail.com",
+        contact: "+93785764809",
+      });
+      // }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
@@ -94,92 +78,60 @@ export default function UserNgoEditPage() {
   const selectedTabStyle = `rtl:text-xl-rtl ltr:text-lg-ltr relative w-[95%] bg-card-foreground/5 justify-start mx-auto ltr:py-2 rtl:py-[5px] data-[state=active]:bg-tertiary font-semibold data-[state=active]:text-primary-foreground gap-x-3`;
 
   const per: UserPermission = user?.permissions.get(
-    PermissionEnum.ngo.name
+    PermissionEnum.projects.name
   ) as UserPermission;
   const tableList = useMemo(
     () =>
       Array.from(per.sub).map(([key, _subPermission], index: number) => {
-        return key == PermissionEnum.ngo.sub.ngo_information ? (
+        return key == PermissionEnum.projects.sub.detail ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
             <Database className="size-[18px]" />
-            {t("ngo_information")}
+            {t("detail")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_director_information ? (
+        ) : key == PermissionEnum.projects.sub.center_budget ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
             <UserRound className="size-[18px]" />
-            {t("director_information")}
+            {t("center_budget")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_agreement ? (
+        ) : key == PermissionEnum.projects.sub.organ_structure ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
             <NotebookPen className="size-[18px]" />
-            {t("agreement_checklist")}
+            {t("organ_structure")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_more_information ? (
+        ) : key == PermissionEnum.projects.sub.checklist ? (
           <TabsTrigger
             className={`${selectedTabStyle}`}
             key={index}
             value={key.toString()}
           >
             <Grip className="size-[18px]" />
-            {t("more_information")}
+            {t("checklist")}
           </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_status ? (
-          <TabsTrigger
-            className={`${selectedTabStyle}`}
-            key={index}
-            value={key.toString()}
-          >
-            <Activity className="size-[18px]" />
-            {t("status")}
-          </TabsTrigger>
-        ) : key == PermissionEnum.ngo.sub.ngo_representative ? (
-          <TabsTrigger
-            className={`${selectedTabStyle}`}
-            key={index}
-            value={key.toString()}
-          >
-            <UsersRound className="size-[18px]" />
-            {t("representative")}
-          </TabsTrigger>
-        ) : (
-          key == PermissionEnum.ngo.sub.ngo_update_account_password && (
-            <TabsTrigger
-              className={`${selectedTabStyle}`}
-              key={index}
-              value={key.toString()}
-            >
-              <KeyRound className="size-[18px]" />
-              {t("update_account_password")}
-            </TabsTrigger>
-          )
-        );
+        ) : undefined;
       }),
     []
   );
   const download = async () => {
     // 1. Create token
     try {
-      const response = await axiosClient.get(
-        `ngo/generate/registeration/${id}`,
-        {
-          responseType: "blob", // Important to handle the binary data (PDF)
-          onDownloadProgress: (_progressEvent) => {
-            // Calculate download progress percentage
-          },
-        }
-      );
+      const response = await axiosClient.get(`projects/download/mou/${id}`, {
+        responseType: "blob", // Important to handle the binary data (PDF)
+        onDownloadProgress: (_progressEvent) => {
+          // Calculate download progress percentage
+        },
+      });
       if (response.status == 200) {
         // Create a URL for the file blob
         const file = new Blob([response.data], {
@@ -205,21 +157,19 @@ export default function UserNgoEditPage() {
     }
   };
 
-  const registerationExpired: boolean =
-    userData?.ngoInformation.status_id == StatusEnum.expired;
   return (
     <div className="flex flex-col gap-y-2 px-3 mt-2 pb-12">
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />
-        <BreadcrumbItem onClick={handleGoBack}>{t("ngos")}</BreadcrumbItem>
+        <BreadcrumbItem onClick={handleGoBack}>{t("projects")}</BreadcrumbItem>
         <BreadcrumbSeparator />
-        <BreadcrumbItem>{userData?.ngoInformation?.username}</BreadcrumbItem>
+        <BreadcrumbItem>{userData?.name}</BreadcrumbItem>
       </Breadcrumb>
       {/* Cards */}
       <Tabs
         dir={direction}
-        defaultValue={PermissionEnum.ngo.sub.ngo_information.toString()}
+        defaultValue={PermissionEnum.projects.sub.detail.toString()}
         className="flex flex-col md:flex-row gap-x-3 gap-y-2 md:gap-y-0"
       >
         {!userData ? (
@@ -230,7 +180,7 @@ export default function UserNgoEditPage() {
         ) : (
           <>
             <TabsList className="sm:min-h-[550px] h-fit pb-8 min-w-[300px] md:w-[300px] gap-y-4 items-start justify-start flex flex-col bg-card border">
-              <UserNgoEditHeader
+              <ProjectEditHeader
                 id={id}
                 failed={failed}
                 userData={userData}
@@ -240,9 +190,9 @@ export default function UserNgoEditPage() {
               />
               {tableList}
 
-              {registerationExpired && (
+              {userData.status_id == StatusEnum.expired && (
                 <IconButton
-                  onClick={() => navigate(`/ngo/register/extend/${id}`)}
+                  onClick={() => navigate(`/projects/extend/${id}`)}
                   className="hover:bg-primary/5 gap-x-4 grid grid-cols-[1fr_4fr] w-[90%] xxl:w-[50%] md:w-[90%] mx-auto transition-all text-primary rtl:px-3 rtl:py-1 ltr:p-2"
                 >
                   <Zap
@@ -255,8 +205,7 @@ export default function UserNgoEditPage() {
                   </h1>
                 </IconButton>
               )}
-              {userData.ngoInformation.status_id ==
-                StatusEnum.document_upload_required && (
+              {userData.status_id == StatusEnum.document_upload_required && (
                 <>
                   <NastranModel
                     size="lg"
@@ -269,13 +218,13 @@ export default function UserNgoEditPage() {
                         <h1
                           className={`rtl:text-lg-rtl ltr:text-xl-ltr justify-self-start text-start font-semibold`}
                         >
-                          {t("up_register_fo")}
+                          {t("up_mou")}
                         </h1>
                       </IconButton>
                     }
                     showDialog={async () => true}
                   >
-                    <UploadRegisterFormDailog
+                    <UploadMouDailog
                       onComplete={() =>
                         setUserData((prev: any) => ({
                           ...prev,
@@ -294,7 +243,7 @@ export default function UserNgoEditPage() {
                     <h1
                       className={`rtl:text-lg-rtl ltr:text-xl-ltr font-semibold justify-self-start`}
                     >
-                      {t("download_r_form")}
+                      {t("download_mou")}
                     </h1>
                   </IconButton>
                 </>
@@ -302,60 +251,35 @@ export default function UserNgoEditPage() {
             </TabsList>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_information.toString()}
+              value={PermissionEnum.projects.sub.detail.toString()}
             >
               <EditInformationTab
-                permissions={per}
-                registerationExpired={registerationExpired}
+                hasEdit={userData.status_id == StatusEnum.has_comment}
               />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_director_information.toString()}
+              value={PermissionEnum.projects.sub.center_budget.toString()}
             >
-              <EditDirectorTab
-                permissions={per}
-                registerationExpired={registerationExpired}
+              <EditCenterBudgetTab
+                hasEdit={userData.status_id == StatusEnum.has_comment}
               />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_agreement.toString()}
+              value={PermissionEnum.projects.sub.organ_structure.toString()}
             >
-              <EditAgreemenTab />
-            </TabsContent>
-            <TabsContent
-              className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_more_information.toString()}
-            >
-              <EditMoreInformationTab
-                permissions={per}
-                registerationExpired={registerationExpired}
+              <EditOrganizationStructureTab
+                hasEdit={userData.status_id == StatusEnum.has_comment}
               />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_status.toString()}
+              value={PermissionEnum.projects.sub.checklist.toString()}
             >
-              <EditStatusTab
-                permissions={per}
-                registerationExpired={registerationExpired}
+              <EditChecklistTab
+                hasEdit={userData.status_id == StatusEnum.has_comment}
               />
-            </TabsContent>
-            <TabsContent
-              className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_representative.toString()}
-            >
-              <EditRepresentativeTab
-                permissions={per}
-                registerationExpired={registerationExpired}
-              />
-            </TabsContent>
-            <TabsContent
-              className="flex-1 m-0"
-              value={PermissionEnum.ngo.sub.ngo_update_account_password.toString()}
-            >
-              <EditNgoPassword id={id} permissions={per} failed={failed} />
             </TabsContent>
           </>
         )}

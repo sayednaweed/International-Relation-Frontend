@@ -25,12 +25,10 @@ import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 import { useParams } from "react-router";
 
-interface UploadRegisterFormDailogprops {
+interface UploadMouDailogProps {
   onComplete: () => void;
 }
-export default function UploadRegisterFormDailog(
-  props: UploadRegisterFormDailogprops
-) {
+export default function UploadMouDailog(props: UploadMouDailogProps) {
   const { onComplete } = props;
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<CheckList[] | undefined>(undefined);

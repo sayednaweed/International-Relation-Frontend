@@ -264,3 +264,18 @@ export const budgetFailed = (
   }
   return false;
 };
+export const isStartDateBigger = (
+  startDate: DateObject,
+  endDate: DateObject,
+  message: string
+) => {
+  if (startDate && endDate && startDate > endDate) {
+    console.log("start date is bigger");
+    toast({
+      toastType: "ERROR",
+      description: message,
+    });
+    return true;
+  }
+  return false;
+};

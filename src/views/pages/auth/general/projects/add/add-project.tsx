@@ -116,12 +116,11 @@ export default function AddProject() {
       formData.append("ngo_id", user.id.toString());
       formData.append("content", JSON.stringify(content));
 
-      const response = await axiosClient.post(
-        "ngo/register/form/complete",
-        formData
-      );
+      const response = await axiosClient.post("projects", formData);
 
       if (response.status == 200) {
+        // Go to projects page
+        navigate("/projects", { replace: true });
         return true;
       }
     } catch (error: any) {
@@ -247,27 +246,39 @@ export default function AddProject() {
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "termin_english",
+                    name: "abbreviat_english",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "termin_farsi",
+                    name: "abbreviat_farsi",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "termin_pashto",
+                    name: "abbreviat_pashto",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "prev_proj_activi_english",
+                    name: "organization_sen_man_english",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "prev_proj_activi_farsi",
+                    name: "organization_sen_man_farsi",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "prev_proj_activi_pashto",
+                    name: "organization_sen_man_pashto",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "exper_in_health_english",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "exper_in_health_farsi",
+                    rules: ["required", "max:4048", "min:2"],
+                  },
+                  {
+                    name: "exper_in_health_pashto",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
@@ -283,27 +294,27 @@ export default function AddProject() {
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_goals_english",
+                    name: "goals_english",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_goals_farsi",
+                    name: "goals_farsi",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_goals_pashto",
+                    name: "goals_pashto",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_object_english",
+                    name: "objective_english",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_object_farsi",
+                    name: "objective_farsi",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "project_object_pashto",
+                    name: "objective_pashto",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
@@ -343,15 +354,15 @@ export default function AddProject() {
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "operational_plan_english",
+                    name: "action_plan_english",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "operational_plan_farsi",
+                    name: "action_plan_farsi",
                     rules: ["required", "max:4048", "min:2"],
                   },
                   {
-                    name: "operational_plan_pashto",
+                    name: "action_plan_pashto",
                     rules: ["required", "max:4048", "min:2"],
                   },
                 ],
@@ -405,24 +416,97 @@ export default function AddProject() {
                 component: <AddNgoStructure />,
                 validationRules: [
                   {
+                    name: "manager",
+                    rules: [
+                      (userData: any) => {
+                        if (userData?.previous_manager) {
+                          if (!userData?.manager) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
+                  },
+                  {
                     name: "pro_manager_name_english",
-                    rules: ["required"],
+                    rules: [
+                      (userData: any) => {
+                        if (!userData?.previous_manager) {
+                          if (
+                            !userData?.pro_manager_name_english ||
+                            userData?.pro_manager_name_english?.trim() == ""
+                          ) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
                   },
                   {
                     name: "pro_manager_name_farsi",
-                    rules: ["required"],
+                    rules: [
+                      (userData: any) => {
+                        if (!userData?.previous_manager) {
+                          if (
+                            !userData?.pro_manager_name_farsi ||
+                            userData?.pro_manager_name_farsi?.trim() == ""
+                          ) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
                   },
                   {
                     name: "pro_manager_name_pashto",
-                    rules: ["required"],
+                    rules: [
+                      (userData: any) => {
+                        if (!userData?.previous_manager) {
+                          if (
+                            !userData?.pro_manager_name_pashto ||
+                            userData?.pro_manager_name_pashto?.trim() == ""
+                          ) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
                   },
                   {
                     name: "pro_manager_contact",
-                    rules: ["required"],
+                    rules: [
+                      (userData: any) => {
+                        if (!userData?.previous_manager) {
+                          if (
+                            !userData?.pro_manager_contact ||
+                            userData?.pro_manager_contact?.trim() == ""
+                          ) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
                   },
                   {
                     name: "pro_manager_email",
-                    rules: ["required"],
+                    rules: [
+                      (userData: any) => {
+                        if (!userData?.previous_manager) {
+                          if (
+                            !userData?.pro_manager_email ||
+                            userData?.pro_manager_email?.trim() == ""
+                          ) {
+                            return true;
+                          }
+                        }
+                        return false;
+                      },
+                    ],
                   },
                 ],
               },

@@ -18,7 +18,7 @@ interface AddProjectDetailsProps {
 }
 export default function AddProjectDetails(props: AddProjectDetailsProps) {
   const { t } = useTranslation();
-  const { fetchUrl, type } = props;
+  const { fetchUrl } = props;
   let { id } = useParams();
   const navigate = useNavigate();
   const { userData, setUserData, error } = useContext(StepperContext);
@@ -158,7 +158,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         </MultiTabTextarea>
       </BorderContainer>
       <BorderContainer
-        title={t("termin")}
+        title={t("abbreviat")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -178,7 +178,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
               [name]: value,
             }));
           }}
-          name="termin"
+          name="abbreviat"
           rows={8}
           highlightColor="bg-tertiary"
           userData={userData}
@@ -193,7 +193,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         </MultiTabTextarea>
       </BorderContainer>
       <BorderContainer
-        title={t("prev_proj_activi")}
+        title={t("organization_sen_man")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -213,7 +213,42 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
               [name]: value,
             }));
           }}
-          name="prev_proj_activi"
+          name="organization_sen_man"
+          rows={8}
+          highlightColor="bg-tertiary"
+          userData={userData}
+          errorData={error}
+          placeholder={t("content")}
+          className="rtl:text-xl-rtl rounded-none border-t border-x-0 border-b-0 resize-none"
+          tabsClassName="gap-x-5 px-3"
+        >
+          <SingleTab>english</SingleTab>
+          <SingleTab>farsi</SingleTab>
+          <SingleTab>pashto</SingleTab>
+        </MultiTabTextarea>
+      </BorderContainer>
+      <BorderContainer
+        title={t("exper_in_health")}
+        required={true}
+        parentClassName="p-t-4 pb-0 px-0"
+        className="grid grid-cols-1 gap-y-3"
+      >
+        <MultiTabTextarea
+          optionalKey={"optional_lang"}
+          onTabChanged={(key: string, tabName: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [key]: tabName,
+              optional_lang: tabName,
+            }));
+          }}
+          onChanged={(value: string, name: string) => {
+            setUserData((prev: any) => ({
+              ...prev,
+              [name]: value,
+            }));
+          }}
+          name="exper_in_health"
           rows={8}
           highlightColor="bg-tertiary"
           userData={userData}
@@ -263,7 +298,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         </MultiTabTextarea>
       </BorderContainer>
       <BorderContainer
-        title={t("project_goals")}
+        title={t("goals")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -283,7 +318,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
               [name]: value,
             }));
           }}
-          name="project_goals"
+          name="goals"
           rows={8}
           highlightColor="bg-tertiary"
           userData={userData}
@@ -298,7 +333,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         </MultiTabTextarea>
       </BorderContainer>
       <BorderContainer
-        title={t("project_object")}
+        title={t("objective")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -318,7 +353,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
               [name]: value,
             }));
           }}
-          name="project_object"
+          name="objective"
           rows={8}
           highlightColor="bg-tertiary"
           userData={userData}
@@ -438,7 +473,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
         </MultiTabTextarea>
       </BorderContainer>
       <BorderContainer
-        title={t("operational_plan")}
+        title={t("action_plan")}
         required={true}
         parentClassName="p-t-4 pb-0 px-0"
         className="grid grid-cols-1 gap-y-3"
@@ -458,7 +493,7 @@ export default function AddProjectDetails(props: AddProjectDetailsProps) {
               [name]: value,
             }));
           }}
-          name="operational_plan"
+          name="action_plan"
           rows={8}
           highlightColor="bg-tertiary"
           userData={userData}

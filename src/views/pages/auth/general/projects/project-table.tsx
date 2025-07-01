@@ -19,7 +19,7 @@ import Pagination from "@/components/custom-ui/table/Pagination";
 import { setDateToURL } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
-import { ListFilter, RefreshCcw, Search } from "lucide-react";
+import { ListFilter, Repeat2, Search } from "lucide-react";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import SecondaryButton from "@/components/custom-ui/button/SecondaryButton";
 import CustomSelect from "@/components/custom-ui/select/CustomSelect";
@@ -244,7 +244,7 @@ export function ProjectTable() {
 
   const watchOnClick = async (projects: ProjectsDTO) => {
     const itemId = projects.id;
-    navigate(`/projects/${itemId}`);
+    navigate(`/projects/details/${itemId}`);
   };
   return (
     <>
@@ -429,9 +429,9 @@ export function ProjectTable() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <RefreshCcw
+                <Repeat2
+                  className="size-[22px] cursor-pointer text-primary/85 hover:scale-[1.1] transition-transform duration-300 ease-in-out"
                   onClick={refetch}
-                  className="size-[24px] border hover:scale-110 transition-transform p-1 rounded-md bg-tertiary cursor-pointer text-primary-foreground"
                 />
               </TooltipTrigger>
               <TooltipContent className="rtl:text-3xl-rtl ltr:text-xl-ltr">

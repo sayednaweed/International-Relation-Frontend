@@ -1,13 +1,17 @@
+import CustomCheckbox from "@/components/custom-ui/checkbox/CustomCheckbox";
+import APICombobox from "@/components/custom-ui/combobox/APICombobox";
 import BorderContainer from "@/components/custom-ui/container/BorderContainer";
 import CustomInput from "@/components/custom-ui/input/CustomInput";
 import MultiTabInput from "@/components/custom-ui/input/mult-tab/MultiTabInput";
 import SingleTab from "@/components/custom-ui/input/mult-tab/parts/SingleTab";
 import { StepperContext } from "@/components/custom-ui/stepper/StepperContext";
+import { useNgoAuthState } from "@/context/AuthContextProvider";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function AddNgoStructure() {
   const { t } = useTranslation();
+  const { user } = useNgoAuthState();
   const { userData, setUserData, error } = useContext(StepperContext);
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -17,8 +21,28 @@ export default function AddNgoStructure() {
     }));
   };
 
-  return (
-    <div className="flex flex-col mt-10 w-full lg:w-1/2 2xl:w-1/3 gap-y-6 pb-12">
+  const projectManager = userData?.previous_manager ? (
+    <APICombobox
+      placeholderText={t("search_item")}
+      errorText={t("no_item")}
+      onSelect={(selection: any) =>
+        setUserData((prev: any) => ({
+          ...prev,
+          ["manager"]: selection,
+        }))
+      }
+      lable={t("manager")}
+      required={true}
+      requiredHint={`* ${t("required")}`}
+      selectedItem={userData["manager"]?.name}
+      placeHolder={t("select_a")}
+      errorMessage={error.get("manager")}
+      apiUrl={"project-managers/names/" + user?.id}
+      mode="single"
+      cacheData={false}
+    />
+  ) : (
+    <>
       <BorderContainer
         title={t("pro_manager_name")}
         required={true}
@@ -81,6 +105,24 @@ export default function AddNgoStructure() {
         errorMessage={error.get("pro_manager_email")}
         onChange={handleChange}
       />
+    </>
+  );
+  return (
+    <div className="flex flex-col mt-10 w-full lg:w-1/2 2xl:w-1/3 gap-y-6 pb-12">
+      <CustomCheckbox
+        parentClassName="space-x-0"
+        className=""
+        checked={userData?.previous_manager}
+        text={t("previous_manager")}
+        description={t("already_manager")}
+        onCheckedChange={function (value: boolean): void {
+          setUserData((prev: any) => ({
+            ...prev,
+            previous_manager: value,
+          }));
+        }}
+      />
+      {projectManager}
     </div>
   );
 }

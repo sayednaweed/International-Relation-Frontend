@@ -53,6 +53,8 @@ import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import UserDonorEditPage from "@/views/pages/auth/general/donor/edit/user-donor-edit-page";
 import ConfigurationsPage from "@/views/pages/auth/general/configurations/configurations-page";
 import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
+import SchedulesPage from "@/views/pages/auth/features/schedules/schedules";
+import ProjectEditPage from "@/views/pages/auth/general/projects/edit/project-edit-page";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -297,11 +299,22 @@ export const getSuperRouter = (
             }
           />
           <Route
-            path="projects/:id"
+            path="projects/details/:id"
             element={
               <ProtectedRoute
-                element={<AddProject />}
+                element={<ProjectEditPage />}
                 routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="schedules"
+            element={
+              <ProtectedRoute
+                element={<SchedulesPage />}
+                routeName="schedules"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -523,11 +536,22 @@ export const getAdminRouter = (
             }
           />
           <Route
-            path="projects/:id"
+            path="projects/details/:id"
             element={
               <ProtectedRoute
-                element={<AddProject />}
+                element={<ProjectEditPage />}
                 routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="schedules"
+            element={
+              <ProtectedRoute
+                element={<SchedulesPage />}
+                routeName="schedules"
                 permissions={permissions}
                 authenticated={authenticated}
               />
@@ -729,10 +753,10 @@ export const getUserRouter = (
             }
           />
           <Route
-            path="projects/:id"
+            path="projects/details/:id"
             element={
               <ProtectedRoute
-                element={<AddProject />}
+                element={<ProjectEditPage />}
                 routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}
@@ -956,6 +980,17 @@ export const getNgoRouter = (
               />
             }
           />
+          <Route
+            path="projects/details/:id"
+            element={
+              <ProtectedRoute
+                element={<ProjectEditPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
           <Route path="profile" element={<NgoProfilePage />} />
         </Route>
 
@@ -1023,6 +1058,17 @@ export const getDonorRouter = (
             element={
               <ProtectedRoute
                 element={<DonorProjectsPage />}
+                routeName="projects"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="projects/details/:id"
+            element={
+              <ProtectedRoute
+                element={<ProjectEditPage />}
                 routeName="projects"
                 permissions={permissions}
                 authenticated={authenticated}

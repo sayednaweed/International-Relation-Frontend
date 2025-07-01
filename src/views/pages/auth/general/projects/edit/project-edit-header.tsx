@@ -1,26 +1,26 @@
 import CachedImage from "@/components/custom-ui/image/CachedImage";
 import IconButton from "@/components/custom-ui/button/IconButton";
-import { MessageSquareText, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
 import axiosClient from "@/lib/axois-client";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
-import { INgoInformation } from "./user-ngo-edit-page";
 import { validateFile } from "@/lib/utils";
 import { StatusEnum } from "@/lib/constants";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
+import { ProjectHeaderType } from "@/lib/types";
 
-export interface UserEditHeaderProps {
+export interface ProjectEditHeaderProps {
   id: string | undefined;
-  userData: INgoInformation | undefined;
+  userData: ProjectHeaderType | undefined;
   failed: boolean;
-  setUserData: Dispatch<SetStateAction<INgoInformation | undefined>>;
+  setUserData: Dispatch<SetStateAction<ProjectHeaderType | undefined>>;
   hasEdit?: boolean;
   hasRemove?: boolean;
 }
 
-export default function UserNgoEditHeader(props: UserEditHeaderProps) {
+export default function ProjectEditHeader(props: ProjectEditHeaderProps) {
   const { id, userData, setUserData, failed, hasEdit, hasRemove } = props;
   const { t } = useTranslation();
   const [loading, setLoading] = useState<boolean>(false);
@@ -61,10 +61,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
           // Change logged in user data
           setUserData({
             ...userData,
-            ngoInformation: {
-              ...userData.ngoInformation,
-              profile: response.data.profile,
-            },
+            profile: response.data.profile,
           });
           toast({
             toastType: "SUCCESS",
@@ -90,7 +87,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
     }
   };
   const deleteProfilePicture = async () => {
-    if (userData?.ngoInformation?.profile == "") {
+    if (userData?.profile == "") {
       toast({
         toastType: "ERROR",
         title: t("error"),
@@ -108,10 +105,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
         // Change logged in user data
         setUserData({
           ...userData,
-          ngoInformation: {
-            ...userData.ngoInformation,
-            profile: undefined,
-          },
+          profile: undefined,
         });
         toast({
           toastType: "SUCCESS",
@@ -133,7 +127,7 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
   return (
     <div className="self-center text-center">
       <CachedImage
-        src={userData?.ngoInformation?.profile}
+        src={userData?.profile}
         alt="Avatar"
         shimmerClassName="size-[86px] !mt-6 mx-auto shadow-lg border border-primary/30 rounded-full"
         className="size-[86px] !mt-6 object-center object-cover mx-auto shadow-lg border border-tertiary rounded-full"
@@ -184,39 +178,37 @@ export default function UserNgoEditHeader(props: UserEditHeaderProps) {
           style: string;
           value?: string;
         } {
-          return StatusEnum.registered === userData?.ngoInformation.status_id
+          return StatusEnum.registered === userData?.status_id
             ? {
                 style: "border-green-500/90",
-                value: userData?.ngoInformation.status,
+                value: userData?.status,
               }
-            : StatusEnum.blocked == userData?.ngoInformation.status_id
+            : StatusEnum.expired == userData?.status_id
             ? {
                 style: "border-red-500",
-                value: userData?.ngoInformation.status,
+                value: userData?.status,
               }
-            : StatusEnum.registration_incomplete ==
-              userData?.ngoInformation.status_id
+            : StatusEnum.pending_for_schedule == userData?.status_id
             ? {
                 style: "border-blue-500/90",
-                value: userData?.ngoInformation.status,
+                value: userData?.status,
               }
             : {
                 style: "border-orange-500",
-                value: userData?.ngoInformation.status,
+                value: userData?.status,
               };
         }}
       />
 
       <h1 className="text-primary uppercase font-semibold line-clamp-2 text-wrap rtl:text-2xl-rtl ltr:text-4xl-ltr max-w-64 truncate">
-        {userData?.ngoInformation?.username}
+        {userData?.name}
       </h1>
       <h1 className="leading-6 rtl:text-sm-rtl ltr:text-2xl-ltr max-w-64 truncate">
-        {userData?.ngoInformation?.email}
+        {userData?.email}
       </h1>
       <h1 dir="ltr" className="text-primary rtl:text-md-rtl ltr:text-xl-ltr">
-        {userData?.ngoInformation?.contact}
+        {userData?.contact}
       </h1>
-      <MessageSquareText className="size-[22px] cursor-pointer text-tertiary mx-auto mt-3" />
     </div>
   );
 }

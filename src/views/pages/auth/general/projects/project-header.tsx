@@ -1,7 +1,6 @@
 import HeaderCard from "@/components/custom-ui/card/HeaderCard";
 import { toast } from "@/components/ui/use-toast";
 import axiosClient from "@/lib/axois-client";
-import { UserRecordCount } from "@/lib/types";
 import {
   UserRoundPen,
   UserRoundPlus,
@@ -13,22 +12,24 @@ import { useTranslation } from "react-i18next";
 
 export default function ProjectHeader() {
   const { t } = useTranslation();
-  const [recordCount, setRecordCount] = useState<UserRecordCount>({
-    activeUserCount: null,
-    inActiveUserCount: null,
-    userCount: null,
-    todayCount: null,
+  const [recordCount, setRecordCount] = useState({
+    total_projects: 0,
+    total_budget: null,
+    total_direct_beneficiaries: 0,
+    total_in_direct_beneficiaries: 0,
   });
   const [loading, setLoading] = useState(true);
   const fetchCount = async () => {
     try {
-      const response = await axiosClient.get(`/ngos/record/count`);
+      const response = await axiosClient.get(`/projects/count`);
       if (response.status == 200) {
         setRecordCount({
-          activeUserCount: response.data.counts.activeCount,
-          inActiveUserCount: response.data.counts.unRegisteredCount,
-          userCount: response.data.counts.count,
-          todayCount: response.data.counts.todayCount,
+          total_projects: response.data.counts.total_projects,
+          total_budget: response.data.counts.total_budget,
+          total_direct_beneficiaries:
+            response.data.counts.total_direct_beneficiaries,
+          total_in_direct_beneficiaries:
+            response.data.counts.total_in_direct_beneficiaries,
         });
       }
     } catch (error: any) {
@@ -50,7 +51,7 @@ export default function ProjectHeader() {
       <HeaderCard
         loading={loading}
         title={t("projects")}
-        total={recordCount.userCount}
+        total={recordCount.total_projects}
         description1={t("total")}
         description2={t("project")}
         icon={
@@ -60,7 +61,7 @@ export default function ProjectHeader() {
       <HeaderCard
         loading={loading}
         title={t("budget")}
-        total={recordCount.todayCount}
+        total={recordCount.total_budget}
         description1={t("total")}
         description2={t("budget")}
         icon={
@@ -70,7 +71,7 @@ export default function ProjectHeader() {
       <HeaderCard
         loading={loading}
         title={t("direct_benefi")}
-        total={recordCount.activeUserCount}
+        total={recordCount.total_direct_beneficiaries}
         description1={t("total")}
         description2={t("beneficiary")}
         icon={
@@ -80,7 +81,7 @@ export default function ProjectHeader() {
       <HeaderCard
         loading={loading}
         title={t("in_direct_benefi")}
-        total={recordCount.inActiveUserCount}
+        total={recordCount.total_in_direct_beneficiaries}
         description1={t("total")}
         description2={t("beneficiary")}
         icon={
