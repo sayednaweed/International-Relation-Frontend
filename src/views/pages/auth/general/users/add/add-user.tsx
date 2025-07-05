@@ -32,7 +32,7 @@ export default function AddUser(props: AddUserProps) {
         formData.append("email", userData?.email);
         formData.append("contact", userData?.contact);
         const response = await axiosClient.post(
-          "user/validate/email/contact",
+          "validate/email/contact",
           formData
         );
         if (response.status == 200) {

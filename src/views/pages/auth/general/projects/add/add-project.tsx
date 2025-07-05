@@ -75,7 +75,7 @@ export default function AddProject() {
   const beforeStepSuccess = async (
     userData: any,
     currentStep: number,
-    _setError: Dispatch<SetStateAction<Map<string, string>>>,
+    setError: Dispatch<SetStateAction<Map<string, string>>>,
     backClicked: boolean
   ) => {
     if (!backClicked && currentStep == 2 && userData?.centers_list) {
@@ -90,6 +90,46 @@ export default function AddProject() {
           title: t("error"),
           description: "Province budget falls short of total budget.",
         });
+        return false;
+      }
+    }
+    if (!backClicked && currentStep == 3) {
+      try {
+        let formData = new FormData();
+        formData.append("email", userData?.pro_manager_email);
+        formData.append("contact", userData?.pro_manager_contact);
+        const response = await axiosClient.post(
+          "validate/email/contact",
+          formData
+        );
+        if (response.status == 200) {
+          const emailExist = response.data.email_found === true;
+          const contactExist = response.data.contact_found === true;
+          if (emailExist || contactExist) {
+            const errMap = new Map<string, string>();
+            if (emailExist) {
+              errMap.set(
+                "pro_manager_email",
+                `${t("pro_manager_email")} ${t("is_registered_before")}`
+              );
+            }
+            if (contactExist) {
+              errMap.set(
+                "pro_manager_contact",
+                `${t("pro_manager_contact")} ${t("is_registered_before")}`
+              );
+            }
+            setError(errMap);
+            return false;
+          }
+        }
+      } catch (error: any) {
+        toast({
+          toastType: "ERROR",
+          title: t("error"),
+          description: error.response.data.message,
+        });
+        console.log(error);
         return false;
       }
     }

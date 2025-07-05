@@ -346,3 +346,21 @@ export type ProjectsDTO = {
   status_id: number;
   created_at: string;
 };
+export type ScheduleDTO = {
+  id: string;
+  date: string;
+  start_time: string;
+  end_time: string;
+  representators_count: number;
+  presentation_lenght: number;
+  gap_between: number;
+  lunch_start: string;
+  lunch_end: string;
+  dinner_start: string;
+  dinner_end: string;
+  presentation_before_lunch: number;
+  presentation_after_lunch: number;
+  is_hour_24: number;
+  status: string;
+  schedule_status_id: number;
+};

@@ -279,3 +279,20 @@ export const isStartDateBigger = (
   }
   return false;
 };
+export function isSameDatePure(d1: Date, d2: Date): boolean {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+}
+export function isDateString(value: string | undefined | null): boolean {
+  if (typeof value !== "string") return false;
+  const date = new Date(value);
+  return !isNaN(date.getTime());
+}
+
+export function isNumberString(value: string | undefined | null): boolean {
+  if (typeof value !== "string") return false;
+  return !isNaN(Number(value));
+}

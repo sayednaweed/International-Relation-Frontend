@@ -53,8 +53,9 @@ import ProjectsPage from "@/views/pages/auth/general/projects/projects-page";
 import UserDonorEditPage from "@/views/pages/auth/general/donor/edit/user-donor-edit-page";
 import ConfigurationsPage from "@/views/pages/auth/general/configurations/configurations-page";
 import SettingsPage from "@/views/pages/auth/general/settings/settings-page";
-import SchedulesPage from "@/views/pages/auth/features/schedules/schedules";
 import ProjectEditPage from "@/views/pages/auth/general/projects/edit/project-edit-page";
+import SchedulesPage from "@/views/pages/auth/features/schedules/schedules-page";
+import AddOrEditSchedule from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
 
 export const getSuperRouter = (
   user: User | Ngo | Donor,
@@ -320,6 +321,17 @@ export const getSuperRouter = (
               />
             }
           />
+          <Route
+            path="schedules/:data"
+            element={
+              <ProtectedRoute
+                element={<AddOrEditSchedule />}
+                routeName="schedules"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -551,6 +563,17 @@ export const getAdminRouter = (
             element={
               <ProtectedRoute
                 element={<SchedulesPage />}
+                routeName="schedules"
+                permissions={permissions}
+                authenticated={authenticated}
+              />
+            }
+          />
+          <Route
+            path="schedules/:data"
+            element={
+              <ProtectedRoute
+                element={<AddOrEditSchedule />}
                 routeName="schedules"
                 permissions={permissions}
                 authenticated={authenticated}

@@ -1,24 +1,125 @@
+import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
+import NastranModel from "@/components/custom-ui/model/NastranModel";
+import { ScheduleDTO } from "@/database/tables";
+import { useDatasource } from "@/hooks/use-datasource";
+import axiosClient from "@/lib/axois-client";
+import { generateUUID, isSameDatePure } from "@/lib/utils";
+import { CalendarPlus } from "lucide-react";
+import { useState } from "react";
+import { DateObject } from "react-multi-date-picker";
 import { useNavigate } from "react-router";
-import { useTranslation } from "react-i18next";
-import {
-  Breadcrumb,
-  BreadcrumbHome,
-  BreadcrumbItem,
-  BreadcrumbSeparator,
-} from "@/components/custom-ui/Breadcrumb/Breadcrumb";
-export default function SchedulesPage() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  const handleGoHome = () => navigate("/dashboard", { replace: true });
 
+export default function Schedules() {
+  const [date, setDate] = useState<DateObject[]>([
+    new DateObject(new Date()),
+    new DateObject(new Date().setMonth(new Date().getMonth() + 1)),
+  ]);
+  const navigate = useNavigate();
+  const transformSchedules = (data: ScheduleDTO[]) => {
+    // List to store day names and dates
+    const startDate = date[0];
+    const endDate = date[1];
+    let current = new DateObject(startDate);
+
+    const daysBetween: {
+      id: string;
+      day: string;
+      date: string;
+      weekday: string;
+      data: ScheduleDTO | null;
+    }[] = [];
+
+    while (current.toDate().getTime() <= endDate.toDate().getTime()) {
+      let matchedData: ScheduleDTO | null = null;
+
+      for (const item of data) {
+        const compareDate = new DateObject(new Date(item.date));
+        if (isSameDatePure(current.toDate(), compareDate.toDate())) {
+          matchedData = item; // You can also store `item.data` if available
+          break;
+        }
+      }
+      daysBetween.push({
+        id: generateUUID(),
+        day: current.format("DD"),
+        date: current.toDate().toISOString(),
+        weekday: current.weekDay.name,
+        data: matchedData,
+      });
+
+      current = current.add(1, "day");
+    }
+
+    return daysBetween;
+  };
+  const loadList = async () => {
+    // 2. Send data
+    // const response = await axiosClient.get(`schedules/${type}`);
+    const data: any = [
+      { date: "2025-07-03T20:40:35.538Z", status: "Scheduled" },
+    ];
+    return transformSchedules(data);
+  };
+  const { schedules, setSchedules, isLoading, refetch } = useDatasource<
+    {
+      id: string;
+      date: string;
+      day: string;
+      weekday: string;
+      data: ScheduleDTO | null;
+    }[],
+    "schedules"
+  >(
+    {
+      queryFn: loadList,
+      queryKey: "schedules",
+    },
+    [date],
+    []
+  );
+  const handleDate = (selectedDates: DateObject[]) => {
+    if (selectedDates.length == 2) setDate(selectedDates);
+  };
   return (
-    <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
-      <Breadcrumb>
-        <BreadcrumbHome onClick={handleGoHome} />
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>{t("schedules")}</BreadcrumbItem>
-      </Breadcrumb>
-      SchedulesPage
+    <div className="space-y-1 px-2 pt-2 pb-12">
+      <CustomMultiDatePicker
+        className="w-fit bg-card py-2"
+        value={date}
+        dateOnComplete={handleDate}
+      />
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
+        {schedules.map((item) => (
+          <div
+            key={item.id}
+            className="bg-card border-primary/20 pb-2 rounded space-y-2 hover:scale-110 transition-transform transform-gpu border antialiased p-1"
+          >
+            <div className="bg-primary/90 rounded text-white px-1">
+              <h1 className="border-b">{item.day}</h1>
+              <h1>{item.weekday}</h1>
+            </div>
+
+            {item?.data ? (
+              <div
+                className="text-center cursor-pointer space-y-1 mx-auto w-fit"
+                onClick={() => navigate(`/schedules/${item.data?.id}`)}
+              >
+                <CalendarPlus className="size-[18px] mx-auto" />
+                <div className="font-bold text-tertiary">
+                  {item.data.status}
+                </div>
+              </div>
+            ) : (
+              <div
+                onClick={() => navigate(`/schedules/${item.date}`)}
+                className="text-center cursor-pointer space-y-1 mx-auto w-fit"
+              >
+                <CalendarPlus className="size-[18px] mx-auto" />
+                <h1>Not Scheduled</h1>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -459,5 +459,9 @@
   "end_date_must_bigger": "End date must be bigger than start date.",
   "schedules": "Schedules",
   "update_proj_info": "Update Project information",
-  "update_organ_structure_info": "Update organization structure information"
+  "update_organ_structure_info": "Update organization structure information",
+  "schedule": "Schedule",
+  "normal": "Normal",
+  "customize": "Customize",
+  "presentation_count": "Presentation count"
 }

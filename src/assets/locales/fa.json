@@ -447,5 +447,9 @@
   "end_date_must_bigger": "تاریخ پایان باید بزرگتر از تاریخ شروع باشد.",
   "schedules": "زمانبندی",
   "update_proj_info": "ویرایش اطلاعات پروژه",
-  "update_organ_structure_info": "ویرایش اطلاعات ساختار موسسه"
+  "update_organ_structure_info": "ویرایش اطلاعات ساختار موسسه",
+  "schedule": "زمانبندی",
+  "normal": "عادی",
+  "customize": "سفارشی ساختن",
+  "presentation_count": "تعداد پرزنتیشن"
 }

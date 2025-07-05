@@ -18,6 +18,7 @@ import { CheckList } from "@/database/tables";
 import axiosClient from "@/lib/axois-client";
 import { TaskTypeEnum } from "@/lib/constants";
 import { getConfiguration, validateFile } from "@/lib/utils";
+import { ValidateItem } from "@/validation/types";
 import { setServerError, validate } from "@/validation/validation";
 import { BookOpenText } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -71,27 +72,38 @@ export default function UploadRegisterFormDailog(
   }, []);
   const store = async () => {
     try {
-      const content = {
-        checklistMap: Array.from(userData.checklistMap),
-        start_date: userData.start_date?.toDate()?.toISOString(),
-        request_comment: userData.request_comment,
-      };
-
       if (loading) return;
       setLoading(true);
       // 1. Validate form
+      const checklistValidationItem: ValidateItem[] = list!.map(
+        (checklist: CheckList) => {
+          const valid = (userData: any) => {
+            if (userData?.checklistMap.get(checklist.id)) {
+              return false;
+            }
+            return true;
+          };
+          return { name: checklist.name, rules: [valid] };
+        }
+      );
       const passed = await validate(
         [
           {
             name: "start_date",
             rules: ["required"],
           },
+          ...checklistValidationItem,
         ],
         userData,
         setError
       );
       if (!passed) return;
       // 2. Store
+      const content = {
+        checklistMap: Array.from(userData.checklistMap),
+        start_date: userData.start_date?.toDate()?.toISOString(),
+        request_comment: userData.request_comment,
+      };
       let formData = new FormData();
       if (id) formData.append("ngo_id", id.toString());
       formData.append("content", JSON.stringify(content));
@@ -131,70 +143,76 @@ export default function UploadRegisterFormDailog(
           <>
             {list.map((checklist: CheckList, index: number) => {
               return (
-                <CheckListChooser
-                  hasEdit={true}
-                  number={`${index + 1}`}
-                  key={checklist.id}
-                  url={`${
-                    import.meta.env.VITE_API_BASE_URL
-                  }/api/v1/checklist/file/upload`}
-                  headers={{
-                    "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
-                    "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
-                    Authorization: "Bearer " + getConfiguration()?.token,
-                  }}
-                  accept={checklist.accept}
-                  name={checklist.name}
-                  defaultFile={userData.checklistMap.get(checklist.id)}
-                  uploadParam={{
-                    checklist_id: checklist.id,
-                    ngo_id: id,
-                    task_type: TaskTypeEnum.ngo_registeration,
-                  }}
-                  onComplete={async (record: any) => {
-                    // 1. Update userData
-                    for (const element of record) {
-                      const item = element[element.length - 1];
-                      const checklistMap: Map<string, any> =
-                        userData.checklistMap;
-                      checklistMap.set(checklist.id, item);
-                      setUserData({
-                        ...userData,
-                        checklistMap: checklistMap,
-                      });
-                    }
-                  }}
-                  onFailed={async (failed: boolean, response: any) => {
-                    if (failed) {
-                      if (response) {
-                        toast({
-                          toastType: "ERROR",
-                          description: response.data.message,
-                        });
+                <div className="mt-2" key={checklist.id}>
+                  <CheckListChooser
+                    hasEdit={true}
+                    number={`${index + 1}`}
+                    url={`${
+                      import.meta.env.VITE_API_BASE_URL
+                    }/api/v1/checklist/file/upload`}
+                    headers={{
+                      "X-API-KEY": import.meta.env.VITE_BACK_END_API_TOKEN,
+                      "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
+                      Authorization: "Bearer " + getConfiguration()?.token,
+                    }}
+                    accept={checklist.accept}
+                    name={checklist.name}
+                    defaultFile={userData.checklistMap.get(checklist.id)}
+                    uploadParam={{
+                      checklist_id: checklist.id,
+                      ngo_id: id,
+                      task_type: TaskTypeEnum.ngo_registeration,
+                    }}
+                    onComplete={async (record: any) => {
+                      // 1. Update userData
+                      for (const element of record) {
+                        const item = element[element.length - 1];
                         const checklistMap: Map<string, any> =
                           userData.checklistMap;
-                        checklistMap.delete(checklist.id);
+                        checklistMap.set(checklist.id, item);
                         setUserData({
                           ...userData,
                           checklistMap: checklistMap,
                         });
                       }
-                    }
-                  }}
-                  onStart={async (_file: File) => {}}
-                  validateBeforeUpload={function (file: File): boolean {
-                    const maxFileSize = checklist.file_size * 1024; // 2MB
-                    const validTypes: string[] =
-                      checklist.acceptable_mimes.split(",");
-                    const resultFile = validateFile(
-                      file,
-                      Math.round(maxFileSize),
-                      validTypes,
-                      t
-                    );
-                    return resultFile ? true : false;
-                  }}
-                />
+                    }}
+                    onFailed={async (failed: boolean, response: any) => {
+                      if (failed) {
+                        if (response) {
+                          toast({
+                            toastType: "ERROR",
+                            description: response.data.message,
+                          });
+                          const checklistMap: Map<string, any> =
+                            userData.checklistMap;
+                          checklistMap.delete(checklist.id);
+                          setUserData({
+                            ...userData,
+                            checklistMap: checklistMap,
+                          });
+                        }
+                      }
+                    }}
+                    onStart={async (_file: File) => {}}
+                    validateBeforeUpload={function (file: File): boolean {
+                      const maxFileSize = checklist.file_size * 1024; // 2MB
+                      const validTypes: string[] =
+                        checklist.acceptable_mimes.split(",");
+                      const resultFile = validateFile(
+                        file,
+                        Math.round(maxFileSize),
+                        validTypes,
+                        t
+                      );
+                      return resultFile ? true : false;
+                    }}
+                  />
+                  {error.get(checklist.name) && (
+                    <h1 className="rtl:text-md-rtl ltr:text-sm-ltr px-2 capitalize text-start text-red-400">
+                      {error.get(checklist.name)}
+                    </h1>
+                  )}
+                </div>
               );
             })}
             <CustomDatePicker

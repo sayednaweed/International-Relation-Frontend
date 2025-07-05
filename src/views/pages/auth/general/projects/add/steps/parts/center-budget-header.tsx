@@ -134,6 +134,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
                 if (!village[item]) {
                   newError.set(item, `${t(item)} ${t("is_required")}`);
                   newError.set(`${dis?.id}`, "");
+                  validatationFailed = true;
                 }
               }
             );
@@ -173,6 +174,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
             newError.set(`${dis?.id}`, "");
           }
         }
+        validatationFailed = true;
       }
       setError((prev) => new Map([...prev, ...newError]));
       if (validatationFailed) return;

@@ -16,7 +16,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import axiosClient from "@/lib/axois-client";
 import TableRowIcon from "@/components/custom-ui/table/TableRowIcon";
 import Pagination from "@/components/custom-ui/table/Pagination";
-import { setDateToURL } from "@/lib/utils";
+import { setDateToURL, toLocaleDate } from "@/lib/utils";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
 import { ListFilter, Repeat2, Search } from "lucide-react";
@@ -41,10 +41,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useGlobalState } from "@/context/GlobalStateContext";
 
 export function ProjectTable() {
   const { user } = useGeneralAuthState();
   const navigate = useNavigate();
+  const [state] = useGlobalState();
   const searchRef = useRef<HTMLInputElement>(null);
   const { updateComponentCache, getComponentCache } = useCacheDB();
 
@@ -490,8 +492,12 @@ export function ProjectTable() {
                 <TableCell className="truncate">{item.donor}</TableCell>
                 <TableCell className="truncate">{item.budget}</TableCell>
                 <TableCell className="truncate">{item.currency}</TableCell>
-                <TableCell className="truncate">{item.start_date}</TableCell>
-                <TableCell className="truncate">{item.end_date}</TableCell>
+                <TableCell className="truncate">
+                  {toLocaleDate(new Date(item.start_date), state)}
+                </TableCell>
+                <TableCell className="truncate">
+                  {toLocaleDate(new Date(item.end_date), state)}
+                </TableCell>
                 <TableCell>
                   <BooleanStatusButton
                     getColor={function (): {
@@ -519,7 +525,9 @@ export function ProjectTable() {
                           };
                     }}
                   />
-                  <TableCell className="truncate">{item.created_at}</TableCell>
+                  <TableCell className="truncate">
+                    {toLocaleDate(new Date(item.created_at), state)}
+                  </TableCell>
                 </TableCell>
               </TableRowIcon>
             ))

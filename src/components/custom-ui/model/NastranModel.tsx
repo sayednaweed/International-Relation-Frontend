@@ -4,6 +4,7 @@ import { useState } from "react";
 import NastranCard, { ModelSize } from "./NastranCard";
 import { ModelContextProvider } from "./context/ModelContext";
 import { cn } from "@/lib/utils";
+import { createPortal } from "react-dom";
 
 export interface INastranModelProps {
   button: any;
@@ -44,16 +45,19 @@ const NastranModel: React.FunctionComponent<INastranModelProps> = ({
         mapButton
       ) : (
         <ModelContextProvider modelOnRequestHide={buttonOnClick}>
-          <div
-            onClick={dismissOnClick}
-            // className="fixed z-40 grid grid-cols-1 justify-items-center content-center overflow-y-auto left-0 top-0 h-screen w-screen [backdrop-filter:blur(10px)]"
-            className={cn(
-              "fixed z-40 grid grid-cols-1 justify-items-center items-center overflow-y-auto left-0 top-0 h-screen w-screen [backdrop-filter:blur(10px)]",
-              className
-            )}
-          >
-            <NastranCard size={size}>{children}</NastranCard>
-          </div>
+          {createPortal(
+            <div
+              onClick={dismissOnClick}
+              // className="fixed z-40 grid grid-cols-1 justify-items-center content-center overflow-y-auto left-0 top-0 h-screen w-screen [backdrop-filter:blur(10px)]"
+              className={cn(
+                "fixed z-40 grid grid-cols-1 justify-items-center items-center overflow-y-auto left-0 top-0 h-screen w-screen [backdrop-filter:blur(10px)]",
+                className
+              )}
+            >
+              <NastranCard size={size}>{children}</NastranCard>
+            </div>,
+            document.body
+          )}
         </ModelContextProvider>
       )}
     </>
