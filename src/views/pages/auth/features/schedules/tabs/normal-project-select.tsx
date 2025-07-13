@@ -1,4 +1,5 @@
 import CustomInput from "@/components/custom-ui/input/CustomInput";
+import { valueIsNumber } from "@/lib/utils";
 import { Schedule } from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
 import { Dispatch } from "react";
 import { useTranslation } from "react-i18next";
@@ -6,20 +7,27 @@ import { useTranslation } from "react-i18next";
 export interface CustomProjectSelectProps {
   schedule: Schedule;
   setSchedule: Dispatch<any>;
-  error: Map<string, string>;
 }
 
 export function NormalProjectSelect(props: CustomProjectSelectProps) {
-  const { error, schedule, setSchedule } = props;
+  const { schedule, setSchedule } = props;
   const { t } = useTranslation();
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    if (schedule.special_projects) {
-      const sliced = schedule.special_projects.slice(1, value + 1);
-      setSchedule((prev: any) => ({ ...prev, special_projects: sliced }));
-    } else {
-      setSchedule((prev: any) => ({ ...prev, [name]: value }));
+
+    if (valueIsNumber(value)) {
+      if (schedule.special_projects) {
+        const sliced = schedule.special_projects.slice(0, value);
+
+        setSchedule((prev: any) => ({
+          ...prev,
+          special_projects: sliced,
+          [name]: value,
+        }));
+      } else {
+        setSchedule((prev: any) => ({ ...prev, [name]: value }));
+      }
     }
   };
   return (
@@ -31,10 +39,9 @@ export function NormalProjectSelect(props: CustomProjectSelectProps) {
         requiredHint={`* ${t("required")}`}
         className="rtl:text-end"
         placeholder={t("presentation_count")}
-        defaultValue={schedule["presentation_count"]}
+        value={schedule["presentation_count"] || ""}
         type="text"
         name="presentation_count"
-        errorMessage={error.get("presentation_count")}
         onChange={handleChange}
       />
     </div>

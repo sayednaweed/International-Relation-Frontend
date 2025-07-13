@@ -1,11 +1,11 @@
 import React from "react";
 
 import { Reorder } from "framer-motion";
-import { Person, ScheduleItem } from ".";
+import { Project, ScheduleItem } from "@/database/tables";
 
 interface Props {
   scheduleItems: ScheduleItem[];
-  people: Person[];
+  projects: Project[];
   formatTime: (time: string) => string;
   onAssign: (slotId: number, personId: number | null) => void;
   onReorder: (newItems: ScheduleItem[]) => void;
@@ -13,17 +13,16 @@ interface Props {
 
 const ScheduleTable: React.FC<Props> = ({
   scheduleItems,
-  people,
+  projects,
   formatTime,
   onAssign,
   onReorder,
 }) => {
   const getPersonById = (id: number | null) =>
-    people.find((p) => p.id === id) ?? null;
+    projects.find((p) => p.id === id) ?? null;
 
   return (
-    <div className="bg-white p-6 rounded shadow max-w-3xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Schedule</h2>
+    <div className="p-6 max-w-3xl mx-auto">
       <Reorder.Group
         axis="y"
         values={scheduleItems}
@@ -31,7 +30,7 @@ const ScheduleTable: React.FC<Props> = ({
         className="space-y-3"
       >
         {scheduleItems.map((item) => {
-          const person = getPersonById(item.personId);
+          const person = getPersonById(item.projectId);
 
           return (
             <Reorder.Item
@@ -51,7 +50,7 @@ const ScheduleTable: React.FC<Props> = ({
               <div className="flex gap-2">
                 <select
                   className="select select-bordered select-sm"
-                  value={item.personId ?? ""}
+                  value={item.projectId ?? ""}
                   onChange={(e) =>
                     onAssign(
                       item.slot.id,
@@ -60,7 +59,7 @@ const ScheduleTable: React.FC<Props> = ({
                   }
                 >
                   <option value="">Unassigned</option>
-                  {people.map((p) => (
+                  {projects.map((p) => (
                     <option key={p.id} value={p.id}>
                       {p.name}
                     </option>

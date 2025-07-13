@@ -15,6 +15,7 @@ import axiosClient from "@/lib/axois-client";
 import { ChecklistEnum, TaskTypeEnum } from "@/lib/constants";
 import { FileType } from "@/lib/types";
 import { generateUUID, getConfiguration, validateFile } from "@/lib/utils";
+import { validate } from "@/validation/validation";
 import { Schedule } from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
 import { ChevronsDown, RefreshCcw } from "lucide-react";
 import { Dispatch, useEffect, useState } from "react";
@@ -23,12 +24,13 @@ import { useTranslation } from "react-i18next";
 export interface CustomProjectSelectProps {
   schedule: Schedule;
   setSchedule: Dispatch<any>;
-  error: Map<string, string>;
 }
 
 export function CustomProjectSelect(props: CustomProjectSelectProps) {
-  const { error, schedule, setSchedule } = props;
+  const { schedule, setSchedule } = props;
   const { t } = useTranslation();
+  const [error, setError] = useState<Map<string, string>>(new Map());
+
   const [failed, setFailed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [userData, setUserData] = useState<any>({});
@@ -60,10 +62,43 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
       project: selection,
     }));
   };
-  const addItem = () => {
+  const addItem = async () => {
+    const passed = await validate(
+      [
+        {
+          name: "document",
+          rules: ["required"],
+        },
+        {
+          name: "presentation_count",
+          rules: [
+            (userData: Schedule) => {
+              if (
+                userData.special_projects &&
+                userData.special_projects.length > userData.presentation_count
+              ) {
+                toast({
+                  toastType: "ERROR",
+                  title: t("error"),
+                  description: t("presentation_count_exceed"),
+                });
+                return true;
+              }
+              return false;
+            },
+          ],
+        },
+      ],
+      userData,
+      setError
+    );
+    if (!passed) {
+      setLoading(false);
+      return;
+    }
     const newProject = {
       project: userData?.project,
-      attachment: userData.schedule_deputy_document,
+      attachment: userData.document,
     };
     if (!schedule.special_projects) {
       // No special project added yet
@@ -97,6 +132,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
     }
     setUserData({});
   };
+
   return (
     <div className="flex flex-col gap-x-4 gap-y-6 w-full">
       {failed ? (
@@ -127,6 +163,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
           />
           <div className="mt-2">
             <CheckListChooser
+              key={userData?.document}
               number={undefined}
               hasEdit={true}
               url={`${
@@ -137,8 +174,8 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
                 "X-SERVER-ADDR": import.meta.env.VITE_BACK_END_API_IP,
                 Authorization: "Bearer " + getConfiguration()?.token,
               }}
-              name={t("schedule_deputy_document")}
-              defaultFile={userData.schedule_deputy_document as FileType}
+              name={t("document")}
+              defaultFile={userData.document as FileType}
               uploadParam={{
                 checklist_id: schedule?.validationChecklist?.id,
                 task_type: TaskTypeEnum.scheduling,
@@ -150,7 +187,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
                   const checklist = element[element.length - 1];
                   setUserData((prev: any) => ({
                     ...prev,
-                    schedule_deputy_document: checklist,
+                    document: checklist,
                   }));
                 }
               }}
@@ -163,7 +200,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
                     });
                     setUserData((prev: any) => ({
                       ...prev,
-                      schedule_deputy_document: undefined,
+                      document: undefined,
                     }));
                   }
                 }
@@ -183,9 +220,9 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
                 return resultFile ? true : false;
               }}
             />
-            {error.get("schedule_deputy_document") && (
+            {error.get("document") && (
               <h1 className="rtl:text-md-rtl ltr:text-sm-ltr px-2 capitalize text-start text-red-400">
-                {error.get("schedule_deputy_document")}
+                {error.get("document")}
               </h1>
             )}
           </div>

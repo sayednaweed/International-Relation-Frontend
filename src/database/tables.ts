@@ -364,3 +364,25 @@ export type ScheduleDTO = {
   status: string;
   schedule_status_id: number;
 };
+
+export interface Project {
+  id: number;
+  name: string;
+}
+export interface TimeSlot {
+  id: number;
+  presentation_start: string;
+  presentation_end: string;
+  gap_end: string;
+  project?: Project;
+}
+
+export interface FixedBreak {
+  start: string; // e.g., "12:30"
+  end: string; // e.g., "13:30"
+}
+
+export interface ScheduleItem {
+  slot: TimeSlot;
+  projectId: number | null;
+}

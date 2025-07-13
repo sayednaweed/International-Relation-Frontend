@@ -1,5 +1,3 @@
-import CloseButton from "@/components/custom-ui/button/CloseButton";
-import { useModelOnRequestHide } from "@/components/custom-ui/model/hook/useModelOnRequestHide";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMemo, useState } from "react";
@@ -18,10 +16,11 @@ import { DateObject } from "react-multi-date-picker";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import axiosClient from "@/lib/axois-client";
 import { useDatasource } from "@/hooks/use-datasource";
+import { Project } from "@/database/tables";
 
 export type Schedule = {
   presentation_count: number;
-  projects: { id: string; name: string }[];
+  projects: Project[];
   validationChecklist: any;
   special_projects: {
     project: { id: string; name: string };
@@ -46,8 +45,6 @@ export default function AddOrEditSchedule() {
   const navigate = useNavigate();
   const handleGoHome = () => navigate("/dashboard", { replace: true });
   const handleGoBack = () => navigate("/schedules", { replace: true });
-  const { modelOnRequestHide } = useModelOnRequestHide();
-  const [error, setError] = useState<Map<string, string>>(new Map());
 
   const loadList = async () => {
     const date = new DateObject({
@@ -84,7 +81,7 @@ export default function AddOrEditSchedule() {
     []
   );
   return (
-    <div className="px-2 pt-2 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
+    <div className="px-2 pt-2 pb-12 flex flex-col gap-y-[2px] relative select-none rtl:text-2xl-rtl ltr:text-xl-ltr">
       <Breadcrumb>
         <BreadcrumbHome onClick={handleGoHome} />
         <BreadcrumbSeparator />
@@ -97,11 +94,6 @@ export default function AddOrEditSchedule() {
           <CardTitle className="rtl:text-4xl-rtl mb-4 ltr:text-3xl-ltr text-tertiary">
             {t("schedule")}
           </CardTitle>
-          <CloseButton
-            className=" "
-            parentClassName="absolute rtl:left-0 ltr:right-2 top-0"
-            dismissModel={modelOnRequestHide}
-          />
         </CardHeader>
         <CardContent className="flex flex-col gap-y-4 p-0 pb-4 text-start">
           <Tabs
@@ -110,7 +102,7 @@ export default function AddOrEditSchedule() {
             className="p-0 h-full space-y-0"
             value={tab}
           >
-            <TabsList className="overflow-x-auto overflow-y-hidden bg-card w-full justify-start p-0 m-0 rounded-none">
+            <TabsList className="overflow-x-auto border-b overflow-y-hidden bg-card w-full justify-start p-0 m-0 rounded-none">
               <TabsTrigger value={"count"} className={tabStyle}>
                 <div className="rounded-full data-[state=active]:bg-tertiary bg-primary ltr:mr-2 rtl:ml-2 text-primary-foreground size-[21px] flex items-center justify-center shadow-md ltr:text-[12px]">
                   <span
@@ -156,14 +148,12 @@ export default function AddOrEditSchedule() {
             </TabsList>
             <TabsContent value={"count"} className="p-4">
               <NormalProjectSelect
-                error={error}
                 schedule={schedule}
                 setSchedule={setSchedule}
               />
             </TabsContent>
             <TabsContent value={"select"} className="p-4">
               <CustomProjectSelect
-                error={error}
                 schedule={schedule}
                 setSchedule={setSchedule}
               />

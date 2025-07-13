@@ -1,8 +1,13 @@
 import { Dispatch, useEffect, useState } from "react";
-import { Person, ScheduleItem, TimeSlot } from "./parts";
 import ScheduleTable from "./parts/ScheduleTable";
-import PersonForm from "./parts/PersonForm";
 import { Schedule } from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
+import { Separator } from "@/components/ui/separator";
+import PrimaryButton from "@/components/custom-ui/button/PrimaryButton";
+import { Project, ScheduleItem, TimeSlot } from "@/database/tables";
+import axiosClient from "@/lib/axois-client";
+import { useTranslation } from "react-i18next";
+import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
+import { toast } from "@/components/ui/use-toast";
 
 const timeToDate = (time: string): Date => {
   const [hour, minute] = time.split(":").map(Number);
@@ -94,12 +99,13 @@ export interface EditScheduleTabProps {
 }
 const EditScheduleTab = (props: EditScheduleTabProps) => {
   const { schedule, setSchedule } = props;
-  const [people, setPeople] = useState<Person[]>([]);
   const [presentationLength, setPresentationLength] = useState(45);
+  const [loading, setLoading] = useState(false);
   const [gapBetween, setGapBetween] = useState(5);
   const [startTime, setStartTime] = useState("08:00");
   const [endTime, setEndTime] = useState("16:00");
   const [timeFormat24h, setTimeFormat24h] = useState(false);
+  const { t } = useTranslation();
 
   // Optional lunch and dinner breaks
   const [lunchStart, setLunchStart] = useState("12:30");
@@ -130,7 +136,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       dinner
     );
 
-    const totalPresentations = people.length;
+    const totalPresentations = schedule.projects.length;
 
     // Clamp the before and after lunch numbers so they don't exceed people count or slot counts
     let beforeCount = Math.min(presentationsBeforeLunch, totalPresentations);
@@ -172,33 +178,34 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
     // Create schedule items with no assigned persons initially
     const items: ScheduleItem[] = selectedSlots.map((slot) => ({
       slot,
-      personId: null,
+      projectId: null,
     }));
 
     setScheduleItems(items);
-  }, [
-    startTime,
-    endTime,
-    presentationLength,
-    gapBetween,
-    lunchStart,
-    lunchEnd,
-    dinnerStart,
-    dinnerEnd,
-    people.length,
-    presentationsBeforeLunch,
-    presentationsAfterLunch,
-  ]);
+  }, [schedule.projects.length]);
 
-  const addPerson = (name: string, email: string) => {
-    const newPerson: Person = { id: Date.now(), name, email };
-    setPeople((prev) => [...prev, newPerson]);
+  const prepareSchedule = async () => {
+    try {
+      if (loading) return;
+      setLoading(true);
+
+      // 2. Send data
+      const response = await axiosClient.get(`schedules/prepare`);
+      const fetch = response.data as Project[];
+      setSchedule((prev: Schedule) => ({ ...prev, projects: fetch }));
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        description: error.response.data.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const assignPersonToSlot = (slotId: number, personId: number | null) => {
+  const assignPersonToSlot = (slotId: number, projectId: number | null) => {
     setScheduleItems((prev) =>
       prev.map((item) =>
-        item.slot.id === slotId ? { ...item, personId } : item
+        item.slot.id === slotId ? { ...item, projectId } : item
       )
     );
   };
@@ -212,159 +219,160 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-center">
-          Presentation Scheduler
-        </h1>
+    <>
+      <div className="grid grid-cols-2 gap-4 p-6">
+        <label className="flex flex-col">
+          <span className="font-semibold">Presentation Length (min)</span>
+          <input
+            type="number"
+            value={presentationLength}
+            onChange={(e) => setPresentationLength(Number(e.target.value))}
+            className="input input-bordered"
+            min={1}
+          />
+        </label>
 
-        <div className="grid grid-cols-2 gap-4 bg-white p-6 rounded shadow-md">
-          <label className="flex flex-col">
-            <span className="font-semibold">Presentation Length (min)</span>
-            <input
-              type="number"
-              value={presentationLength}
-              onChange={(e) => setPresentationLength(Number(e.target.value))}
-              className="input input-bordered"
-              min={1}
-            />
-          </label>
+        <label className="flex flex-col">
+          <span className="font-semibold">Gap Between (min)</span>
+          <input
+            type="number"
+            value={gapBetween}
+            onChange={(e) => setGapBetween(Number(e.target.value))}
+            className="input input-bordered"
+            min={0}
+          />
+        </label>
 
-          <label className="flex flex-col">
-            <span className="font-semibold">Gap Between (min)</span>
-            <input
-              type="number"
-              value={gapBetween}
-              onChange={(e) => setGapBetween(Number(e.target.value))}
-              className="input input-bordered"
-              min={0}
-            />
-          </label>
+        <label className="flex flex-col">
+          <span className="font-semibold">Start Time</span>
+          <input
+            type="time"
+            value={startTime}
+            onChange={(e) => setStartTime(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          <label className="flex flex-col">
-            <span className="font-semibold">Start Time</span>
-            <input
-              type="time"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        <label className="flex flex-col">
+          <span className="font-semibold">End Time</span>
+          <input
+            type="time"
+            value={endTime}
+            onChange={(e) => setEndTime(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          <label className="flex flex-col">
-            <span className="font-semibold">End Time</span>
-            <input
-              type="time"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        {/* Lunch Break */}
+        <label className="flex flex-col">
+          <span className="font-semibold">Lunch Break Start</span>
+          <input
+            type="time"
+            value={lunchStart}
+            onChange={(e) => setLunchStart(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          {/* Lunch Break */}
-          <label className="flex flex-col">
-            <span className="font-semibold">Lunch Break Start</span>
-            <input
-              type="time"
-              value={lunchStart}
-              onChange={(e) => setLunchStart(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        <label className="flex flex-col">
+          <span className="font-semibold">Lunch Break End</span>
+          <input
+            type="time"
+            value={lunchEnd}
+            onChange={(e) => setLunchEnd(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          <label className="flex flex-col">
-            <span className="font-semibold">Lunch Break End</span>
-            <input
-              type="time"
-              value={lunchEnd}
-              onChange={(e) => setLunchEnd(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        {/* Dinner Break */}
+        <label className="flex flex-col">
+          <span className="font-semibold">Dinner Break Start</span>
+          <input
+            type="time"
+            value={dinnerStart}
+            onChange={(e) => setDinnerStart(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          {/* Dinner Break */}
-          <label className="flex flex-col">
-            <span className="font-semibold">Dinner Break Start</span>
-            <input
-              type="time"
-              value={dinnerStart}
-              onChange={(e) => setDinnerStart(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        <label className="flex flex-col">
+          <span className="font-semibold">Dinner Break End</span>
+          <input
+            type="time"
+            value={dinnerEnd}
+            onChange={(e) => setDinnerEnd(e.target.value)}
+            className="input input-bordered"
+          />
+        </label>
 
-          <label className="flex flex-col">
-            <span className="font-semibold">Dinner Break End</span>
-            <input
-              type="time"
-              value={dinnerEnd}
-              onChange={(e) => setDinnerEnd(e.target.value)}
-              className="input input-bordered"
-            />
-          </label>
+        {/* Presentations Before Lunch */}
+        <label className="flex flex-col col-span-2">
+          <span className="font-semibold">Presentations Before Lunch</span>
+          <input
+            type="number"
+            value={presentationsBeforeLunch}
+            onChange={(e) =>
+              setPresentationsBeforeLunch(
+                Math.min(Number(e.target.value), schedule.projects.length)
+              )
+            }
+            className="input input-bordered"
+            min={0}
+            max={schedule.projects.length}
+          />
+          <small className="text-gray-500">
+            Number of presentations scheduled before lunch break.
+          </small>
+        </label>
 
-          {/* Presentations Before Lunch */}
-          <label className="flex flex-col col-span-2">
-            <span className="font-semibold">Presentations Before Lunch</span>
-            <input
-              type="number"
-              value={presentationsBeforeLunch}
-              onChange={(e) =>
-                setPresentationsBeforeLunch(
-                  Math.min(Number(e.target.value), people.length)
-                )
-              }
-              className="input input-bordered"
-              min={0}
-              max={people.length}
-            />
-            <small className="text-gray-500">
-              Number of presentations scheduled before lunch break.
-            </small>
-          </label>
+        {/* Presentations After Lunch */}
+        <label className="flex flex-col col-span-2">
+          <span className="font-semibold">Presentations After Lunch</span>
+          <input
+            type="number"
+            value={presentationsAfterLunch}
+            onChange={(e) =>
+              setPresentationsAfterLunch(
+                Math.min(Number(e.target.value), schedule.projects.length)
+              )
+            }
+            className="input input-bordered"
+            min={0}
+            max={schedule.projects.length}
+          />
+          <small className="text-gray-500">
+            Number of presentations scheduled after lunch break.
+          </small>
+        </label>
 
-          {/* Presentations After Lunch */}
-          <label className="flex flex-col col-span-2">
-            <span className="font-semibold">Presentations After Lunch</span>
-            <input
-              type="number"
-              value={presentationsAfterLunch}
-              onChange={(e) =>
-                setPresentationsAfterLunch(
-                  Math.min(Number(e.target.value), people.length)
-                )
-              }
-              className="input input-bordered"
-              min={0}
-              max={people.length}
-            />
-            <small className="text-gray-500">
-              Number of presentations scheduled after lunch break.
-            </small>
-          </label>
-
-          <label className="flex items-center space-x-2 col-span-2">
-            <input
-              type="checkbox"
-              checked={timeFormat24h}
-              onChange={() => setTimeFormat24h((prev) => !prev)}
-              className="checkbox"
-            />
-            <span>Use 24-hour time format</span>
-          </label>
-        </div>
-
-        <PersonForm onAdd={addPerson} />
-
-        <ScheduleTable
-          scheduleItems={scheduleItems}
-          people={people}
-          formatTime={formatTime}
-          onAssign={assignPersonToSlot}
-          onReorder={onReorderSchedule}
-        />
+        <label className="flex items-center space-x-2 col-span-2">
+          <input
+            type="checkbox"
+            checked={timeFormat24h}
+            onChange={() => setTimeFormat24h((prev) => !prev)}
+            className="checkbox"
+          />
+          <span>Use 24-hour time format</span>
+        </label>
       </div>
-    </div>
+
+      <PrimaryButton
+        disabled={loading}
+        onClick={prepareSchedule}
+        className={`shadow-lg block mx-auto`}
+      >
+        <ButtonSpinner loading={loading}>{t("prepare")}</ButtonSpinner>
+      </PrimaryButton>
+      <Separator className="mt-6" />
+
+      <ScheduleTable
+        scheduleItems={scheduleItems}
+        projects={schedule.projects}
+        formatTime={formatTime}
+        onAssign={assignPersonToSlot}
+        onReorder={onReorderSchedule}
+      />
+    </>
   );
 };
 
