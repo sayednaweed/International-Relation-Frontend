@@ -188,9 +188,15 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
     try {
       if (loading) return;
       setLoading(true);
-
+      const ids: string[] = [];
+      schedule.special_projects.forEach((item) => ids.push(item.project.id));
       // 2. Send data
-      const response = await axiosClient.get(`schedules/prepare`);
+      const response = await axiosClient.get(`schedules/prepare`, {
+        params: {
+          count: schedule.presentation_count,
+          ids: ids,
+        },
+      });
       const fetch = response.data as Project[];
       setSchedule((prev: Schedule) => ({ ...prev, projects: fetch }));
     } catch (error: any) {
@@ -202,6 +208,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       setLoading(false);
     }
   };
+  console.log(scheduleItems);
   const assignPersonToSlot = (slotId: number, projectId: number | null) => {
     setScheduleItems((prev) =>
       prev.map((item) =>

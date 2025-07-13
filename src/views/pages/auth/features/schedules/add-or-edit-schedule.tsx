@@ -57,6 +57,7 @@ export default function AddOrEditSchedule() {
       return {
         presentation_count: 10,
         projects: [],
+        special_projects: [],
       };
     } else {
       const response = await axiosClient.get(`projects/${data}`);
