@@ -329,7 +329,7 @@ export type DonorStatus = {
   donor_id: string;
   status_id: number;
   is_active: number;
-  name: string;
+  name?: string;
   username: string;
   comment: string;
   created_at: string;

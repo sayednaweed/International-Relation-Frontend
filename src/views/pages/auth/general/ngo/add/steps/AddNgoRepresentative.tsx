@@ -18,7 +18,7 @@ export default function AddNgoRepresentative() {
   const fetch = async () => {
     try {
       const response = await axiosClient.get(
-        `ngo/validation/checklist/${ChecklistEnum.ngo_representor_letter}`
+        `checklists/validation/${ChecklistEnum.ngo_representor_letter}`
       );
       if (response.status === 200) {
         setUserData((prev: any) => ({

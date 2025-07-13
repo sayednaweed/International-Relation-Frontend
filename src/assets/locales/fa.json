@@ -451,5 +451,7 @@
   "schedule": "زمانبندی",
   "normal": "عادی",
   "customize": "سفارشی ساختن",
-  "presentation_count": "تعداد پرزنتیشن"
+  "presentation_count": "تعداد پرزنتیشن",
+  "configurations": "تنظیمات سیستم",
+  "add_to_list": "اضافه کردن به لیست"
 }

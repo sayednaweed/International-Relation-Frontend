@@ -1,11 +1,10 @@
 import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
-import NastranModel from "@/components/custom-ui/model/NastranModel";
+import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { ScheduleDTO } from "@/database/tables";
 import { useDatasource } from "@/hooks/use-datasource";
-import axiosClient from "@/lib/axois-client";
 import { generateUUID, isSameDatePure } from "@/lib/utils";
 import { CalendarPlus } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DateObject } from "react-multi-date-picker";
 import { useNavigate } from "react-router";
 
@@ -42,7 +41,7 @@ export default function Schedules() {
       daysBetween.push({
         id: generateUUID(),
         day: current.format("DD"),
-        date: current.toDate().toISOString(),
+        date: current.format("YYYY/MM/DD"),
         weekday: current.weekDay.name,
         data: matchedData,
       });
@@ -56,7 +55,7 @@ export default function Schedules() {
     // 2. Send data
     // const response = await axiosClient.get(`schedules/${type}`);
     const data: any = [
-      { date: "2025-07-03T20:40:35.538Z", status: "Scheduled" },
+      { date: "2025-07-03T20:40:35.538Z", status: "Scheduled", id: 1 },
     ];
     return transformSchedules(data);
   };
@@ -80,6 +79,15 @@ export default function Schedules() {
   const handleDate = (selectedDates: DateObject[]) => {
     if (selectedDates.length == 2) setDate(selectedDates);
   };
+
+  const loaderComponent = useMemo(
+    () => (
+      <>
+        <NastranSpinner />
+      </>
+    ),
+    []
+  );
   return (
     <div className="space-y-1 px-2 pt-2 pb-12">
       <CustomMultiDatePicker
@@ -87,39 +95,43 @@ export default function Schedules() {
         value={date}
         dateOnComplete={handleDate}
       />
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
-        {schedules.map((item) => (
-          <div
-            key={item.id}
-            className="bg-card border-primary/20 pb-2 rounded space-y-2 hover:scale-110 transition-transform transform-gpu border antialiased p-1"
-          >
-            <div className="bg-primary/90 rounded text-white px-1">
-              <h1 className="border-b">{item.day}</h1>
-              <h1>{item.weekday}</h1>
-            </div>
+      {isLoading ? (
+        loaderComponent
+      ) : (
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
+          {schedules.map((item) => (
+            <div
+              key={item.id}
+              className="bg-card border-primary/20 pb-2 rounded space-y-2 hover:scale-110 transition-transform transform-gpu border antialiased p-1"
+            >
+              <div className="bg-primary/90 rounded text-white px-1">
+                <h1 className="border-b">{item.day}</h1>
+                <h1>{item.weekday}</h1>
+              </div>
 
-            {item?.data ? (
-              <div
-                className="text-center cursor-pointer space-y-1 mx-auto w-fit"
-                onClick={() => navigate(`/schedules/${item.data?.id}`)}
-              >
-                <CalendarPlus className="size-[18px] mx-auto" />
-                <div className="font-bold text-tertiary">
-                  {item.data.status}
+              {item?.data ? (
+                <div
+                  className="text-center cursor-pointer space-y-1 mx-auto w-fit"
+                  onClick={() => navigate(`/schedules/${item.data?.id}`)}
+                >
+                  <CalendarPlus className="size-[18px] mx-auto" />
+                  <div className="font-bold text-tertiary">
+                    {item.data.status}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => navigate(`/schedules/${item.date}`)}
-                className="text-center cursor-pointer space-y-1 mx-auto w-fit"
-              >
-                <CalendarPlus className="size-[18px] mx-auto" />
-                <h1>Not Scheduled</h1>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+              ) : (
+                <div
+                  onClick={() => navigate(`/schedules/${item.date}`)}
+                  className="text-center cursor-pointer space-y-1 mx-auto w-fit"
+                >
+                  <CalendarPlus className="size-[18px] mx-auto" />
+                  <h1>Not Scheduled</h1>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

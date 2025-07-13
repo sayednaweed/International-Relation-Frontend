@@ -322,7 +322,7 @@ export const getSuperRouter = (
             }
           />
           <Route
-            path="schedules/:data"
+            path="schedules/:data/*"
             element={
               <ProtectedRoute
                 element={<AddOrEditSchedule />}
@@ -570,7 +570,7 @@ export const getAdminRouter = (
             }
           />
           <Route
-            path="schedules/:data"
+            path="schedules/:data/*"
             element={
               <ProtectedRoute
                 element={<AddOrEditSchedule />}

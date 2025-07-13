@@ -557,28 +557,7 @@ export default function AddProject() {
                     type={"register"}
                   />
                 ),
-                validationRules: [
-                  {
-                    name: "pro_manager_name_english",
-                    rules: ["required"],
-                  },
-                  {
-                    name: "pro_manager_name_farsi",
-                    rules: ["required"],
-                  },
-                  {
-                    name: "pro_manager_name_pashto",
-                    rules: ["required"],
-                  },
-                  {
-                    name: "pro_manager_contact",
-                    rules: ["required"],
-                  },
-                  {
-                    name: "pro_manager_email",
-                    rules: ["required"],
-                  },
-                ],
+                validationRules: [],
               },
               {
                 component: (

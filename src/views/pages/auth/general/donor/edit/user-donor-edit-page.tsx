@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { EditDonorInformation } from "@/lib/types";
 import { toast } from "@/components/ui/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Activity, Database, KeyRound, NotebookPen } from "lucide-react";
+import { Activity, Database } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import { PermissionEnum } from "@/lib/constants";
 import EditInformationTab from "./steps/edit-information-tab";
@@ -17,7 +17,6 @@ import {
   BreadcrumbItem,
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
-import { EditDonorPassword } from "./steps/edit-donor-password";
 import UserDonorEditHeader from "./user-donor-edit-header";
 import EditStatusTab from "./steps/edit-status-tab";
 
@@ -88,24 +87,6 @@ export default function UserDonorEditPage() {
             <Activity className="size-[18px]" />
             {t("status")}
           </TabsTrigger>
-        ) : key == PermissionEnum.donor.sub.project ? (
-          <TabsTrigger
-            className={`${selectedTabStyle}`}
-            key={index}
-            value={key.toString()}
-          >
-            <NotebookPen className="size-[18px]" />
-            {t("projects")}
-          </TabsTrigger>
-        ) : key == PermissionEnum.donor.sub.donor_update_account_password ? (
-          <TabsTrigger
-            className={`${selectedTabStyle}`}
-            key={index}
-            value={key.toString()}
-          >
-            <KeyRound className="size-[18px]" />
-            {t("update_account_password")}
-          </TabsTrigger>
         ) : undefined;
       }),
     []
@@ -156,21 +137,9 @@ export default function UserDonorEditPage() {
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
-              value={PermissionEnum.donor.sub.donor_update_account_password.toString()}
-            >
-              <EditDonorPassword id={id} permissions={per} failed={failed} />
-            </TabsContent>
-            <TabsContent
-              className="flex-1 m-0"
               value={PermissionEnum.donor.sub.donor_status.toString()}
             >
               <EditStatusTab permissions={per} />
-            </TabsContent>
-            <TabsContent
-              className="flex-1 m-0"
-              value={PermissionEnum.donor.sub.project.toString()}
-            >
-              {/* <EditAgreementStatusTab /> */}
             </TabsContent>
           </>
         )}

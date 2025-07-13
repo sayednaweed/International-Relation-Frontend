@@ -463,5 +463,7 @@
   "schedule": "Schedule",
   "normal": "Normal",
   "customize": "Customize",
-  "presentation_count": "Presentation count"
+  "presentation_count": "Presentation count",
+  "configurations": "Configurations",
+  "add_to_list": "Add to list"
 }

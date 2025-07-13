@@ -20,7 +20,6 @@ export default function AddNgoStructure() {
       [name]: value,
     }));
   };
-
   const projectManager = userData?.previous_manager ? (
     <APICombobox
       placeholderText={t("search_item")}

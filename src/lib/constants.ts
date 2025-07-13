@@ -30,10 +30,11 @@ export const TaskTypeEnum = {
   project_registeration: 2,
   ngo_agreement_extend: 3,
   project_extend: 4,
+  scheduling: 5,
 };
 export const ChecklistEnum = {
-  NgoDirectorNid: 1,
-  NgoDirectorProfile: 2,
+  director_nid: 1,
+  // NgoDirectorProfile: 2,
   director_work_permit: 3,
   ngo_representor_letter: 4,
   ministry_of_economy_work_permit: 5,
@@ -41,6 +42,19 @@ export const ChecklistEnum = {
   ngo_register_form_en: 8,
   ngo_register_form_ps: 9,
   ngo_register_form_fa: 10,
+
+  // project checklist
+  moe_project_introduction_letter: 11, // Project introduction letter from Ministry of Economy
+  project_articles_of_association: 12,
+  project_presentation: 13, // Project Presentation
+  ngo_and_donor_contract: 14, // NGO & Donor Contract Letter
+  mou_en: 15, // Memorandum of Understanding (English)
+  mou_fa: 16, // Memorandum of Understanding (Farsi)
+  mou_ps: 17,
+  project_ministry_of_economy_work_permit: 18,
+
+  // Schedule
+  schedule_deputy_document: 19,
 };
 
 export const ApprovalTypeEnum = {
@@ -109,10 +123,8 @@ export const PermissionEnum = {
   donor: {
     name: "donor",
     sub: {
-      donor_status: 76,
-      donor_information: 77,
-      project: 78,
-      donor_update_account_password: 79,
+      donor_information: 101,
+      donor_status: 102,
     },
   },
   approval: {

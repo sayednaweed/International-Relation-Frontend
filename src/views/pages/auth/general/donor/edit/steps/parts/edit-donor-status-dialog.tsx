@@ -63,10 +63,10 @@ export default function EditDonorStatusDialog(props: EditNgoStatusDialogProps) {
         return;
       }
       // 2. Store
-      const response = await axiosClient.post("statuses/ngo/modify", {
+      const response = await axiosClient.post("statuses/donor/modify", {
         status_id: userData?.status?.id,
         comment: userData.comment,
-        ngo_id: id,
+        donor_id: id,
       });
       if (response.status === 200) {
         toast({
@@ -74,15 +74,15 @@ export default function EditDonorStatusDialog(props: EditNgoStatusDialogProps) {
           description: response.data.message,
         });
         const status = response.data.status;
-        const donorStatus = {
-          id: status.ngo_status_id as string,
+        const donorStatus: DonorStatus = {
+          id: status.donor_status_id as string,
           is_active: status.is_active,
           created_at: status.created_at as string,
-          ngo_id: id as string,
-          userable_type: status?.userable_type,
+          donor_id: id as string,
           comment: userData.comment as string,
-          name: userData.status?.name as string,
-          status_type_id: userData.status!.id,
+          status_id: userData.status!.id,
+          name: userData.status?.name,
+          username: status.username,
         };
         onComplete(donorStatus);
         modelOnRequestHide();
@@ -129,7 +129,7 @@ export default function EditDonorStatusDialog(props: EditNgoStatusDialogProps) {
             selectedItem={userData?.status?.name}
             placeHolder={t("select_a")}
             errorMessage={error.get("status")}
-            apiUrl={"statuses/ngo/modify"}
+            apiUrl={"block/status"}
             mode="single"
             cacheData={false}
           />

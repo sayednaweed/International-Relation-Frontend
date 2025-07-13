@@ -100,7 +100,7 @@ export default function EditInformationTab(props: EditInformationTabProps) {
   };
 
   const information = permissions.sub.get(
-    PermissionEnum.ngo.sub.ngo_information
+    PermissionEnum.donor.sub.donor_information
   );
   const hasEdit = information?.edit;
   return (

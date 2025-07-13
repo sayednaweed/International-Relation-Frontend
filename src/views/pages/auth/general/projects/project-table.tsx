@@ -500,6 +500,7 @@ export function ProjectTable() {
                 </TableCell>
                 <TableCell>
                   <BooleanStatusButton
+                    className=" mx-0"
                     getColor={function (): {
                       style: string;
                       value?: string;
@@ -525,9 +526,10 @@ export function ProjectTable() {
                           };
                     }}
                   />
-                  <TableCell className="truncate">
-                    {toLocaleDate(new Date(item.created_at), state)}
-                  </TableCell>
+                </TableCell>
+
+                <TableCell className="truncate">
+                  {toLocaleDate(new Date(item.created_at), state)}
                 </TableCell>
               </TableRowIcon>
             ))

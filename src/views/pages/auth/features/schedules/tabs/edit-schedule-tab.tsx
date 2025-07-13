@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Dispatch, useEffect, useState } from "react";
 import { Person, ScheduleItem, TimeSlot } from "./parts";
 import ScheduleTable from "./parts/ScheduleTable";
 import PersonForm from "./parts/PersonForm";
+import { Schedule } from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
 
 const timeToDate = (time: string): Date => {
   const [hour, minute] = time.split(":").map(Number);
@@ -88,7 +88,12 @@ const formatTime12h = (time24: string): string => {
   return `${hour}:${minute} ${ampm}`;
 };
 
-const EditScheduleTab: React.FC = () => {
+export interface EditScheduleTabProps {
+  schedule: Schedule;
+  setSchedule: Dispatch<any>;
+}
+const EditScheduleTab = (props: EditScheduleTabProps) => {
+  const { schedule, setSchedule } = props;
   const [people, setPeople] = useState<Person[]>([]);
   const [presentationLength, setPresentationLength] = useState(45);
   const [gapBetween, setGapBetween] = useState(5);

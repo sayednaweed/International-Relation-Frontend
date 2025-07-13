@@ -129,7 +129,7 @@ export default function EditNgoStatusDialog(props: EditNgoStatusDialogProps) {
             selectedItem={userData?.status?.name}
             placeHolder={t("select_a")}
             errorMessage={error.get("status")}
-            apiUrl={"statuses/ngo/modify"}
+            apiUrl={"block/status"}
             mode="single"
             cacheData={false}
           />

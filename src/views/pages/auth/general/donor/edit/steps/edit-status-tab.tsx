@@ -67,14 +67,10 @@ export default function EditStatusTab(props: EditStatusTabProps) {
   }, []);
 
   const add = (donorStatus: DonorStatus) => {
-    if (donorStatus.is_active == 1) {
-      const updatedUnFiltered = donorStatuses.map((item) => {
-        return { ...item, is_active: 0 };
-      });
-      setDonorStatuses([donorStatus, ...updatedUnFiltered]);
-    } else {
-      setDonorStatuses([donorStatus, ...donorStatuses]);
-    }
+    const updatedUnFiltered = donorStatuses.map((item) => {
+      return { ...item, is_active: 0 };
+    });
+    setDonorStatuses([donorStatus, ...updatedUnFiltered]);
   };
 
   const donor_status = permissions.sub.get(
@@ -150,6 +146,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>
                           <BooleanStatusButton
+                            className="mx-0"
                             getColor={function (): {
                               style: string;
                               value?: string;
@@ -180,6 +177,7 @@ export default function EditStatusTab(props: EditStatusTabProps) {
                         </TableCell>
                         <TableCell>
                           <BooleanStatusButton
+                            className="mx-0"
                             getColor={function (): {
                               style: string;
                               value?: string;
