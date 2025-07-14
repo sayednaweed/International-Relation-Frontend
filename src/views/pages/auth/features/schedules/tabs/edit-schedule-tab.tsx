@@ -8,6 +8,7 @@ import axiosClient from "@/lib/axois-client";
 import { useTranslation } from "react-i18next";
 import ButtonSpinner from "@/components/custom-ui/spinner/ButtonSpinner";
 import { toast } from "@/components/ui/use-toast";
+import { FileType } from "@/lib/types";
 
 const timeToDate = (time: string): Date => {
   const [hour, minute] = time.split(":").map(Number);
@@ -99,49 +100,37 @@ export interface EditScheduleTabProps {
 }
 const EditScheduleTab = (props: EditScheduleTabProps) => {
   const { schedule, setSchedule } = props;
-  const [presentationLength, setPresentationLength] = useState(45);
   const [loading, setLoading] = useState(false);
-  const [gapBetween, setGapBetween] = useState(5);
-  const [startTime, setStartTime] = useState("08:00");
-  const [endTime, setEndTime] = useState("16:00");
-  const [timeFormat24h, setTimeFormat24h] = useState(false);
   const { t } = useTranslation();
 
-  // Optional lunch and dinner breaks
-  const [lunchStart, setLunchStart] = useState("12:30");
-  const [lunchEnd, setLunchEnd] = useState("13:30");
-  const [dinnerStart, setDinnerStart] = useState("");
-  const [dinnerEnd, setDinnerEnd] = useState("");
-
-  // Presentations before and after lunch count
-  const [presentationsBeforeLunch, setPresentationsBeforeLunch] = useState(0);
-  const [presentationsAfterLunch, setPresentationsAfterLunch] = useState(0);
-
-  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
-
-  useEffect(() => {
+  const generateSchedule = (projects: Project[]) => {
     const lunch =
-      lunchStart && lunchEnd ? { start: lunchStart, end: lunchEnd } : undefined;
+      schedule.lunchStart && schedule.lunchEnd
+        ? { start: schedule.lunchStart, end: schedule.lunchEnd }
+        : undefined;
     const dinner =
-      dinnerStart && dinnerEnd
-        ? { start: dinnerStart, end: dinnerEnd }
+      schedule.dinnerStart && schedule.dinnerEnd
+        ? { start: schedule.dinnerStart, end: schedule.dinnerEnd }
         : undefined;
 
     const slots = generateSlots(
-      startTime,
-      endTime,
-      presentationLength,
-      gapBetween,
+      schedule.startTime,
+      schedule.endTime,
+      schedule.presentationLength,
+      schedule.gapBetween,
       lunch,
       dinner
     );
 
-    const totalPresentations = schedule.projects.length;
+    const totalPresentations = projects.length;
 
     // Clamp the before and after lunch numbers so they don't exceed people count or slot counts
-    let beforeCount = Math.min(presentationsBeforeLunch, totalPresentations);
+    let beforeCount = Math.min(
+      schedule.presentationsBeforeLunch,
+      totalPresentations
+    );
     let afterCount = Math.min(
-      presentationsAfterLunch,
+      schedule.presentationsAfterLunch,
       totalPresentations - beforeCount
     );
 
@@ -179,16 +168,22 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
     const items: ScheduleItem[] = selectedSlots.map((slot) => ({
       slot,
       projectId: null,
+      attachment: undefined,
+      selected: false,
     }));
 
-    setScheduleItems(items);
-  }, [schedule.projects.length]);
+    setSchedule((prev: Schedule) => ({
+      ...prev,
+      scheduleItems: items,
+      projects: projects,
+    }));
+  };
 
   const prepareSchedule = async () => {
     try {
       if (loading) return;
       setLoading(true);
-      const ids: string[] = [];
+      const ids: number[] = [];
       schedule.special_projects.forEach((item) => ids.push(item.project.id));
       // 2. Send data
       const response = await axiosClient.get(`schedules/prepare`, {
@@ -198,7 +193,34 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         },
       });
       const fetch = response.data as Project[];
-      setSchedule((prev: Schedule) => ({ ...prev, projects: fetch }));
+      if (schedule.special_projects.length == 0) {
+        generateSchedule(fetch);
+        setSchedule((prev: Schedule) => ({
+          ...prev,
+          projects: fetch,
+        }));
+      } else {
+        const combinedAttachment: Project[] = [];
+        for (let i = 0; i < fetch.length; i++) {
+          let foundItem = false;
+          const item = fetch[i];
+
+          for (let j = 0; j < schedule.special_projects.length; j++) {
+            const subItem = schedule.special_projects[j];
+            if (item.id == subItem.project.id) {
+              foundItem = true;
+              item.attachment = subItem.attachment;
+              combinedAttachment.push(item);
+              break;
+            }
+          }
+          if (!foundItem) {
+            combinedAttachment.push(item);
+          }
+        }
+
+        generateSchedule(combinedAttachment);
+      }
     } catch (error: any) {
       toast({
         toastType: "ERROR",
@@ -208,23 +230,84 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       setLoading(false);
     }
   };
-  console.log(scheduleItems);
-  const assignPersonToSlot = (slotId: number, projectId: number | null) => {
-    setScheduleItems((prev) =>
-      prev.map((item) =>
-        item.slot.id === slotId ? { ...item, projectId } : item
-      )
-    );
+  const assignPersonToSlot = (
+    slotId: number,
+    projectId: number | null,
+    attachment: FileType | undefined,
+    selected: boolean,
+    action: "add" | "remove"
+  ) => {
+    const selectedId = action == "remove" ? null : projectId;
+
+    setSchedule((prev: Schedule) => {
+      const updatedList = prev.scheduleItems.map((item) =>
+        item.slot.id === slotId
+          ? { ...item, projectId: selectedId, attachment: attachment }
+          : item
+      );
+      const updatedProjects = prev.projects.map((item) =>
+        item.id === projectId
+          ? { ...item, selected: selected, attachment: attachment }
+          : item
+      );
+      return { ...prev, projects: updatedProjects, scheduleItems: updatedList };
+    });
   };
 
   const formatTime = (time: string) => {
-    return timeFormat24h ? time : formatTime12h(time);
+    return schedule.timeFormat24h ? time : formatTime12h(time);
   };
+  const store = async () => {
+    try {
+      if (loading) return;
+      setLoading(true);
+      const ids: number[] = [];
+      schedule.special_projects.forEach((item) => ids.push(item.project.id));
+      // 2. Send data
+      const response = await axiosClient.get(`schedules/prepare`, {
+        params: {
+          count: schedule.presentation_count,
+          ids: ids,
+        },
+      });
+      const fetch = response.data as Project[];
+      if (schedule.special_projects.length == 0) {
+        generateSchedule(fetch);
+        setSchedule((prev: Schedule) => ({
+          ...prev,
+          projects: fetch,
+        }));
+      } else {
+        const combinedAttachment: Project[] = [];
+        for (let i = 0; i < fetch.length; i++) {
+          let foundItem = false;
+          const item = fetch[i];
 
-  const onReorderSchedule = (newItems: ScheduleItem[]) => {
-    setScheduleItems(newItems);
+          for (let j = 0; j < schedule.special_projects.length; j++) {
+            const subItem = schedule.special_projects[j];
+            if (item.id == subItem.project.id) {
+              foundItem = true;
+              item.attachment = subItem.attachment;
+              combinedAttachment.push(item);
+              break;
+            }
+          }
+          if (!foundItem) {
+            combinedAttachment.push(item);
+          }
+        }
+
+        generateSchedule(combinedAttachment);
+      }
+    } catch (error: any) {
+      toast({
+        toastType: "ERROR",
+        description: error.response.data.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
     <>
       <div className="grid grid-cols-2 gap-4 p-6">
@@ -232,8 +315,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Presentation Length (min)</span>
           <input
             type="number"
-            value={presentationLength}
-            onChange={(e) => setPresentationLength(Number(e.target.value))}
+            value={schedule.presentationLength}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                presentationLength: Number(e.target.value),
+              }))
+            }
             className="input input-bordered"
             min={1}
           />
@@ -243,8 +331,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Gap Between (min)</span>
           <input
             type="number"
-            value={gapBetween}
-            onChange={(e) => setGapBetween(Number(e.target.value))}
+            value={schedule.gapBetween}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                gapBetween: Number(e.target.value),
+              }))
+            }
             className="input input-bordered"
             min={0}
           />
@@ -254,8 +347,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Start Time</span>
           <input
             type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            value={schedule.startTime}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                startTime: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -264,8 +362,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">End Time</span>
           <input
             type="time"
-            value={endTime}
-            onChange={(e) => setEndTime(e.target.value)}
+            value={schedule.endTime}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                endTime: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -275,8 +378,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Lunch Break Start</span>
           <input
             type="time"
-            value={lunchStart}
-            onChange={(e) => setLunchStart(e.target.value)}
+            value={schedule.lunchStart}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                lunchStart: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -285,8 +393,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Lunch Break End</span>
           <input
             type="time"
-            value={lunchEnd}
-            onChange={(e) => setLunchEnd(e.target.value)}
+            value={schedule.lunchEnd}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                lunchEnd: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -296,8 +409,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Dinner Break Start</span>
           <input
             type="time"
-            value={dinnerStart}
-            onChange={(e) => setDinnerStart(e.target.value)}
+            value={schedule.dinnerStart}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                dinnerStart: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -306,8 +424,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Dinner Break End</span>
           <input
             type="time"
-            value={dinnerEnd}
-            onChange={(e) => setDinnerEnd(e.target.value)}
+            value={schedule.dinnerEnd}
+            onChange={(e) =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                dinnerEnd: e.target.value,
+              }))
+            }
             className="input input-bordered"
           />
         </label>
@@ -317,15 +440,19 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Presentations Before Lunch</span>
           <input
             type="number"
-            value={presentationsBeforeLunch}
+            value={schedule.presentationsBeforeLunch}
             onChange={(e) =>
-              setPresentationsBeforeLunch(
-                Math.min(Number(e.target.value), schedule.projects.length)
-              )
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                presentationsBeforeLunch: Math.min(
+                  Number(e.target.value),
+                  schedule.presentation_count
+                ),
+              }))
             }
             className="input input-bordered"
             min={0}
-            max={schedule.projects.length}
+            max={schedule.presentation_count}
           />
           <small className="text-gray-500">
             Number of presentations scheduled before lunch break.
@@ -337,15 +464,19 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Presentations After Lunch</span>
           <input
             type="number"
-            value={presentationsAfterLunch}
+            value={schedule.presentationsAfterLunch}
             onChange={(e) =>
-              setPresentationsAfterLunch(
-                Math.min(Number(e.target.value), schedule.projects.length)
-              )
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                presentationsAfterLunch: Math.min(
+                  Number(e.target.value),
+                  schedule.presentation_count
+                ),
+              }))
             }
             className="input input-bordered"
             min={0}
-            max={schedule.projects.length}
+            max={schedule.presentation_count}
           />
           <small className="text-gray-500">
             Number of presentations scheduled after lunch break.
@@ -355,8 +486,13 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         <label className="flex items-center space-x-2 col-span-2">
           <input
             type="checkbox"
-            checked={timeFormat24h}
-            onChange={() => setTimeFormat24h((prev) => !prev)}
+            checked={schedule.timeFormat24h}
+            onChange={() =>
+              setSchedule((prev: Schedule) => ({
+                ...prev,
+                timeFormat24h: !prev.timeFormat24h,
+              }))
+            }
             className="checkbox"
           />
           <span>Use 24-hour time format</span>
@@ -373,11 +509,10 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       <Separator className="mt-6" />
 
       <ScheduleTable
-        scheduleItems={scheduleItems}
+        scheduleItems={schedule.scheduleItems}
         projects={schedule.projects}
         formatTime={formatTime}
         onAssign={assignPersonToSlot}
-        onReorder={onReorderSchedule}
       />
     </>
   );

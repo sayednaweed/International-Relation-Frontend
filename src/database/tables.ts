@@ -368,13 +368,14 @@ export type ScheduleDTO = {
 export interface Project {
   id: number;
   name: string;
+  attachment?: FileType;
+  selected: boolean;
 }
 export interface TimeSlot {
   id: number;
   presentation_start: string;
   presentation_end: string;
   gap_end: string;
-  project?: Project;
 }
 
 export interface FixedBreak {
@@ -384,5 +385,6 @@ export interface FixedBreak {
 
 export interface ScheduleItem {
   slot: TimeSlot;
+  attachment?: FileType;
   projectId: number | null;
 }

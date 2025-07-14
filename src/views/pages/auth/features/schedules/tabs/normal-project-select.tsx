@@ -1,5 +1,4 @@
 import CustomInput from "@/components/custom-ui/input/CustomInput";
-import { valueIsNumber } from "@/lib/utils";
 import { Schedule } from "@/views/pages/auth/features/schedules/add-or-edit-schedule";
 import { Dispatch } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,13 +15,14 @@ export function NormalProjectSelect(props: CustomProjectSelectProps) {
   const handleChange = (e: any) => {
     const { name, value } = e.target;
 
-    if (valueIsNumber(value)) {
+    if (Number(value)) {
       if (schedule.special_projects) {
         const sliced = schedule.special_projects.slice(0, value);
 
         setSchedule((prev: any) => ({
           ...prev,
           special_projects: sliced,
+          scheduleItems: [],
           [name]: value,
         }));
       } else {

@@ -16,22 +16,28 @@ import { DateObject } from "react-multi-date-picker";
 import { useGlobalState } from "@/context/GlobalStateContext";
 import axiosClient from "@/lib/axois-client";
 import { useDatasource } from "@/hooks/use-datasource";
-import { Project } from "@/database/tables";
+import { Project, ScheduleItem } from "@/database/tables";
+import { FileType } from "@/lib/types";
 
 export type Schedule = {
   presentation_count: number;
   projects: Project[];
+  scheduleItems: ScheduleItem[];
+  startTime: string;
+  endTime: string;
+  timeFormat24h: boolean;
+  presentationLength: number;
+  gapBetween: number;
+  lunchStart: string;
+  lunchEnd: string;
+  dinnerStart: string;
+  dinnerEnd: string;
+  presentationsBeforeLunch: number;
+  presentationsAfterLunch: number;
   validationChecklist: any;
   special_projects: {
-    project: { id: string; name: string };
-    attachment: {
-      pending_id: number;
-      name: string;
-      size: number;
-      check_list_id: string;
-      extension: string;
-      path: string;
-    };
+    project: { id: number; name: string };
+    attachment: FileType;
   }[];
 };
 export default function AddOrEditSchedule() {
@@ -58,6 +64,18 @@ export default function AddOrEditSchedule() {
         presentation_count: 10,
         projects: [],
         special_projects: [],
+        scheduleItems: [],
+        startTime: "08:00",
+        endTime: "16:00",
+        timeFormat24h: false,
+        presentationLength: 45,
+        gapBetween: 5,
+        lunchStart: "12:30",
+        lunchEnd: "13:30",
+        dinnerStart: "",
+        dinnerEnd: "",
+        presentationsBeforeLunch: 0,
+        presentationsAfterLunch: 0,
       };
     } else {
       const response = await axiosClient.get(`projects/${data}`);

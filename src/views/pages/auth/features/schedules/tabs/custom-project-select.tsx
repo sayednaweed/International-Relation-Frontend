@@ -105,6 +105,8 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
       setSchedule((prev: Schedule) => ({
         ...prev,
         special_projects: [newProject],
+        scheduleItems: [],
+        projects: [],
       }));
     } else {
       if (schedule.special_projects.length > schedule.presentation_count) {
@@ -128,6 +130,8 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
       setSchedule((prev: Schedule) => ({
         ...prev,
         special_projects: [newProject, ...prev.special_projects],
+        scheduleItems: [],
+        projects: [],
       }));
     }
     setUserData({});
