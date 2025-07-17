@@ -2,6 +2,7 @@ import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMulti
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
 import { ScheduleDTO } from "@/database/tables";
 import { useDatasource } from "@/hooks/use-datasource";
+import axiosClient from "@/lib/axois-client";
 import { generateUUID, isSameDatePure } from "@/lib/utils";
 import { CalendarPlus } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -53,7 +54,12 @@ export default function Schedules() {
   };
   const loadList = async () => {
     // 2. Send data
-    // const response = await axiosClient.get(`schedules/${type}`);
+    const response = await axiosClient.get(`schedules`, {
+      params: {
+        start_date: date[0].toDate().toISOString(),
+        end_date: date[1].toDate().toISOString(),
+      },
+    });
     const data: any = [
       { date: "2025-07-03T20:40:35.538Z", status: "Scheduled", id: 1 },
     ];

@@ -454,5 +454,6 @@
   "presentation_count": "تعداد پرزنتیشن",
   "configurations": "تنظیمات سیستم",
   "add_to_list": "اضافه کردن به لیست",
-  "document": "سند"
+  "document": "سند",
+  "all_project_not_sele": "همه پروژه ها در برنامه انتخاب نشده."
 }

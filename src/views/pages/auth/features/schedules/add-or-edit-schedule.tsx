@@ -23,18 +23,18 @@ export type Schedule = {
   presentation_count: number;
   projects: Project[];
   scheduleItems: ScheduleItem[];
-  startTime: string;
-  endTime: string;
-  timeFormat24h: boolean;
-  presentationLength: number;
-  gapBetween: number;
-  lunchStart: string;
-  lunchEnd: string;
-  dinnerStart: string;
-  dinnerEnd: string;
-  presentationsBeforeLunch: number;
-  presentationsAfterLunch: number;
-  validationChecklist: any;
+  start_time: string;
+  end_time: string;
+  time_format24h: boolean;
+  presentation_length: number;
+  gap_between: number;
+  lunch_start: string;
+  lunch_end: string;
+  dinner_start: string;
+  dinner_end: string;
+  presentations_before_lunch: number;
+  presentations_after_lunch: number;
+  validation_checklist: any;
   special_projects: {
     project: { id: number; name: string };
     attachment: FileType;
@@ -65,17 +65,17 @@ export default function AddOrEditSchedule() {
         projects: [],
         special_projects: [],
         scheduleItems: [],
-        startTime: "08:00",
-        endTime: "16:00",
-        timeFormat24h: false,
-        presentationLength: 45,
-        gapBetween: 5,
-        lunchStart: "12:30",
-        lunchEnd: "13:30",
-        dinnerStart: "",
-        dinnerEnd: "",
-        presentationsBeforeLunch: 0,
-        presentationsAfterLunch: 0,
+        start_time: "08:00",
+        end_time: "16:00",
+        time_format24h: false,
+        presentation_length: 45,
+        gap_between: 5,
+        lunch_start: "12:30",
+        lunch_end: "13:30",
+        dinner_start: "",
+        dinner_end: "",
+        presentations_before_lunch: 0,
+        presentations_after_lunch: 0,
       };
     } else {
       const response = await axiosClient.get(`projects/${data}`);

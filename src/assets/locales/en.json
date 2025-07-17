@@ -466,5 +466,6 @@
   "presentation_count": "Presentation count",
   "configurations": "Configurations",
   "add_to_list": "Add to list",
-  "document": "Document"
+  "document": "Document",
+  "all_project_not_sele": "All projects are not selected in schedule."
 }

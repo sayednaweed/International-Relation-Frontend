@@ -43,7 +43,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
       if (response.status === 200) {
         setSchedule((prev: any) => ({
           ...prev,
-          validationChecklist: response.data,
+          validation_checklist: response.data,
         }));
       }
     } catch (error: any) {
@@ -54,7 +54,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
     }
   };
   useEffect(() => {
-    if (!schedule?.validationChecklist) fetch();
+    if (!schedule?.validation_checklist) fetch();
   }, []);
   const handleChange = (selection: any) => {
     setUserData((prev: any) => ({
@@ -181,7 +181,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
               name={t("document")}
               defaultFile={userData.document as FileType}
               uploadParam={{
-                checklist_id: schedule?.validationChecklist?.id,
+                checklist_id: schedule?.validation_checklist?.id,
                 task_type: TaskTypeEnum.scheduling,
                 identifier: generateUUID(),
               }}
@@ -212,9 +212,9 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
               onStart={async (_file: File) => {}}
               validateBeforeUpload={function (file: File): boolean {
                 const maxFileSize =
-                  schedule.validationChecklist.file_size * 1024; // 2MB
+                  schedule.validation_checklist.file_size * 1024; // 2MB
                 const validTypes: string[] =
-                  schedule.validationChecklist.acceptable_mimes.split(",");
+                  schedule.validation_checklist.acceptable_mimes.split(",");
                 const resultFile = validateFile(
                   file,
                   Math.round(maxFileSize),
