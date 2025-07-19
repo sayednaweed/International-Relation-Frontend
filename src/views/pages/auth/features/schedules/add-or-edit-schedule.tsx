@@ -20,6 +20,7 @@ import { Project, ScheduleItem } from "@/database/tables";
 import { FileType } from "@/lib/types";
 
 export type Schedule = {
+  date: DateObject;
   presentation_count: number;
   projects: Project[];
   scheduleItems: ScheduleItem[];

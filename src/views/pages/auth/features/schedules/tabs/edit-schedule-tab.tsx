@@ -180,7 +180,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       projects: projects,
     }));
   };
-
+  console.log(schedule);
   const prepareSchedule = async () => {
     try {
       if (loading) return;
@@ -275,9 +275,11 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       }
       // 2. Send data
       const response = await axiosClient.post(`schedules`, {
+        date: schedule.date.toDate().toISOString(),
+        start_time: schedule.start_time,
+        end_time: schedule.end_time,
         dinner_end: schedule.dinner_end,
         dinner_start: schedule.dinner_start,
-        end_time: schedule.end_time,
         gap_between: schedule.gap_between,
         lunch_end: schedule.lunch_end,
         lunch_start: schedule.lunch_start,
@@ -431,15 +433,15 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <input
             type="number"
             value={schedule.presentations_before_lunch}
-            onChange={(e) =>
+            onChange={(e) => {
               setSchedule((prev: Schedule) => ({
                 ...prev,
-                presentationsBeforeLunch: Math.min(
+                presentations_before_lunch: Math.min(
                   Number(e.target.value),
                   schedule.presentation_count
                 ),
-              }))
-            }
+              }));
+            }}
             className="input input-bordered"
             min={0}
             max={schedule.presentation_count}
@@ -458,7 +460,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
-                presentationsAfterLunch: Math.min(
+                presentations_after_lunch: Math.min(
                   Number(e.target.value),
                   schedule.presentation_count
                 ),

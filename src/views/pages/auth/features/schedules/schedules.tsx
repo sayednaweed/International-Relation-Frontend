@@ -60,10 +60,7 @@ export default function Schedules() {
         end_date: date[1].toDate().toISOString(),
       },
     });
-    const data: any = [
-      { date: "2025-07-03T20:40:35.538Z", status: "Scheduled", id: 1 },
-    ];
-    return transformSchedules(data);
+    return transformSchedules(response.data);
   };
   const { schedules, setSchedules, isLoading, refetch } = useDatasource<
     {
