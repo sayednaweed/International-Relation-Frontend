@@ -62,6 +62,7 @@ export default function AddOrEditSchedule() {
     });
     if (date.isValid) {
       return {
+        date: date,
         presentation_count: 10,
         projects: [],
         special_projects: [],
