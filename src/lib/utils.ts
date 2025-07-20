@@ -270,11 +270,16 @@ export const isStartDateBigger = (
   message: string
 ) => {
   if (startDate && endDate && startDate > endDate) {
-    console.log("start date is bigger");
     toast({
       toastType: "ERROR",
       description: message,
     });
+    return true;
+  }
+  return false;
+};
+export const isStartDateSmaller = (startDate: Date, endDate: Date) => {
+  if (startDate && endDate && startDate < endDate) {
     return true;
   }
   return false;

@@ -1,11 +1,13 @@
 import CustomMultiDatePicker from "@/components/custom-ui/DatePicker/CustomMultiDatePicker";
 import NastranSpinner from "@/components/custom-ui/spinner/NastranSpinner";
+import { toast } from "@/components/ui/use-toast";
 import { ScheduleDTO } from "@/database/tables";
 import { useDatasource } from "@/hooks/use-datasource";
 import axiosClient from "@/lib/axois-client";
-import { generateUUID, isSameDatePure } from "@/lib/utils";
+import { generateUUID, isSameDatePure, isStartDateSmaller } from "@/lib/utils";
 import { CalendarPlus } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DateObject } from "react-multi-date-picker";
 import { useNavigate } from "react-router";
 
@@ -14,6 +16,8 @@ export default function Schedules() {
     new DateObject(new Date()),
     new DateObject(new Date().setMonth(new Date().getMonth() + 1)),
   ]);
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const transformSchedules = (data: ScheduleDTO[]) => {
     // List to store day names and dates
@@ -102,37 +106,46 @@ export default function Schedules() {
         loaderComponent
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-4">
-          {schedules.map((item) => (
-            <div
-              key={item.id}
-              className="bg-card border-primary/20 pb-2 rounded space-y-2 hover:scale-110 transition-transform transform-gpu border antialiased p-1"
-            >
-              <div className="bg-primary/90 rounded text-white px-1">
-                <h1 className="border-b">{item.day}</h1>
-                <h1>{item.weekday}</h1>
-              </div>
+          {schedules.map((item) => {
+            const inputDate = new Date(item.date); // Parse the ISO string
+            const currentDate = new Date(); // Get current date/time
+            const notAlllowed = isStartDateSmaller(inputDate, currentDate);
+            return (
+              <div
+                key={item.id}
+                className={`bg-card border-primary/20 pb-2 rounded space-y-2 hover:scale-110 transition-transform transform-gpu border antialiased p-1 ${
+                  notAlllowed ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
+              >
+                <div className="bg-primary/90 rounded text-white px-1">
+                  <h1 className="border-b">{item.day}</h1>
+                  <h1>{item.weekday}</h1>
+                </div>
 
-              {item?.data ? (
-                <div
-                  className="text-center cursor-pointer space-y-1 mx-auto w-fit"
-                  onClick={() => navigate(`/schedules/${item.data?.id}`)}
-                >
-                  <CalendarPlus className="size-[18px] mx-auto" />
-                  <div className="font-bold text-tertiary">
-                    {item.data.status}
+                {item?.data ? (
+                  <div
+                    className="text-center cursor-pointer space-y-1 mx-auto w-fit"
+                    onClick={() => navigate(`/schedules/${item.data?.id}`)}
+                  >
+                    <CalendarPlus className="size-[18px] mx-auto" />
+                    <div className="font-bold text-tertiary">
+                      {item.data.status}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  onClick={() => navigate(`/schedules/${item.date}`)}
-                  className="text-center cursor-pointer space-y-1 mx-auto w-fit"
-                >
-                  <CalendarPlus className="size-[18px] mx-auto" />
-                  <h1>Not Scheduled</h1>
-                </div>
-              )}
-            </div>
-          ))}
+                ) : (
+                  <div
+                    onClick={() => {
+                      if (!notAlllowed) navigate(`/schedules/${item.date}`);
+                    }}
+                    className={`text-center space-y-1 mx-auto w-fit`}
+                  >
+                    <CalendarPlus className="size-[18px] mx-auto" />
+                    <h1>Not Scheduled</h1>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

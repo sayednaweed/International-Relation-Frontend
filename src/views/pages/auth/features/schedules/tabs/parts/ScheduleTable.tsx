@@ -10,6 +10,7 @@ interface Props {
   onAssign: (
     slotId: number,
     projectId: number | null,
+    projectName: string | undefined,
     attachment: FileType | undefined,
     selected: boolean,
     action: "add" | "remove"
@@ -57,6 +58,7 @@ const ScheduleTable: React.FC<Props> = ({
                     onAssign(
                       item.slot.id,
                       e.target.value ? Number(e.target.value) : null,
+                      selectedProject?.name,
                       selectedProject?.attachment,
                       true,
                       "add"
@@ -84,6 +86,7 @@ const ScheduleTable: React.FC<Props> = ({
                     onAssign(
                       item.slot.id,
                       item.projectId,
+                      selectedProject?.name,
                       selectedProject?.attachment,
                       false,
                       "remove"

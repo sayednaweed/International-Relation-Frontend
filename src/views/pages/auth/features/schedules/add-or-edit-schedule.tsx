@@ -80,8 +80,51 @@ export default function AddOrEditSchedule() {
         presentations_after_lunch: 0,
       };
     } else {
-      const response = await axiosClient.get(`projects/${data}`);
-      return response.data;
+      const response = await axiosClient.get(`schedules/${data}`);
+      const result = response.data;
+      const date = new DateObject({
+        date: result.date,
+        calendar: state.systemLanguage.calendar,
+        locale: state.systemLanguage.local,
+        format: "YYYY/MM/DD", // important for parsing correctly
+      });
+      const projects: Project[] = [];
+      const special_projects: {
+        project: { id: number; name: string };
+        attachment: FileType;
+      }[] = [];
+
+      for (const item of result.scheduleItems) {
+        const proj = {
+          id: item.projectId,
+          name: item.project_name,
+          attachment: item?.attachment,
+          selected: true,
+        };
+        projects.push(proj);
+        special_projects.push({
+          project: { id: proj.id, name: proj.name },
+          attachment: proj?.attachment,
+        });
+      }
+      return {
+        date: date,
+        presentation_count: result.presentation_count,
+        projects: projects,
+        special_projects: special_projects,
+        scheduleItems: result.scheduleItems,
+        start_time: result.start_time,
+        end_time: result.end_time,
+        time_format24h: result.time_format24h,
+        presentation_length: result.presentation_length,
+        gap_between: result.gap_between,
+        lunch_start: result.lunch_start,
+        lunch_end: result.lunch_end,
+        dinner_start: result?.dinner_start,
+        dinner_end: result?.dinner_end,
+        presentations_before_lunch: result.presentations_before_lunch,
+        presentations_after_lunch: result.presentations_after_lunch,
+      };
     }
   };
   const { schedule, setSchedule, isLoading, refetch } = useDatasource<

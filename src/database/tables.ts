@@ -387,4 +387,5 @@ export interface ScheduleItem {
   slot: TimeSlot;
   attachment?: FileType;
   projectId: number | null;
+  project_name: string | undefined;
 }

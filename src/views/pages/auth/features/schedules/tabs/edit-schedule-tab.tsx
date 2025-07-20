@@ -170,6 +170,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
     const items: ScheduleItem[] = selectedSlots.map((slot) => ({
       slot,
       projectId: null,
+      project_name: undefined,
       attachment: undefined,
       selected: false,
     }));
@@ -236,16 +237,23 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
   const assignPersonToSlot = (
     slotId: number,
     projectId: number | null,
+    projectName: string | undefined,
     attachment: FileType | undefined,
     selected: boolean,
     action: "add" | "remove"
   ) => {
     const selectedId = action == "remove" ? null : projectId;
+    const selectedProjectName = action == "remove" ? null : projectName;
 
     setSchedule((prev: Schedule) => {
       const updatedList = prev.scheduleItems.map((item) =>
         item.slot.id === slotId
-          ? { ...item, projectId: selectedId, attachment: attachment }
+          ? {
+              ...item,
+              projectId: selectedId,
+              projectName: selectedProjectName,
+              attachment: attachment,
+            }
           : item
       );
       const updatedProjects = prev.projects.map((item) =>
@@ -286,6 +294,8 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         presentation_length: schedule.presentation_length,
         presentation_count: schedule.presentation_count,
         presentations_after_lunch: schedule.presentations_after_lunch,
+        presentations_before_lunch: schedule.presentations_before_lunch,
+        time_format24h: schedule.time_format24h,
         scheduleItems: schedule.scheduleItems,
       });
       if (response.status == 200) {
