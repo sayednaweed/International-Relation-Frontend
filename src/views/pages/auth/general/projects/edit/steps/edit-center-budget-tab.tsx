@@ -293,7 +293,12 @@ export default function EditCenterBudgetTab(props: EditCenterBudgetTabProps) {
               errorMessage={error.get("budget")}
               onChange={handleChange}
             />
-            {userData?.budget && <CenterBudgetTable />}
+            {userData?.budget && (
+              <CenterBudgetTable
+                userData={userData}
+                setUserData={setUserData}
+              />
+            )}
           </div>
         )}
       </CardContent>
