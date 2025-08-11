@@ -299,7 +299,7 @@ export interface ActivityModel {
 export interface CenterBudget {
   id: string;
   province: { id: string; name: string };
-  district: { id: string; name: string };
+  district: { id: string; name: string }[];
   villages: {
     village_english: string;
     village_farsi: string;

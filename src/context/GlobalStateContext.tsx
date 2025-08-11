@@ -89,7 +89,6 @@ export const GlobalStateProvider: React.FC<{ children: ReactNode }> = ({
 
 export const useGlobalState = () => {
   const context = useContext(GlobalStateContext);
-  console.log(context, "Naweed");
   if (!context) {
     throw new Error("useGlobalState must be used within a GlobalStateProvider");
   }

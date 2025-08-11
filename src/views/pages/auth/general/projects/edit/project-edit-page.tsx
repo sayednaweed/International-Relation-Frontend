@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import { PermissionEnum, StatusEnum } from "@/lib/constants";
-import EditInformationTab from "./steps/edit-information-tab";
 import NastranModel from "@/components/custom-ui/model/NastranModel";
 import { UserPermission } from "@/database/tables";
 import { useGeneralAuthState } from "@/context/AuthContextProvider";
@@ -28,10 +27,11 @@ import {
   BreadcrumbSeparator,
 } from "@/components/custom-ui/Breadcrumb/Breadcrumb";
 import ProjectEditHeader from "./project-edit-header";
-import UploadMouDailog from "./parts/upload-mou-Dailog";
 import EditCenterBudgetTab from "./steps/edit-center-budget-tab";
 import EditOrganizationStructureTab from "./steps/edit-organization-structure-tab";
 import EditChecklistTab from "./steps/edit-checklist-tab";
+import EditDetailsTab from "@/views/pages/auth/general/projects/edit/steps/edit-details-tab";
+import UploadMouDailog from "@/views/pages/auth/general/projects/edit/parts/upload-mou-dailog";
 
 export default function ProjectEditPage() {
   const { user } = useGeneralAuthState();
@@ -253,7 +253,7 @@ export default function ProjectEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.projects.sub.detail.toString()}
             >
-              <EditInformationTab
+              <EditDetailsTab
                 hasEdit={userData.status_id == StatusEnum.has_comment}
               />
             </TabsContent>
