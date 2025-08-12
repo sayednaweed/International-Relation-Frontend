@@ -80,6 +80,14 @@ export default function ProjectEditPage() {
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.projects.name
   ) as UserPermission;
+  const hasEdit =
+    per.edit &&
+    (userData?.status_id != StatusEnum.scheduled ||
+      userData?.status_id == StatusEnum.has_comment);
+  const hasRemove =
+    per.delete &&
+    (userData?.status_id != StatusEnum.scheduled ||
+      userData?.status_id == StatusEnum.has_comment);
   const tableList = useMemo(
     () =>
       Array.from(per.sub).map(([key, _subPermission], index: number) => {
@@ -185,8 +193,8 @@ export default function ProjectEditPage() {
                 failed={failed}
                 userData={userData}
                 setUserData={setUserData}
-                hasEdit={true}
-                hasRemove={true}
+                hasEdit={hasEdit}
+                hasRemove={hasRemove}
               />
               {tableList}
 
@@ -253,25 +261,19 @@ export default function ProjectEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.projects.sub.detail.toString()}
             >
-              <EditDetailsTab
-                hasEdit={userData.status_id == StatusEnum.has_comment}
-              />
+              <EditDetailsTab hasEdit={hasEdit} />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
               value={PermissionEnum.projects.sub.center_budget.toString()}
             >
-              <EditCenterBudgetTab
-                hasEdit={userData.status_id == StatusEnum.has_comment}
-              />
+              <EditCenterBudgetTab hasEdit={hasEdit} />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"
               value={PermissionEnum.projects.sub.organ_structure.toString()}
             >
-              <EditOrganizationStructureTab
-                hasEdit={userData.status_id == StatusEnum.has_comment}
-              />
+              <EditOrganizationStructureTab hasEdit={hasEdit} />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"

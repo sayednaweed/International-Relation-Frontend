@@ -125,7 +125,7 @@ export default function EditCenterBudgetTab(props: EditCenterBudgetTabProps) {
 
     const content = {
       ...userData, // shallow copy of the userData object
-      checklistMap: Array.from(userData.checklistMap),
+      centers_list: userData.centers_list,
       start_date: !isString(userData?.start_date)
         ? userData?.start_date?.toDate()?.toISOString()
         : userData?.start_date,
@@ -315,7 +315,7 @@ export default function EditCenterBudgetTab(props: EditCenterBudgetTabProps) {
           userData &&
           hasEdit && (
             <PrimaryButton onClick={saveData} className={`shadow-lg`}>
-              <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
+              <ButtonSpinner loading={loading}>{t("update")}</ButtonSpinner>
             </PrimaryButton>
           )
         )}

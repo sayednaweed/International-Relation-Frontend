@@ -623,7 +623,7 @@ export default function EditDetailsTab(props: EditDetailsTabProps) {
           projectDetail &&
           hasEdit && (
             <PrimaryButton onClick={saveData} className={`shadow-lg`}>
-              <ButtonSpinner loading={loading}>{t("save")}</ButtonSpinner>
+              <ButtonSpinner loading={loading}>{t("update")}</ButtonSpinner>
             </PrimaryButton>
           )
         )}
