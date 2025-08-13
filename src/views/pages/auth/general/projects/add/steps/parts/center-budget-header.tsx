@@ -304,7 +304,6 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
     );
   }, [userData?.province?.id, error]);
 
-  console.log(userData?.selectedDistrictId);
   return (
     <div className="flex flex-col">
       <div className="col-span-full border overflow-auto p-4">
