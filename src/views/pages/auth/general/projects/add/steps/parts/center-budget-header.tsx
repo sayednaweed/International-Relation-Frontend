@@ -304,6 +304,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
     );
   }, [userData?.province?.id, error]);
 
+  console.log(userData?.selectedDistrictId);
   return (
     <div className="flex flex-col">
       <div className="col-span-full border overflow-auto p-4">
@@ -372,6 +373,7 @@ export default function CenterBudgetHeader(props: CenterBudgetHeaderProps) {
             <div className="border">{district}</div>
             <div className="border">
               <MultiTabTextarea
+                disabled={userData?.selectedDistrictId ? false : true}
                 optionalKey={"optional_lang"}
                 onTabChanged={(key: string, tabName: string) => {
                   setUserData((prev: any) => {
