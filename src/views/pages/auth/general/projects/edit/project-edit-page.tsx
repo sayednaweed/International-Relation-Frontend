@@ -88,6 +88,7 @@ export default function ProjectEditPage() {
     per.delete &&
     (userData?.status_id != StatusEnum.scheduled ||
       userData?.status_id == StatusEnum.has_comment);
+
   const tableList = useMemo(
     () =>
       Array.from(per.sub).map(([key, _subPermission], index: number) => {
@@ -273,7 +274,7 @@ export default function ProjectEditPage() {
               className="flex-1 m-0"
               value={PermissionEnum.projects.sub.organ_structure.toString()}
             >
-              <EditOrganizationStructureTab hasEdit={hasEdit} />
+              <EditOrganizationStructureTab permissions={per} />
             </TabsContent>
             <TabsContent
               className="flex-1 m-0"

@@ -24,11 +24,11 @@ import { useTranslation } from "react-i18next";
 export interface CustomProjectSelectProps {
   schedule: Schedule;
   setSchedule: Dispatch<any>;
-    add: boolean;
+  add: boolean;
 }
 
 export function CustomProjectSelect(props: CustomProjectSelectProps) {
-  const { schedule, setSchedule ,add} = props;
+  const { schedule, setSchedule } = props;
   const { t } = useTranslation();
   const [error, setError] = useState<Map<string, string>>(new Map());
 
@@ -255,7 +255,7 @@ export function CustomProjectSelect(props: CustomProjectSelectProps) {
             )}
           </div>
           <PrimaryButton
-            onClick={add ? addItem:editItem}
+            onClick={addItem}
             className="rtl:text-lg-rtl font-semibold ltr:text-md-ltr mx-auto col-span-full mt-8"
           >
             {t("add_to_list")}

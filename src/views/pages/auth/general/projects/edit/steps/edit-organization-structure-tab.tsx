@@ -28,15 +28,15 @@ import {
 import Shimmer from "@/components/custom-ui/shimmer/Shimmer";
 import BooleanStatusButton from "@/components/custom-ui/button/BooleanStatusButton";
 import { toLocaleDate } from "@/lib/utils";
+import EdirOrgStructureDialog from "@/views/pages/auth/general/projects/edit/steps/parts/edit-org-structure-dialog";
 
 interface EditOrganizationStructureTabProps {
   permissions: UserPermission;
-  registerationExpired: boolean;
 }
 export default function EditOrganizationStructureTab(
   props: EditOrganizationStructureTabProps
 ) {
-  const { permissions, registerationExpired } = props;
+  const { permissions } = props;
   const { t } = useTranslation();
   const { id } = useParams();
   const [state] = useGlobalState();
@@ -76,12 +76,13 @@ export default function EditOrganizationStructureTab(
       });
       setProjectManagers([projectManager, ...updatedUnFiltered]);
     } else {
-      setProjectManagers([projectManager, ...projectManager]);
+      setProjectManagers([projectManager, ...projectManagers]);
     }
   };
 
   const per = permissions.sub.get(PermissionEnum.projects.sub.organ_structure);
   const hasEdit = per?.edit;
+  console.log(projectManagers);
   return (
     <Card>
       <CardHeader>
@@ -94,7 +95,7 @@ export default function EditOrganizationStructureTab(
           <h1 className="rtl:text-2xl-rtl">{t("u_are_not_authzed!")}</h1>
         ) : (
           <>
-            {!registerationExpired && hasEdit && (
+            {hasEdit && (
               <NastranModel
                 size="lg"
                 isDismissable={false}
@@ -106,7 +107,7 @@ export default function EditOrganizationStructureTab(
                 }
                 showDialog={async () => true}
               >
-                <EditNgoStatusDialog onComplete={add} />
+                <EdirOrgStructureDialog onComplete={add} />
               </NastranModel>
             )}
 

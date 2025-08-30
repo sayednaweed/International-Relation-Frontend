@@ -455,5 +455,8 @@
   "configurations": "تنظیمات سیستم",
   "add_to_list": "اضافه کردن به لیست",
   "document": "سند",
-  "all_project_not_sele": "همه پروژه ها در برنامه انتخاب نشده."
+  "all_project_not_sele": "همه پروژه ها در برنامه انتخاب نشده.",
+  "not_scheduled": "برنامه ریزی نشده",
+  "start_resentation": "شروع پریزنتیشن",
+  "build_schedule": "ایجاد جدول زمانی"
 }

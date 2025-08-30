@@ -65,7 +65,7 @@ export default function Schedules() {
     });
     return transformSchedules(response.data);
   };
-  const { schedules, setSchedules, isLoading, refetch } = useDatasource<
+  const { schedules, isLoading } = useDatasource<
     {
       id: string;
       date: string;

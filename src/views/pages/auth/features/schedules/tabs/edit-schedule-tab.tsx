@@ -234,6 +234,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       setLoading(false);
     }
   };
+
   const assignPersonToSlot = (
     slotId: number,
     projectId: number | null,
@@ -266,7 +267,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
   };
 
   const formatTime = (time: string) => {
-    return schedule.time_format24h ? time : formatTime12h(time);
+    return schedule.is_hour_24 ? time : formatTime12h(time);
   };
   const store = async () => {
     try {
@@ -282,7 +283,8 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         }
       }
       // 2. Send data
-      const response = await axiosClient.post(`schedules`, {
+      const data = {
+        id: schedule?.id,
         date: schedule.date.toDate().toISOString(),
         start_time: schedule.start_time,
         end_time: schedule.end_time,
@@ -295,9 +297,12 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         presentation_count: schedule.presentation_count,
         presentations_after_lunch: schedule.presentations_after_lunch,
         presentations_before_lunch: schedule.presentations_before_lunch,
-        time_format24h: schedule.time_format24h,
+        is_hour_24: schedule.is_hour_24,
         scheduleItems: schedule.scheduleItems,
-      });
+      };
+      const response = add
+        ? await axiosClient.post(`schedules`, data)
+        : await axiosClient.put(`schedules`, data);
       if (response.status == 200) {
         navigate("/schedules");
       }
@@ -349,7 +354,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Start Time</span>
           <input
             type="time"
-            value={schedule.start_time}
+            value={schedule.start_time || ""}
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -364,7 +369,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">End Time</span>
           <input
             type="time"
-            value={schedule.end_time}
+            value={schedule.end_time || ""}
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -411,7 +416,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Dinner Break Start</span>
           <input
             type="time"
-            value={schedule.dinner_start}
+            value={schedule.dinner_start || ""}
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -426,7 +431,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Dinner Break End</span>
           <input
             type="time"
-            value={schedule.dinner_end}
+            value={schedule.dinner_end || ""}
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -442,7 +447,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Presentations Before Lunch</span>
           <input
             type="number"
-            value={schedule.presentations_before_lunch}
+            value={schedule.presentations_before_lunch || ""}
             onChange={(e) => {
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -466,7 +471,7 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
           <span className="font-semibold">Presentations After Lunch</span>
           <input
             type="number"
-            value={schedule.presentations_after_lunch}
+            value={schedule.presentations_after_lunch || ""}
             onChange={(e) =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
@@ -488,11 +493,11 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
         <label className="flex items-center space-x-2 col-span-2">
           <input
             type="checkbox"
-            checked={schedule.time_format24h}
+            checked={schedule.is_hour_24}
             onChange={() =>
               setSchedule((prev: Schedule) => ({
                 ...prev,
-                timeFormat24h: !prev.time_format24h,
+                timeFormat24h: !prev.is_hour_24,
               }))
             }
             className="checkbox"
@@ -504,9 +509,9 @@ const EditScheduleTab = (props: EditScheduleTabProps) => {
       <PrimaryButton
         disabled={loading}
         onClick={prepareSchedule}
-        className={`mx-auto items-center text-tertiary bg-transparent border shadow-none hover:bg-tertiary hover:shadow-none`}
+        className={`mx-auto items-center border shadow-none hover:shadow-none`}
       >
-        <ButtonSpinner loading={loading}>{t("prepare")}</ButtonSpinner>
+        <ButtonSpinner loading={loading}>{t("build_schedule")}</ButtonSpinner>
       </PrimaryButton>
       <Separator className="mt-6" />
 

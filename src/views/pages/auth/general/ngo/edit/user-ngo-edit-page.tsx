@@ -97,6 +97,7 @@ export default function UserNgoEditPage() {
   const per: UserPermission = user?.permissions.get(
     PermissionEnum.ngo.name
   ) as UserPermission;
+
   const tableList = useMemo(
     () =>
       Array.from(per.sub).map(([key, _subPermission], index: number) => {

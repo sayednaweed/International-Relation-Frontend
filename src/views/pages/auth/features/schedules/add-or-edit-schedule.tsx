@@ -24,13 +24,14 @@ import NastranModel from "@/components/custom-ui/model/NastranModel";
 import TakePresentation from "@/views/pages/auth/features/schedules/tabs/parts/take-presentation";
 
 export type Schedule = {
+  id?: string;
   date: DateObject;
   presentation_count: number;
   projects: Project[];
   scheduleItems: ScheduleItem[];
   start_time: string;
   end_time: string;
-  time_format24h: boolean;
+  is_hour_24: boolean;
   presentation_length: number;
   gap_between: number;
   lunch_start: string;
@@ -76,7 +77,7 @@ export default function AddOrEditSchedule() {
         scheduleItems: [],
         start_time: "08:00",
         end_time: "16:00",
-        time_format24h: false,
+        is_hour_24: false,
         presentation_length: 45,
         gap_between: 5,
         lunch_start: "12:30",
@@ -88,57 +89,12 @@ export default function AddOrEditSchedule() {
       };
     } else {
       const response = await axiosClient.get(`schedules/${data}`);
-      const result = response.data;
-      const date = new DateObject({
-        date: result.date,
-        calendar: state.systemLanguage.calendar,
-        locale: state.systemLanguage.local,
-        format: "YYYY/MM/DD", // important for parsing correctly
-      });
-      const projects: Project[] = [];
-      const special_projects: {
-        project: { id: number; name: string };
-        attachment: FileType;
-      }[] = [];
-
-      for (const item of result.scheduleItems) {
-        const proj = {
-          id: item.projectId,
-          name: item.project_name,
-          attachment: item?.attachment,
-          selected: true,
-        };
-        projects.push(proj);
-        if (proj?.attachment)
-          special_projects.push({
-            project: { id: proj.id, name: proj.name },
-            attachment: proj?.attachment,
-          });
-      }
-      return {
-        date: date,
-        presentation_count: result.presentation_count,
-        projects: projects,
-        special_projects: special_projects,
-        scheduleItems: result.scheduleItems,
-        start_time: result.start_time,
-        end_time: result.end_time,
-        time_format24h: result.time_format24h,
-        presentation_length: result.presentation_length,
-        gap_between: result.gap_between,
-        lunch_start: result.lunch_start,
-        lunch_end: result.lunch_end,
-        dinner_start: result?.dinner_start,
-        dinner_end: result?.dinner_end,
-        presentations_before_lunch: result.presentations_before_lunch,
-        presentations_after_lunch: result.presentations_after_lunch,
-      };
+      const sch = response.data;
+      sch.date = new DateObject(new Date(response.data.date));
+      return sch;
     }
   };
-  const { schedule, setSchedule, isLoading, refetch } = useDatasource<
-    Schedule | any,
-    "schedule"
-  >(
+  const { schedule, setSchedule } = useDatasource<Schedule | any, "schedule">(
     {
       queryFn: loadList,
       queryKey: "schedule",
@@ -180,7 +136,7 @@ export default function AddOrEditSchedule() {
                   onClick={cancel}
                   className="items-center border bg-primary/5 hover:shadow-none shadow-none text-primary hover:text-primary hover:bg-primary/10"
                 >
-                  {t("take_presentation")}
+                  {t("start_resentation")}
                   <PlaneTakeoff />
                 </PrimaryButton>
               }
@@ -257,7 +213,7 @@ export default function AddOrEditSchedule() {
             <TabsContent value={"select"} className="p-4">
               <CustomProjectSelect
                 schedule={schedule}
-                                add={paramData.isValid}
+                add={paramData.isValid}
                 setSchedule={setSchedule}
               />
             </TabsContent>

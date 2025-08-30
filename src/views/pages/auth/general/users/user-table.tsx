@@ -498,7 +498,7 @@ export function UserTable() {
                   {toLocaleDate(new Date(item.created_at), state)}
                 </TableCell>
                 <TableCell>
-                  {item?.status ? (
+                  {item?.status_id == 1 ? (
                     <h1 className="truncate text-center rtl:text-md-rtl ltr:text-lg-ltr bg-green-500 px-1 py-[2px] shadow-md text-primary-foreground font-bold rounded-sm">
                       {t("active")}
                     </h1>

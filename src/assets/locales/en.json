@@ -467,5 +467,8 @@
   "configurations": "Configurations",
   "add_to_list": "Add to list",
   "document": "Document",
-  "all_project_not_sele": "All projects are not selected in schedule."
+  "all_project_not_sele": "All projects are not selected in schedule.",
+  "not_scheduled": "Not scheduled",
+  "start_resentation": "Start Presentation",
+  "build_schedule": "Build Schedule"
 }

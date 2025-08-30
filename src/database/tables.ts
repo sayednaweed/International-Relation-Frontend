@@ -63,6 +63,7 @@ export type User = {
   username: string;
   email: string;
   status: Status;
+  status_id?: number;
   grant: boolean;
   profile: any;
   role: Role;
